@@ -1,16 +1,17 @@
 ---
 title: Radio frequency entity
-description: Share RF transmitters between integrations, so one integration owns the radio and another one knows the codes of a device.
+description: Share RF transmitters and receivers between integrations, so one integration owns the radio and another one knows the codes of a device.
 sidebarLabel: Radio frequency
 sidebarGroup: Remotes and signals
 ---
 
-The radio frequency domain sits between RF hardware and the devices it controls. Plenty of cheap devices listen to simple radio codes on 433 MHz or 868 MHz: garage doors, wireless sockets, string lights, cooker hoods. One integration owns the radio, like an ESPHome board or a Broadlink hub. Another integration knows a device and the codes it listens to. The radio frequency domain lets them work together without knowing about each other.
+The radio frequency domain sits between RF hardware and the devices it controls. Plenty of cheap devices listen to simple radio codes on 433 MHz or 868 MHz: garage doors, wireless sockets, string lights, cooker hoods. One integration owns the radio, like an ESPHome board or a Broadlink hub. Another integration knows a device and its codes. The radio frequency domain lets them work together without knowing about each other.
 
-There are two roles:
+There are three roles:
 
 - **Transmitter integrations** own hardware that sends RF signals. They provide an entity based on `RadioFrequencyTransmitterEntity`.
-- **Consumer integrations** know a device and its codes. They do not create radio frequency entities. They create regular entities, like a [switch](/core/entities/switch/) or a [light](/core/entities/light/), and send through a transmitter the user picked, usually in the config flow.
+- **Receiver integrations** own hardware that picks up RF signals. They provide an entity based on `RadioFrequencyReceiverEntity`.
+- **Consumer integrations** know a device and its codes. They do not create radio frequency entities. They create regular entities, like a [switch](/core/entities/switch/) or a [light](/core/entities/light/), and send or receive through a transmitter or receiver the user picked, usually in the config flow.
 
 How the roles connect through the radio frequency domain:
 
@@ -19,18 +20,18 @@ flowchart TB
     Consumers["<b>Consumer integrations</b><br/>KlikAanKlikUit<br/>Novy Cooker Hood<br/>Honeywell String Lights"]
 
     subgraph rf["radio_frequency domain"]
-        Helpers["<b>Helpers and consumer base class</b><br/>async_get_transmitters, async_send_command,<br/>RadioFrequencyTransmitterConsumerEntity"]
-        Base["<b>Base class</b><br/>RadioFrequencyTransmitterEntity"]
+        Helpers["<b>Helpers and consumer base classes</b><br/>async_get_transmitters, async_get_receivers,<br/>async_send_command, async_subscribe_receiver,<br/>RadioFrequencyTransmitterConsumerEntity,<br/>RadioFrequencyReceiverConsumerEntity"]
+        Bases["<b>Base classes</b><br/>RadioFrequencyTransmitterEntity<br/>RadioFrequencyReceiverEntity"]
     end
 
-    Hardware["<b>Transmitter integrations</b><br/>ESPHome, Broadlink"]
+    Hardware["<b>Transmitter and receiver integrations</b><br/>ESPHome, Broadlink (transmitters)"]
 
     Consumers -->|"use"| Helpers
-    Helpers -->|"send through"| Base
-    Hardware -->|"implement"| Base
+    Helpers -->|"send through, subscribe to"| Bases
+    Hardware -->|"implement"| Bases
 ```
 
-Everything lives in `homeassistant.components.radio_frequency`. The commands come from the [`rf-protocols`](https://github.com/home-assistant-libs/rf-protocols) library, and the domain re-exports its `RadioFrequencyCommand` and `ModulationType`. Unlike the [infrared entity](/core/entities/infrared/), there is no receiver role: radio frequency entities only transmit.
+Everything lives in `homeassistant.components.radio_frequency`. The commands come from the [`rf-protocols`](https://github.com/home-assistant-libs/rf-protocols) library, and the domain re-exports its `RadioFrequencyCommand` and `ModulationType`. For the same pattern with infrared signals, see the [infrared entity](/core/entities/infrared/).
 
 ## Properties
 
@@ -38,13 +39,23 @@ These properties are specific to radio frequency entities. The generic propertie
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `supported_frequency_ranges` | `list[tuple[int, int]]` | Required | The frequency ranges the hardware can transmit on, as `(min_hz, max_hz)` tuples. It is an abstract property: implement it as a property, not as an `_attr_` attribute. |
+| `supported_frequency_ranges` | `list[tuple[int, int]]` | Required | The frequency ranges the hardware can transmit or receive on, as `(min_hz, max_hz)` tuples. Transmitters and receivers both implement it. It is an abstract property: implement it as a property, not as an `_attr_` attribute. |
 
-The base class sets `should_poll` to `False` and manages the state. It extends `RestoreEntity`, so the time of the last command survives a restart.
+The base classes set a few things for you:
+
+| Name | Value | Description |
+| --- | --- | --- |
+| `device_class` | `RadioFrequencyDeviceClass.TRANSMITTER` or `RadioFrequencyDeviceClass.RECEIVER` | Set by the base class. An entity with `_attr_has_entity_name = True` and no name is named after its device class, like **Radio frequency receiver**. |
+| `should_poll` | `False` | Radio frequency entities never poll. |
+| `state` | Final | The time of the last command sent or signal received. See [States](#states). |
+
+Both base classes extend `RestoreEntity`, so the last timestamp survives a restart.
 
 ## Supported features
 
-Radio frequency entities have no supported features. What a transmitter can do is described by its frequency ranges and its modulation. Right now, the only modulation is `ModulationType.OOK` (on-off keying), and every transmitter is assumed to support it.
+Radio frequency entities have no supported features. An entity is either a transmitter or a receiver. If your hardware does both, create one entity of each.
+
+What an entity can do is described by its frequency ranges and its modulation. Right now, the only modulation is `ModulationType.OOK` (on-off keying), and every transmitter and receiver is assumed to support it.
 
 ## Transmitter
 
@@ -54,18 +65,46 @@ A transmitter implements two things: the frequency ranges, and sending a command
 
 Do not call `async_send_command` on the entity from other code. Consumers go through the `async_send_command` helper, which checks the frequency and modulation, passes the context, and updates the state after a successful send.
 
+## Receiver
+
+A receiver implements only the frequency ranges. There is no method to implement for receiving: when your hardware picks up a signal, hand it to the base class with `_handle_received_signal`. The base class sets the state to the time the signal was received and calls every subscriber.
+
+```python
+class MyRfReceiver(RadioFrequencyReceiverEntity):
+    @property
+    def supported_frequency_ranges(self) -> list[tuple[int, int]]:
+        """Return the bands this radio can receive on."""
+        return [(433_050_000, 434_790_000)]
+
+    @callback
+    def _on_hardware_signal(self, timings: list[int], frequency: int) -> None:
+        """Pass a signal from the hardware on to subscribers."""
+        self._handle_received_signal(
+            RadioFrequencyReceivedSignal(timings=timings, frequency=frequency)
+        )
+```
+
+`RadioFrequencyReceivedSignal` holds `timings` (a list of `int`), an optional `frequency`, and `modulation`, which defaults to `ModulationType.OOK`. Call `_handle_received_signal` from the event loop.
+
 ## Consumer helpers
 
-Consumers never hold a reference to the transmitter entity. They work with an entity ID (or its registry ID) and these helpers:
+Consumers never hold a reference to a radio frequency entity. They work with an entity ID (or its registry ID) and these helpers:
 
 | Helper | Description |
 | --- | --- |
 | `async_get_transmitters(hass, frequency, modulation)` | The entity IDs of all transmitters that support the frequency and modulation. An empty list means none of them fit. Raises `HomeAssistantError` when the domain is not loaded or there are no transmitters at all. |
+| `async_get_receivers(hass, frequency, modulation)` | The entity IDs of all receivers that support the frequency and modulation. An empty list means none of them fit. Raises `HomeAssistantError` when the domain is not loaded or there are no receivers at all. |
 | `async_send_command(hass, entity_id_or_uuid, command, context=None)` | Sends a command through a transmitter. Raises `HomeAssistantError` when the domain is not loaded, the transmitter does not exist, or it does not support the frequency or modulation of the command. |
+| `async_subscribe_receiver(hass, entity_id_or_uuid, signal_callback)` | Calls `signal_callback` with a `RadioFrequencyReceivedSignal` for every signal. Returns a callback to unsubscribe. Raises `HomeAssistantError` when the domain is not loaded or the receiver does not exist. |
 
-The `RadioFrequencyTransmitterConsumerEntity` base class does the bookkeeping for you. Set `_rf_transmitter_entity_id` to the entity ID of the transmitter and call `await self._send_command(command)`. The base class keeps your entity available only while the transmitter is available, and passes on the context of the action. Mix it in before the entity class of your platform.
+Most consumers do not need the helpers directly, because two base classes do the bookkeeping for them:
 
-For config flows and the frontend, there is also a `radio_frequency/list` WebSocket command (admin only). It lists every transmitter with its device, config entry, frequency ranges, and supported modulations.
+- `RadioFrequencyTransmitterConsumerEntity`: set `_rf_transmitter_entity_id` to the entity ID of the transmitter and call `await self._send_command(command)`. The base class keeps your entity available only while the transmitter is available, and passes on the context of the action.
+- `RadioFrequencyReceiverConsumerEntity`: set `_rf_receiver_entity_id` and implement the `_handle_signal(signal)` callback. The entity is only available while the receiver is. The base class subscribes while the receiver is available, and unsubscribes when it becomes unavailable or the entity is removed.
+
+Mix them in before the entity class of your platform, like `class MySocket(RadioFrequencyTransmitterConsumerEntity, SwitchEntity)`. When you override `_async_rf_availability_changed(available)` to react to availability, call `super()`, so the base classes still update the availability and the subscription.
+
+For config flows and the frontend, there is also a `radio_frequency/list` WebSocket command (admin only). It returns two lists, `transmitters` and `receivers`. Each entry describes one entity with its device, config entry, frequency ranges, and supported modulations.
 
 ## Methods
 
@@ -78,7 +117,7 @@ For config flows and the frontend, there is also a `radio_frequency/list` WebSoc
 
 ## States
 
-The state is the time the last command was sent, as an ISO 8601 timestamp with milliseconds, like `2026-10-10T08:15:00.123+00:00`, or `unknown` before the first one. It is final: the base class manages it.
+The state of a transmitter is the time the last command was sent. The state of a receiver is the time the last signal was received. Both are ISO 8601 timestamps with milliseconds, like `2026-10-10T08:15:00.123+00:00`, or `unknown` before the first one. The state is final: the base classes manage it.
 
 ## Example
 

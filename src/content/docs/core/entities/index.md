@@ -81,7 +81,7 @@ Every platform page has the same structure: what the entity represents, its prop
 
 - [Remote](/core/entities/remote/): send commands to other devices.
 - [Infrared](/core/entities/infrared/): shared infrared transmitters and receivers.
-- [Radio frequency](/core/entities/radio-frequency/): shared RF transmitters.
+- [Radio frequency](/core/entities/radio-frequency/): shared RF transmitters and receivers.
 
 ### Voice and AI
 
