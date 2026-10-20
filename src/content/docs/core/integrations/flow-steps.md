@@ -247,7 +247,7 @@ The **Verify SSL certificate** checkbox only shows once the user checks **Use SS
 | `exists` | has a value: it is not missing, `None`, or an empty string |
 | `not_exists` | has no value |
 
-Values are compared strictly, so `True` does not match `1`. `visible` also takes a list of conditions, which all have to match, or a plain `True` or `False`.
+`visible` also takes a list of conditions, which all have to match, or a plain `True` or `False`.
 
 A hidden field is not shown, not required, and left out of `user_input`, default included. For the conditions of the other fields, it counts as empty. A field the user did not fill in is evaluated with its default.
 
