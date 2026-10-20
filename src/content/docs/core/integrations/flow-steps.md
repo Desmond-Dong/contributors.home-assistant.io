@@ -224,17 +224,18 @@ from homeassistant import data_entry_flow
 
 DATA_SCHEMA = probatio.Schema(
     {
-        probatio.Required("recommended", default=True): bool,
-        data_entry_flow.Optional(
-            "temperature",
-            default=1.0,
-            visible={"field": "recommended", "value": False},
-        ): NumberSelector(NumberSelectorConfig(min=0, max=2, step=0.05)),
+        probatio.Required(CONF_HOST): str,
+        probatio.Required(CONF_SSL, default=False): bool,
+        data_entry_flow.Required(
+            CONF_VERIFY_SSL,
+            default=True,
+            visible={"field": CONF_SSL, "value": True},
+        ): bool,
     }
 )
 ```
 
-The temperature field appears once the user unchecks `recommended`. A condition compares the value of another field of the same step:
+The **Verify SSL certificate** checkbox only shows once the user checks **Use SSL**. A condition compares the value of another field of the same step:
 
 | Operator | Matches when the field |
 | --- | --- |
@@ -252,12 +253,15 @@ A hidden field is not shown, not required, and left out of `user_input`, default
 Inside a [section](#sections), conditions look at the fields of that section. To hide a whole section, put `visible` on the marker of the section:
 
 ```python
-data_entry_flow.Optional(
-    "advanced_options",
-    visible={"field": "recommended", "value": False},
+data_entry_flow.Required(
+    "ssl_options",
+    visible={"field": CONF_SSL, "value": True},
 ): section(
     probatio.Schema(
-        {probatio.Optional("temperature", default=1.0): probatio.Coerce(float)}
+        {
+            probatio.Required(CONF_VERIFY_SSL, default=True): bool,
+            probatio.Optional("ca_cert"): str,
+        }
     ),
 ),
 ```
