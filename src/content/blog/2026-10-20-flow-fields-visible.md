@@ -14,15 +14,16 @@ Give the `Required` or `Optional` marker from `homeassistant.data_entry_flow` a 
 
 ```python
 from homeassistant import data_entry_flow
+from homeassistant.helpers.selector import BooleanSelector
 
 DATA_SCHEMA = probatio.Schema(
     {
-        probatio.Required(CONF_SSL, default=False): bool,
+        probatio.Required(CONF_SSL, default=False): BooleanSelector(),
         data_entry_flow.Required(
             CONF_VERIFY_SSL,
             default=True,
             visible={"field": CONF_SSL, "value": True},
-        ): bool,
+        ): BooleanSelector(),
     }
 )
 ```
