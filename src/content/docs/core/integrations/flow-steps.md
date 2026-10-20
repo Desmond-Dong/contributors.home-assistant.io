@@ -250,6 +250,8 @@ Values are compared strictly, so `True` does not match `1`. `visible` also takes
 
 A hidden field is not shown, not required, and left out of `user_input`, default included. For the conditions of the other fields, it counts as empty. A field the user did not fill in is evaluated with its default.
 
+Because a hidden field is left out of `user_input`, it can be missing from the data you store. Read it with `.get()` and a fallback, like `entry.data.get(CONF_VERIFY_SSL, True)`.
+
 Inside a [section](#sections), conditions look at the fields of that section. To hide a whole section, put `visible` on the marker of the section:
 
 ```python
