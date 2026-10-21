@@ -1,18 +1,18 @@
 ---
 title: YAML style
-description: How YAML examples in the documentation should look, so they are easy to read, copy, and adapt.
+description: 文档中的 YAML 示例应当是什么样子，让它们易于阅读、复制和改写。
 order: 3
 ---
 
-People copy YAML examples straight into their own configuration. When every example follows the same style, they are easier to read, easier to compare, and easier to get right the first time.
+人们会把 YAML 示例原样复制到自己的配置里。当所有示例都遵循同一种风格时，它们就更容易阅读、更容易对比，也更容易一次写对。
 
-This page has two parts. The first covers plain YAML, and applies to any YAML you write. The second covers choices that are specific to Home Assistant, where the same thing can be written in more than one way.
+本页分为两部分。第一部分讲通用 YAML，适用于你写的任何 YAML。第二部分讲 Home Assistant 特有的选择——在 Home Assistant 里，同一件事往往有不止一种写法。
 
-## General YAML
+## 通用 YAML
 
-### Indentation
+### 缩进
 
-Indent with 2 spaces.
+用 2 个空格缩进。
 
 ```yaml
 # Good
@@ -24,9 +24,9 @@ lighting:
     brightness: 80
 ```
 
-### Booleans
+### 布尔值
 
-Use only `true` and `false`, in lowercase. Values like `yes`, `no`, `on`, and `off` look friendly, but they confuse people who are new to YAML. YAML 1.2 also dropped them as booleans, so sticking to `true` and `false` keeps examples future proof.
+只使用小写的 `true` 和 `false`。`yes`、`no`、`on`、`off` 这些值看起来亲切，但会让 YAML 新手感到困惑。YAML 1.2 也已将它们从布尔值中移除，所以坚持用 `true` 和 `false` 能让示例经得起未来变化。
 
 ```yaml
 # Good
@@ -39,13 +39,13 @@ visible: off
 debug: yes
 ```
 
-### Comments
+### 注释
 
-Comments help the reader understand what an example does.
+注释帮助读者理解示例的作用。
 
-- Put the comment on its own line, above the line it explains. Comments at the end of a line get hard to read on small screens.
-- Indent the comment at the same level as the line it belongs to.
-- Put a space after the `#`, and start the comment with a capital letter.
+- 注释单独占一行，放在它所解释的那一行的上方。行尾注释在小屏幕上很难阅读。
+- 注释的缩进层级与它所属的行保持一致。
+- `#` 后面加一个空格，注释以大写字母开头。
 
 ```yaml
 # Good
@@ -67,11 +67,11 @@ sensor:
   retries: 3
 ```
 
-### Lists
+### 列表
 
-YAML calls them sequences. In the documentation, call them lists.
+YAML 里称为序列（sequence）。在文档中，请称它们为列表（list）。
 
-Write lists in block style, with each item indented under its key.
+列表用块样式（block style）书写，每个条目缩进到它的键下面。
 
 ```yaml
 # Good
@@ -87,7 +87,7 @@ colors:
 - blue
 ```
 
-Avoid flow style, the inline form with square brackets. It looks compact, but it gets hard to read once the values grow. If you do use it, put a space after each comma, and no spaces just inside the brackets.
+避免流样式（flow style），也就是带方括号的行内写法。它看起来紧凑，但一旦值变长就很难阅读。如果确实要用，逗号后面加一个空格，括号内侧不留空格。
 
 ```yaml
 # Acceptable
@@ -99,11 +99,11 @@ colors: [red,green,blue]
 lights: ["light.living_room_window", "light.living_room_corner"]
 ```
 
-### Mappings
+### 映射
 
-Mappings are also known as dictionaries, hash tables, or key/value pairs. In the documentation, call them mappings.
+映射（mapping）也被称为字典、哈希表或键值对。在文档中，请称它们为映射。
 
-Always write mappings in block style. Flow style, which looks like JSON, is not allowed.
+映射始终用块样式书写。不允许使用看起来像 JSON 的流样式。
 
 ```yaml
 # Good
@@ -115,9 +115,9 @@ position:
 position: { x: 10, y: 20 }
 ```
 
-### Null values
+### 空值
 
-Leave a null value empty. Do not write `null` or `~`.
+空值留空即可。不要写 `null` 或 `~`。
 
 ```yaml
 # Good
@@ -128,9 +128,9 @@ history: null
 history: ~
 ```
 
-### Strings
+### 字符串
 
-Quote strings with double quotes. Some values in Home Assistant examples are an exception, see [Strings that stay unquoted](#strings-that-stay-unquoted).
+字符串用双引号。Home Assistant 示例中的某些值是例外，参见[不加引号的字符串](#strings-that-stay-unquoted)。
 
 ```yaml
 # Good
@@ -143,12 +143,12 @@ greeting: Welcome home!
 greeting: 'Welcome home!'
 ```
 
-### Long strings
+### 长字符串
 
-Do not use `\n` to add line breaks, and do not write long strings on a single line. Use a block scalar instead:
+不要用 `\n` 来换行，也不要把长字符串写成一行。改用块标量（block scalar）：
 
-- The literal style, `|`, keeps the line breaks you write.
-- The folded style, `>`, joins the lines into one, with a space between them.
+- 字面样式（literal style）`|` 保留你写下的换行。
+- 折叠样式（folded style）`>` 把多行合并成一行，行之间以空格相连。
 
 ```yaml
 # Good
@@ -163,20 +163,20 @@ summary: >
 message: "The washing machine is done.\nTime to empty it.\n"
 ```
 
-Prefer `|` and `>` without a chomping indicator. If an example needs different handling of the line breaks at the end, you can use:
+优先使用不带修剪指示符（chomping indicator）的 `|` 和 `>`。如果示例需要对结尾换行做特殊处理，可以使用：
 
-- The strip indicator, `|-` or `>-`, to remove the final line break and any empty lines after it.
-- The keep indicator, `|+` or `>+`, to keep the final line break and any empty lines after it.
+- 剥离指示符（strip indicator）`|-` 或 `>-`，去掉结尾换行及其后的空行。
+- 保留指示符（keep indicator）`|+` 或 `>+`，保留结尾换行及其后的空行。
 
 ## Home Assistant YAML
 
-Home Assistant often accepts the same configuration in more than one form. These rules pick one, so all examples look alike.
+Home Assistant 常常接受不止一种写法的相同配置。以下规则各选其一，让所有示例看起来一致。
 
-### Leave out defaults and empty sections
+### 省略默认值和空小节
 
-Do not include an option that is set to its default value. The exception is an example that is specifically about that option.
+不要写已经取默认值的选项。例外情况是：示例本身就是专门讲这个选项的。
 
-The same goes for empty sections, like `conditions: []` or `data: {}`, and for `mode: single`, which is the default mode of automations and scripts.
+空小节同理，比如 `conditions: []` 或 `data: {}`，还有 `mode: single`——它是自动化和脚本的默认模式。
 
 ```yaml
 # Good
@@ -201,32 +201,32 @@ actions:
     data: {}
 ```
 
-### Placeholders
+### 占位符
 
-When the reader has to fill in a value, write the placeholder in capitals, with underscores between words. That makes it obvious what to replace.
+当需要读者自己填入一个值时，占位符用大写字母，单词之间用下划线分隔。这样一眼就能看出哪里需要替换。
 
 ```yaml
 api_key: YOUR_API_KEY
 host: YOUR_DEVICE_IP_ADDRESS
 ```
 
-Write examples so they work in the `configuration.yaml` file, unless the text clearly says otherwise.
+除非文中明确说明，示例都应当能在 `configuration.yaml` 文件中直接工作。
 
-### Strings that stay unquoted
+### 不加引号的字符串
 
-Strings get double quotes, with one exception. The following values are easier to read without quotes, so leave them unquoted:
+字符串一律加双引号，只有一个例外。以下这些值不加引号反而更易读，所以保持不加引号：
 
-- Entity IDs, like `binary_sensor.front_door`
-- Entity attributes, like `temperature`
-- Device IDs
-- Area IDs
-- Platform types, like `light` or `switch`
-- Trigger types, like `state` or `time`
-- Condition types, like `state` or `numeric_state`
-- Action names, like `light.turn_on`
-- Device classes, like `motion` or `problem`
-- Event names
-- Values that only accept a fixed set of options, like `mode` in automations
+- 实体 ID，例如 `binary_sensor.front_door`
+- 实体属性，例如 `temperature`
+- 设备 ID
+- 区域 ID
+- 平台类型，例如 `light` 或 `switch`
+- 触发器类型，例如 `state` 或 `time`
+- 条件类型，例如 `state` 或 `numeric_state`
+- 动作名称，例如 `light.turn_on`
+- 设备类别（device class），例如 `motion` 或 `problem`
+- 事件名称
+- 只接受一组固定选项的值，例如自动化中的 `mode`
 
 ```yaml
 # Good
@@ -248,11 +248,11 @@ actions:
       message: The front door is open.
 ```
 
-### Action targets
+### 动作的目标
 
-You can point an action at an entity in three places: under `target`, directly on the action, or inside `data`. Always use `target`.
+把动作指向一个实体有三个位置：`target` 键下、直接写在动作上、或放在 `data` 里。始终使用 `target`。
 
-It is the most flexible option. Besides entities, a target can hold devices, areas, floors, and labels, and you can combine them.
+它是最灵活的方式。除了实体，目标还可以包含设备、区域、楼层和标签（label），而且可以组合使用。
 
 ```yaml
 # Good
@@ -281,13 +281,13 @@ actions:
       entity_id: light.living_room
 ```
 
-### A single value or a list of values
+### 单个值还是值列表
 
-Many options accept either one value or a list of values. Some also accept a comma-separated string. For those options:
+很多选项既接受单个值，也接受值列表。有些还接受逗号分隔的字符串。对于这些选项：
 
-- Use a single value when there is only one. Do not wrap it in a list.
-- Use a block style list when there is more than one.
-- Never put several values in one comma-separated string.
+- 只有一个值时用单个值，不要包成列表。
+- 多于一个值时用块样式的列表。
+- 绝不要把多个值塞进一个逗号分隔的字符串里。
 
 ```yaml
 # Good
@@ -309,11 +309,11 @@ entity_id:
   - light.living_room
 ```
 
-### A single mapping or a list of mappings
+### 单个映射还是映射列表
 
-Options like `triggers`, `conditions`, `actions`, and `sequence` accept either one mapping or a list of mappings. Always use a list, even when there is only one item.
+`triggers`、`conditions`、`actions` 和 `sequence` 这类选项既接受单个映射，也接受映射列表。始终使用列表，哪怕只有一项。
 
-A list shows the reader they can add more items. It also lets them copy one item into their own configuration without changing its shape.
+列表让读者知道还可以继续添加条目，也让他们能把其中一项直接复制进自己的配置，而不用改动结构。
 
 ```yaml
 # Good
@@ -329,11 +329,11 @@ actions:
     entity_id: light.living_room
 ```
 
-## Templates
+## 模板
 
-Templates are powerful, but they are hard to read for people who are new to them. If plain YAML can do the job, use that instead.
+模板很强大，但对新手来说很难读懂。如果纯 YAML 能做到，就用纯 YAML。
 
-There is a second reason. On [home-assistant.io](https://www.home-assistant.io/), templates need extra escaping, so the site does not mistake them for Liquid. See [Liquid helpers](/writing/reference/liquid/). No template, no escaping.
+还有另一个原因。在 [home-assistant.io](https://www.home-assistant.io/) 上，模板需要额外的转义，否则网站会把它们误认为 Liquid。参见 [Liquid helpers](/writing/reference/liquid/)。不写模板，就不用转义。
 
 ```yaml
 # Good
@@ -349,9 +349,9 @@ conditions:
     value_template: "{{ state_attr('sun.sun', 'elevation') < 4 }}"
 ```
 
-### Quotes in templates
+### 模板中的引号
 
-A template is a string, so it gets double quotes. Use single quotes inside the template.
+模板本身是字符串，所以外面用双引号，模板内部用单引号。
 
 ```yaml
 # Good
@@ -361,9 +361,9 @@ greeting: "{{ 'Good morning' if now().hour < 12 else 'Hello' }}"
 greeting: '{{ "Good morning" if now().hour < 12 else "Hello" }}'
 ```
 
-### Long templates
+### 长模板
 
-Split a long template over multiple lines, so the reader can follow the logic. Use a block scalar for this, as described in [Long strings](#long-strings).
+把长模板拆成多行，让读者能跟上逻辑。为此使用块标量，参见[长字符串](#long-strings)。
 
 ```yaml
 # Good
@@ -379,11 +379,11 @@ conditions:
   - "{{ is_state('lock.front', 'locked') and is_state('lock.back', 'locked') }}"
 ```
 
-The bad example is still short. Picture it with five more conditions, and you see why it does not scale.
+这个反例还算短。想象它再叠加五个条件，你就明白为什么这种方式撑不住了。
 
-### Short condition syntax
+### 短条件语法
 
-For template conditions, use the shorthand. It is shorter and cleaner.
+模板条件请用简写形式。更短、更干净。
 
 ```yaml
 # Good
@@ -396,9 +396,9 @@ conditions:
       {{ states('sensor.outdoor_temperature') | float(0) > 25 }}
 ```
 
-### Filters
+### 过滤器
 
-Put a space on both sides of the filter pipe, `|`. If that makes the expression unclear, add parentheses.
+过滤器管道符 `|` 两侧各留一个空格。如果这样让表达式不够清晰，就加括号。
 
 ```yaml
 # Good
@@ -412,11 +412,11 @@ conditions:
   - "{{ target == (states('input_number.target')|int(0)) }}"
 ```
 
-### States and attributes
+### 状态与属性
 
-Use the helper functions to read states and attributes: `states()`, `is_state()`, `state_attr()`, and `is_state_attr()`. Do not read them from the `states` object directly.
+读取状态和属性请使用辅助函数：`states()`、`is_state()`、`state_attr()` 和 `is_state_attr()`。不要直接从 `states` 对象上读取。
 
-The helpers handle entities that are not ready yet, like during Home Assistant startup. Reading the `states` object directly gives errors in that case.
+这些辅助函数能正确处理尚未就绪的实体，比如 Home Assistant 启动期间。直接读 `states` 对象在这种情况下会报错。
 
 ```yaml
 # Good
