@@ -1,6 +1,6 @@
 ---
-title: "Theme"
-description: "A set of CSS variables that changes the colors, and some sizes, of the frontend."
+title: "主题"
+description: "一组 CSS 变量，用于更改前端界面的颜色及部分尺寸。"
 sidebarGroup: "Frontend"
 term:
   aliases:
@@ -13,4 +13,4 @@ term:
     - "frontend"
 ---
 
-Users pick a theme in their profile, and can set one for a view or a card of a dashboard. Themes override the [design tokens](/glossary/design-token/) of the frontend.
+用户可以在自己的个人资料中选择一个主题，也可以为仪表盘（dashboard）的某个视图或卡片设置主题。主题会覆盖前端的[设计令牌（design tokens）](/glossary/design-token/)。

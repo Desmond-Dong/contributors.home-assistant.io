@@ -1,6 +1,6 @@
 ---
-title: "Entity description"
-description: "A dataclass with the fixed properties of an entity, like its key, translation key, and device class, so many similar entities can share one class."
+title: "实体描述（entity description）"
+description: "一个包含实体（entity）固定属性的数据类（dataclass），例如其键、翻译键和设备类别（device class），这样许多相似的实体可以共用一个类。"
 sidebarGroup: "Entities and devices"
 term:
   aliases:
@@ -17,4 +17,4 @@ term:
     - "entity descriptions"
 ---
 
-An integration with twenty sensors usually has one sensor class, and a list of twenty entity descriptions. Each description says what is different about one sensor.
+一个拥有二十个传感器的集成（integration）通常只有一个传感器类，以及一个包含二十个实体描述的列表。每个描述说明了其中一个传感器的不同之处。

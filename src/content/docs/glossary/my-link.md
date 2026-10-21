@@ -1,6 +1,6 @@
 ---
-title: "My link"
-description: "A link to my.home-assistant.io that opens a page in the reader's own Home Assistant, like their integrations, or a new automation."
+title: "My 链接"
+description: "指向 my.home-assistant.io 的链接，可在读者自己的 Home Assistant 中打开相应页面，例如其集成页面或新建自动化。"
 sidebarGroup: "Frontend"
 term:
   aliases:
@@ -19,14 +19,14 @@ term:
     - "My links"
 ---
 
-Documentation and integrations use My links to take readers straight to the right place, wherever their Home Assistant runs.
+文档和集成使用 My 链接（My link）将读者直接带到正确的位置，无论其 Home Assistant 运行在哪里。
 
-A My link has the form `https://my.home-assistant.io/redirect/<name>/`. Some take parameters, like `https://my.home-assistant.io/redirect/config_flow_start/?domain=hue`, which starts setting up the Hue integration. Every link also has a badge image, at `https://my.home-assistant.io/badges/<name>.svg`, for a button in a README or a forum post. Some names still use a former name, like `supervisor_add_addon_repository`, which opens the dialog to add an app repository.
+My 链接的形式为 `https://my.home-assistant.io/redirect/<name>/`。有些链接带有参数，例如 `https://my.home-assistant.io/redirect/config_flow_start/?domain=hue`，它会开始设置 Hue 集成（integration）。每个链接还有一个徽章图片，位于 `https://my.home-assistant.io/badges/<name>.svg`，可用于 README 或论坛帖子中的按钮。有些名称仍使用旧名称，例如 `supervisor_add_addon_repository`，它会打开添加应用仓库的对话框。
 
-The [My link creator](https://my.home-assistant.io/create-link/) lists the links, and builds the link and the badge for you. Where contributors use them:
+[My 链接生成器](https://my.home-assistant.io/create-link/)列出了所有链接，并为你生成链接和徽章。贡献者在以下地方使用它们：
 
-- [The `{% my %}` tag](/writing/reference/liquid/#my-links) on home-assistant.io
-- [A badge to add an app repository](/apps/guides/repository/#make-it-one-step)
-- [A link to a repository in the Marketplace](/marketplace/guides/catalog/#the-link-to-your-repository)
-- [A badge to set up a custom integration](/marketplace/guides/integrations/#link-to-the-setup)
-- [A blueprint import badge](/marketplace/guides/blueprints/#share-it)
+- [home-assistant.io 上的 `{% my %}` 标签](/writing/reference/liquid/#my-links)
+- [用于添加应用仓库的徽章](/apps/guides/repository/#make-it-one-step)
+- [指向 Marketplace 中仓库的链接](/marketplace/guides/catalog/#the-link-to-your-repository)
+- [用于设置自定义集成的徽章](/marketplace/guides/integrations/#link-to-the-setup)
+- [蓝图（blueprint）导入徽章](/marketplace/guides/blueprints/#share-it)

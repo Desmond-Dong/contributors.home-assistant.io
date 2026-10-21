@@ -1,6 +1,6 @@
 ---
-title: "Release notes"
-description: "The blog post on home-assistant.io that tells what is new in a release, what changed, and what users need to do about it."
+title: "发行说明"
+description: "home-assistant.io 上的博客文章，介绍某个版本中的新功能、变更内容，以及用户需要为此做些什么。"
 sidebarGroup: "Contributing"
 term:
   related:
@@ -12,6 +12,6 @@ term:
     - "release notes"
 ---
 
-The release notes go live on the [Home Assistant blog](https://www.home-assistant.io/blog/categories/core/) on the day of the release. Next to the highlights, they have a section for every patch release, a section with the [backward-incompatible changes](/glossary/backward-incompatible-change/), and a list of all changes.
+发行说明会在发布当天发布在 [Home Assistant 博客](https://www.home-assistant.io/blog/categories/core/)上。除了亮点内容之外，其中还包含针对每个补丁版本（patch release）的章节、一个介绍[不向后兼容的变更](/glossary/backward-incompatible-change/)的章节，以及所有变更的完整列表。
 
-The text about a backward-incompatible change comes from the description of its pull request. That is why the pull request template asks you to write it for users. See [Release notes and the release party](/releases/guides/release-notes/).
+关于不向后兼容变更的文字说明来自其拉取请求（pull request）的描述。这就是为什么拉取请求模板要求你面向用户来撰写这段说明。参见[发行说明与发布派对](/releases/guides/release-notes/)。

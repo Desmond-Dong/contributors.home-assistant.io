@@ -1,6 +1,6 @@
 ---
-title: "Commit"
-description: "One saved change to one or more files in a repository, with a message that says what changed."
+title: "提交（Commit）"
+description: "对仓库中一个或多个文件的一次已保存的更改，并附带一条说明更改内容的消息。"
 sidebarGroup: "Contributing"
 term:
   aliases:
@@ -16,4 +16,4 @@ term:
     - "commit messages"
 ---
 
-Git records who made each commit and when, and gives it a unique ID, the SHA or hash. A pull request is a set of commits on a branch. Adding a commit to that branch updates the pull request.
+Git 会记录每次提交（commit）的作者和时间，并为其分配一个唯一的 ID，即 SHA 或哈希值。拉取请求（pull request）是某个分支（branch）上的一组提交。向该分支添加提交会更新对应的拉取请求。

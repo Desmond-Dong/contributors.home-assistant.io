@@ -1,6 +1,6 @@
 ---
-title: "Integration"
-description: "A package of code that connects Home Assistant to a device, service, or protocol, or adds a feature like automations."
+title: "集成（Integration）"
+description: "一段代码包，用于将 Home Assistant 连接到设备、服务或协议，或添加自动化等功能。"
 sidebarGroup: "Core and integrations"
 term:
   aliases:
@@ -20,8 +20,8 @@ term:
     - "integrations"
 ---
 
-Almost all of Home Assistant Core is integrations. Some connect to something outside Home Assistant, like Philips Hue or Z-Wave. Others are building blocks that other integrations use, like `light`, `sensor`, or `automation`.
+Home Assistant Core 几乎全部由集成（integration）组成。有些集成连接 Home Assistant 之外的东西，例如 Philips Hue 或 Z-Wave。另一些则是其他集成使用的构建模块，例如 `light`、`sensor` 或 `automation`。
 
-Every integration lives in its own folder, named after its [domain](/glossary/domain/), and describes itself in a [manifest](/glossary/manifest/). Users add most integrations in the UI, with a [config flow](/glossary/config-flow/).
+每个集成都位于以它的[域（domain）](/glossary/domain/)命名的独立文件夹中，并在[清单（manifest）](/glossary/manifest/)中描述自身。用户大多在 UI 中通过[配置流程（config flow）](/glossary/config-flow/)添加集成。
 
-The code still uses the old name in places: integrations live in `homeassistant/components/`, and some functions say component. In text, always say integration.
+代码中有些地方仍在使用旧名称：集成存放在 `homeassistant/components/` 中，一些函数名中包含 component。在文字中，请始终使用 integration（集成）一词。

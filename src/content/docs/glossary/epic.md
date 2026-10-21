@@ -1,6 +1,6 @@
 ---
-title: "Epic"
-description: "A larger body of work in the home-assistant/epics repository, made up of tasks that can span several repositories."
+title: "史诗（Epic）"
+description: "home-assistant/epics 仓库中的一项较大规模工作，由可能跨越多个仓库的任务组成。"
 sidebarGroup: "Contributing"
 term:
   aliases:
@@ -16,6 +16,6 @@ term:
     - "epics"
 ---
 
-An epic lists what it delivers and when it is done. Its tasks are issues in the repositories where the work happens, like Home Assistant Core, the frontend, or the documentation, linked to the epic as sub-issues. Most epics deliver a roadmap [opportunity](/glossary/opportunity/), or one phase of it. Some stand on their own, like a cleanup across many integrations.
+史诗（epic）列出了它将交付的内容以及完成的标志。它的任务是在实际开展工作的仓库中的议题（issue），例如 Home Assistant Core、前端或文档，这些任务作为子议题链接到该史诗。大多数史诗会交付路线图中的一个[机会（opportunity）](/glossary/opportunity/)，或其某个阶段。也有一些史诗是独立存在的，例如跨多个集成的清理工作。
 
-Only Open Home Foundation staff, authorized contributors, and members of the home-assistant organization on GitHub create epics. Anyone can read and follow them. See [from idea to release](/roadmap/how-it-works/).
+只有 Open Home Foundation 的员工、获得授权的贡献者以及 GitHub 上 home-assistant 组织的成员才能创建史诗。任何人都可以阅读并关注它们。请参阅[从想法到发布](/roadmap/how-it-works/)。

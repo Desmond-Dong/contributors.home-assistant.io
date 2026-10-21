@@ -1,6 +1,6 @@
 ---
-title: "Config flow"
-description: "The steps in the UI that set up an integration and create a config entry."
+title: "配置流程（config flow）"
+description: "在用户界面中设置集成并创建配置条目的步骤。"
 sidebarGroup: "Core and integrations"
 term:
   aliases:
@@ -20,8 +20,8 @@ term:
     - "config flows"
 ---
 
-A config flow asks the user for what it needs, like a host and a password, checks it, and creates a [config entry](/glossary/config-entry/). It sets a [unique ID](/glossary/unique-id/), so the same device can't be added twice.
+配置流程（config flow）会向用户询问所需的信息，例如主机地址和密码，然后进行检查并创建[配置条目](/glossary/config-entry/)。它会设置一个[唯一 ID](/glossary/unique-id/)，因此同一台设备不会被添加两次。
 
-A config flow can also start by itself, when a device is [discovered](/glossary/discovery/). The user then only confirms.
+当设备被[发现](/glossary/discovery/)时，配置流程也可以自行启动。此时用户只需确认即可。
 
-New integrations that connect to a device or service are set up with a config flow, not with YAML.
+连接到设备或服务的新集成应通过配置流程进行设置，而不是通过 YAML。

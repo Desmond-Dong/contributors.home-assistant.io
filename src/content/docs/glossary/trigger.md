@@ -1,6 +1,6 @@
 ---
-title: "Trigger"
-description: "What starts an automation, like a state change, a time, or an event."
+title: "触发器（Trigger）"
+description: "启动自动化的条件，例如状态变化、时间或事件。"
 sidebarGroup: "Automations and organizing"
 term:
   aliases:
@@ -14,4 +14,4 @@ term:
     - "event"
 ---
 
-Integrations can add their own triggers, like a button press on a remote. Those show up in the automation editor next to the built-in ones.
+集成可以添加自己的触发器（trigger），例如遥控器上的按钮按下。这些触发器会显示在自动化编辑器中，与内置触发器并列。

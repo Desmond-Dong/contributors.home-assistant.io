@@ -1,6 +1,6 @@
 ---
 title: "Lokalise"
-description: "The platform where the community translates Home Assistant: the frontend, the integrations, and the companion apps."
+description: "社区翻译 Home Assistant 的平台：包括前端、集成（integration）和配套应用。"
 sidebarGroup: "Contributing"
 term:
   related:
@@ -9,4 +9,4 @@ term:
     - "Lokalise"
 ---
 
-New English text is uploaded to Lokalise automatically when it is merged. Every build of Home Assistant downloads the latest translations.
+新的英文文本在合并后会自动上传到 Lokalise。Home Assistant 的每次构建都会下载最新的翻译。

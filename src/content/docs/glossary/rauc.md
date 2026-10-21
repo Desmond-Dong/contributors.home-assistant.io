@@ -1,6 +1,6 @@
 ---
 title: "RAUC"
-description: "The update system of Home Assistant OS. It installs a new version of the whole system next to the running one, so a device can go back when an update does not work."
+description: "Home Assistant OS 的更新系统。它将整个系统的新版本安装到正在运行的系统旁边，因此当更新失败时，设备可以回退。"
 sidebarGroup: "Installation and system"
 term:
   aliases:
@@ -16,4 +16,4 @@ term:
     - "RAUC"
 ---
 
-Home Assistant OS has two system slots. [RAUC](https://rauc.io/) writes an update bundle to the slot that is not running, and the device boots into it. If that does not work, it goes back to the slot it came from. The Supervisor starts these updates. See [The update system](/os/operating-system/update-system/).
+Home Assistant OS 有两个系统插槽。[RAUC](https://rauc.io/) 将更新包（update bundle）写入未在运行的插槽，然后设备启动进入该插槽。如果无法正常工作，设备会回退到原来的插槽。Supervisor 会启动这些更新。参见[更新系统](/os/operating-system/update-system/)。

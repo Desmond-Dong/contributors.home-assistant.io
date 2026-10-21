@@ -1,6 +1,6 @@
 ---
-title: "View"
-description: "One page of a dashboard. Its type, like sections, masonry, or panel, decides how its cards are laid out."
+title: "视图（View）"
+description: "仪表盘中的一个页面。其类型（如 sections、masonry 或 panel）决定了卡片的布局方式。"
 sidebarGroup: "Frontend"
 term:
   aliases:
@@ -16,4 +16,4 @@ term:
     - "sections view"
 ---
 
-The sections view is the default for new views: cards go in sections, on a grid. Masonry places cards in columns, and the panel view shows one card over the whole page.
+sections 视图（sections view）是新建视图时的默认类型：卡片按网格放置在分区（section）中。masonry 类型将卡片按列排列，而 panel 类型则让一张卡片占满整个页面。

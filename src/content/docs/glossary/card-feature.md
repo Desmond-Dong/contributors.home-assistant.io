@@ -1,6 +1,6 @@
 ---
-title: "Card feature"
-description: "An extra control at the bottom of a card, like a brightness slider or buttons for a vacuum."
+title: "卡片功能（card feature）"
+description: "卡片底部的额外控件，例如亮度滑块或吸尘器的按钮。"
 sidebarGroup: "Frontend"
 term:
   aliases:
@@ -17,4 +17,4 @@ term:
     - "card features"
 ---
 
-Features make a card do more without opening the [more-info dialog](/glossary/more-info-dialog/). Which features a card can show depends on the entity and its [supported features](/glossary/supported-features/).
+功能（feature）让卡片无需打开[更多信息对话框](/glossary/more-info-dialog/)即可实现更多操作。卡片可以显示哪些功能取决于实体（entity）及其[支持的功能](/glossary/supported-features/)。

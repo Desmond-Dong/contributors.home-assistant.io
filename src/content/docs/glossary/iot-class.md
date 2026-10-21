@@ -1,6 +1,6 @@
 ---
 title: "IoT class"
-description: "How an integration gets its data: locally or from the cloud, and by polling or push. Set in the manifest."
+description: "集成（integration）如何获取数据：本地还是云端，轮询还是推送。在 manifest 中设置。"
 sidebarGroup: "Core and integrations"
 term:
   code:
@@ -13,4 +13,4 @@ term:
     - "IoT classes"
 ---
 
-The IoT class tells users what to expect from an integration before they set it up, like whether it keeps working without internet. The most common ones are `local_push`, `local_polling`, `cloud_push`, and `cloud_polling`.
+IoT class 告诉用户在设置集成（integration）之前可以对它有什么期望，比如它是否能在没有互联网的情况下继续工作。最常见的几种是 `local_push`、`local_polling`、`cloud_push` 和 `cloud_polling`。

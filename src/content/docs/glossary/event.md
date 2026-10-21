@@ -1,6 +1,6 @@
 ---
-title: "Event"
-description: "A message on the event bus that something happened, like a state change or a button press. Any code can listen to events."
+title: "事件（Event）"
+description: "事件总线（event bus）上的一条消息，表示发生了某件事情，例如状态变化或按钮按下。任何代码都可以监听事件。"
 sidebarGroup: "Entities and devices"
 term:
   aliases:
@@ -18,6 +18,6 @@ term:
     - "event bus"
 ---
 
-Home Assistant fires events for many things: a state change, an action being performed, Home Assistant starting. Automations can trigger on them.
+Home Assistant 会为许多事情触发事件：状态变化、执行某个动作、Home Assistant 启动等。自动化（automation）可以在这些事件上触发。
 
-Not to be confused with event entities: entities of the `event` type, which show the last thing that happened on a device, like a button press.
+不要与事件实体（event entity）混淆：事件实体是 `event` 类型的实体，用于显示设备上最近发生的事情，例如按钮按下。

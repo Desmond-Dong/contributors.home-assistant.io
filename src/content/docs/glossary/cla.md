@@ -1,6 +1,6 @@
 ---
 title: "CLA"
-description: "The Contributor License Agreement: your confirmation that you have the right to share your contribution under the license of the project. You sign it once."
+description: "贡献者许可协议（Contributor License Agreement）：确认您有权在项目许可下分享您的贡献。您只需签署一次。"
 sidebarGroup: "Contributing"
 term:
   aliases:
@@ -15,4 +15,4 @@ term:
     - "Contributor License Agreement"
 ---
 
-The code repositories of Home Assistant check every pull request for it. The first time you open one without having signed, a bot comments with a link, and your pull request gets the `cla-needed` label until you sign. See [Licensing and the CLA](/start/licensing/).
+Home Assistant 的代码仓库会检查每个拉取请求（pull request）是否已签署。当您第一次在未签署的情况下打开拉取请求时，机器人会评论并附上一个链接，并且您的拉取请求会被打上 `cla-needed` 标签，直到您完成签署。请参阅 [许可与 CLA](/start/licensing/)。

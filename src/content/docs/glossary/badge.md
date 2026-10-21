@@ -1,6 +1,6 @@
 ---
-title: "Badge"
-description: "A small pill at the top of a view, that shows a state at a glance, like the temperature outside."
+title: "徽章（Badge）"
+description: "视图顶部的一个小胶囊，可一目了然地显示某个状态，例如室外温度。"
 sidebarGroup: "Frontend"
 term:
   aliases:
@@ -13,4 +13,4 @@ term:
     - "card"
 ---
 
-Badges sit above the cards, and can open the more-info dialog of their entity. The `ha-badge` component draws them, and is used for similar pills elsewhere in the UI.
+徽章（badge）位于卡片上方，可以打开其实体（entity）的更多信息对话框。`ha-badge` 组件负责绘制它们，并在 UI 中其他地方用于类似的胶囊。

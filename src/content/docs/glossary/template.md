@@ -1,6 +1,6 @@
 ---
-title: "Template"
-description: "A snippet of Jinja2 that computes a value from states, like the average temperature of a few sensors."
+title: "模板"
+description: "一段 Jinja2 代码片段，根据状态计算出某个值，例如几个传感器的平均温度。"
 sidebarGroup: "Automations and organizing"
 term:
   aliases:
@@ -15,4 +15,4 @@ term:
     - "helper"
 ---
 
-Templates work in many places: automations, scripts, notifications, and template entities. They update when the states they use change.
+模板（template）可以在很多地方使用：自动化、脚本、通知以及模板实体。当它们所使用的状态发生变化时，模板会随之更新。

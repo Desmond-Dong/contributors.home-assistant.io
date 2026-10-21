@@ -1,6 +1,6 @@
 ---
-title: "Release"
-description: "A new version of Home Assistant. One comes out on the first Wednesday of every month, with patch releases in between."
+title: "发布（Release）"
+description: "Home Assistant 的新版本。每月第一个星期三发布一个新版本，期间还会有补丁发布。"
 sidebarGroup: "Contributing"
 term:
   aliases:
@@ -15,4 +15,4 @@ term:
     - "deprecation"
 ---
 
-Versions are the year, the month, and the patch: 2026.10.0 is the first release of October 2026, and 2026.10.1 its first patch release. A [beta](/glossary/beta/) comes out the week before each monthly release, for testing.
+版本号由年份、月份和补丁号组成：2026.10.0 是 2026 年 10 月的第一个发布，2026.10.1 是它的第一个补丁发布。每次月度发布的前一周会发布一个[测试版（beta）](/glossary/beta/)，用于测试。

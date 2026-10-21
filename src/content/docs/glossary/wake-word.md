@@ -1,6 +1,6 @@
 ---
-title: "Wake word"
-description: "The word or phrase that makes a voice assistant start listening, like \"Okay Nabu\"."
+title: "唤醒词"
+description: "让语音助手开始聆听的词语或短语，例如“Okay Nabu”。"
 sidebarGroup: "Voice"
 term:
   aliases:
@@ -18,4 +18,4 @@ term:
     - "wake words"
 ---
 
-Detecting the wake word is the first step of an [Assist pipeline](/glossary/assist-pipeline/). It happens in Home Assistant, with the `wake_word` integration and an engine like openWakeWord, or on the device itself, like with microWakeWord on an ESP32 or an Android phone. Only after the wake word does the rest of the command get processed.
+检测唤醒词是 [Assist 流水线](/glossary/assist-pipeline/)的第一步。它可以在 Home Assistant 中进行，使用 `wake_word` 集成和诸如 openWakeWord 之类的引擎；也可以在设备本身上进行，例如在 ESP32 或 Android 手机上使用 microWakeWord。只有在检测到唤醒词之后，命令的其余部分才会被处理。

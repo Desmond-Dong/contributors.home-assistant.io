@@ -1,6 +1,6 @@
 ---
-title: "Action"
-description: "Something Home Assistant can do, like turning on a light or sending a notification. Automations, scripts, and dashboards perform actions."
+title: "动作（Action）"
+description: "Home Assistant 可以执行的操作，例如打开灯或发送通知。自动化、脚本和仪表盘会执行动作。"
 sidebarGroup: "Automations and organizing"
 term:
   aliases:
@@ -21,6 +21,6 @@ term:
     - "selector"
 ---
 
-Integrations register actions, and describe their fields in `services.yaml`. An action can target entities, devices, areas, floors, or labels.
+集成（integration）会注册动作，并在 `services.yaml` 中描述其字段。动作可以针对实体（entity）、设备（device）、区域（area）、楼层（floor）或标签（label）。
 
-Actions used to be called services, and were renamed in Home Assistant 2024.8. The code still uses the old name: `hass.services`, `services.yaml`, and `ServiceCall`. In text, always say action, and "perform an action", not "call a service".
+动作以前被称为服务（service），并在 Home Assistant 2024.8 中更名。代码中仍然使用旧名称：`hass.services`、`services.yaml` 和 `ServiceCall`。在文字中，请始终使用“动作”和“执行动作”，而不是“调用服务”。

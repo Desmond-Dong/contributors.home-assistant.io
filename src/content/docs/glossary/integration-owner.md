@@ -1,6 +1,6 @@
 ---
-title: "Integration owner"
-description: "A person or team responsible for an integration, listed in its manifest, who gets notified about its issues and asked to review its pull requests."
+title: "集成所有者"
+description: "负责某个集成（integration）的个人或团队，列在该集成的清单（manifest）中，会收到其相关问题的通知，并被请求审查其拉取请求（pull request）。"
 sidebarGroup: "Core and integrations"
 term:
   aliases:
@@ -20,6 +20,6 @@ term:
     - "integration owners"
 ---
 
-Integration owners are listed with their GitHub handles in the `codeowners` field of the manifest of an integration. Hassfest generates the `CODEOWNERS` file of Home Assistant Core from those lists, which GitHub uses to ask them for reviews. When an issue gets the label of their integration, the bot mentions them.
+集成所有者（integration owner）以 GitHub 用户名的形式列在集成清单（manifest）的 `codeowners` 字段中。Hassfest 会根据这些列表生成 Home Assistant Core 的 `CODEOWNERS` 文件，GitHub 使用该文件来请求他们进行审查。当某个问题（issue）被加上其集成对应的标签时，机器人会提及（mention）他们。
 
-The code calls them code owners: the `codeowners` field, the `CODEOWNERS` file, and labels like `by-code-owner`. In text about integrations, say integration owner. "Code owner" still fits a `CODEOWNERS` file of a repository that is not about integrations, like the teams that own parts of the frontend.
+代码中称他们为 code owners：例如 `codeowners` 字段、`CODEOWNERS` 文件，以及像 `by-code-owner` 这样的标签。在关于集成的文字中，请使用“集成所有者”。“代码所有者（code owner）”这一说法仍适用于与集成无关的仓库的 `CODEOWNERS` 文件，例如负责前端部分代码的团队。

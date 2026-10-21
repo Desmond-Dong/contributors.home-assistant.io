@@ -1,6 +1,6 @@
 ---
 title: "Hassfest"
-description: "The tool in Home Assistant Core that validates the files of every integration, like its manifest and translations, and generates files from them."
+description: "Home Assistant Core 中用于验证每个集成的文件（如清单和翻译）并从中生成文件的工具。"
 sidebarGroup: "Core and integrations"
 term:
   code:
@@ -15,6 +15,6 @@ term:
     - "hassfest"
 ---
 
-Hassfest checks that the files around the code of an integration, like `manifest.json`, `strings.json`, `services.yaml`, and `quality_scale.yaml`, are complete and consistent. It also generates files from them, like `CODEOWNERS` and the lists in `homeassistant/generated/`.
+Hassfest 会检查集成代码周围的文件（如 `manifest.json`、`strings.json`、`services.yaml` 和 `quality_scale.yaml`）是否完整且一致。它还会从这些文件生成其他文件，例如 `CODEOWNERS` 以及 `homeassistant/generated/` 中的列表。
 
-It runs in [CI](/glossary/ci/) on every pull request to Home Assistant Core, and you can run it yourself with `python -m script.hassfest`. Custom integrations can use it too, with the hassfest action from the home-assistant/actions repository. See [Linters, hassfest, and CI](/core/development/checks/).
+它在每次针对 Home Assistant Core 的拉取请求（pull request）的 [CI](/glossary/ci/) 中运行，你也可以使用 `python -m script.hassfest` 自行运行。自定义集成同样可以使用它，即来自 home-assistant/actions 仓库的 hassfest action。参见 [Linters, hassfest, and CI](/core/development/checks/)。

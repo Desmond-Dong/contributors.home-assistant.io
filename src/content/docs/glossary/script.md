@@ -1,6 +1,6 @@
 ---
-title: "Script"
-description: "A named sequence of actions that can run from an automation, a dashboard, or by voice."
+title: "脚本"
+description: "一组命名的动作序列，可以从自动化、仪表盘或通过语音运行。"
 sidebarGroup: "Automations and organizing"
 term:
   aliases:
@@ -15,4 +15,4 @@ term:
     - "scene"
 ---
 
-A script is reusable: one script can be used by many automations. It can take fields, like the room to clean, and has its own entity.
+脚本是可复用的：一个脚本可以被多个自动化（automation）使用。它可以接受字段，例如要清扫的房间，并且拥有自己的实体（entity）。

@@ -1,6 +1,6 @@
 ---
 title: "Assist"
-description: "Home Assistant's voice assistant. It turns what you say or type into actions."
+description: "Home Assistant 的语音助手。它将您说的话或输入的内容转化为操作。"
 sidebarGroup: "Voice"
 term:
   code:
@@ -14,4 +14,4 @@ term:
     - "Assist"
 ---
 
-Assist works in the app, on voice satellites like Home Assistant Voice Preview Edition, and on other devices. It runs locally, or with cloud services and AI where the user chooses to.
+Assist 可在应用程序中、在 Home Assistant Voice Preview Edition 等语音卫星设备上以及其他设备上使用。它在本地运行，或者在用户选择的情况下使用云服务和 AI。

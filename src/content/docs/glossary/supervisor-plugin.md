@@ -1,6 +1,6 @@
 ---
-title: "Supervisor plugin"
-description: "A container the Supervisor runs for the system itself, like DNS or audio, that Home Assistant Core and apps share."
+title: "Supervisor 插件"
+description: "Supervisor 为系统自身运行的容器，例如 DNS 或音频，由 Home Assistant Core 和应用共享。"
 sidebarGroup: "Installation and system"
 term:
   aliases:
@@ -18,4 +18,4 @@ term:
     - "Supervisor plugins"
 ---
 
-There are five: DNS, audio, the command line (CLI), multicast, and the observer. Each has its own repository, like home-assistant/plugin-dns. Users don't install or remove them, and the Supervisor keeps them updated. See [Plugins](/os/supervisor/plugins/).
+共有五个：DNS、音频、命令行（CLI）、多播（multicast）和观察者（observer）。每个插件都有自己的仓库，例如 home-assistant/plugin-dns。用户不会安装或移除它们，Supervisor 会保持它们更新。参见 [Plugins](/os/supervisor/plugins/)。

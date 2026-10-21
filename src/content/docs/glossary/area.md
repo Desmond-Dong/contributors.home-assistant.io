@@ -1,6 +1,6 @@
 ---
-title: "Area"
-description: "A room or space in the home, like the kitchen, that devices and entities belong to."
+title: "区域"
+description: "家中一个房间或空间，例如厨房，设备和实体归属于其中。"
 sidebarGroup: "Automations and organizing"
 term:
   aliases:
@@ -16,4 +16,4 @@ term:
     - "target"
 ---
 
-Users put devices in an area, and their entities follow, unless they put an entity somewhere else. Areas can belong to a [floor](/glossary/floor/), and actions can target a whole area at once.
+用户将设备放入一个区域（area），设备的实体（entity）会随之归入，除非用户将某个实体单独放到其他位置。区域可以属于一个[楼层](/glossary/floor/)（floor），并且操作可以一次以整个区域为目标。

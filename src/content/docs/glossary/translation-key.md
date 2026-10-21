@@ -1,6 +1,6 @@
 ---
-title: "Translation key"
-description: "The key that points to a text in an integration's `strings.json`, so the text can be translated. Integrations use keys, not English text in the code."
+title: "翻译键（translation key）"
+description: "指向集成（integration）的 `strings.json` 中某段文本的键，以便该文本可以被翻译。集成使用键，而不是代码中的英文文本。"
 sidebarGroup: "Core and integrations"
 term:
   aliases:
@@ -18,4 +18,4 @@ term:
     - "translation keys"
 ---
 
-Entity names, states, config flow steps, errors, and exceptions all come from `strings.json`. The English text in it is uploaded to [Lokalise](/glossary/lokalise/), where the community translates it.
+实体（entity）名称、状态、配置流程步骤、错误和异常都来自 `strings.json`。其中的英文文本会被上传到 [Lokalise](/glossary/lokalise/)，由社区进行翻译。

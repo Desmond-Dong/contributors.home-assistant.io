@@ -1,6 +1,6 @@
 ---
-title: "Installation type"
-description: "How Home Assistant is installed: Home Assistant OS, or Home Assistant Container. They differ in what is managed for you."
+title: "安装类型"
+description: "Home Assistant 的安装方式：Home Assistant OS 或 Home Assistant Container。它们的区别在于哪些内容由系统代为管理。"
 sidebarGroup: "Installation and system"
 term:
   aliases:
@@ -17,6 +17,6 @@ term:
     - "Home Assistant Container"
 ---
 
-Home Assistant OS comes with the Supervisor, apps, and backups. Home Assistant Container runs Core in a container that the user manages themselves.
+Home Assistant OS 自带 Supervisor、应用和备份。Home Assistant Container 则在用户自行管理的容器中运行 Core。
 
-Home Assistant Core and Home Assistant Supervised installations, where users installed the pieces themselves, are no longer supported since Home Assistant 2025.12.
+Home Assistant Core 和 Home Assistant Supervised 安装方式（即用户自行安装各个组件）自 Home Assistant 2025.12 起不再受支持。

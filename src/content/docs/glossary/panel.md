@@ -1,6 +1,6 @@
 ---
-title: "Panel"
-description: "A page of its own in Home Assistant, usually in the sidebar, like a dashboard, the map, or the settings."
+title: "面板（Panel）"
+description: "Home Assistant 中一个独立的页面，通常显示在侧边栏中，例如仪表盘、地图或设置。"
 sidebarGroup: "Frontend"
 term:
   aliases:
@@ -13,4 +13,4 @@ term:
     - "frontend"
 ---
 
-Integrations can register panels, like the energy dashboard or the logbook. Apps can add panels too.
+集成（integration）可以注册面板，例如能源仪表盘或日志簿（logbook）。应用程序也可以添加面板。

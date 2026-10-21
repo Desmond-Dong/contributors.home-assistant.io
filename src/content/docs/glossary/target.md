@@ -1,6 +1,6 @@
 ---
-title: "Target"
-description: "What an action works on: entities, devices, areas, floors, or labels."
+title: "目标"
+description: "操作所作用的对象：实体、设备、区域、楼层或标签。"
 sidebarGroup: "Automations and organizing"
 term:
   aliases:
@@ -18,4 +18,4 @@ term:
     - "label"
 ---
 
-A target is resolved when the action runs. Targeting an area means all matching entities in it at that moment, so newly added devices are included.
+目标（target）在操作运行时被解析。以区域（area）为目标意味着该区域中当时所有匹配的实体（entity），因此新添加的设备也会被包含在内。

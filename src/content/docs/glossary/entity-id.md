@@ -1,6 +1,6 @@
 ---
-title: "Entity ID"
-description: "The ID of an entity: its domain and an object ID, like `light.kitchen`."
+title: "实体 ID（Entity ID）"
+description: "实体的 ID：由域（domain）和对象 ID 组成，例如 `light.kitchen`。"
 sidebarGroup: "Entities and devices"
 term:
   aliases:
@@ -17,4 +17,4 @@ term:
     - "entity IDs"
 ---
 
-Users see and type entity IDs in automations, templates, and YAML, and they can change them. Code should never depend on an entity ID. To recognize an entity, use its [unique ID](/glossary/unique-id/).
+用户会在自动化、模板和 YAML 中看到并输入实体 ID（entity ID），而且他们可以修改它们。代码绝不应依赖于实体 ID。要识别一个实体，请使用其[唯一 ID（unique ID）](/glossary/unique-id/)。

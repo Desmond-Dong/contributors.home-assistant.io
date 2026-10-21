@@ -1,6 +1,6 @@
 ---
-title: "Person"
-description: "Someone in the household, with the device trackers that tell where they are, and optionally a user account to log in with."
+title: "人员"
+description: "家庭中的某个人，包含用于确定其所在位置的设备跟踪器（device tracker），以及可选的用于登录的用户账户。"
 sidebarGroup: "Automations and organizing"
 term:
   aliases:
@@ -14,4 +14,4 @@ term:
     - "companion-app"
 ---
 
-The state of a person is the zone they are in, worked out from all their device trackers, like their phone and their car.
+人员（person）的状态是其所在的地理位置区域（zone），该状态由其所有的设备跟踪器（device tracker）综合计算得出，例如他们的手机和汽车。

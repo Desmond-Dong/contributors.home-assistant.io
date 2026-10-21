@@ -1,6 +1,6 @@
 ---
-title: "Diagnostics"
-description: "A download with the data and state of a config entry or device, that users attach to an issue to help debug it."
+title: "诊断"
+description: "包含配置条目或设备的数据和状态的下载文件，用户将其附加到 issue 中以帮助调试。"
 sidebarGroup: "Core and integrations"
 term:
   code:
@@ -13,4 +13,4 @@ term:
     - "repair"
 ---
 
-Integrations provide diagnostics with a `diagnostics.py` platform. Passwords, tokens, locations, and other private data must be removed from it, with `async_redact_data`.
+集成通过 `diagnostics.py` 平台提供诊断信息。密码、令牌、位置和其他隐私数据必须使用 `async_redact_data` 从中移除。

@@ -1,6 +1,6 @@
 ---
-title: "More-info dialog"
-description: "The dialog that opens when you select an entity, with its controls, its history, and its settings."
+title: "更多信息对话框"
+description: "当你选择一个实体（entity）时打开的对话框，包含其控件、历史记录和设置。"
 sidebarGroup: "Frontend"
 term:
   aliases:
@@ -17,4 +17,4 @@ term:
     - "more-info"
 ---
 
-Every entity type has its own controls in it: a brightness slider for a light, a thermostat for climate. The more-info dialog is where users go when a card is not enough.
+每种实体类型在其中都有自己的控件：灯的亮度滑块、气候设备的恒温器。当卡片不够用时，用户就会转到更多信息对话框。

@@ -1,6 +1,6 @@
 ---
 title: "Home Assistant Labs"
-description: "Where users can turn on preview features: new features that work, but whose design can still change based on feedback."
+description: "用户可以在此开启预览功能：这些新功能可以使用，但其设计仍可能根据反馈进行调整。"
 sidebarGroup: "Core and integrations"
 term:
   aliases:
@@ -19,6 +19,6 @@ term:
     - "Home Assistant Labs"
 ---
 
-Integrations declare their preview features under `preview_features` in their manifest. Users find them under **Settings** > **System** > **Labs**, where every preview feature is off until they turn it on.
+集成在其 manifest 中的 `preview_features` 下声明预览功能。用户可以在 **设置** > **系统** > **Labs** 中找到它们，每个预览功能在用户开启之前都处于关闭状态。
 
-Labs is not the same as a [beta](/glossary/beta/). A beta tests the stability of the next release. A preview feature is already stable, and Labs is where its direction is shaped. See [Labs preview features](/core/development/labs/).
+Labs 与 [beta](/glossary/beta/) 不同。beta 测试的是下一个版本发布的稳定性，而预览功能本身已经是稳定的，Labs 则是塑造其发展方向的地方。参见 [Labs 预览功能](/core/development/labs/)。

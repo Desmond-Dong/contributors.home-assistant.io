@@ -1,6 +1,6 @@
 ---
 title: "Home Assistant Link"
-description: "The optional subscription service from Nabu Casa for remote access, Amazon Alexa and Google Assistant, online speech processing, and online backups."
+description: "Nabu Casa 提供的可选订阅服务，用于远程访问、Amazon Alexa 和 Google Assistant、在线语音处理以及在线备份。"
 sidebarGroup: "Community"
 term:
   code:
@@ -14,6 +14,6 @@ term:
     - "Home Assistant Link"
 ---
 
-[Nabu Casa](/glossary/nabu-casa/) runs Home Assistant Link, and the majority of the profits from subscriptions fund the [Open Home Foundation](/glossary/open-home-foundation/). Home Assistant works without it: Link adds extras, like reaching your home from anywhere, connecting Alexa and Google Assistant without setting that up yourself, faster speech-to-text for Assist, and a place to store a backup online.
+[Nabu Casa](/glossary/nabu-casa/) 运营着 Home Assistant Link，订阅收入的大部分利润用于资助 [Open Home Foundation](/glossary/open-home-foundation/)。Home Assistant 没有它也能正常工作：Link 提供了一些额外功能，比如从任何地方访问你的家、无需自行配置即可连接 Alexa 和 Google Assistant、为 Assist 提供更快的语音转文字（speech-to-text）服务，以及在线存储备份的地方。
 
-It was called Home Assistant Cloud until October 2026. In Core, the `cloud` integration connects to it, and the UI and the integration still use the old name in places. In text, say Home Assistant Link.
+它在 2026 年 10 月之前一直被称为 Home Assistant Cloud。在 Core 中，`cloud` 集成（integration）负责连接到它，并且 UI 和该集成在某些地方仍使用旧名称。在文字中，请使用 Home Assistant Link。

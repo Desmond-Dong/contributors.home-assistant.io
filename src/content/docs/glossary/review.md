@@ -1,6 +1,6 @@
 ---
-title: "Review"
-description: "Reading and testing a pull request before it is merged, by maintainers, integration owners, or anyone else who wants to help."
+title: "审查（Review）"
+description: "在合并拉取请求（pull request）之前，由维护者、集成所有者或其他任何愿意帮忙的人阅读并测试它。"
 sidebarGroup: "Contributing"
 term:
   aliases:
@@ -13,4 +13,4 @@ term:
     - "code review"
 ---
 
-Anyone can review a pull request, and reviews from the community help a lot. Only maintainers can merge it.
+任何人都可以审查拉取请求，来自社区的审查帮助很大。但只有维护者才能合并它。

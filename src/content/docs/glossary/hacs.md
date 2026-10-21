@@ -1,6 +1,6 @@
 ---
 title: "HACS"
-description: "The Home Assistant Community Store: the custom integration that installed community-made integrations, cards, and themes, until the Marketplace replaced it in 2026.11. Its catalog and tools live on."
+description: "Home Assistant 社区商店（Home Assistant Community Store）：在 2026.11 中 Marketplace 取代它之前，用于安装社区制作的集成、卡片和主题的自定义集成。它的目录和工具仍在使用。"
 sidebarGroup: "Installation and system"
 term:
   aliases:
@@ -16,6 +16,6 @@ term:
     - "HACS"
 ---
 
-For years, users installed HACS as a [custom integration](/glossary/custom-integration/) to find and update community work. Starting with Home Assistant 2026.11, it is built in as the [Marketplace](/glossary/marketplace/), and Home Assistant blocks the old custom integration.
+多年来，用户将 HACS 作为[自定义集成](/glossary/custom-integration/)（custom integration）安装，以查找和更新社区作品。从 Home Assistant 2026.11 开始，它已作为 [Marketplace](/glossary/marketplace/) 内置，并且 Home Assistant 会阻止旧的自定义集成。
 
-The name lives on in what publishers use: the catalog in the [hacs/default](https://github.com/hacs/default) repository, the `hacs.json` file in every repository, and the [HACS action](https://github.com/hacs/action) that validates a repository. The Marketplace uses all three.
+这个名称在发布者使用的工具中得以延续：[hacs/default](https://github.com/hacs/default) 仓库中的目录、每个仓库中的 `hacs.json` 文件，以及用于验证仓库的 [HACS action](https://github.com/hacs/action)。Marketplace 使用了这三者。

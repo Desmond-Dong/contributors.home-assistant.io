@@ -1,6 +1,6 @@
 ---
-title: "Pull request"
-description: "A request on GitHub to merge a change into a repository, where it is reviewed before it goes in."
+title: "拉取请求（Pull request）"
+description: "在 GitHub 上将更改合并到代码仓库的请求，合并前会先进行审查。"
 sidebarGroup: "Contributing"
 term:
   aliases:
@@ -17,6 +17,6 @@ term:
     - "pull requests"
 ---
 
-A pull request starts from a branch with your change. Automated checks run on it, and maintainers or integration owners review it. A draft pull request is not ready for review yet.
+拉取请求（pull request）从包含你更改的分支开始。自动检查会在其上运行，维护者或集成（integration）负责人会对其进行审查。草稿拉取请求（draft pull request）尚未准备好接受审查。
 
-Keep a pull request small and about one thing. Small changes are reviewed and merged much faster.
+保持拉取请求小而专注于一件事。小的更改会被更快地审查和合并。

@@ -1,6 +1,6 @@
 ---
 title: "CI"
-description: "Continuous integration: the automated checks, like tests, linters, and type checks, that run on every pull request."
+description: "持续集成（continuous integration）：在每次拉取请求（pull request）上运行的自动化检查，例如测试、代码风格检查和类型检查。"
 sidebarGroup: "Contributing"
 term:
   aliases:
@@ -15,4 +15,4 @@ term:
     - "continuous integration"
 ---
 
-A pull request can only be merged when its checks pass. Most checks also run on your own computer, so you can fix problems before you push.
+拉取请求（pull request）只有在所有检查通过后才能被合并。大多数检查也可以在你自己的电脑上运行，因此你可以在推送之前先修复问题。

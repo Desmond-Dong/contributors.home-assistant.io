@@ -1,6 +1,6 @@
 ---
-title: "State machine"
-description: "The part of Home Assistant Core that holds the current state of every entity."
+title: "状态机（state machine）"
+description: "Home Assistant Core 中保存每个实体（entity）当前状态的部分。"
 sidebarGroup: "Entities and devices"
 term:
   code:
@@ -14,4 +14,4 @@ term:
     - "state machine"
 ---
 
-Integrations write states to it, and everything else reads from it: automations, templates, dashboards. Writing goes through the entity, not straight to the state machine.
+集成将状态写入其中，而其他一切都从其中读取：自动化、模板、仪表盘。写入通过实体进行，而不是直接写入状态机。

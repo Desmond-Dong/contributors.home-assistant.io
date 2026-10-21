@@ -1,6 +1,6 @@
 ---
-title: "Entity"
-description: "One thing Home Assistant can show, measure, or control, like a light, a temperature sensor, or a switch. Every entity has a state."
+title: "实体（Entity）"
+description: "Home Assistant 可以显示、测量或控制的一个事物，例如灯、温度传感器或开关。每个实体都有一个状态。"
 sidebarGroup: "Entities and devices"
 term:
   aliases:
@@ -19,6 +19,6 @@ term:
     - "entities"
 ---
 
-Entities are what users see and use: on dashboards, in automations, and by voice. An integration creates them, usually several per [device](/glossary/device/).
+实体（entity）是用户看到并使用的东西：在仪表盘上、在自动化中，以及通过语音使用。集成（integration）会创建它们，通常每个[设备](/glossary/device/)会有多个实体。
 
-Each entity has a type, like `light` or `sensor`, which decides what it can do and how it looks. Its [state](/glossary/state/) is its current value, like `on` or `21.5`.
+每个实体都有一个类型，例如 `light` 或 `sensor`，类型决定了它能做什么以及外观如何。它的[状态](/glossary/state/)是它当前的值，例如 `on` 或 `21.5`。

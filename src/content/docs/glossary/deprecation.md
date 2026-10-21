@@ -1,6 +1,6 @@
 ---
-title: "Deprecation"
-description: "Announcing that something will be removed in a later release, while it keeps working until then, so people can move on."
+title: "弃用（Deprecation）"
+description: "宣布某项内容将在后续版本中移除，在此之前它仍可正常工作，以便人们有时间进行迁移。"
 sidebarGroup: "Contributing"
 term:
   aliases:
@@ -15,4 +15,4 @@ term:
     - "deprecations"
 ---
 
-A deprecation names the release that removes the old way. Users see deprecations in their configuration as [repair issues](/glossary/repair/). Developers find deprecations of Python APIs on the blog, and as warnings in their logs.
+弃用（deprecation）会指明移除旧方式的版本。用户会在其配置中看到以[修复问题](/glossary/repair/)形式呈现的弃用提示。开发者可以在博客上找到 Python API 的弃用信息，并在日志中看到相关警告。

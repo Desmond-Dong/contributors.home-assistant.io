@@ -1,6 +1,6 @@
 ---
-title: "The hass object"
-description: "The `HomeAssistant` instance that integrations get, with access to the state machine, the event bus, actions, and the configuration."
+title: "hass 对象"
+description: "集成所获取的 `HomeAssistant` 实例，可访问状态机、事件总线、服务和配置。"
 sidebarGroup: "Core and integrations"
 term:
   aliases:
@@ -17,6 +17,6 @@ term:
     - "hass object"
 ---
 
-Almost every function in Home Assistant Core takes `hass` as its first argument. It is how code reaches everything else: `hass.states`, `hass.bus`, `hass.services`, and `hass.config`.
+在 Home Assistant Core 中，几乎每个函数都将 `hass` 作为其第一个参数。它是代码访问其他一切内容的途径：`hass.states`、`hass.bus`、`hass.services` 和 `hass.config`。
 
-`hass` is a name in code. In text, write Home Assistant.
+`hass` 是代码中的名称。在文字中，请写作 Home Assistant。

@@ -1,6 +1,6 @@
 ---
-title: "Card"
-description: "A block on a dashboard that shows or controls something, like an entity, a graph, or a weather forecast."
+title: "卡片（Card）"
+description: "仪表盘上的一个区块，用于显示或控制某些内容，例如实体（entity）、图表或天气预报。"
 sidebarGroup: "Frontend"
 term:
   aliases:
@@ -15,4 +15,4 @@ term:
     - "custom-card"
 ---
 
-Each card has a type, like `tile` or `entities`, and a configuration. The tile card is the default for most entities.
+每张卡片都有一个类型，例如 `tile` 或 `entities`，以及一个配置。对于大多数实体（entity）来说，tile 卡片是默认选择。

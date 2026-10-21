@@ -1,6 +1,6 @@
 ---
-title: "Reauthentication"
-description: "A flow that asks the user for new credentials when a config entry can no longer log in, without setting it up again."
+title: "重新认证（Reauthentication）"
+description: "当配置项（config entry）无法再登录时，要求用户提供新凭据的流程，无需重新设置。"
 sidebarGroup: "Core and integrations"
 term:
   aliases:
@@ -16,4 +16,4 @@ term:
     - "reauth"
 ---
 
-When a password changes or a token expires, the integration raises `ConfigEntryAuthFailed`. Home Assistant then asks the user to log in again, and keeps everything else of the config entry as it is.
+当密码更改或令牌过期时，集成（integration）会抛出 `ConfigEntryAuthFailed`。随后 Home Assistant 会要求用户重新登录，并保持配置项（config entry）的其他所有内容不变。

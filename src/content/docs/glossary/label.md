@@ -1,6 +1,6 @@
 ---
-title: "Label"
-description: "A tag users put on entities, devices, areas, automations, and more, to group them their own way, like everything that uses a lot of energy."
+title: "标签"
+description: "用户放在实体（entity）、设备（device）、区域（area）、自动化（automation）等对象上的标记，用于按自己的方式对它们进行分组，例如所有耗电量大的设备。"
 sidebarGroup: "Automations and organizing"
 term:
   aliases:
@@ -14,4 +14,4 @@ term:
     - "target"
 ---
 
-Labels cross areas and floors. Actions can target a label, and lists in the settings can be filtered by them.
+标签可以跨越区域（area）和楼层（floor）。操作可以以标签为目标，设置中的列表也可以按标签进行筛选。

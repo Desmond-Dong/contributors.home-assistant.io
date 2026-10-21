@@ -1,6 +1,6 @@
 ---
-title: "Repair"
-description: "A problem Home Assistant shows users under Repairs, with what to do about it, like configuration that will stop working."
+title: "修复（Repair）"
+description: "Home Assistant 在“修复”（Repairs）中向用户显示的问题，以及相应的处理方法，例如即将失效的配置。"
 sidebarGroup: "Core and integrations"
 term:
   aliases:
@@ -20,6 +20,6 @@ term:
     - "repair issues"
 ---
 
-Integrations create repair issues in the issue registry, with a translated explanation. Some come with a flow that fixes the problem for the user.
+集成会在问题注册表（issue registry）中创建修复问题（repair issue），并附带翻译后的说明。有些修复问题还带有为用户自动解决问题的流程。
 
-Not to be confused with issues on GitHub.
+请勿与 GitHub 上的 issue 混淆。

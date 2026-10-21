@@ -1,6 +1,6 @@
 ---
 title: "WebSocket API"
-description: "The API of Home Assistant Core that the frontend and the companion apps use, over one open connection, to read states, perform actions, and get updates as they happen."
+description: "Home Assistant Core 的 API，前端和伴侣应用（companion apps）通过一个保持打开的连接使用它来读取状态、执行操作，并在事件发生时获取更新。"
 sidebarGroup: "Core and integrations"
 term:
   code:
@@ -15,6 +15,6 @@ term:
     - "WebSocket API"
 ---
 
-A client connects to `/api/websocket`, logs in with an access token, and then sends commands as JSON messages. Integrations can add their own commands with the `websocket_api` integration. The frontend talks to it through the home-assistant-js-websocket library.
+客户端连接到 `/api/websocket`，使用访问令牌（access token）登录，然后以 JSON 消息的形式发送命令。集成（integration）可以通过 `websocket_api` 集成添加自己的命令。前端通过 home-assistant-js-websocket 库与它通信。
 
-See [the WebSocket API](/core/internals/websocket-api/) for the messages and how to add a command.
+有关消息以及如何添加命令，请参阅 [WebSocket API](/core/internals/websocket-api/)。

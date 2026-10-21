@@ -1,6 +1,6 @@
 ---
 title: "Bashio"
-description: "A library of Bash functions for apps, with helpers for reading the app's options, logging, and talking to the Supervisor API."
+description: "一个面向应用的 Bash 函数库，提供读取应用选项、日志记录以及与 Supervisor API 通信的辅助功能。"
 sidebarGroup: "Installation and system"
 term:
   code:
@@ -14,4 +14,4 @@ term:
     - "Bashio"
 ---
 
-Bashio bundles what most apps need, so they don't each write it again, like `bashio::config` to read an option. It is part of the official Home Assistant base images and the Home Assistant Community Apps base images, and lives in the [hassio-addons/bashio](https://github.com/hassio-addons/bashio) repository. See the [Bashio reference](/apps/bashio/).
+Bashio 打包了大多数应用所需的功能，避免每个应用都重复编写，例如用 `bashio::config` 读取选项。它是官方 Home Assistant 基础镜像和 Home Assistant Community Apps 基础镜像的一部分，代码位于 [hassio-addons/bashio](https://github.com/hassio-addons/bashio) 仓库中。参见 [Bashio 参考](/apps/bashio/)。

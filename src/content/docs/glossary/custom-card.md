@@ -1,6 +1,6 @@
 ---
-title: "Custom card"
-description: "A card that is not part of the frontend, loaded by the user from a JavaScript file."
+title: "自定义卡片（Custom card）"
+description: "不属于前端、由用户从 JavaScript 文件加载的卡片。"
 sidebarGroup: "Frontend"
 term:
   aliases:
@@ -16,4 +16,4 @@ term:
     - "custom cards"
 ---
 
-Custom cards are web components, used with the `custom:` prefix in a card's type. They can use everything the frontend passes to a card, like the `hass` object.
+自定义卡片（custom cards）是 Web 组件，在卡片的类型中使用 `custom:` 前缀。它们可以使用前端传递给卡片的所有内容，例如 `hass` 对象。

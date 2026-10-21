@@ -1,6 +1,6 @@
 ---
-title: "Device class"
-description: "What an entity measures or is, like `temperature` or `door`. It sets the icon, the units, and how the frontend shows the entity."
+title: "设备类别"
+description: "实体（entity）测量什么或是什么，例如 `temperature` 或 `door`。它决定了图标、单位，以及前端如何显示该实体。"
 sidebarGroup: "Entities and devices"
 term:
   aliases:
@@ -17,4 +17,4 @@ term:
     - "device classes"
 ---
 
-A binary sensor with the `door` device class shows as open and closed instead of on and off. A sensor with the `temperature` device class gets the right icon and converts to the unit the user picked.
+具有 `door` 设备类别（device class）的二进制传感器（binary sensor）会显示为“打开”和“关闭”，而不是“开”和“关”。具有 `temperature` 设备类别的传感器会获得正确的图标，并转换为用户选择的单位。
