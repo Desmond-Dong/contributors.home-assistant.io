@@ -1,47 +1,47 @@
 ---
 title: Supervisor
-description: What the Supervisor does, what it runs, and how it relates to apps and the Supervisor API.
+description: Supervisor 的作用、它运行的内容，以及它与应用和 Supervisor API 的关系。
 order: 4
 sidebarGroups:
   - How it works
   - Guides
 ---
 
-The [Supervisor](/glossary/supervisor/) is what lets users manage their whole system from Home Assistant. It is a Python program, in the [home-assistant/supervisor](https://github.com/home-assistant/supervisor) repository, that runs as a container on Home Assistant OS. Its jobs:
+[Supervisor](/glossary/supervisor/) 让用户能够从 Home Assistant 管理整个系统。它是一个 Python 程序，位于 [home-assistant/supervisor](https://github.com/home-assistant/supervisor) 仓库中，以容器的形式运行在 Home Assistant OS 上。它的职责包括：
 
-- Run Home Assistant Core, and update it. When an update fails to start, it rolls back.
-- Install, run, and update [apps](/glossary/app/).
-- Make and restore backups.
-- Update Home Assistant OS, and itself.
-- Run the plugins that provide DNS, audio, multicast, the command line, and a status page.
-- Manage the host: network, hostname, disks, and time, through D-Bus and the OS Agent.
-- Check the system for problems, and offer fixes.
+- 运行 Home Assistant Core 并对其进行更新。当更新启动失败时，它会进行回滚。
+- 安装、运行和更新[应用（app）](/glossary/app/)。
+- 创建和恢复备份。
+- 更新 Home Assistant OS 以及它自身。
+- 运行提供 DNS、音频、多播、命令行和状态页面的插件。
+- 通过 D-Bus 和 OS Agent 管理主机：网络、主机名、磁盘和时间。
+- 检查系统问题并提供修复方案。
 
-## What the Supervisor runs
+## Supervisor 运行的内容
 
-Everything the Supervisor runs is a Docker container. Most of them are on a private bridge network called `hassio`, `172.30.32.0/23`. Core and the multicast plugin use the host network instead, and so do apps that ask for it:
+Supervisor 运行的一切都是 Docker 容器。它们大多位于一个名为 `hassio` 的私有桥接网络 `172.30.32.0/23` 上。Core 和多播插件使用主机网络，请求使用主机网络的应用也是如此：
 
-| Container | What it is | Address |
+| 容器 | 是什么 | 地址 |
 | --- | --- | --- |
-| `hassio_supervisor` | The Supervisor | `172.30.32.2` |
-| `homeassistant` | Home Assistant Core | Host network |
-| `hassio_dns` | [DNS plugin](/os/supervisor/plugins/#dns) | `172.30.32.3` |
-| `hassio_audio` | [Audio plugin](/os/supervisor/plugins/#audio) | `172.30.32.4` |
-| `hassio_cli` | [CLI plugin](/os/supervisor/plugins/#cli) | `172.30.32.5` |
-| `hassio_observer` | [Observer plugin](/os/supervisor/plugins/#observer) | `172.30.32.6` |
-| `hassio_multicast` | [Multicast plugin](/os/supervisor/plugins/#multicast) | Host network |
-| `app_<slug>` | An app | From `172.30.33.0/24`, or the host network |
+| `hassio_supervisor` | Supervisor | `172.30.32.2` |
+| `homeassistant` | Home Assistant Core | 主机网络 |
+| `hassio_dns` | [DNS 插件](/os/supervisor/plugins/#dns) | `172.30.32.3` |
+| `hassio_audio` | [音频插件](/os/supervisor/plugins/#audio) | `172.30.32.4` |
+| `hassio_cli` | [CLI 插件](/os/supervisor/plugins/#cli) | `172.30.32.5` |
+| `hassio_observer` | [Observer 插件](/os/supervisor/plugins/#observer) | `172.30.32.6` |
+| `hassio_multicast` | [多播插件](/os/supervisor/plugins/#multicast) | 主机网络 |
+| `app_<slug>` | 一个应用 | 来自 `172.30.33.0/24`，或主机网络 |
 
-The Supervisor container itself is started by `haos-supervisor.service` on the host, see [Home Assistant OS](/os/operating-system/#how-it-boots). Everything else is started by the Supervisor.
+Supervisor 容器本身由主机上的 `haos-supervisor.service` 启动，参见 [Home Assistant OS](/os/operating-system/#how-it-boots)。其余一切都由 Supervisor 启动。
 
-## Apps and the Supervisor API
+## 应用与 Supervisor API
 
-The Supervisor has a REST API at `http://supervisor`, on the `hassio` network. Home Assistant Core uses it through the `hassio` integration, the `ha` command line uses it through the CLI plugin, and apps use it when they ask for access in their configuration. Each caller gets its own token, and a role that limits what it may do.
+Supervisor 在 `hassio` 网络上的 `http://supervisor` 提供一个 REST API。Home Assistant Core 通过 `hassio` 集成（integration）使用它，`ha` 命令行通过 CLI 插件使用它，应用则在其配置中请求访问权限时使用它。每个调用者都会获得自己的令牌，以及一个限制其可执行操作的角色。
 
-Apps are where most people meet the Supervisor. The Supervisor installs them from app repositories, builds or pulls their images, and runs them with the options, ports, and access their configuration asks for. Building apps, and the full Supervisor API reference, are documented in the [Apps](/apps/) area.
+大多数人是通过应用接触 Supervisor 的。Supervisor 从应用仓库安装应用，构建或拉取它们的镜像，并按照其配置所要求的选项、端口和访问权限来运行它们。构建应用以及完整的 Supervisor API 参考文档在[应用（Apps）](/apps/)区域中。
 
-## Where to go next
+## 后续步骤
 
-- [Set up a development environment](/os/supervisor/development/) to run the Supervisor on your own machine.
-- [Architecture](/os/supervisor/architecture/) explains how the code is organized.
-- [Jobs](/os/supervisor/jobs/) and the [resolution center](/os/supervisor/resolution-center/) are the two mechanisms most changes touch.
+- [搭建开发环境](/os/supervisor/development/)，在你自己的机器上运行 Supervisor。
+- [架构](/os/supervisor/architecture/)介绍了代码的组织方式。
+- [任务（Jobs）](/os/supervisor/jobs/)和[问题解决中心](/os/supervisor/resolution-center/)是大多数变更会涉及的两个机制。

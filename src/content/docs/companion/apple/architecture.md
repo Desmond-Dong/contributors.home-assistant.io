@@ -1,70 +1,70 @@
 ---
-title: Apple architecture
-description: How the Home Assistant Apple app is organized. The source folders, the shared code, the Current environment, and the rules every change follows.
+title: Apple 架构
+description: Home Assistant Apple 应用是如何组织的。源代码文件夹、共享代码、Current 环境，以及每次改动都要遵循的规则。
 sidebarLabel: Architecture
 order: 2
 source: https://github.com/home-assistant/iOS/blob/main/Package.resolved
 lastVerified: 2026-10-14
 ---
 
-The Apple app started as a web view with a few native extras, and grew into a hybrid codebase with native onboarding, sensors, widgets, App Intents, an Apple Watch app, CarPlay, and Live Activities. One repository builds all of it, for iOS, iPadOS, watchOS, and macOS through Mac Catalyst.
+Apple 应用最初是一个带有少量原生附加功能的网页视图，后来发展成一个混合代码库，包含原生引导流程、传感器、小组件、App Intents、Apple Watch 应用、CarPlay 和实时活动。一个仓库即可构建所有这些内容，覆盖 iOS、iPadOS、watchOS，以及通过 Mac Catalyst 运行的 macOS。
 
-## The stack
+## 技术栈
 
-- **Swift**, with SwiftUI for new UI. UIKit is still used for older screens and where Apple frameworks need it.
-- **Xcode** with `HomeAssistant.xcodeproj`. Dependencies are Swift packages.
-- **[Fastlane](https://fastlane.tools/)** for linting, testing, versioning, and distribution.
-- **[WKWebView](https://developer.apple.com/documentation/webkit/wkwebview)** for the frontend, with a JavaScript message bus between the app and the frontend.
-- **[WidgetKit](https://developer.apple.com/documentation/widgetkit)** and **[App Intents](https://developer.apple.com/documentation/appintents)** for widgets, controls, and Shortcuts.
+- **Swift**，新 UI 使用 SwiftUI。较旧的界面以及 Apple 框架需要的地方仍在使用 UIKit。
+- **Xcode**，使用 `HomeAssistant.xcodeproj`。依赖项为 Swift 包。
+- **[Fastlane](https://fastlane.tools/)** 用于代码检查、测试、版本管理和分发。
+- **[WKWebView](https://developer.apple.com/documentation/webkit/wkwebview)** 用于前端，应用与前端之间通过 JavaScript 消息总线通信。
+- **[WidgetKit](https://developer.apple.com/documentation/widgetkit)** 和 **[App Intents](https://developer.apple.com/documentation/appintents)** 用于小组件、控件和快捷指令。
 
-Libraries you will run into most:
+你最常接触到的库：
 
-- [HAKit](https://github.com/home-assistant/HAKit): the Home Assistant API client, for the WebSocket and REST APIs.
-- [GRDB.swift](https://github.com/groue/GRDB.swift): SQLite storage.
-- [Alamofire](https://github.com/Alamofire/Alamofire): HTTP.
-- [PromiseKit](https://github.com/mxcl/PromiseKit): promises in older code. New code uses async and await.
-- [SFSafeSymbols](https://github.com/SFSafeSymbols/SFSafeSymbols): type-safe SF Symbols.
-- [KeychainAccess](https://github.com/kishikawakatsumi/KeychainAccess): keychain storage.
-- [XCGLogger](https://github.com/DaveWoodCom/XCGLogger): logging, through `Current.Log`.
-- [ObjectMapper](https://github.com/tristanhimmelman/ObjectMapper): JSON mapping in older models.
+- [HAKit](https://github.com/home-assistant/HAKit)：Home Assistant API 客户端，用于 WebSocket 和 REST API。
+- [GRDB.swift](https://github.com/groue/GRDB.swift)：SQLite 存储。
+- [Alamofire](https://github.com/Alamofire/Alamofire)：HTTP。
+- [PromiseKit](https://github.com/mxcl/PromiseKit)：较旧代码中的 promise。新代码使用 async 和 await。
+- [SFSafeSymbols](https://github.com/SFSafeSymbols/SFSafeSymbols)：类型安全的 SF Symbols。
+- [KeychainAccess](https://github.com/kishikawakatsumi/KeychainAccess)：钥匙串存储。
+- [XCGLogger](https://github.com/DaveWoodCom/XCGLogger)：日志记录，通过 `Current.Log` 使用。
+- [ObjectMapper](https://github.com/tristanhimmelman/ObjectMapper)：较旧模型中的 JSON 映射。
 
-## The source folders
+## 源代码文件夹
 
-| Folder | What is in it |
+| 文件夹 | 内容 |
 | --- | --- |
-| `Sources/App` | The iPhone and iPad app: onboarding, settings, the web view, cameras, notifications, kiosk mode |
-| `Sources/Shared` | Code every target shares: API and networking, the database, models, sensors, location, Assist, notifications, widgets support |
-| `Sources/Extensions` | App extensions: widgets, App Intents, intents, share, notification service and content, push provider, and Matter |
-| `Sources/Watch`, `Sources/WatchApp` | The Apple Watch app and its communication with the phone |
-| `Sources/CarPlay` | CarPlay templates and actions |
-| `Sources/MacBridge` | Mac specific code for the Catalyst build |
-| `Sources/Thread` | Thread credential management and sharing |
-| `Sources/Improv` | Setting up devices over Bluetooth with Improv |
-| `Sources/PushServer` | The push relay server, a standalone Swift package |
-| `Sources/SharedPush` | Parsing of push notification payloads. The push server keeps its own copy |
-| `Sources/SharedTesting` | Helpers for tests |
-| `Tests` | Unit, UI, snapshot, and widget tests |
-| `Configuration` | Xcode build settings |
-| `fastlane` | The Fastlane lanes |
+| `Sources/App` | iPhone 和 iPad 应用：引导流程、设置、网页视图、摄像头、通知、kiosk 模式 |
+| `Sources/Shared` | 所有 target 共享的代码：API 和网络、数据库、模型、传感器、位置、Assist、通知、小组件支持 |
+| `Sources/Extensions` | 应用扩展：小组件、App Intents、intent、分享、通知服务和内容、推送提供方，以及 Matter |
+| `Sources/Watch`, `Sources/WatchApp` | Apple Watch 应用及其与手机的通信 |
+| `Sources/CarPlay` | CarPlay 模板和操作 |
+| `Sources/MacBridge` | Catalyst 构建的 Mac 专用代码 |
+| `Sources/Thread` | Thread 凭据的管理与共享 |
+| `Sources/Improv` | 使用 Improv 通过蓝牙设置设备 |
+| `Sources/PushServer` | 推送中继服务器，一个独立的 Swift 包 |
+| `Sources/SharedPush` | 推送通知负载的解析。推送服务器保留自己的副本 |
+| `Sources/SharedTesting` | 测试辅助工具 |
+| `Tests` | 单元测试、UI 测试、快照测试和小组件测试 |
+| `Configuration` | Xcode 构建设置 |
+| `fastlane` | Fastlane lanes |
 
-The repository also has smaller modules in `Sources/`, like `HADesignSystem` and `HAModels`.
+仓库在 `Sources/` 下还有更小的模块，例如 `HADesignSystem` 和 `HAModels`。
 
-## Where code goes
+## 代码放在哪里
 
-A feature often appears in more places than the app. An entity action can show up in the app, a widget, the watch, a Shortcut, and CarPlay. Before you start, decide where the code belongs:
+一个功能往往出现在不止应用一个地方。一个实体（entity）操作可能同时出现在应用、小组件、手表、快捷指令和 CarPlay 中。在动手之前，先决定代码应该放在哪里：
 
-1. Logic that more than one target needs goes in `Sources/Shared`.
-2. Code for one surface goes in that target, like `Sources/Extensions/Widgets` or `Sources/CarPlay`.
-3. Most features start in `Sources/App`. Look there first to see how things are done.
-4. Look at `Tests/App` and `Tests/Shared` for examples before you write new code.
+1. 多个 target 都需要的逻辑放在 `Sources/Shared`。
+2. 只属于某一个界面的代码放在对应的 target 中，例如 `Sources/Extensions/Widgets` 或 `Sources/CarPlay`。
+3. 大多数功能从 `Sources/App` 开始。先去那里看看事情是怎么做的。
+4. 在编写新代码之前，先看看 `Tests/App` 和 `Tests/Shared` 中的示例。
 
-Extensions run with tight limits and can't use every API the app can. Shared code must stay safe to use in an extension.
+扩展在严格的限制下运行，无法使用应用能用的所有 API。共享代码必须保证在扩展中可以安全使用。
 
-## The Current environment
+## Current 环境
 
-The most important pattern in the codebase is the global `Current`, an `AppEnvironment` that holds every dependency: the date, the servers, the logger, the database, and much more. It follows the "World" pattern from Point-Free's [How to control the world](https://www.pointfree.co/blog/posts/21-how-to-control-the-world).
+代码库中最重要的模式是全局的 `Current`，它是一个 `AppEnvironment`，持有所有依赖项：日期、服务器、日志器、数据库等等。它遵循 Point-Free 的 [How to control the world](https://www.pointfree.co/blog/posts/21-how-to-control-the-world) 中的"World"模式。
 
-Production code reads from it:
+生产代码从它读取：
 
 ```swift
 let now = Current.date()
@@ -72,33 +72,33 @@ let server = Current.servers.all.first
 Current.Log.info("Something happened")
 ```
 
-Tests replace what they need:
+测试则替换它们需要的部分：
 
 ```swift
 Current.date = { Date(timeIntervalSince1970: 1_000_000) }
 Current.servers = FakeServerManager()
 ```
 
-Never assign to `Current` outside tests. A custom SwiftLint rule fails CI when you do.
+绝不要在测试之外对 `Current` 赋值。一旦这样做，一条自定义 SwiftLint 规则会让 CI 失败。
 
-## Rules for every change
+## 每次改动都要遵循的规则
 
-These come from the project's own guidelines, and reviewers apply them to every pull request:
+这些规则来自项目自身的指南，评审者会将它们应用于每一个拉取请求（pull request）：
 
-- **One type per file**, named after the type. Small private helpers nested inside the type are the only exception.
-- **Every SwiftUI view has a `#Preview`.**
-- **One title per screen.** A screen whose `List` starts with `AppleLikeListTopRowHeader` already shows its title in that header, so it doesn't also set `.navigationTitle`. Otherwise two titles stack up as the user scrolls.
-- **A confirmation sits on its trigger.** Put `.confirmationDialog` on the `Button` that opens it, not on a parent `List`, `Section`, or other container. That keeps the dialog tied to its own control, so it can't fire from an unrelated one.
-- **Beta-only features use `Current.isTestFlight`**, and nothing else: no build settings, `#if` branches, or hidden settings. Every pull request that puts a feature behind that gate comes with a second, draft pull request that removes the gate, branched off the first one and linked to it. Taking the feature out of beta is then one merge.
-- **Sensors are opt in.** Nothing reports until the user turns the sensor on, and an app update never starts reporting something new. A sensor that can't be read right now is still listed, with the state `unavailable`. If it needs a permission, switching it on is what asks for it. Enabling is per server: a server you add starts with nothing enabled.
+- **每个文件一个类型**，文件以该类型命名。唯一例外是嵌套在类型内部的小型私有辅助类型。
+- **每个 SwiftUI 视图都有一个 `#Preview`。**
+- **每个屏幕一个标题。** 如果一个屏幕的 `List` 以 `AppleLikeListTopRowHeader` 开头，它的标题已经显示在该头部中，因此不要再设置 `.navigationTitle`。否则用户滚动时会出现两个标题叠加。
+- **确认对话框放在它的触发器上。** 把 `.confirmationDialog` 放在打开它的那个 `Button` 上，而不是放在父级 `List`、`Section` 或其他容器上。这样对话框就与它自己的控件绑定，不会因无关的控件而触发。
+- **仅限 Beta 的功能使用 `Current.isTestFlight`**，不要用其他任何方式：不用构建设置、`#if` 分支或隐藏的设置。每个将功能置于该开关之后的拉取请求，都要附带第二个草稿状态的拉取请求，用于移除该开关，它从第一个拉取请求分出并与之关联。这样把功能移出 Beta 只需一次合并。
+- **传感器是可选加入的。** 在用户开启传感器之前，任何东西都不会上报，应用更新也绝不会开始上报新的内容。当前无法读取的传感器仍会列出，状态（state）为 `unavailable`。如果它需要某项权限，开启它的操作就是请求该权限的时机。启用是按服务器进行的：新添加的服务器默认不启用任何东西。
 
-## Talking to Home Assistant
+## 与 Home Assistant 通信
 
-The app talks to Home Assistant in two ways, like the Android app:
+与 Android 应用一样，该应用通过两种方式与 Home Assistant 通信：
 
-- **The mobile app API.** During onboarding, `HomeAssistantAPI` (in `Sources/Shared/API/HAAPI.swift`) registers the app with the `mobile_app` integration. After that, sensors, location updates, and other device data go to the server over the webhook it gets back, through `WebhookManager`. The app registers with encryption support, and `WebhookPayloadCrypto` encrypts the payloads. The sensors live in `Sources/Shared/API/Webhook/Sensors`. See the [mobile app API](/companion/mobile-app-api/) for the server side of all of this.
-- **The WebSocket and REST APIs**, through [HAKit](https://github.com/home-assistant/HAKit), for things like entity states and actions. Use it for new server calls, with `async` and `await`.
+- **移动应用 API。** 在引导流程中，`HomeAssistantAPI`（位于 `Sources/Shared/API/HAAPI.swift`）会向 `mobile_app` 集成（integration）注册该应用。此后，传感器、位置更新和其他设备（device）数据通过它获得的 webhook，经由 `WebhookManager` 发送到服务器。应用注册时支持加密，`WebhookPayloadCrypto` 负责加密负载。传感器位于 `Sources/Shared/API/Webhook/Sensors`。相关服务器端内容请参阅[移动应用 API](/companion/mobile-app-api/)。
+- **WebSocket 和 REST API**，通过 [HAKit](https://github.com/home-assistant/HAKit) 使用，用于实体状态和操作等。新的服务器调用请使用它，并配合 `async` 和 `await`。
 
-## Talking to the frontend
+## 与前端通信
 
-The web view loads the Home Assistant frontend and passes it an access token through external authentication, so the user doesn't log in twice. The app and the frontend exchange messages over the external bus, for example to open the native settings or scan a QR code. The frontend side is documented in [external authentication](/frontend/reference/external-auth/) and [the external bus](/frontend/reference/external-bus/).
+网页视图加载 Home Assistant 前端，并通过外部认证向其传递访问令牌，因此用户无需登录两次。应用与前端通过外部总线交换消息，例如打开原生设置或扫描二维码。前端一侧的内容记录在[外部认证](/frontend/reference/external-auth/)和[外部总线](/frontend/reference/external-bus/)中。

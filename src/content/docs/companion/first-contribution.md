@@ -1,63 +1,63 @@
 ---
-title: Your first companion app contribution
-description: Pick Android or Apple, build the app on your machine, and open your first pull request.
-sidebarLabel: Your first contribution
+title: 你的第一次伴侣应用贡献
+description: 选择 Android 或 Apple，在你的机器上构建应用，并提交你的第一个 pull request。
+sidebarLabel: 你的第一次贡献
 order: 1
 ---
 
-Your first contribution to a companion app does not have to be a feature. A small bug fix, a lint warning that nobody fixed, or a missing test is a great start. It gets you through the whole loop once: build, change, test, pull request, review.
+你对伴侣应用（companion app）的第一次贡献不一定非得是一个功能。一个小 bug 修复、一个没人处理的 lint 警告，或者一个缺失的测试，都是很好的起点。它能让你完整地走一遍整个流程：构建、修改、测试、pull request、评审。
 
-## 1. Choose your platform
+## 1. 选择你的平台
 
-The two apps share nothing but the API they talk to. Pick the one that matches your skills and the device you use every day:
+这两个应用除了它们所通信的 API 之外没有任何共享内容。选择与你的技能以及你每天使用的设备相匹配的那一个：
 
 | | Android | Apple |
 | --- | --- | --- |
-| Language | Kotlin | Swift |
-| IDE | Android Studio | Xcode (on a Mac) |
-| Build system | Gradle | Xcode with Swift Package Manager, Fastlane for tooling |
-| UI | Jetpack Compose (legacy XML being migrated) | SwiftUI and UIKit |
-| Repository | [home-assistant/android](https://github.com/home-assistant/android) | [home-assistant/iOS](https://github.com/home-assistant/iOS) |
+| 语言 | Kotlin | Swift |
+| IDE | Android Studio | Xcode（需要 Mac） |
+| 构建系统 | Gradle | Xcode 与 Swift Package Manager，工具链使用 Fastlane |
+| UI | Jetpack Compose（旧版 XML 正在迁移中） | SwiftUI 和 UIKit |
+| 仓库 | [home-assistant/android](https://github.com/home-assistant/android) | [home-assistant/iOS](https://github.com/home-assistant/iOS) |
 
-You need a Mac to work on the Apple app. For Android, any machine that runs Android Studio works.
+开发 Apple 应用需要一台 Mac。对于 Android，任何能运行 Android Studio 的机器都可以。
 
-## 2. Say hi
+## 2. 打个招呼
 
-Join the [Home Assistant Discord](https://www.home-assistant.io/join-chat), pick the developer role under **Channels & Roles**, and head to the [Android project thread](discord:android-project), or to the **#apple-apps** channel. Tell people what you want to work on. It saves you from building something someone else is already building.
+加入 [Home Assistant Discord](https://www.home-assistant.io/join-chat)，在 **Channels & Roles** 下选择开发者角色，然后前往 [Android 项目讨论帖](discord:android-project)或 **#apple-apps** 频道。告诉大家你想做什么。这能避免你去做别人已经在做的东西。
 
-## 3. Build the app
+## 3. 构建应用
 
-Follow the setup guide for your platform:
+按照你所在平台的设置指南操作：
 
-- [Get started with Android](/companion/android/get-started/)
-- [Get started with Apple](/companion/apple/get-started/)
+- [Android 入门](/companion/android/get-started/)
+- [Apple 入门](/companion/apple/get-started/)
 
-Run the app on an emulator, a simulator, or your own device, and connect it to a Home Assistant instance. A test instance is best: the app registers itself as a new device on every server you connect it to.
+在模拟器、仿真器或你自己的设备上运行应用，并将其连接到一个 Home Assistant 实例。最好使用测试实例：应用在每次连接到服务器时，都会将自己注册为一台新设备（device）。
 
-## 4. Find something to work on
+## 4. 找点事情做
 
-Good first targets:
+适合新手的切入点：
 
-- **An open issue**: browse the [Android issues](https://github.com/home-assistant/android/issues) or [iOS issues](https://github.com/home-assistant/iOS/issues). Something small that you can reproduce is ideal.
-- **Lint baselines** (Android): the app, wear, automotive, common, and microwakeword modules each have a `lint-baseline.xml` with known issues that were never fixed. Fix one, remove it from the baseline, done. See [code style and linting](/companion/android/code-style/#baselines).
-- **Missing tests**: add a test for code that has none. Both repositories value tests highly, and the Apple repository even requires most of the lines you change to be covered.
-- **Something that annoys you**: a bug you hit yourself is the best first topic, because you already know why it matters.
+- **一个开放的 issue**：浏览 [Android issues](https://github.com/home-assistant/android/issues) 或 [iOS issues](https://github.com/home-assistant/iOS/issues)。一个你能复现的小问题是最理想的。
+- **Lint 基线**（Android）：app、wear、automotive、common 和 microwakeword 模块各自都有一个 `lint-baseline.xml`，其中记录了从未修复的已知问题。修复一个，然后把它从基线中移除，就完成了。参见[代码风格与 lint 检查](/companion/android/code-style/#baselines)。
+- **缺失的测试**：为没有测试的代码添加一个测试。两个仓库都非常重视测试，Apple 仓库甚至要求你修改的大部分代码行都必须有测试覆盖。
+- **让你烦恼的东西**：你自己遇到的 bug 是最好的第一个课题，因为你已经知道它为什么重要。
 
-## 5. Open a pull request
+## 5. 提交 pull request
 
-Fork the repository, create a branch, make your change, and open a pull request against `main`. Fill out the pull request template completely; it has a checklist and asks how you used AI tools. Read the [AI policy](/start/ai-policy/) before you start.
+Fork 仓库，创建分支，进行修改，然后针对 `main` 提交一个 pull request。完整填写 pull request 模板；其中包含一个清单，并会询问你如何使用 AI 工具。在开始之前，请阅读 [AI 政策](/start/ai-policy/)。
 
-The submit guides have the details:
+提交指南中有详细说明：
 
-- [Submit an Android pull request](/companion/android/submitting/)
-- [Submit an Apple pull request](/companion/apple/submitting/)
+- [提交 Android pull request](/companion/android/submitting/)
+- [提交 Apple pull request](/companion/apple/submitting/)
 
-If your change is visible to users, it also needs a pull request in the [user documentation](https://github.com/home-assistant/companion.home-assistant).
+如果你的修改对用户可见，还需要在[用户文档](https://github.com/home-assistant/companion.home-assistant)中提交一个 pull request。
 
 > [!NOTE]
-> A review can take a while. Be patient, and make sure CI is green in the meantime.
+> 评审可能需要一段时间。请保持耐心，同时确保 CI 保持绿色（通过）。
 
-## What is next
+## 接下来做什么
 
-- Read the architecture of your platform: [Android](/companion/android/architecture/) or [Apple](/companion/apple/architecture/).
-- Curious how the app talks to Home Assistant? Read the [mobile app API](/companion/mobile-app-api/).
+- 阅读你所在平台的架构：[Android](/companion/android/architecture/) 或 [Apple](/companion/apple/architecture/)。
+- 好奇应用是如何与 Home Assistant 通信的？阅读[移动应用 API](/companion/mobile-app-api/)。

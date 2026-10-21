@@ -1,61 +1,61 @@
 ---
-title: Releases and builds
-description: How a change to Home Assistant OS goes from a pull request to a release, with the branches, version numbers, and build pipelines involved.
+title: 发布与构建
+description: Home Assistant OS 的更改如何从拉取请求（pull request）走到发布，包括涉及的分支、版本号和构建流水线。
 sidebarGroup: Guides
 order: 6
 ---
 
-Home Assistant OS has no fixed release schedule. The maintainers release when there is something worth releasing, like a kernel update, a fix, or a new feature. This page explains the path your change takes.
+Home Assistant OS 没有固定的发布时间表。维护者会在有值得发布的内容时发布，比如内核更新、修复或新功能。本页介绍你的更改所经历的流程。
 
-## Open a pull request
+## 发起拉取请求
 
-Fork [home-assistant/operating-system](https://github.com/home-assistant/operating-system), create a branch, and open your pull request against `dev`.
+Fork [home-assistant/operating-system](https://github.com/home-assistant/operating-system)，创建一个分支，然后针对 `dev` 发起你的拉取请求（pull request）。
 
-Explain *why* the change matters, not only what it does. "Update the kernel" is visible in the diff. "Update the kernel, because it fixes Ethernet on board X" is what the reviewer needs to know. A short reason is fine, as long as it is there.
+请解释这个更改*为什么*重要，而不仅仅是它做了什么。“更新内核”在 diff 中就能看到。“更新内核，因为它修复了 X 开发板上的以太网”才是审阅者需要知道的信息。简短的理由即可，只要有就行。
 
-Pull requests that change the build or the system can get the `run-ova-test` label. That builds the OVA image and runs the automated tests on it, see [test your build](/os/operating-system/test/#run-the-automated-tests). Only maintainers can set labels, and builds only run for branches in the main repository.
+更改构建或系统的拉取请求可以加上 `run-ova-test` 标签。这会构建 OVA 镜像并在其上运行自动化测试，参见[测试你的构建](/os/operating-system/test/#run-the-automated-tests)。只有维护者才能设置标签，而且构建只针对主仓库中的分支运行。
 
-## Branches
+## 分支
 
-- `dev` carries the next version during development. Every change goes here first, also fixes meant for the current release.
-- `rc` carries the release candidates. The maintainers bring the changes from `dev` that are ready over to it.
-- `main` carries the stable releases. After a release, `main` is merged back into `dev`.
+- `dev` 承载开发期间的下一个版本。每个更改都先进入这里，包括面向当前发布的修复。
+- `rc` 承载发布候选版本。维护者将 `dev` 中已就绪的更改移入其中。
+- `main` 承载稳定发布。发布之后，`main` 会合并回 `dev`。
 
-Older major versions had their own `rel-<major>` branches. Those are no longer used for new releases.
+较旧的大版本曾有各自的 `rel-<major>` 分支。这些分支不再用于新的发布。
 
-## Version numbers
+## 版本号
 
-A version is `MAJOR.MINOR`, like `18.3`. The numbers live in `buildroot-external/meta`, together with an optional suffix:
+版本号格式为 `MAJOR.MINOR`，例如 `18.3`。版本号位于 `buildroot-external/meta` 中，并带有一个可选的后缀：
 
-| Kind | Example | Where it comes from |
+| 类型 | 示例 | 来源 |
 | --- | --- | --- |
-| Development build | `18.4.dev20261006` | `dev`, the suffix is the build date |
-| Release candidate | `18.4.rc1` | `rc` |
-| Stable release | `18.4` | `main`, no suffix |
+| 开发构建 | `18.4.dev20261006` | `dev`，后缀为构建日期 |
+| 发布候选版本 | `18.4.rc1` | `rc` |
+| 稳定发布 | `18.4` | `main`，无后缀 |
 
-A local build gets the suffix from `meta` as it is, like `18.4.dev0`. CI replaces it with the date for development builds.
+本地构建会原样使用 `meta` 中的后缀，例如 `18.4.dev0`。CI 会将其替换为开发构建的日期。
 
-## Deployment types
+## 部署类型
 
-The `DEPLOYMENT` value in `buildroot-external/meta` sets which certificates the image trusts for updates, see [the update system](/os/operating-system/update-system/#security).
+`buildroot-external/meta` 中的 `DEPLOYMENT` 值决定镜像信任哪些用于更新的证书，参见[更新系统](/os/operating-system/update-system/#security)。
 
-| Deployment | Channel | Used for |
+| 部署类型 | 通道 | 用途 |
 | --- | --- | --- |
-| `development` | dev | Development builds |
-| `staging` | beta | Release candidates |
-| `production` | stable | Releases |
+| `development` | dev | 开发构建 |
+| `staging` | beta | 发布候选版本 |
+| `production` | stable | 发布 |
 
-The build pipeline refuses to publish a build when the deployment, the version format, and the channel don't match.
+当部署类型、版本号格式和通道不匹配时，构建流水线会拒绝发布该构建。
 
-## Build pipelines
+## 构建流水线
 
-GitHub Actions builds every public image, with `.github/workflows/build.yaml`. It runs in two situations:
+GitHub Actions 通过 `.github/workflows/build.yaml` 构建所有公开镜像。它在两种情况下运行：
 
-- **When a GitHub release is published.** It builds every board, runs the tests, and attaches the images to the release. A pre-release goes to the beta channel, a release to stable.
-- **When a maintainer starts it by hand.** It builds a development version of the boards they pick, or all of them. The images are published on [os-artifacts.home-assistant.io](https://os-artifacts.home-assistant.io/index.html).
+- **发布 GitHub release 时。** 它构建所有开发板、运行测试，并将镜像附加到该 release。预发布（pre-release）进入 beta 通道，正式发布进入 stable 通道。
+- **维护者手动启动时。** 它构建他们所选开发板（或全部开发板）的开发版本。镜像发布在 [os-artifacts.home-assistant.io](https://os-artifacts.home-assistant.io/index.html) 上。
 
-A build for a fork does not publish anything, and signs with a throwaway self-signed certificate instead of the release one.
+针对 fork 的构建不会发布任何内容，并且使用一次性的自签名证书而不是发布证书进行签名。
 
-## After the release
+## 发布之后
 
-The release notes are drafted automatically from the labels of the merged pull requests, like `board/raspberrypi` or `build`. Users get the new version through the Supervisor, which checks [version.home-assistant.io](https://version.home-assistant.io/stable.json) for the latest OS version of their channel. The update itself goes through RAUC, see [the update system](/os/operating-system/update-system/).
+发布说明会根据已合并拉取请求的标签自动生成，例如 `board/raspberrypi` 或 `build`。用户通过 Supervisor 获取新版本，Supervisor 会检查 [version.home-assistant.io](https://version.home-assistant.io/stable.json) 以获取其通道的最新 OS 版本。更新本身通过 RAUC 进行，参见[更新系统](/os/operating-system/update-system/)。

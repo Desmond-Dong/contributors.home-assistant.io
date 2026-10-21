@@ -1,55 +1,55 @@
 ---
-title: Custom cards and more
-description: Build cards, card features, badges, views, dashboard strategies, and panels that people load into their own Home Assistant, without changing the frontend.
+title: 自定义卡片及更多
+description: 构建卡片、卡片功能、徽章、视图、仪表盘策略和面板，供用户加载到自己的 Home Assistant 中，而无需修改前端。
 order: 30
-sidebarLabel: Custom cards and more
+sidebarLabel: 自定义卡片及更多
 ---
 
-The built-in cards cover a lot, but not everything. You can add your own building blocks to the interface without touching the [frontend repository](https://github.com/home-assistant/frontend): write a JavaScript file, load it into Home Assistant, and use it like a built-in one. Thousands of community cards are made this way.
+内置卡片已经覆盖了很多场景，但并非全部。你无需改动[前端仓库](https://github.com/home-assistant/frontend)，就可以向界面添加自己的构建模块：编写一个 JavaScript 文件，将其加载到 Home Assistant 中，然后像使用内置卡片一样使用它。成千上万的社区卡片就是这样制作的。
 
-## What you can build
+## 你可以构建什么
 
-| What | Where it shows up | Page |
+| 内容 | 显示位置 | 页面 |
 | --- | --- | --- |
-| [Card](/glossary/card/) | On a dashboard, next to the built-in cards | [Custom cards](/frontend/custom-ui/card/) |
-| [Card feature](/glossary/card-feature/) | Inside a tile card, or another card that supports features | [Custom card features](/frontend/custom-ui/card-feature/) |
-| [Badge](/glossary/badge/) | At the top of a view | [Custom badges](/frontend/custom-ui/badge/) |
-| [Strategy](/glossary/strategy/) | Generates a whole dashboard, a view, or a section from code | [Custom strategies](/frontend/custom-ui/strategy/) |
-| [View](/glossary/view/) layout | Arranges the cards of a view in your own way | [Custom views](/frontend/custom-ui/view/) |
-| [Panel](/glossary/panel/) | A full page of its own, with a link in the sidebar | [Custom panels](/frontend/custom-ui/panel/) |
+| [卡片（Card）](/glossary/card/) | 在仪表盘上，与内置卡片并列 | [自定义卡片](/frontend/custom-ui/card/) |
+| [卡片功能（Card feature）](/glossary/card-feature/) | 在磁贴卡片或其他支持功能的卡片内部 | [自定义卡片功能](/frontend/custom-ui/card-feature/) |
+| [徽章（Badge）](/glossary/badge/) | 在视图顶部 | [自定义徽章](/frontend/custom-ui/badge/) |
+| [策略（Strategy）](/glossary/strategy/) | 通过代码生成整个仪表盘、视图或区块 | [自定义策略](/frontend/custom-ui/strategy/) |
+| [视图（View）](/glossary/view/)布局 | 以你自己的方式排列视图中的卡片 | [自定义视图](/frontend/custom-ui/view/) |
+| [面板（Panel）](/glossary/panel/) | 一个独立的全页面，并在侧边栏中有链接 | [自定义面板](/frontend/custom-ui/panel/) |
 
-## How it works
+## 工作原理
 
-Every one of them is a [custom element](https://developer.mozilla.org/docs/Web/API/Web_components/Using_custom_elements): a JavaScript class registered under a tag name. Home Assistant creates the element, sets properties on it, like `hass` and the configuration, and puts it on the page. What the element renders is up to you.
+它们中的每一个都是一个[自定义元素（custom element）](https://developer.mozilla.org/docs/Web/API/Web_components/Using_custom_elements)：一个以标签名注册的 JavaScript 类。Home Assistant 创建该元素，在其上设置属性，例如 `hass` 和配置，然后将其放到页面上。元素渲染什么内容完全由你决定。
 
-1. **Write the element** in a JavaScript module, and register it with `customElements.define()`.
-2. **Load the module** into Home Assistant as a [dashboard resource](/frontend/custom-ui/resources/). Panels are loaded by their own configuration instead.
-3. **Use it** in a dashboard with the `custom:` prefix, like `type: custom:my-card`.
+1. 在 JavaScript 模块中**编写元素**，并使用 `customElements.define()` 注册它。
+2. 将该模块作为[仪表盘资源](/frontend/custom-ui/resources/)**加载**到 Home Assistant 中。面板则通过其自身的配置加载。
+3. 在仪表盘中使用 `custom:` 前缀来**使用它**，例如 `type: custom:my-card`。
 
-To make it easy to find, you can also register your element so it shows up in the card picker, the feature picker, or the new dashboard dialog, with a visual editor for its options.
+为了便于查找，你还可以注册你的元素，使其显示在卡片选择器、功能选择器或新建仪表盘对话框中，并为其选项提供可视化编辑器。
 
-## Which tools to use
+## 使用哪些工具
 
-You can use any library that produces a standard custom element, or none at all. The examples on these pages use plain JavaScript, so you can copy them and see them work without a build step.
+你可以使用任何能生成标准自定义元素的库，也可以完全不使用。这些页面上的示例使用纯 JavaScript，因此你可以直接复制并运行它们，无需构建步骤。
 
-For anything bigger, [Lit](https://lit.dev/) is a good choice: it is what the frontend itself uses, so the patterns on the [architecture](/frontend/architecture/) pages carry over. Bundle your own copy of Lit, or any other library, into your module.
+对于更大的项目，[Lit](https://lit.dev/) 是一个不错的选择：前端本身就在使用它，因此[架构](/frontend/architecture/)页面上的模式可以直接套用。请将你自己的 Lit 副本或任何其他库打包进你的模块中。
 
-The frontend has no public component library for custom cards. Nothing in the frontend repository lists `ha-*` elements as supported, or promises that they stay the same. They are loaded only when the frontend needs them, and they can change in any release. If your card depends on one, it can break without warning.
+前端没有面向自定义卡片的公开组件库。前端仓库中没有任何内容将 `ha-*` 元素列为受支持，也没有承诺它们保持不变。它们只在前端需要时才会被加载，并且可能在任何版本中发生变化。如果你的卡片依赖其中某个元素，它可能会毫无预警地失效。
 
-`ha-card` is the one exception in practice, not on paper. It is the container of the built-in cards, it takes the card theme variables like `--ha-card-background` and `--ha-card-border-radius`, and most custom cards wrap their content in it, as the [custom card example](/frontend/custom-ui/card/) does. Use it so your card fits in, but know it carries the same lack of promise as the rest. For anything else, like a picker or a form field, build or bundle your own. To show a built-in card or one of the standard dialogs inside your card, use the [card helpers](/frontend/custom-ui/card/#card-helpers), which the frontend loads for custom cards on purpose.
+`ha-card` 是实践中（而非纸面上）唯一的例外。它是内置卡片的容器，接受 `--ha-card-background` 和 `--ha-card-border-radius` 等卡片主题变量，并且大多数自定义卡片都会将其内容包裹在其中，正如[自定义卡片示例](/frontend/custom-ui/card/)所做的那样。使用它可以让你的卡片融入整体风格，但要知道它同样不提供任何保证。对于其他任何内容，例如选择器或表单字段，请自行构建或打包。要在你的卡片内显示内置卡片或某个标准对话框，请使用[卡片辅助工具（card helpers）](/frontend/custom-ui/card/#card-helpers)，前端会特意为自定义卡片加载它们。
 
-## Shared concepts
+## 共享概念
 
-- **`hass`**: the object with the full state of Home Assistant. Your element gets a new one on every change. The [hass object reference](/frontend/reference/hass-object/) lists what is in it.
-- **`setConfig(config)`**: called with the YAML configuration of your card, badge, or feature. Throw an error when the configuration is invalid, and Home Assistant shows it to the user.
-- **The `custom:` prefix**: separates your elements from the built-in ones. Your element `my-card` is used as `type: custom:my-card`.
+- **`hass`**：包含 Home Assistant 完整状态的对象。每次变化时，你的元素都会收到一个新的对象。[hass 对象参考](/frontend/reference/hass-object/)列出了其中的内容。
+- **`setConfig(config)`**：以你的卡片、徽章或功能的 YAML 配置被调用。当配置无效时抛出错误，Home Assistant 会将其显示给用户。
+- **`custom:` 前缀**：将你的元素与内置元素区分开。你的元素 `my-card` 以 `type: custom:my-card` 的形式使用。
 
-## Design
+## 设计
 
-A custom card looks best when it fits in with the built-in ones. Use the [theme variables](/frontend/architecture/theming/), like `--card-background-color` and `--primary-text-color`, so your card follows the theme and dark mode of the user. The [dashboard](/design/dashboards/) pages of the Design area explain how the built-in cards are designed, and why.
+自定义卡片与内置卡片风格一致时效果最佳。使用[主题变量](/frontend/architecture/theming/)，例如 `--card-background-color` 和 `--primary-text-color`，使你的卡片遵循用户的主题和深色模式。设计板块的[仪表盘](/design/dashboards/)页面解释了内置卡片是如何设计的，以及为什么这样设计。
 
-## Share it
+## 分享你的作品
 
-To publish what you built, so others can install it from the Marketplace, see [dashboard cards and plugins](/marketplace/guides/dashboard/).
+要发布你构建的内容，让其他人可以从 Marketplace 安装，请参阅[仪表盘卡片和插件](/marketplace/guides/dashboard/)。
 
-Think your card belongs in the frontend itself? The project recommends that you publish a new card in the [Marketplace](/marketplace/) first. You gain experience, and you can iterate faster. Once it has matured and has a user base, reach out to the maintainers, for example in the **#frontend** channel on [Discord](https://www.home-assistant.io/join-chat/), to see whether it should ship built in.
+你认为你的卡片应该进入前端本身吗？项目建议你先在 [Marketplace](/marketplace/) 上发布新卡片。你可以积累经验，并且能够更快地迭代。一旦它成熟并拥有用户群，请联系维护者，例如在 [Discord](https://www.home-assistant.io/join-chat/) 上的 **#frontend** 频道，探讨它是否应该作为内置功能发布。

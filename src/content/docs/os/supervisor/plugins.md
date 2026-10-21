@@ -1,49 +1,49 @@
 ---
-title: Plugins
-description: The five plugins the Supervisor runs next to Home Assistant Core, what each one does, and where its code lives.
+title: 插件
+description: Supervisor 在 Home Assistant Core 旁边运行的五个插件、每个插件的作用，以及它们的代码所在位置。
 sidebarGroup: How it works
 order: 4
 ---
 
-Plugins are containers the Supervisor runs for the system itself, not for the user. They provide services that Core and apps share, like DNS and audio. Users don't install or remove them, and the Supervisor updates them automatically.
+插件（plugin）是 Supervisor 为系统本身（而非为用户）运行的容器。它们提供 Core 和应用共享的服务，例如 DNS 和音频。用户不能安装或移除它们，Supervisor 会自动更新它们。
 
-On the Supervisor side, every plugin is a class in `supervisor/plugins/`, based on `PluginBase`. It handles installing, starting, updating, and repairing the container, and a watchdog restarts it when it stops. Each plugin's image is `ghcr.io/home-assistant/<arch>-hassio-<plugin>`, and the versions come from the same version file as everything else.
+在 Supervisor 一侧，每个插件都是 `supervisor/plugins/` 中的一个类，基于 `PluginBase`。它负责安装、启动、更新和修复容器，并且有一个看门狗（watchdog）会在容器停止时重启它。每个插件的镜像为 `ghcr.io/home-assistant/<arch>-hassio-<plugin>`，版本与其他组件一样来自同一个版本文件。
 
-| Plugin | Container | Repository | What it is |
+| 插件 | 容器 | 仓库 | 是什么 |
 | --- | --- | --- | --- |
-| DNS | `hassio_dns` | [plugin-dns](https://github.com/home-assistant/plugin-dns) | CoreDNS, for name resolution in the containers |
-| Audio | `hassio_audio` | [plugin-audio](https://github.com/home-assistant/plugin-audio) | PulseAudio, for sound in and out |
-| CLI | `hassio_cli` | [plugin-cli](https://github.com/home-assistant/plugin-cli) | The `ha` command line |
-| Multicast | `hassio_multicast` | [plugin-multicast](https://github.com/home-assistant/plugin-multicast) | An mDNS repeater |
-| Observer | `hassio_observer` | [plugin-observer](https://github.com/home-assistant/plugin-observer) | A status page that works when nothing else does |
+| DNS | `hassio_dns` | [plugin-dns](https://github.com/home-assistant/plugin-dns) | CoreDNS，用于容器内的名称解析 |
+| Audio | `hassio_audio` | [plugin-audio](https://github.com/home-assistant/plugin-audio) | PulseAudio，用于声音的输入和输出 |
+| CLI | `hassio_cli` | [plugin-cli](https://github.com/home-assistant/plugin-cli) | `ha` 命令行 |
+| Multicast | `hassio_multicast` | [plugin-multicast](https://github.com/home-assistant/plugin-multicast) | 一个 mDNS 中继器 |
+| Observer | `hassio_observer` | [plugin-observer](https://github.com/home-assistant/plugin-observer) | 一个在其他一切都失效时仍然可用的状态页面 |
 
 ## DNS
 
-Every container on the `hassio` network uses the DNS plugin as its name server. It runs [CoreDNS](https://coredns.io/) with two plugins of its own:
+`hassio` 网络上的每个容器都使用 DNS 插件作为其名称服务器。它运行 [CoreDNS](https://coredns.io/)，并带有两个自己的插件：
 
-- **mdns** resolves `.local` names, by asking systemd-resolved on the host over D-Bus.
-- **fallback** retries failed lookups against Cloudflare's DNS over TLS, when the fallback is on.
+- **mdns** 通过 D-Bus 询问主机上的 systemd-resolved 来解析 `.local` 名称。
+- **fallback** 在启用回退时，通过 TLS 向 Cloudflare 的 DNS 重试失败的查询。
 
-The Supervisor writes a hosts file with the names of the containers, like `supervisor` and `homeassistant`, so they can reach each other by name. Other lookups go to the DNS servers of the host, or the ones the user set with `ha dns options`. The configuration template is `rootfs/usr/share/tempio/corefile` in the plugin repository.
+Supervisor 会写入一个包含容器名称的 hosts 文件，例如 `supervisor` 和 `homeassistant`，这样它们就可以通过名称相互访问。其他查询会发送到主机的 DNS 服务器，或用户通过 `ha dns options` 设置的服务器。配置模板位于插件仓库中的 `rootfs/usr/share/tempio/corefile`。
 
 ## Audio
 
-The audio plugin runs PulseAudio on top of ALSA, so Core and apps that need audio share one sound system. Apps get access when their configuration asks for audio. All audio configuration lives in this container, which lets users adjust PulseAudio without touching the host. `ha audio` shows the devices and sets the defaults.
+音频插件在 ALSA 之上运行 PulseAudio，因此 Core 和需要音频的应用共享同一个声音系统。当应用的配置请求音频时，它们会获得访问权限。所有音频配置都保存在这个容器中，这让用户无需接触主机即可调整 PulseAudio。`ha audio` 可以显示设备并设置默认值。
 
 ## CLI
 
-The CLI plugin is the `ha` command line, built from the [home-assistant/cli](https://github.com/home-assistant/cli) repository. On Home Assistant OS it is the login shell on the console: the host runs it when you log in, see [debug the host](/os/operating-system/debugging/#the-local-console). The plugin repository only packages the CLI. Changes to the commands themselves go to the cli repository.
+CLI 插件是 `ha` 命令行，由 [home-assistant/cli](https://github.com/home-assistant/cli) 仓库构建。在 Home Assistant OS 上，它是控制台上的登录 shell：当你登录时，主机运行它，参见[调试主机](/os/operating-system/debugging/#the-local-console)。插件仓库只负责打包 CLI。对命令本身的修改应提交到 cli 仓库。
 
 ## Multicast
 
-The multicast plugin runs [mdns-repeater](https://github.com/pvizeli/mdns-repeater) on the host network. It repeats mDNS traffic between the host network and the `hassio` network, so discovery works across that boundary. It can be turned off through the Supervisor API.
+多播插件在主机网络上运行 [mdns-repeater](https://github.com/pvizeli/mdns-repeater)。它在主机网络和 `hassio` 网络之间转发 mDNS 流量，使发现功能可以跨越该边界工作。可以通过 Supervisor API 将其关闭。
 
 ## Observer
 
-The observer is a small web server, written in Go, on port 4357 of the host. It shows whether the Supervisor is running and healthy, and its logs. It runs separately from the Supervisor on purpose: when the Supervisor or Core is down, the observer is how users still see what is going on.
+观察器（observer）是一个用 Go 编写的小型 Web 服务器，运行在主机的 4357 端口上。它显示 Supervisor 是否正在运行且健康，以及它的日志。它特意与 Supervisor 分开运行：当 Supervisor 或 Core 宕机时，观察器是用户了解当前状况的方式。
 
-## Working on a plugin
+## 开发插件
 
-Each plugin repository builds a container image, mostly from a `Dockerfile` and a `rootfs/` folder, and several have a development container. Most plugins have `ha <plugin>` commands to show their logs, restart them, or update them, like `ha dns logs` or `ha audio restart`.
+每个插件仓库都会构建一个容器镜像，主要基于一个 `Dockerfile` 和一个 `rootfs/` 文件夹，其中几个还有开发容器。大多数插件都有 `ha <plugin>` 命令来查看日志、重启或更新它们，例如 `ha dns logs` 或 `ha audio restart`。
 
-To try your own build on a device, build the image for the device's architecture, and tag it with the image name and version the plugin runs now (`docker ps` on the host shows it). Then restart the plugin. The approach is the same as [testing the Supervisor on a real system](/os/supervisor/development/#test-on-a-real-system). Keep in mind that the Supervisor updates plugins automatically, which replaces your build when a new version comes out.
+要在设备上尝试你自己的构建，请为设备的架构构建镜像，并使用该插件当前运行的镜像名称和版本打标签（主机上的 `docker ps` 会显示它）。然后重启该插件。其方法与[在真实系统上测试 Supervisor](/os/supervisor/development/#test-on-a-real-system) 相同。请记住，Supervisor 会自动更新插件，当新版本发布时会替换你的构建。

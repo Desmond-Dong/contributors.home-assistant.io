@@ -1,64 +1,64 @@
 ---
-title: Submit an Android pull request
-description: The checklist, the pull request template, the in-app changelog, and what happens during review in the Android repository.
-sidebarLabel: Submit a pull request
+title: 提交 Android 拉取请求
+description: 检查清单、拉取请求模板、应用内更新日志，以及 Android 仓库中评审的流程。
+sidebarLabel: 提交拉取请求
 sidebarGroup: Ship
 order: 1
 ---
 
-Your change works on your machine. Now it needs a pull request, a review, and a merge. This page covers what reviewers expect, so the review goes smoothly.
+你的改动在自己的机器上运行正常。接下来它需要一个拉取请求（pull request）、一次评审和一次合并。本页介绍评审者期望的内容，以便评审顺利进行。
 
-## Before you open it
+## 打开拉取请求之前
 
-- **Format and test.** Run `./gradlew :build-logic:convention:ktlintFormat ktlintFormat` and `./gradlew test`. See [code style and linting](/companion/android/code-style/) for the other checks.
-- **Build everything.** Shared code ends up in the phone, car, and watch apps. Check that `:app`, `:automotive`, and `:wear` still build.
-- **Add tests** for the behavior you changed. See [testing](/companion/android/testing/).
-- **Follow the guidelines**: [best practices](/companion/android/best-practices/), [UI architecture](/companion/android/ui-architecture/), and [Compose and the design system](/companion/android/compose/).
-- **Keep it small.** One idea per pull request. Big reworks go behind a `WIPFeature` flag in small steps, see [ship big changes in small steps](/companion/android/best-practices/#ship-big-changes-in-small-steps).
-- **Read the [AI policy](/start/ai-policy/).** You can use AI tools, but you must understand and be able to explain every line you submit. Pull requests from autonomous agents are closed.
+- **格式化并测试。** 运行 `./gradlew :build-logic:convention:ktlintFormat ktlintFormat` 和 `./gradlew test`。其他检查请参阅[代码风格与 lint](/companion/android/code-style/)。
+- **构建所有内容。** 共享代码会进入手机、汽车和手表应用。请确认 `:app`、`:automotive` 和 `:wear` 仍然可以构建。
+- **为你修改的行为添加测试。** 参阅[测试](/companion/android/testing/)。
+- **遵循指南**：[最佳实践](/companion/android/best-practices/)、[UI 架构](/companion/android/ui-architecture/)以及 [Compose 与设计系统](/companion/android/compose/)。
+- **保持改动小巧。** 每个拉取请求只包含一个想法。大型重构应通过 `WIPFeature` 标志分小步进行，参见[小步发布大改动](/companion/android/best-practices/#ship-big-changes-in-small-steps)。
+- **阅读 [AI 政策](/start/ai-policy/)。** 你可以使用 AI 工具，但必须理解并能够解释你提交的每一行代码。来自自主智能体的拉取请求将被关闭。
 
-## The pull request
+## 拉取请求
 
-Create the pull request from your fork against `main`, as described in the [GitHub documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork). GitHub fills in the template. Don't delete anything from it, unless the template tells you to, like a section that doesn't apply to your change. Fill out:
+按照 [GitHub 文档](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork)中的说明，从你的 fork 向 `main` 创建拉取请求。GitHub 会自动填入模板。不要从中删除任何内容，除非模板要求你这样做，比如不适用于你改动的章节。请填写：
 
-- **Summary**: what you changed, why, and what it means for users. Link related issues.
-- **Checklist**: tests, code style, edge cases, backward compatibility, and the AI policy. Backward-incompatible changes go in the changelog for users, or in the code for developers, depending on who they affect. Also select exactly one of the options that describe how you used AI.
-- **Screenshots**: for UI changes outside the frontend, in light and dark mode.
-- **Documentation**: if your change adds, changes, or removes something users see, open a pull request in the [user documentation](https://github.com/home-assistant/companion.home-assistant) and link it. Mark the new feature there with `<span class='beta'>BETA</span>`, until it reaches production. If it changes something developers rely on, like how to build, test, or release the app, the template also asks for a pull request that updates the developer documentation.
+- **摘要（Summary）**：你改了什么、为什么改，以及对用户意味着什么。链接相关 issue。
+- **检查清单（Checklist）**：测试、代码风格、边界情况、向后兼容性以及 AI 政策。不向后兼容的改动，根据影响对象不同，写入面向用户的更新日志，或写入面向开发者的代码中。另外，请从描述你如何使用 AI 的选项中恰好勾选一项。
+- **截图（Screenshots）**：针对前端之外的 UI 改动，需提供浅色和深色模式下的截图。
+- **文档（Documentation）**：如果你的改动新增、修改或删除了用户可见的内容，请在[用户文档](https://github.com/home-assistant/companion.home-assistant)中打开一个拉取请求并链接它。在该功能上线生产环境之前，请用 `<span class='beta'>BETA</span>` 标记新功能。如果改动影响开发者依赖的内容，比如如何构建、测试或发布应用，模板还会要求提交一个更新开发者文档的拉取请求。
 
-### The changelog
+### 更新日志
 
-If your change adds a feature, visibly changes behavior for users, or breaks something they rely on, add it to the in-app changelog in `app/src/main/kotlin/io/homeassistant/companion/android/changelog/ChangelogContent.kt`. Small bug fixes don't need their own entry: the standing "Bug fixes and dependency updates" entry covers them.
+如果你的改动新增了功能、明显改变了用户可见的行为，或破坏了用户依赖的内容，请将其添加到 `app/src/main/kotlin/io/homeassistant/companion/android/changelog/ChangelogContent.kt` 中的应用内更新日志。小的 bug 修复不需要单独的条目：常设的“Bug fixes and dependency updates”条目已涵盖它们。
 
-`ChangelogContent.kt` holds the entries, grouped in new, improved, and fixed, each with the platforms it applies to. The text of each entry is a string in `common/src/main/res/values/strings_changelog.xml`, so it gets translated. A screenshot test renders the real changelog, so a changelog change also needs updated [screenshot references](/companion/android/screenshot-testing/).
+`ChangelogContent.kt` 保存这些条目，按新增、改进和修复分组，每个条目都标注了适用的平台。每个条目的文本是 `common/src/main/res/values/strings_changelog.xml` 中的一个字符串，因此会被翻译。有一个截图测试会渲染真实的更新日志，因此更新日志的改动还需要更新[截图参考](/companion/android/screenshot-testing/)。
 
-## Draft pull requests
+## 草稿拉取请求
 
-Open a draft when you want early feedback on direction, but the work isn't done. This is also useful when you work on changes to CI itself. Be careful with CI, though: each push runs the full pipeline, which takes a lot of resources. Don't open a pull request, draft or not, before there is something to look at. Push to your fork as often as you like.
+当你想尽早获得方向上的反馈但工作尚未完成时，可以打开草稿拉取请求。当你修改 CI 本身时，这也很有用。不过使用 CI 要小心：每次推送都会运行完整的流水线，消耗大量资源。在还没有可查看的内容之前，不要打开拉取请求（无论是否为草稿）。你可以随意频繁地推送到自己的 fork。
 
-If this is your first contribution, a maintainer has to approve each CI run before it starts.
+如果这是你的首次贡献，维护者必须在每次 CI 运行开始前进行批准。
 
-## Review
+## 评审
 
-Anyone can review a pull request, and you are welcome to. Even a ten-minute review helps. Not comfortable reviewing code? Install the APK from the pull request, and report what you find: bugs, crashes, or UI and UX feedback. See [test a pull request build](/companion/android/get-started/#test-a-pull-request-build).
+任何人都可以评审拉取请求，欢迎你参与。哪怕十分钟的评审也有帮助。不方便评审代码？从拉取请求安装 APK，并报告你发现的问题：bug、崩溃，或 UI 和 UX 反馈。参见[测试拉取请求构建](/companion/android/get-started/#test-a-pull-request-build)。
 
-For a merge, a maintainer has to approve. Be patient and kind. Their feedback comes as comments with requested changes, or as questions. Answer questions in your own words, not with AI output.
+要合并拉取请求，需要维护者的批准。请保持耐心和友善。他们的反馈以评论形式出现，可能是请求修改，也可能是提问。请用自己的话回答问题，不要用 AI 生成的输出。
 
-When you have addressed the feedback and CI is green, ask for another review.
+当你处理完反馈且 CI 通过后，可以请求再次评审。
 
-## Keep your branch up to date
+## 保持分支最新
 
-If your branch falls behind `main` or has conflicts, you can either merge `main` into your branch and [resolve the conflicts](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line), or [rebase](https://docs.github.com/en/get-started/using-git/about-git-rebase) on it:
+如果你的分支落后于 `main` 或存在冲突，你可以将 `main` 合并到你的分支并[解决冲突](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line)，或者在其上[变基（rebase）](https://docs.github.com/en/get-started/using-git/about-git-rebase)：
 
-- **Not reviewed yet**: merge or rebase, your choice.
-- **Already reviewed**: merge. A rebase can break existing review comments and lose that feedback.
+- **尚未评审**：合并或变基均可，由你选择。
+- **已经评审**：合并。变基可能破坏已有的评审评论并丢失这些反馈。
 
-The repository uses [squash and merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits), so your branch history doesn't need to be tidy.
+该仓库使用 [squash and merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits)，因此你的分支历史不需要保持整洁。
 
-## Merging
+## 合并
 
-Once everything is green and a maintainer approves, they merge it. You don't have to do anything. Your change goes to internal testers right away, and to the beta the next weekend. See [releases](/companion/android/releases/).
+一切通过且维护者批准后，他们会进行合并。你无需做任何事。你的改动会立即推送给内部测试人员，并在下个周末推送到 beta 渠道。参见[发布](/companion/android/releases/)。
 
-## Stale pull requests
+## 过期的拉取请求
 
-A bot marks a pull request as stale after 30 days without activity, and an issue after 90 days. If nothing happens in the next 7 days, it closes them. Anything labeled `under investigation` or `Help wanted` is exempt.
+机器人会在拉取请求 30 天无活动后将其标记为过期，issue 则是 90 天。如果之后 7 天内仍无动静，机器人会将其关闭。带有 `under investigation` 或 `Help wanted` 标签的内容不受影响。

@@ -1,14 +1,14 @@
 ---
-title: Custom card features
-description: Add your own quick control to the tile card and other cards that support features.
+title: 自定义卡片功能
+description: 为磁贴卡片及其他支持功能的卡片添加你自己的快捷控制。
 order: 4
 ---
 
-[Card features](/glossary/card-feature/) are the small controls at the bottom of a tile card: a brightness slider, a row of fan speeds, a button to start the vacuum. The built-in ones cover many entities, and you can add your own. A feature is a custom element, much like a [custom card](/frontend/custom-ui/card/), but smaller.
+[卡片功能（card feature）](/glossary/card-feature/)是磁贴卡片底部的小型控件：亮度滑块、一排风扇速度、启动扫地机器人的按钮。内置功能覆盖了许多实体（entity），你也可以添加自己的功能。功能是一种自定义元素，与[自定义卡片](/frontend/custom-ui/card/)类似，但更小。
 
-## An example
+## 一个示例
 
-This feature adds a **Press** button for [button entities](/core/entities/button/):
+以下功能为[按钮实体（button entity）](/core/entities/button/)添加一个 **Press** 按钮：
 
 ```js
 const supportsButtonPress = (hass, context) => {
@@ -82,7 +82,7 @@ window.customCardFeatures.push({
 });
 ```
 
-Load the file as a [resource](/frontend/custom-ui/resources/), and add the feature to a tile card:
+将该文件作为[资源（resource）](/frontend/custom-ui/resources/)加载，并将该功能添加到磁贴卡片中：
 
 ```yaml
 type: tile
@@ -92,35 +92,35 @@ features:
     label: Restart
 ```
 
-Stop the event from bubbling up, like `_press()` does, or the card underneath handles it too and opens the more-info dialog.
+要像 `_press()` 那样阻止事件向上冒泡，否则下层的卡片也会处理该事件并打开更多信息对话框。
 
-## What a feature gets
+## 功能会接收到什么
 
-- `setConfig(config)`: the configuration of the feature, with its `type`.
-- `hass`: the full state of Home Assistant, set on every change.
-- `context`: what the card the feature lives in is about. It has an `entity_id` when the card shows an entity, and an `area_id` when it shows an area.
+- `setConfig(config)`：该功能的配置，包含其 `type`。
+- `hass`：Home Assistant 的完整状态，每次变化时都会设置。
+- `context`：功能所在的卡片所针对的对象。当卡片显示实体时，它包含 `entity_id`；当卡片显示区域（area）时，它包含 `area_id`。
 
-## Register the feature
+## 注册功能
 
-To show your feature in the feature picker of the card editor, push an entry to `window.customCardFeatures`:
+要让你的功能出现在卡片编辑器的功能选择器中，需向 `window.customCardFeatures` 推送一个条目：
 
-| Key | Required | Meaning |
+| 键 | 必需 | 含义 |
 | --- | --- | --- |
-| `type` | Yes | The tag name of your feature, without `custom:`. |
-| `name` | | The name in the picker. |
-| `isSupported(hass, context)` | | Returns whether the feature works for the card it would go into. The picker only offers it when this returns `true`. |
-| `configurable` | | Set to `true` when the feature has options to edit. Defaults to `false`. |
+| `type` | 是 | 你的功能的标签名，不含 `custom:`。 |
+| `name` | | 在选择器中显示的名称。 |
+| `isSupported(hass, context)` | | 返回该功能是否适用于它将被放入的卡片。只有当此方法返回 `true` 时，选择器才会提供该功能。 |
+| `configurable` | | 当该功能有可编辑的选项时，设置为 `true`。默认为 `false`。 |
 
-Always define `isSupported`. Without it, the feature is offered for every entity, including the ones it does nothing for.
+务必定义 `isSupported`。否则，该功能会为每个实体提供，包括那些它对其毫无作用的实体。
 
-A feature can have a visual editor, just like a card: the static `getConfigElement()` and `getConfigForm()` work the same as for [custom cards](/frontend/custom-ui/card-editor/). `getStubConfig(hass, context)` returns the configuration a new feature starts with, including its `type`.
+功能可以拥有可视化编辑器，就像卡片一样：静态方法 `getConfigElement()` 和 `getConfigForm()` 的用法与[自定义卡片](/frontend/custom-ui/card-editor/)相同。`getStubConfig(hass, context)` 返回新功能的初始配置，包括其 `type`。
 
-## Fit in
+## 融入界面
 
-Features sit in a tight space. Use the same variables as the built-in features, so yours lines up with them:
+功能所处的空间很紧凑。请使用与内置功能相同的变量，这样你的功能才能与它们对齐：
 
-| Variable | Default | Use it for |
+| 变量 | 默认值 | 用途 |
 | --- | --- | --- |
-| `--feature-height` | `42px` | The height of your control. |
-| `--feature-border-radius` | `12px` | The corners of buttons and sliders. |
-| `--feature-button-spacing` | `12px` | The space between buttons. |
+| `--feature-height` | `42px` | 控件的高度。 |
+| `--feature-border-radius` | `12px` | 按钮和滑块的圆角。 |
+| `--feature-button-spacing` | `12px` | 按钮之间的间距。 |

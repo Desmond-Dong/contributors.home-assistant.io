@@ -1,13 +1,13 @@
 ---
-title: Board metadata
-description: The variables in the meta file of every board, and the version file shared by all of them.
+title: 板卡元数据
+description: 每块板卡的 meta 文件中的变量，以及所有板卡共享的版本文件。
 sidebarGroup: Reference
 order: 3
 ---
 
-Every board folder in `buildroot-external/board/` has a file named `meta`. It describes the board to the build scripts: how to name the image, which bootloader and partition table to use, and which Supervisor images to pull. The build scripts read it as shell variables, together with the shared `buildroot-external/meta`.
+`buildroot-external/board/` 中的每个板卡文件夹都有一个名为 `meta` 的文件。它向构建脚本描述板卡：如何命名镜像、使用哪个引导加载程序和分区表，以及拉取哪些 Supervisor 镜像。构建脚本将其作为 shell 变量读取，同时还会读取共享的 `buildroot-external/meta`。
 
-Here is the one for Home Assistant Green:
+下面是 Home Assistant Green 的文件：
 
 ```shell
 BOARD_ID=green
@@ -24,38 +24,38 @@ SUPERVISOR_MACHINE=green
 SUPERVISOR_ARCH=aarch64
 ```
 
-## Board
+## 板卡（Board）
 
-| Variable | Meaning |
+| 变量 | 含义 |
 | --- | --- |
-| `BOARD_ID` | The board identifier, in lowercase. Used in the image file name, like `haos_green-18.3.img.xz`, in the RAUC `compatible` value, and as `VARIANT_ID` in `/usr/lib/os-release`. |
-| `BOARD_NAME` | The human readable name. Used in `VERSION` and `VARIANT` in `/usr/lib/os-release`. |
-| `CHASSIS` | The systemd chassis type, written to `/etc/machine-info`. `embedded` for boards, `vm` for the virtual machine images. |
+| `BOARD_ID` | 板卡标识符，小写。用于镜像文件名（如 `haos_green-18.3.img.xz`）、RAUC 的 `compatible` 值，以及 `/usr/lib/os-release` 中的 `VARIANT_ID`。 |
+| `BOARD_NAME` | 人类可读的名称。用于 `/usr/lib/os-release` 中的 `VERSION` 和 `VARIANT`。 |
+| `CHASSIS` | systemd 的机箱（chassis）类型，写入 `/etc/machine-info`。板卡使用 `embedded`，虚拟机镜像使用 `vm`。 |
 
-## Boot
+## 引导（Boot）
 
-| Variable | Meaning |
+| 变量 | 含义 |
 | --- | --- |
-| `BOOTLOADER` | `uboot`, `grub`, or `tryboot`. GRUB is used on UEFI systems, tryboot on Raspberry Pi 5, U-Boot everywhere else. It sets the RAUC bootloader backend, see [the update system](/os/operating-system/update-system/#boot-slots). |
-| `KERNEL_FILE` | The file name of the kernel binary: `Image` on aarch64, `bzImage` on x86-64. |
-| `PARTITION_TABLE_TYPE` | `gpt`, `hybrid`, or `mbr`. Home Assistant OS uses GPT where it can. GPT needs the second block of the disk for its header. Some boot ROMs need that block themselves, and then the board uses `mbr`. `hybrid` writes both tables, for boards where GPT works but the firmware still reads the MBR. See [partitions](/os/operating-system/partitions/). |
-| `BOOT_SIZE` | The size of the boot partition, like `32M`. |
-| `BOOT_SPL` | `true` or `false`. Whether the board has a secondary program loader (SPL), a small first stage loader that U-Boot builds for some boards. With `true`, the image reserves room for it, and update bundles include it. |
-| `BOOT_SPL_SIZE` | The room reserved for the SPL, like `8M`. Only with `BOOT_SPL=true`. |
-| `BOOT_ENV_SIZE` | The size of the U-Boot environment, in hexadecimal, like `0x4000`. RAUC needs it to read and write the environment on the `hassos-bootstate` partition. Only for U-Boot boards. |
+| `BOOTLOADER` | `uboot`、`grub` 或 `tryboot`。GRUB 用于 UEFI 系统，tryboot 用于 Raspberry Pi 5，其他地方使用 U-Boot。它设置 RAUC 的引导加载程序后端，参见[更新系统](/os/operating-system/update-system/#boot-slots)。 |
+| `KERNEL_FILE` | 内核二进制文件的文件名：aarch64 上为 `Image`，x86-64 上为 `bzImage`。 |
+| `PARTITION_TABLE_TYPE` | `gpt`、`hybrid` 或 `mbr`。Home Assistant OS 尽可能使用 GPT。GPT 需要磁盘的第二个块来存放其头部。某些引导 ROM 自身需要使用该块，此时板卡使用 `mbr`。`hybrid` 会同时写入两种分区表，适用于 GPT 可用但固件仍会读取 MBR 的板卡。参见[分区](/os/operating-system/partitions/)。 |
+| `BOOT_SIZE` | 引导分区的大小，如 `32M`。 |
+| `BOOT_SPL` | `true` 或 `false`。板卡是否具有二级程序加载器（SPL），即 U-Boot 为某些板卡构建的小型第一阶段加载器。设为 `true` 时，镜像会为其预留空间，更新包中也会包含它。 |
+| `BOOT_SPL_SIZE` | 为 SPL 预留的空间，如 `8M`。仅在 `BOOT_SPL=true` 时使用。 |
+| `BOOT_ENV_SIZE` | U-Boot 环境的大小，十六进制表示，如 `0x4000`。RAUC 需要它来在 `hassos-bootstate` 分区上读写环境。仅适用于 U-Boot 板卡。 |
 
 ## Supervisor
 
-| Variable | Meaning |
+| 变量 | 含义 |
 | --- | --- |
-| `SUPERVISOR_MACHINE` | The machine type. The Supervisor uses it to pick the right Home Assistant Core image, and apps use it to limit which machines they support. Several boards can share one, like `odroid-m1` for the ODROID-M1 and M1S. The current values are listed on [supported boards](/os/operating-system/boards/). |
-| `SUPERVISOR_ARCH` | The CPU architecture of the containers: `aarch64` or `amd64`. 32-bit architectures are no longer supported. |
+| `SUPERVISOR_MACHINE` | 机器类型。Supervisor 用它来选择正确的 Home Assistant Core 镜像，插件（app）也用它来限制所支持的机器。多块板卡可以共用一个值，例如 ODROID-M1 和 M1S 共用 `odroid-m1`。当前取值列在[支持的板卡](/os/operating-system/boards/)页面上。 |
+| `SUPERVISOR_ARCH` | 容器的 CPU 架构：`aarch64` 或 `amd64`。不再支持 32 位架构。 |
 
-Both end up in `/usr/lib/os-release`. The `haos-supervisor` service uses the architecture to pick the Supervisor image, and passes the machine to the Supervisor container.
+这两个变量最终都会写入 `/usr/lib/os-release`。`haos-supervisor` 服务使用架构来选择 Supervisor 镜像，并将机器类型传递给 Supervisor 容器。
 
-## The shared version file
+## 共享的版本文件
 
-`buildroot-external/meta` applies to every board:
+`buildroot-external/meta` 适用于所有板卡：
 
 ```shell
 VERSION_MAJOR="18"
@@ -68,8 +68,8 @@ HAOS_ID="haos"
 DEPLOYMENT="development"
 ```
 
-| Variable | Meaning |
+| 变量 | 含义 |
 | --- | --- |
-| `VERSION_MAJOR`, `VERSION_MINOR`, `VERSION_SUFFIX` | Together they form the version, like `18.4.dev0`, or `18.4` without a suffix. See [releases and builds](/os/operating-system/releases/#version-numbers). |
-| `HAOS_NAME`, `HAOS_ID` | The name and identifier of the operating system, used in `/usr/lib/os-release` and the image file names. |
-| `DEPLOYMENT` | `development`, `staging`, or `production`. Sets which certificates the image trusts for updates, see [the update system](/os/operating-system/update-system/#security). |
+| `VERSION_MAJOR`, `VERSION_MINOR`, `VERSION_SUFFIX` | 它们共同组成版本号，如 `18.4.dev0`，没有后缀时为 `18.4`。参见[发布与构建](/os/operating-system/releases/#version-numbers)。 |
+| `HAOS_NAME`, `HAOS_ID` | 操作系统的名称和标识符，用于 `/usr/lib/os-release` 和镜像文件名。 |
+| `DEPLOYMENT` | `development`、`staging` 或 `production`。设置镜像在更新时信任哪些证书，参见[更新系统](/os/operating-system/update-system/#security)。 |

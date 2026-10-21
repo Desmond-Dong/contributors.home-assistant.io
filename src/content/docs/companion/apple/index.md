@@ -1,62 +1,62 @@
 ---
 title: Apple
-description: The Home Assistant app for iPhone, iPad, Mac, Apple Watch, and CarPlay. What is in the repository, and where to start.
+description: 适用于 iPhone、iPad、Mac、Apple Watch 和 CarPlay 的 Home Assistant 应用。仓库里有什么，以及从哪里开始。
 order: 3
 source: https://github.com/home-assistant/iOS/blob/main/CONTRIBUTING.md
 lastVerified: 2026-10-14
 ---
 
-The Apple app brings Home Assistant to iPhone, iPad, Mac, Apple Watch, and CarPlay. Like the Android app, its center is a web view with the Home Assistant frontend. Around it, a lot is native: onboarding, settings, sensors, location, notifications and Live Activities, widgets and controls, App Intents and Shortcuts, the watch app and its complications, and CarPlay.
+Apple 应用将 Home Assistant 带到了 iPhone、iPad、Mac、Apple Watch 和 CarPlay 上。与 Android 应用一样，它的核心是一个加载 Home Assistant 前端的网页视图。围绕它，很多东西都是原生的：引导流程、设置、传感器、位置、通知和实时活动（Live Activities）、小组件和控制、App Intents 和快捷指令、手表应用及其复杂功能（complications），以及 CarPlay。
 
-All of it lives in one repository, [home-assistant/iOS](https://github.com/home-assistant/iOS), written in Swift. The Mac app is built with Mac Catalyst from the same code.
+所有这些都位于同一个仓库 [home-assistant/iOS](https://github.com/home-assistant/iOS) 中，使用 Swift 编写。Mac 应用通过 Mac Catalyst 从同一份代码构建。
 
-## The repository
+## 仓库
 
-Everything lives in [home-assistant/iOS](https://github.com/home-assistant/iOS). It is one Xcode project, `HomeAssistant.xcodeproj`, with the source in a few main folders:
+所有内容都在 [home-assistant/iOS](https://github.com/home-assistant/iOS) 中。它是一个 Xcode 项目 `HomeAssistant.xcodeproj`，源代码分布在几个主要文件夹中：
 
-| Folder | What it is |
+| 文件夹 | 内容 |
 | --- | --- |
-| `Sources/App` | The iPhone and iPad app |
-| `Sources/Shared` | Code every target shares: the API, the database, sensors, notifications |
-| `Sources/Extensions` | Widgets, App Intents, notifications, share, and Matter extensions |
-| `Sources/Watch`, `Sources/WatchApp` | The Apple Watch app |
+| `Sources/App` | iPhone 和 iPad 应用 |
+| `Sources/Shared` | 所有 target 共享的代码：API、数据库、传感器、通知 |
+| `Sources/Extensions` | 小组件、App Intents、通知、分享和 Matter 扩展 |
+| `Sources/Watch`、`Sources/WatchApp` | Apple Watch 应用 |
 | `Sources/CarPlay` | CarPlay |
-| `Sources/MacBridge` | Mac specific code for the Catalyst build |
-| `Sources/PushServer` | The push relay server, a separate Swift package |
-| `Tests` | Unit, UI, snapshot, and widget tests |
+| `Sources/MacBridge` | Catalyst 构建专用的 Mac 代码 |
+| `Sources/PushServer` | 推送中继服务器，一个独立的 Swift 包 |
+| `Tests` | 单元测试、UI 测试、快照测试和小组件测试 |
 
-The full list is in [architecture](/companion/apple/architecture/#the-source-folders).
+完整列表见[架构](/companion/apple/architecture/#the-source-folders)。
 
-## Set up
+## 环境搭建
 
-- [Get started](/companion/apple/get-started/): install Xcode and the tools, set up signing, and run the app.
+- [入门](/companion/apple/get-started/)：安装 Xcode 和相关工具，配置签名，并运行应用。
 
-## Architecture
+## 架构
 
-- [Architecture](/companion/apple/architecture/): how the code is organized, the `Current` environment that holds it together, and how the app talks to Home Assistant.
-- [Targets](/companion/apple/targets/): the app, the extensions, the watch, CarPlay, and the Mac, and what a change can affect.
+- [架构](/companion/apple/architecture/)：代码的组织方式、将一切串联起来的 `Current` 环境，以及应用如何与 Home Assistant 通信。
+- [Target](/companion/apple/targets/)：应用、扩展、手表、CarPlay 和 Mac，以及一次改动可能影响哪些部分。
 
-## Write code
+## 编写代码
 
-- [Code style](/companion/apple/code-style/): SwiftFormat, SwiftLint, and the conventions of the project.
+- [代码风格](/companion/apple/code-style/)：SwiftFormat、SwiftLint 以及项目的约定。
 
-## Test
+## 测试
 
-- [Testing](/companion/apple/testing/): unit, snapshot, UI, and end-to-end tests, and the patch coverage gate.
+- [测试](/companion/apple/testing/)：单元测试、快照测试、UI 测试和端到端测试，以及补丁覆盖率门槛。
 
-## Ship
+## 发布
 
-- [Submit a pull request](/companion/apple/submitting/): the checklist, the template, and the review.
-- [Continuous integration](/companion/apple/ci/): what runs on your pull request, and what happens after a merge.
-- [Releases](/companion/apple/releases/): from a merged pull request to App Store Connect, and Mac releases on GitHub.
+- [提交拉取请求](/companion/apple/submitting/)：检查清单、模板和审查流程。
+- [持续集成](/companion/apple/ci/)：你的拉取请求上会运行什么，以及合并之后会发生什么。
+- [发布](/companion/apple/releases/)：从合并的拉取请求到 App Store Connect，以及 GitHub 上的 Mac 版发布。
 
-## Translate
+## 翻译
 
-The text of the app is translated on Lokalise, in its own iOS project. You don't need a Mac or Xcode for that. See [your first translation](/translate/first-contribution/).
+应用的文本在 Lokalise 上翻译，位于其独立的 iOS 项目中。你不需要 Mac 或 Xcode。参见[你的第一次翻译](/translate/first-contribution/)。
 
-## Who to talk to
+## 联系谁
 
-- The **#apple-apps** channel on the [Home Assistant Discord](https://www.home-assistant.io/join-chat). Pick the developer role under **Channels & Roles** first.
-- [Issues](https://github.com/home-assistant/iOS/issues) in the iOS repository, for bugs and feature requests.
-- Want to test new features early? Join the [TestFlight beta](https://www.home-assistant.io/ios/beta/).
-- For how the app works for users, see the [companion app documentation](https://companion.home-assistant.io/).
+- [Home Assistant Discord](https://www.home-assistant.io/join-chat) 上的 **#apple-apps** 频道。请先在 **Channels & Roles** 下选择开发者角色。
+- iOS 仓库中的 [Issues](https://github.com/home-assistant/iOS/issues)，用于提交缺陷和功能请求。
+- 想提前测试新功能？加入 [TestFlight 测试版](https://www.home-assistant.io/ios/beta/)。
+- 有关应用在用户端的工作方式，请参阅[伴侣应用文档](https://companion.home-assistant.io/)。

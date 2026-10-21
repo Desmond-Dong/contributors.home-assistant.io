@@ -1,43 +1,43 @@
 ---
-title: Connect Core to a Supervisor
-description: Run Home Assistant Core from your development environment against a real Supervisor, to work on the hassio integration.
+title: 将 Core 连接到 Supervisor
+description: 在你的开发环境中运行 Home Assistant Core，连接真实的 Supervisor，以便开发 hassio 集成。
 sidebarGroup: Guides
 order: 3
 ---
 
-Home Assistant Core talks to the Supervisor through the `hassio` integration, in `homeassistant/components/hassio/`. To work on that integration, you need Core from your development environment talking to a real Supervisor. The [Core development environment](/core/development/environment/) has the first half. This page adds the Supervisor.
+Home Assistant Core 通过 `hassio` 集成（位于 `homeassistant/components/hassio/`）与 Supervisor 通信。要开发该集成，你需要让开发环境中的 Core 连接到一个真实的 Supervisor。[Core 开发环境](/core/development/environment/)已经提供了前一半，本页面将添加 Supervisor。
 
-## Get access to the Supervisor API
+## 获取 Supervisor API 的访问权限
 
-The Supervisor API needs a token. The **Remote API proxy** app gives you one, and makes the API reachable from outside the device:
+Supervisor API 需要一个令牌（token）。**Remote API proxy** 应用可以提供一个，并使该 API 可以从设备外部访问：
 
-1. Add the [development apps repository](https://github.com/home-assistant/apps-development) to the app store of the device running the Supervisor. That can be a test device, or the [Supervisor development container](/os/supervisor/development/).
-2. Install the **Remote API proxy** app, and select **Start**.
-3. The token shows up in the log of the app.
+1. 将[开发应用仓库](https://github.com/home-assistant/apps-development)添加到运行 Supervisor 的设备的应用商店中。该设备可以是测试设备，也可以是 [Supervisor 开发容器](/os/supervisor/development/)。
+2. 安装 **Remote API proxy** 应用，并选择 **Start**。
+3. 令牌会显示在该应用的日志中。
 
-The app needs to keep running while you work. It listens on port 8880 of the host.
+在你工作期间，该应用需要保持运行。它监听主机的 8880 端口。
 
-The proxy token has slightly fewer rights than the token Core gets in production. If you need the real one, get it on the host shell, see [debug the host](/os/operating-system/debugging/):
+代理令牌的权限比 Core 在生产环境中获得的令牌略少。如果你需要真正的令牌，可以在主机 shell 中获取，参见[调试主机](/os/operating-system/debugging/)：
 
 ```shell
 docker inspect homeassistant | grep SUPERVISOR_TOKEN
 ```
 
-Either token can change after a reboot or an update.
+两种令牌在重启或更新后都可能发生变化。
 
-## Start Core against it
+## 让 Core 连接它启动
 
-The `hassio` integration finds the Supervisor through two environment variables. Set them when you start Core:
+`hassio` 集成通过两个环境变量找到 Supervisor。在启动 Core 时设置它们：
 
 ```shell
 SUPERVISOR=192.168.1.100:8880 SUPERVISOR_TOKEN=abcdefgh1234 hass
 ```
 
-- `SUPERVISOR` is the address of the device, with the port of the proxy app.
-- `SUPERVISOR_TOKEN` is the token from the app log.
+- `SUPERVISOR` 是设备的地址，加上代理应用的端口。
+- `SUPERVISOR_TOKEN` 是来自应用日志的令牌。
 
-Your Core now loads the `hassio` integration, and shows the apps, backups, and system settings of that device.
+你的 Core 现在会加载 `hassio` 集成，并显示该设备的应用、备份和系统设置。
 
-## The frontend
+## 前端
 
-The frontend reaches the Supervisor through Core, which proxies the Supervisor API for admin users. So with Core connected like this, a [frontend development setup](/frontend/) pointed at your Core works with the Supervisor too.
+前端通过 Core 访问 Supervisor，Core 会为管理员用户代理 Supervisor API。因此，以这种方式连接的 Core，指向它的[前端开发环境](/frontend/)也可以与 Supervisor 一起使用。

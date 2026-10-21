@@ -1,15 +1,15 @@
 ---
-title: Jobs
-description: How the Supervisor runs work as jobs, with conditions, concurrency limits, throttling, and progress that clients can follow.
+title: 任务
+description: Supervisor 如何以任务（job）的形式运行工作，包括条件、并发限制、节流，以及客户端可以跟踪的进度。
 sidebarGroup: How it works
 order: 2
 ---
 
-Almost everything the Supervisor does that takes time is a job: installing an app, updating Core, making a backup. A job is an async method with the `@Job` decorator. The decorator handles what would otherwise be repeated everywhere: checking that the system is in a state where the work may run, preventing two runs at once, and reporting progress.
+Supervisor 所做的几乎所有耗时操作都是一个任务（job）：安装应用、更新 Core、创建备份。任务是一个带有 `@Job` 装饰器的异步方法。该装饰器处理了原本需要在各处重复编写的逻辑：检查系统是否处于允许该工作运行的状态、防止同时运行两次，以及报告进度。
 
-The code is in `supervisor/jobs/`.
+代码位于 `supervisor/jobs/`。
 
-## A job
+## 一个任务
 
 ```python
 from ..jobs.const import JobConcurrency, JobCondition
@@ -31,46 +31,46 @@ class HomeAssistantCore(JobGroup):
         """Update Home Assistant Core."""
 ```
 
-This is shortened from `supervisor/homeassistant/core.py`. The parts:
+这是从 `supervisor/homeassistant/core.py` 精简而来的。各部分说明：
 
-- `name`: unique across the Supervisor. It shows up in the API and the logs.
-- `conditions`: what must be true before the job runs.
-- `on_condition`: the exception to raise when a condition fails. Without it, the job logs the failure and returns.
-- `concurrency`: what happens when the job, or its group, is already running.
+- `name`：在整个 Supervisor 中唯一。它会出现在 API 和日志中。
+- `conditions`：任务运行前必须满足的条件。
+- `on_condition`：条件不满足时抛出的异常。如果没有指定，任务会记录失败并返回。
+- `concurrency`：当该任务（或其所在组）已经在运行时的处理方式。
 
-## Conditions
+## 条件
 
-Conditions are defined as `JobCondition` in `supervisor/jobs/const.py`. Some common ones:
+条件在 `supervisor/jobs/const.py` 中定义为 `JobCondition`。一些常见的条件：
 
-| Condition | Passes when |
+| 条件 | 满足条件时通过 |
 | --- | --- |
-| `healthy` | The system is not marked unhealthy |
-| `free_space` | There is enough free space on the data disk |
-| `internet_host`, `internet_system` | The host, or the Supervisor itself, has internet |
-| `running` | The Supervisor is in the running state |
-| `haos` | The system runs Home Assistant OS |
-| `os_agent` | The OS Agent is available |
-| `supervisor_updated` | The Supervisor runs the latest version |
-| `plugins_updated` | Every plugin runs its latest version |
-| `auto_update` | Automatic updates are on |
-| `mount_available` | The host supports network storage mounts |
+| `healthy` | 系统未被标记为不健康 |
+| `free_space` | 数据磁盘上有足够的可用空间 |
+| `internet_host`, `internet_system` | 主机或 Supervisor 本身可以访问互联网 |
+| `running` | Supervisor 处于运行状态 |
+| `haos` | 系统运行的是 Home Assistant OS |
+| `os_agent` | OS Agent 可用 |
+| `supervisor_updated` | Supervisor 运行的是最新版本 |
+| `plugins_updated` | 每个插件都运行其最新版本 |
+| `auto_update` | 自动更新已开启 |
+| `mount_available` | 主机支持网络存储挂载 |
 
-For debugging, conditions can be ignored with `ha jobs options --ignore-conditions <condition>`. A system that does that is marked as unsupported, with the `job_conditions` reason. Undo it with `ha jobs reset`.
+为了便于调试，可以使用 `ha jobs options --ignore-conditions <condition>` 忽略条件。执行此操作的系统会被标记为不受支持，原因为 `job_conditions`。可以使用 `ha jobs reset` 撤销。
 
-## Concurrency and throttling
+## 并发与节流
 
-`JobConcurrency` controls what happens when a job is called while it already runs:
+`JobConcurrency` 控制当一个任务已在运行时再次被调用时的处理方式：
 
-- `REJECT`: fail right away.
-- `QUEUE`: wait for the running one to finish, then run.
-- `GROUP_REJECT` and `GROUP_QUEUE`: the same, but for any job in the same group.
+- `REJECT`：立即失败。
+- `QUEUE`：等待正在运行的任务完成后再运行。
+- `GROUP_REJECT` 和 `GROUP_QUEUE`：相同，但适用于同一组中的任何任务。
 
-A group is a class that inherits from `JobGroup`, like an app or Home Assistant Core. All jobs on one instance share a lock, so an app can't be updated while it is being backed up. A job can call other jobs in its own group without deadlocking.
+组（group）是继承自 `JobGroup` 的类，例如一个应用或 Home Assistant Core。同一实例上的所有任务共享一个锁，因此应用在被备份时无法被更新。任务可以调用其所在组内的其他任务而不会死锁。
 
-`JobThrottle` limits how often a job runs. `THROTTLE` skips calls within a period, `RATE_LIMIT` allows a number of calls per period and fails after that. Both have group variants. They need `throttle_period`, and rate limits also `throttle_max_calls`.
+`JobThrottle` 限制任务的运行频率。`THROTTLE` 会跳过一个周期内的调用，`RATE_LIMIT` 允许每个周期内一定数量的调用，超过后则失败。两者都有组变体。它们需要 `throttle_period`，速率限制还需要 `throttle_max_calls`。
 
-## Progress and child jobs
+## 进度与子任务
 
-Every job has a UUID, a stage, a progress percentage, and its errors. Jobs started from within a job become its children. With `child_job_syncs`, a job can take its progress from a child, like an update that takes its progress from pulling the image.
+每个任务都有一个 UUID、一个阶段、一个进度百分比以及它的错误信息。从任务内部启动的任务会成为它的子任务。通过 `child_job_syncs`，一个任务可以从子任务获取进度，例如更新任务从拉取镜像的过程中获取进度。
 
-Clients follow jobs through the API, with `/jobs/info` and `/jobs/<uuid>`, and through events that Core receives. That is how the frontend shows the progress of an update. Jobs with `internal=True` are not exposed. Jobs with `cleanup=False` stay readable after they finish, so a client can pick up the result later.
+客户端通过 API（使用 `/jobs/info` 和 `/jobs/<uuid>`）以及 Core 接收到的事件来跟踪任务。前端就是这样显示更新进度的。带有 `internal=True` 的任务不会对外暴露。带有 `cleanup=False` 的任务在完成后仍保持可读，以便客户端稍后获取结果。

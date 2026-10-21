@@ -1,28 +1,28 @@
 ---
-title: The frontend screen
-description: The Android screen that shows the Home Assistant frontend in a web view, its states, the JavaScript bridge, and the external bus.
+title: 前端屏幕
+description: 在 Web 视图中显示 Home Assistant 前端的 Android 屏幕，包括其状态、JavaScript 桥接和外部总线。
 sidebarGroup: Architecture
 order: 3
 ---
 
-The frontend screen shows the Home Assistant frontend inside a [WebView](https://developer.android.com/reference/android/webkit/WebView), wrapped with native features: authentication, gestures, downloads, NFC, Matter and Thread, and media playback. It is the most complex screen in the app, and the reference implementation of the [UI architecture](/companion/android/ui-architecture/). Its inputs come from everywhere at once: the user, the web view, the external bus, system callbacks, and timeouts. That is exactly the situation the pattern is made for. The code lives in the [`frontend/`](https://github.com/home-assistant/android/tree/main/app/src/main/kotlin/io/homeassistant/companion/android/frontend) package. The older `webview/` package is the legacy implementation that is being removed.
+前端屏幕在一个 [WebView](https://developer.android.com/reference/android/webkit/WebView) 中显示 Home Assistant 前端，并包裹着原生功能：身份验证、手势、下载、NFC、Matter 和 Thread，以及媒体播放。它是应用中最复杂的屏幕，也是[UI 架构](/companion/android/ui-architecture/)的参考实现。它的输入同时来自四面八方：用户、Web 视图、外部总线、系统回调和超时。这正是该模式所应对的场景。代码位于 [`frontend/`](https://github.com/home-assistant/android/tree/main/app/src/main/kotlin/io/homeassistant/companion/android/frontend) 包中。较旧的 `webview/` 包是正在被移除的旧版实现。
 
-## The pieces
+## 组成部分
 
-| Role in the pattern | Frontend implementation |
+| 在模式中的角色 | 前端实现 |
 | --- | --- |
-| Navigation and events | `frontendScreen()`, `FrontendEventHandler` |
-| View | `FrontendScreen`, `FrontendScreenContent` |
+| 导航和事件 | `frontendScreen()`、`FrontendEventHandler` |
+| 视图 | `FrontendScreen`、`FrontendScreenContent` |
 | ViewModel | `FrontendViewModel` |
-| State | `FrontendViewState` |
-| Events | `FrontendEvent` |
-| Actions | `WebViewAction` |
-| Prompts | `SingleSlotQueue` with `FrontendDialog`, `PermissionRequest`, `FileChooserRequest` |
-| Handlers | `FrontendMessageHandler`, `FrontendMatterThreadHandler`, `FrontendHttpAuthHandler`, `FrontendFileChooserHandler`, and more |
-| Managers | `PermissionManager`, `FrontendDialogManager`, `FrontendUrlManager`, `FrontendDownloadManager`, `FrontendGestureManager`, `FrontendExoPlayerManager`, and more |
-| Repositories | `FrontendExternalBusRepository`, `ServerSessionManager` |
+| 状态 | `FrontendViewState` |
+| 事件 | `FrontendEvent` |
+| 操作 | `WebViewAction` |
+| 提示 | `SingleSlotQueue`，配合 `FrontendDialog`、`PermissionRequest`、`FileChooserRequest` |
+| 处理器 | `FrontendMessageHandler`、`FrontendMatterThreadHandler`、`FrontendHttpAuthHandler`、`FrontendFileChooserHandler` 等 |
+| 管理器 | `PermissionManager`、`FrontendDialogManager`、`FrontendUrlManager`、`FrontendDownloadManager`、`FrontendGestureManager`、`FrontendExoPlayerManager` 等 |
+| 仓库 | `FrontendExternalBusRepository`、`ServerSessionManager` |
 
-Their dependencies follow the layers of the pattern, and only point down:
+它们的依赖关系遵循该模式的分层，并且只向下指向：
 
 ```mermaid
 flowchart TB
@@ -43,23 +43,23 @@ flowchart TB
     Managers --> UseCases & Repos
 ```
 
-At runtime, results flow back up through the flows each layer exposes. Managers push pending state that the screen renders, handlers push results that the ViewModel reduces, and repositories emit typed messages that the handlers consume.
+在运行时，结果通过各层暴露的流（flow）向上回流。管理器推送屏幕渲染的待处理状态，处理器推送 ViewModel 归约（reduce）的结果，仓库发出供处理器消费的类型化消息。
 
-## States and overlays
+## 状态和覆盖层
 
-`FrontendScreen` always renders the web view at the bottom, and draws one overlay on top depending on the state. The web view stays mounted underneath, so it keeps its page when the overlay changes.
+`FrontendScreen` 始终在底层渲染 Web 视图，并根据状态在其上绘制一个覆盖层。Web 视图保持挂载在下方，因此当覆盖层变化时它会保留其页面。
 
-| State | Overlay |
+| 状态 | 覆盖层 |
 | --- | --- |
-| `LoadServer`, `Loading` | Loading indicator |
-| `Content` | None, the frontend shows through |
-| `SecurityLevelRequired` | The connection security level setup |
-| `Insecure` | The insecure connection screen |
-| `Error` | The connection error screen |
+| `LoadServer`、`Loading` | 加载指示器 |
+| `Content` | 无，直接显示前端 |
+| `SecurityLevelRequired` | 连接安全级别设置 |
+| `Insecure` | 不安全连接屏幕 |
+| `Error` | 连接错误屏幕 |
 
-`LoadServer` is the entry point. It also blanks the web view, by loading `about:blank`, while the ViewModel resolves the URL to load. From there it moves to `Loading`, `Insecure`, `SecurityLevelRequired`, or `Error`. `Loading` moves to `Content` once the frontend connects over the external bus. Servers from 2026.8 also report when the frontend has finished rendering, and the loading indicator stays up until then. A timeout or load error moves to `Error`, and a retry goes back to `LoadServer`. Switching servers also re-enters `LoadServer`. One kind of error can't be retried: a `FrontendConnectionError.Unrecoverable`, like the system WebView failing to start. The ViewModel ignores any transition out of that `Error` state.
+`LoadServer` 是入口点。在 ViewModel 解析要加载的 URL 的同时，它还会通过加载 `about:blank` 清空 Web 视图。之后它会转入 `Loading`、`Insecure`、`SecurityLevelRequired` 或 `Error`。一旦前端通过外部总线连接，`Loading` 就会转入 `Content`。2026.8 及以后版本的服务器还会报告前端何时完成渲染，加载指示器会一直显示到那时。超时或加载错误会转入 `Error`，重试则回到 `LoadServer`。切换服务器也会重新进入 `LoadServer`。有一种错误无法重试：`FrontendConnectionError.Unrecoverable`，例如系统 WebView 启动失败。ViewModel 会忽略从该 `Error` 状态出发的任何转换。
 
-The main transitions between the states:
+状态之间的主要转换：
 
 ```mermaid
 stateDiagram-v2
@@ -80,9 +80,9 @@ stateDiagram-v2
     SecurityLevelRequired --> LoadServer: done
 ```
 
-### Reusing the error screen
+### 复用错误屏幕
 
-The connection error screen is shared with onboarding, so it can't depend on `FrontendViewModel`. It depends on a small interface with only what it needs, `FrontendConnectionErrorStateProvider`:
+连接错误屏幕与引导流程（onboarding）共用，因此它不能依赖 `FrontendViewModel`。它依赖一个只包含其所需内容的小接口 `FrontendConnectionErrorStateProvider`：
 
 ```kotlin
 interface FrontendConnectionErrorStateProvider {
@@ -93,36 +93,36 @@ interface FrontendConnectionErrorStateProvider {
 }
 ```
 
-`FrontendConnectionErrorScreen` is written against this interface. `FrontendViewModel` implements it, so the error overlay gets the ViewModel itself as its provider. Previews and tests use `FrontendConnectionErrorStateProvider.noOp`.
+`FrontendConnectionErrorScreen` 是针对这个接口编写的。`FrontendViewModel` 实现了它，因此错误覆盖层直接以该 ViewModel 本身作为其提供者。预览和测试使用 `FrontendConnectionErrorStateProvider.noOp`。
 
-That is the general trick for reusing UI or logic across screens: define an interface for exactly what the reusable part needs, and let each ViewModel implement it. The dependency then points at the interface, not at one specific ViewModel.
+这就是跨屏幕复用 UI 或逻辑的通用技巧：为可复用部分所需的内容精确定义一个接口，并让每个 ViewModel 实现它。这样依赖就指向接口，而不是某个特定的 ViewModel。
 
-## The web view
+## Web 视图
 
-`FrontendScreen` creates the web view through `HAWebView`, a reusable composable. It creates the platform `WebView` inside an `AndroidView`, applies the base settings, sends the back button to the web view history before the navigation host, and shows a placeholder in previews and screenshot tests. When creating the web view fails, it reports that, and the ViewModel turns it into the unrecoverable `Error` state.
+`FrontendScreen` 通过 `HAWebView`（一个可复用的组合项）创建 Web 视图。它在 `AndroidView` 中创建平台 `WebView`，应用基础设置，在导航宿主之前将返回按钮发送给 Web 视图历史记录，并在预览和截图测试中显示占位符。当创建 Web 视图失败时，它会报告该情况，ViewModel 会将其转换为不可恢复的 `Error` 状态。
 
-On top of that, `FrontendScreen` adds what only the frontend needs: it attaches the two clients below, enables cookies (including third-party cookies, which some integrations rely on), and wires up downloads and the gesture listener.
+在此基础上，`FrontendScreen` 添加了仅前端需要的内容：挂载下面提到的两个客户端，启用 Cookie（包括某些集成所依赖的第三方 Cookie），并连接下载和手势监听器。
 
-The ViewModel creates the two clients of the web view:
+ViewModel 创建 Web 视图的两个客户端：
 
-- `HAWebViewClient` comes from `HAWebViewClientFactory`. It handles TLS client certificates, maps load and TLS errors, reports finished page loads, surfaces HTTP basic auth challenges, and recovers when the renderer crashes.
-- `HAWebChromeClient` comes from `viewModel.createWebChromeClient()`. It handles camera and microphone permission requests, JavaScript `confirm()` dialogs, the file chooser, and full screen video.
+- `HAWebViewClient` 来自 `HAWebViewClientFactory`。它处理 TLS 客户端证书、映射加载和 TLS 错误、报告页面加载完成、呈现 HTTP 基本认证质询，并在渲染器崩溃时恢复。
+- `HAWebChromeClient` 来自 `viewModel.createWebChromeClient()`。它处理摄像头和麦克风权限请求、JavaScript `confirm()` 对话框、文件选择器和全屏视频。
 
 > [!NOTE]
-> A ViewModel normally holds no platform UI types. These clients are the one accepted exception, because they are wired to ViewModel logic: error mapping, page load callbacks, HTTP auth, and permissions. It doesn't cost testability: the web view client comes from a factory that a test can fake, and the chrome client is only built when the screen asks for it. The reduction logic of the ViewModel still runs as a plain JVM unit test.
+> ViewModel 通常不持有平台 UI 类型。这两个客户端是唯一被接受的例外，因为它们与 ViewModel 逻辑绑定：错误映射、页面加载回调、HTTP 认证和权限。这不会损害可测试性：Web 视图客户端来自一个测试可以伪造（fake）的工厂，而 chrome 客户端只在屏幕请求时才构建。ViewModel 的归约逻辑仍然可以作为普通的 JVM 单元测试运行。
 
-## Talking to the frontend
+## 与前端通信
 
-The frontend and the app talk over a JavaScript bridge. It carries two things:
+前端和应用通过一个 JavaScript 桥接进行通信。它承载两件事：
 
-- **External authentication**: the frontend asks the app for an access token instead of showing a login page.
-- **The external bus**: messages in both directions, for example to open the native settings, scan a QR code, or start Assist.
+- **外部身份验证**：前端向应用请求访问令牌（access token），而不是显示登录页面。
+- **外部总线**：双向消息，例如打开原生设置、扫描二维码或启动 Assist。
 
-The frontend side is documented in [external authentication](/frontend/reference/external-auth/) and [the external bus](/frontend/reference/external-bus/).
+前端一侧的文档见[外部身份验证](/frontend/reference/external-auth/)和[外部总线](/frontend/reference/external-bus/)。
 
-`FrontendJsBridge` is the JavaScript interface registered in the web view. It parses calls from the frontend into typed messages and hands them to `FrontendMessageHandler`. `FrontendExternalBusRepository` owns the bus itself: it deserializes incoming JSON, tolerating message types it doesn't know, and turns outgoing messages into scripts.
+`FrontendJsBridge` 是注册在 Web 视图中的 JavaScript 接口。它将来自前端的调用解析为类型化消息，并交给 `FrontendMessageHandler`。`FrontendExternalBusRepository` 拥有总线本身：它反序列化传入的 JSON（容忍它不认识的消息类型），并将传出消息转换为脚本。
 
-Nothing below `FrontendScreen` touches the web view. Everything else talks through flows:
+`FrontendScreen` 之下的任何内容都不直接接触 Web 视图。其他一切都通过流进行通信：
 
 ```mermaid
 flowchart TB
@@ -146,33 +146,33 @@ flowchart TB
     Bus -->|"incomingMessages(),<br/>webViewActions()"| Handler
 ```
 
-In words:
+用文字描述：
 
-- **Frontend to app**: the frontend calls the bridge, the handler passes the message to the repository, and the result flows back to the ViewModel as a typed event.
-- **App to frontend**: a component sends a typed message to the repository, which wraps it in a `WebViewAction.EvaluateScript`. `FrontendScreen` runs it in the web view.
-- **Authentication**: the frontend calls `getExternalAuth` or `revokeExternalAuth`, the handler asks `ServerSessionManager`, and the callback script runs in the web view. The bridge checks the callback name before it passes the call on.
+- **前端到应用**：前端调用桥接，处理器将消息传递给仓库，结果作为类型化事件流回 ViewModel。
+- **应用到前端**：某个组件向仓库发送一条类型化消息，仓库将其包装在 `WebViewAction.EvaluateScript` 中。`FrontendScreen` 在 Web 视图中执行它。
+- **身份验证**：前端调用 `getExternalAuth` 或 `revokeExternalAuth`，处理器询问 `ServerSessionManager`，回调脚本在 Web 视图中运行。桥接在传递调用之前会检查回调名称。
 
-The action and event flows are `SharedFlow`s with a small extra buffer, so a sender doesn't have to wait while the web view is still busy with an earlier command. They don't replay, though: a command sent while nothing collects the flow is dropped.
+操作和事件流是带有小额外缓冲区的 `SharedFlow`，因此当 Web 视图仍在处理较早的命令时，发送方不必等待。但它们不会重放：在没有任何收集者收集流时发送的命令会被丢弃。
 
-### Two bridge versions
+### 两个桥接版本
 
-The bridge exists in two versions:
+桥接存在两个版本：
 
-- **V1** (`window.externalApp`) uses `addJavascriptInterface`. The frontend calls named methods directly.
-- **V2** (`window.externalAppV2`) uses `WebViewCompat.addWebMessageListener`, for Home Assistant 2026.4.2 and later. All messages go through `postMessage` as JSON with a `type`, with filtering on origin and frames for security.
+- **V1**（`window.externalApp`）使用 `addJavascriptInterface`。前端直接调用命名方法。
+- **V2**（`window.externalAppV2`）使用 `WebViewCompat.addWebMessageListener`，适用于 Home Assistant 2026.4.2 及更高版本。所有消息都通过 `postMessage` 以带有 `type` 的 JSON 形式传输，并出于安全考虑对来源（origin）和框架（frame）进行过滤。
 
-The app uses V2 when the server is new enough and the device's WebView supports the `WEB_MESSAGE_LISTENER` feature. Otherwise, it falls back to V1.
+当服务器足够新且设备的 WebView 支持 `WEB_MESSAGE_LISTENER` 特性时，应用使用 V2。否则，它会回退到 V1。
 
-## Scoping
+## 作用域
 
-The blocks of one screen session are `@ViewModelScoped`. That includes `FrontendExternalBusRepository`: the bus only exists for one web view, so buffered messages from one visit can't leak into the next. `FrontendHandlerModule` binds `FrontendMessageHandler` as both `FrontendJsHandler` and `FrontendBusObserver` in the `ViewModelComponent`, so both roles share one instance.
+一次屏幕会话中的各个块都是 `@ViewModelScoped` 的。这包括 `FrontendExternalBusRepository`：总线只为一个 Web 视图存在，因此一次访问中缓冲的消息不会泄漏到下一次。`FrontendHandlerModule` 在 `ViewModelComponent` 中将 `FrontendMessageHandler` 同时绑定为 `FrontendJsHandler` 和 `FrontendBusObserver`，因此两个角色共享同一个实例。
 
-## Testing
+## 测试
 
-| What | Test type |
+| 内容 | 测试类型 |
 | --- | --- |
-| `FrontendViewModel` | Unit tests with JUnit and Turbine |
-| Managers and handlers | Unit tests, one concern at a time |
-| `FrontendScreenContent` | Compose UI tests, per state |
-| `FrontendEventHandler` | Compose UI tests, one per event |
-| `FrontendScreen` | Screenshot tests, for looks only, no logic |
+| `FrontendViewModel` | 使用 JUnit 和 Turbine 的单元测试 |
+| 管理器和处理器 | 单元测试，每次关注一个问题 |
+| `FrontendScreenContent` | Compose UI 测试，按状态进行 |
+| `FrontendEventHandler` | Compose UI 测试，每个事件一个 |
+| `FrontendScreen` | 截图测试，仅针对外观，不含逻辑 |

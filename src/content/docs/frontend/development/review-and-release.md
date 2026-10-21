@@ -1,74 +1,74 @@
 ---
-title: Review and release
-description: What happens to a frontend pull request after you open it, and how a merged change reaches the people using Home Assistant.
+title: 审查与发布
+description: 前端拉取请求（pull request）在打开之后会发生什么，以及合并后的更改如何到达使用 Home Assistant 的用户手中。
 order: 7
 ---
 
-Opening a pull request is the start of a conversation, not the end of your work. This page explains what reviewers look at, which checks run, and how your change ends up in a release.
+打开拉取请求（pull request）只是对话的开始，而不是你工作的结束。本页介绍审查者会关注什么、会运行哪些检查，以及你的更改如何进入一个发布版本。
 
-## Before review
+## 审查之前
 
-A few things happen automatically when you open a pull request against `dev`:
+当你针对 `dev` 打开一个拉取请求时，有几件事会自动发生：
 
-- **The template check.** The pull request must use the [template](https://github.com/home-assistant/frontend/blob/dev/.github/PULL_REQUEST_TEMPLATE.md) without removing its sections, check exactly one **Type of change**, and describe the change under **Proposed change**. If it does not, the pull request gets the `Needs Template` label and a comment, and the check fails until you fix it. Drafts are skipped, so the check runs when you mark the pull request ready for review.
-- **Labels.** A bot labels the pull request by the files it changes, like `Dashboards`, `Automations`, or `Tests: Unit`. A second script adds `Companion App`, `Home Assistant Link`, `Labs`, and `Supervisor` when the change touches those parts of the code, even from outside their folders. Both remove a label again once it no longer matches, also one that was added by hand. The rules are in [`.github/labeler.yml`](https://github.com/home-assistant/frontend/blob/dev/.github/labeler.yml) and [`.github/scripts/label-content.mts`](https://github.com/home-assistant/frontend/blob/dev/.github/scripts/label-content.mts).
-- **The CLA.** The first time you contribute, a bot asks you to sign the contributor license agreement.
-- **CI.** Linters, type checks, unit tests, a production build, and the end-to-end tests run on every push. They need to pass before your pull request can be merged.
+- **模板检查。** 拉取请求必须使用[模板](https://github.com/home-assistant/frontend/blob/dev/.github/PULL_REQUEST_TEMPLATE.md)，不能删除其中的章节，必须恰好勾选一个 **Type of change**，并在 **Proposed change** 下描述更改。如果没有做到，拉取请求会被打上 `Needs Template` 标签并收到一条评论，检查会一直失败，直到你修复为止。草稿会被跳过，因此当你将拉取请求标记为准备好接受审查时，检查才会运行。
+- **标签。** 一个机器人会根据拉取请求所更改的文件为其打上标签，例如 `Dashboards`、`Automations` 或 `Tests: Unit`。另一个脚本会在更改涉及这些代码部分时添加 `Companion App`、`Home Assistant Link`、`Labs` 和 `Supervisor` 标签，即使更改来自它们文件夹之外。一旦标签不再匹配，两者都会移除该标签，包括手动添加的标签。规则位于 [`.github/labeler.yml`](https://github.com/home-assistant/frontend/blob/dev/.github/labeler.yml) 和 [`.github/scripts/label-content.mts`](https://github.com/home-assistant/frontend/blob/dev/.github/scripts/label-content.mts)。
+- **CLA。** 第一次贡献时，机器人会要求你签署贡献者许可协议。
+- **CI。** 代码检查工具、类型检查、单元测试、生产构建以及端到端测试会在每次推送时运行。它们必须通过，你的拉取请求才能被合并。
 
-Keep a pull request to one change. If you find yourself checking two **Type of change** boxes, split it. Small pull requests get reviewed faster.
+保持一个拉取请求只包含一个更改。如果你发现自己勾选了两个 **Type of change** 复选框，请将其拆分。小的拉取请求能更快得到审查。
 
-## What reviewers look at
+## 审查者关注什么
 
-Frontend maintainers review every pull request. Besides "does it work", they check:
+前端维护者会审查每一个拉取请求。除了“它是否能工作”之外，他们还会检查：
 
-- **Behavior in every state.** Loading, error, unavailable, missing entities, and transitions in both directions. Not just the happy path.
-- **Existing patterns.** Shared `ha-*` components, existing helpers, and theme variables instead of a parallel implementation.
-- **Text.** All user-facing text is translatable, in sentence case, and uses the right terms.
-- **Accessibility.** Keyboard navigation, focus, labels, and touch targets.
-- **Narrow screens and right-to-left languages.** The frontend runs on phones, and in languages written from right to left.
-- **Cleanup.** Event listeners, timers, and subscriptions are removed when a component goes away.
+- **各种状态下的行为。** 加载中、错误、不可用、实体（entity）缺失，以及双向的状态转换。而不仅仅是正常路径。
+- **现有模式。** 使用共享的 `ha-*` 组件、现有的辅助元素（helper）和主题变量，而不是另起炉灶的并行实现。
+- **文本。** 所有面向用户的文本都必须可翻译、使用句首大写，并使用正确的术语。
+- **无障碍性。** 键盘导航、焦点、标签和触摸目标。
+- **窄屏和从右到左的语言。** 前端运行在手机上，也运行在从右到左书写的语言中。
+- **清理。** 当组件被移除时，事件监听器、定时器和订阅也要一并移除。
 
-The [coding guidelines](/frontend/development/guidelines/) cover these in more detail.
+[编码指南](/frontend/development/guidelines/)更详细地介绍了这些内容。
 
-### Screenshots and the design gallery
+### 截图与设计画廊
 
-For any visible change, add before and after screenshots or a short video to the pull request. Reviewers judge a lot from those.
+对于任何可见的更改，请在拉取请求中添加前后对比截图或短视频。审查者会根据这些内容做出很多判断。
 
-A change to a component that has a page in the gallery should update that page too. Maintainers can add the `needs design preview` label, which deploys a preview of the gallery for your pull request. The published design guidance lives in the [Design](/design/components/) area of this site: when the component has a page there, update it with a pull request to [this site](https://github.com/home-assistant/contributors.home-assistant.io).
+如果更改的组件在画廊中有页面，也应该更新该页面。维护者可以添加 `needs design preview` 标签，这会为你的拉取请求部署一个画廊预览。已发布的设计指南位于本站的 [Design](/design/components/) 区域：当组件在那里有页面时，请通过向[本站](https://github.com/home-assistant/contributors.home-assistant.io)提交拉取请求来更新它。
 
-### Changes that need design input
+### 需要设计意见的更改
 
-New cards, badges, screens, and interaction patterns are design decisions as much as code. When the direction is not settled, a reviewer adds the `Needs UX` label and asks the design team for input. That can take a while. Discussing a bigger idea in the [UX design discussions](https://github.com/OpenHomeFoundation/ux-design/discussions) before you write the code saves you a rewrite. The [Design](/design/how-we-design/) area explains how that works.
+新的卡片、徽章、屏幕和交互模式既是代码问题，也是设计决策。当方向尚未确定时，审查者会添加 `Needs UX` 标签并向设计团队征求意见。这可能需要一段时间。在编写代码之前，先在 [UX design discussions](https://github.com/OpenHomeFoundation/ux-design/discussions) 中讨论较大的想法，可以避免你重写代码。[Design](/design/how-we-design/) 区域解释了其工作方式。
 
-### Changes that need the backend
+### 需要后端的更改
 
-When your change depends on a pull request in Core, link it in the template. The frontend change waits until the backend change is merged. The labels `wait for backend` and `backend merged` track that.
+当你的更改依赖于 Core 中的某个拉取请求时，请在模板中链接它。前端更改会等待后端更改合并。标签 `wait for backend` 和 `backend merged` 用于跟踪这一过程。
 
-### Pull requests that go quiet
+### 长期无动静的拉取请求
 
-A pull request without any activity for 90 days gets the `stale` label and a comment. If nothing happens in the 7 days after that, it is closed. Any update removes the label again. Maintainers can exempt a pull request with the `no-stale` label. Issues follow the same timing, except those labeled as a feature request or help wanted.
+一个 90 天没有任何活动的拉取请求会被打上 `stale` 标签并收到一条评论。如果在那之后的 7 天内仍没有任何动静，它将被关闭。任何更新都会再次移除该标签。维护者可以使用 `no-stale` 标签豁免某个拉取请求。议题（issue）遵循相同的时限，但被标记为功能请求或求助（help wanted）的除外。
 
-## AI tools
+## AI 工具
 
-You can use AI tools to help you write code. You are responsible for the result: you must understand every change you submit and be able to explain it yourself. Pull requests or comments that look like unreviewed AI output are closed. The [Open Home Foundation AI policy](https://github.com/home-assistant/frontend/blob/dev/AI_POLICY.md) has the details.
+你可以使用 AI 工具来帮助你编写代码。但你要对结果负责：你必须理解你提交的每一处更改，并能自己解释它。看起来像未经审查的 AI 输出的拉取请求或评论会被关闭。详情请参阅 [Open Home Foundation AI policy](https://github.com/home-assistant/frontend/blob/dev/AI_POLICY.md)。
 
-## Help review
+## 帮助审查
 
-The pull request template asks you to review two other pull requests. It is not a formality. Every review, even "I tested this on my phone and it works", lightens the load on maintainers and shortens the queue your own pull request is in.
+拉取请求模板会要求你审查另外两个拉取请求。这不是走过场。每一次审查，哪怕是“我在手机上测试过，它能用”，都能减轻维护者的负担，并缩短你自己的拉取请求所在的队列。
 
-## From merge to release
+## 从合并到发布
 
-The frontend is released as a Python package, `home-assistant-frontend`, which Home Assistant Core installs as a requirement of its `frontend` integration. Versions are dates, like `20260930.0`.
+前端作为一个 Python 包 `home-assistant-frontend` 发布，Home Assistant Core 将其作为 `frontend` 集成（integration）的依赖进行安装。版本号是日期，例如 `20260930.0`。
 
-1. **Merged into `dev`.** Your change is in the next release. Every night a development build is made from `dev`.
-2. **Beta.** When the beta of a new Home Assistant release starts, the changes in `dev` go to the `rc` branch, the release candidate. A new frontend version is cut and tagged there, and Core bumps its requirement to it.
-3. **Fixes.** Bug fixes needed in the beta, or in a patch release after it, are cherry-picked onto `rc` by maintainers, and released and tagged there as `.1`, `.2`, and so on. Those pull requests get the `cherry-picked` label.
-4. **Release.** On release day, `rc` is merged into `master`, and your change ships with the next Home Assistant release.
+1. **合并到 `dev`。** 你的更改将进入下一个发布版本。每晚都会从 `dev` 构建一个开发版本。
+2. **Beta。** 当新的 Home Assistant 发布版本的 beta 开始时，`dev` 中的更改会进入 `rc` 分支，即候选发布版本（release candidate）。在那里会切出并标记一个新的前端版本，Core 会将其依赖提升到该版本。
+3. **修复。** beta 期间或之后的补丁版本中所需的错误修复，会由维护者 cherry-pick 到 `rc` 上，并在那里发布和标记为 `.1`、`.2` 等等。这些拉取请求会被打上 `cherry-picked` 标签。
+4. **发布。** 在发布日，`rc` 会被合并到 `master`，你的更改将随下一个 Home Assistant 发布版本一起发布。
 
-The [Releases](/releases/) area explains the release cycle of Home Assistant as a whole.
+[Releases](/releases/) 区域解释了 Home Assistant 整体的发布周期。
 
-### Documentation and backward-incompatible changes
+### 文档与向后不兼容的更改
 
-If your change adds or changes something users configure, update the user documentation on [home-assistant.io](https://github.com/home-assistant/home-assistant.io) and link that pull request in the template. [Writing docs](/writing/) explains how.
+如果你的更改添加或修改了用户需要配置的内容，请更新 [home-assistant.io](https://github.com/home-assistant/home-assistant.io) 上的用户文档，并在模板中链接该拉取请求。[Writing docs](/writing/) 介绍了具体方法。
 
-If your change breaks something for existing users, like a removed card option, fill in the **Breaking change** section of the template. That text goes into the release notes, so write it for users: what breaks, how to fix it, and why.
+如果你的更改给现有用户带来了破坏，例如移除了某个卡片选项，请填写模板中的 **Breaking change** 部分。这段文字会进入发布说明，所以要为用户而写：什么会被破坏、如何修复，以及为什么。

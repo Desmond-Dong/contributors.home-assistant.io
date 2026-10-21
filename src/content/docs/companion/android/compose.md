@@ -1,46 +1,46 @@
 ---
-title: Compose and the design system
-description: Build Android UI with Jetpack Compose, HATheme, and the `HA*` components. Previews, the Compose catalog, widgets, and navigation.
-sidebarLabel: Compose and design system
+title: Compose 与设计系统
+description: 使用 Jetpack Compose、HATheme 和 `HA*` 组件构建 Android UI。预览、Compose 目录、小组件和导航。
+sidebarLabel: Compose 与设计系统
 sidebarGroup: Write code
 order: 1
 ---
 
-All new UI in the Android app is [Jetpack Compose](https://developer.android.com/compose). No new XML layouts, data binding, or view binding. New widgets use [Jetpack Glance](https://developer.android.com/develop/ui/compose/glance); the old RemoteViews widgets are not extended anymore.
+Android 应用中所有新的 UI 都使用 [Jetpack Compose](https://developer.android.com/compose)。不再使用新的 XML 布局、数据绑定或视图绑定。新的小组件使用 [Jetpack Glance](https://developer.android.com/develop/ui/compose/glance)；旧的 RemoteViews 小组件不再扩展。
 
-## The design system
+## 设计系统
 
-The app has its own design system on top of Material 3, in `:common` under `io.homeassistant.companion.android.common.compose`:
+应用在 Material 3 之上拥有自己的设计系统，位于 `:common` 模块的 `io.homeassistant.companion.android.common.compose` 中：
 
-- **`HATheme`** applies the Home Assistant colors in light and dark mode. Apply it once in `setContent`, not inside your screen composable.
-- **`HA*` components**, like `HAAccentButton`, `HAFilledButton`, `HATextField`, `HACheckbox`, `HASwitch`, `HALoading`, `HADropdownMenu`, and `HAModalBottomSheet`. They live in the `composable` package next to the theme. Use them instead of Material components.
-- **`LocalHAColorScheme.current`** for colors. Never hard-code a color.
-- **`HATextStyle`** for typography, and **`HADimens.SPACE*`** for spacing and sizes. No magic numbers in padding.
+- **`HATheme`** 在浅色和深色模式下应用 Home Assistant 的配色。在 `setContent` 中应用一次即可，不要在屏幕 composable 内部应用。
+- **`HA*` 组件**，例如 `HAAccentButton`、`HAFilledButton`、`HATextField`、`HACheckbox`、`HASwitch`、`HALoading`、`HADropdownMenu` 和 `HAModalBottomSheet`。它们位于主题旁边的 `composable` 包中。请使用它们而不是 Material 组件。
+- **`LocalHAColorScheme.current`** 用于获取颜色。切勿硬编码颜色。
+- **`HATextStyle`** 用于排版，**`HADimens.SPACE*`** 用于间距和尺寸。内边距不要使用魔法数字。
 
-Raw Material 3 components get the wrong colors in light or dark mode. If the `HA*` wrapper you need doesn't exist yet, create it first, in its own pull request, with screenshot tests and a page in the Compose catalog.
+直接使用原始的 Material 3 组件在浅色或深色模式下会得到错误的颜色。如果你需要的 `HA*` 封装组件还不存在，请先创建它，放在单独的 pull request 中，并附带截图测试和 Compose 目录中的一个页面。
 
 > [!NOTE]
-> You will also find `HomeAssistantAppTheme`, a theme based on Material 2. It is deprecated, and only kept until the remaining screens that use it are migrated. Don't use it for new UI, and don't mix Material 2 and Material 3 in one screen.
+> 你还会发现 `HomeAssistantAppTheme`，这是一个基于 Material 2 的主题。它已被弃用，仅保留到使用它的剩余屏幕迁移完成。不要在新 UI 中使用它，也不要在同一屏幕中混用 Material 2 和 Material 3。
 
-### The Compose catalog
+### Compose 目录
 
-Debug builds include a catalog of all `HA*` components. Open it from the [developer playground](/companion/android/debugging/#the-developer-playground) with **Start HA Compose Catalog**. Check it before you build something new.
+Debug 构建包含所有 `HA*` 组件的目录。从[开发者游乐场](/companion/android/debugging/#the-developer-playground)通过 **Start HA Compose Catalog** 打开它。在构建新内容之前请先查看它。
 
-## Writing a screen
+## 编写屏幕
 
-Follow the [UI architecture](/companion/android/ui-architecture/): a stateful screen that collects the ViewModel state, and a stateless content composable that renders it. That is [state hoisting](https://developer.android.com/develop/ui/compose/state-hoisting), and it keeps your composables reusable and easy to preview. On top of that:
+遵循 [UI 架构](/companion/android/ui-architecture/)：一个有状态的屏幕负责收集 ViewModel 状态，一个无状态的内容 composable 负责渲染它。这就是[状态提升](https://developer.android.com/develop/ui/compose/state-hoisting)（state hoisting），它能让你的 composable 保持可复用且易于预览。除此之外：
 
-- **Keep composables small.** Split a large screen into small private composables, and move them to their own file when a file grows.
-- **Pass only what a composable needs**, not the whole state.
-- **No logic in the UI.** No sorting, filtering, or mapping in a composable. The state carries display-ready data. If you must compute something during composition, `remember` it.
-- **Name files after the component**, like `SettingsScreen.kt` or `UserCard.kt`. The stateless layer is `*Screen` or `*Content`. `*View` is legacy.
-- **Accessibility**: set a semantic `Role` on custom clickable rows, like `Modifier.clickable(role = Role.Checkbox)`, and give images a content description.
-- **Errors and feedback** go in a snackbar, not a toast.
-- **Text** comes from `stringResource(R.string.*)`, with the strings in `common/src/main/res/values/strings.xml`.
+- **保持 composable 简小。** 将大屏幕拆分为小的私有 composable，当文件变大时将它们移到各自的文件中。
+- **只传递 composable 所需的内容**，而不是整个状态。
+- **UI 中不包含逻辑。** 不要在 composable 中进行排序、过滤或映射。状态应携带可直接显示的数据。如果必须在组合期间进行计算，请使用 `remember`。
+- **以组件命名文件**，例如 `SettingsScreen.kt` 或 `UserCard.kt`。无状态层使用 `*Screen` 或 `*Content`。`*View` 是遗留命名。
+- **无障碍**：在自定义的可点击行上设置语义 `Role`，例如 `Modifier.clickable(role = Role.Checkbox)`，并为图片提供内容描述。
+- **错误和反馈**应显示在 snackbar 中，而不是 toast。
+- **文本**来自 `stringResource(R.string.*)`，字符串位于 `common/src/main/res/values/strings.xml` 中。
 
-## Previews
+## 预览
 
-Add a `@Preview` for every major composable, wrapped in `HAThemeForPreview`, which also draws the right background:
+为每个主要的 composable 添加一个 `@Preview`，并包裹在 `HAThemeForPreview` 中，它还会绘制正确的背景：
 
 ```kotlin
 @Preview
@@ -55,15 +55,15 @@ private fun SettingsScreenPreview() {
 }
 ```
 
-Previews are the quickest way to iterate: no build, no server, no onboarding. Add several, for each meaningful state, for light and dark mode, and for different screen sizes. Screenshot tests render the same composables, so a good preview is halfway to a [screenshot test](/companion/android/screenshot-testing/).
+预览是最快的迭代方式：无需构建、无需服务器、无需引导流程。请添加多个预览，覆盖每个有意义的状态、浅色和深色模式，以及不同的屏幕尺寸。截图测试渲染的是相同的 composable，因此一个好的预览就等于完成了一半的[截图测试](/companion/android/screenshot-testing/)。
 
-Once the app runs, Compose live edit and hot reload in Android Studio show many changes without a rebuild. Structural changes still need one.
+应用运行后，Android Studio 中的 Compose live edit 和热重载可以在不重新构建的情况下显示许多更改。结构性更改仍然需要重新构建。
 
-## Navigation
+## 导航
 
-The app uses Navigation Compose and is moving to one activity with one navigation graph, built from feature subgraphs. New screens go in the graph; old activities are migrated over time.
+应用使用 Navigation Compose，并正在迁移到单个 activity 和单个导航图，该导航图由各功能的子图构建而成。新屏幕放入导航图中；旧的 activity 会随时间逐步迁移。
 
-Use type-safe routes:
+使用类型安全的路由：
 
 ```kotlin
 @Serializable
@@ -79,4 +79,4 @@ fun NavGraphBuilder.featureNavGraph(navController: NavController) {
 }
 ```
 
-Navigation needs tests, including the back stack.
+导航需要测试，包括返回栈。

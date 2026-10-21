@@ -1,31 +1,31 @@
 ---
-title: Encryption
-description: Encrypt mobile_app webhook requests and responses with libsodium secret-key encryption.
+title: 加密
+description: 使用 libsodium 对称密钥加密来加密 mobile_app webhook 请求和响应。
 order: 3
 ---
 
-Webhook requests often travel over plain HTTP on the home network, and they carry location and sensor data. `mobile_app` can encrypt them both ways with [libsodium](https://doc.libsodium.org/). Always encrypt when you can.
+Webhook 请求通常通过家庭网络中的明文 HTTP 传输，并且携带位置和传感器数据。`mobile_app` 可以使用 [libsodium](https://doc.libsodium.org/) 对它们进行双向加密。只要有可能，请始终启用加密。
 
-## Turn it on
+## 开启加密
 
-There are two ways:
+有两种方式：
 
-- **At registration**: set `supports_encryption` to `true`. The response contains a `secret`.
-- **Later**: send an [`enable_encryption`](#enable-it-later) request.
+- **注册时**：将 `supports_encryption` 设置为 `true`。响应中会包含一个 `secret`。
+- **之后**：发送 [`enable_encryption`](#enable-it-later) 请求。
 
-The `secret` is your key. Store it securely, and keep it for as long as the registration exists. There is no way to get it back: the user can't look it up in the UI, and you should not ask them to dig through hidden storage files. If you lose the key, or encryption keeps failing, create a new registration and tell the user.
+`secret` 就是你的密钥。请安全地存储它，并在该注册存在期间一直保留。没有办法找回它：用户无法在 UI 中查看它，你也不应该要求他们去翻找隐藏的存储文件。如果你丢失了密钥，或者加密一直失败，请创建一个新的注册并告知用户。
 
-Once encryption is on, Home Assistant refuses unencrypted requests from that registration, with a `400` and the error code `encryption_required`.
+一旦开启加密，Home Assistant 将拒绝来自该注册的未加密请求，返回 `400` 和错误代码 `encryption_required`。
 
-## How it works
+## 工作原理
 
-The webhook uses the [secret-key authenticated encryption](https://doc.libsodium.org/secret-key_cryptography/secretbox) of libsodium, `crypto_secretbox` (XSalsa20 with Poly1305).
+该 webhook 使用 libsodium 的[对称密钥认证加密](https://doc.libsodium.org/secret-key_cryptography/secretbox)，即 `crypto_secretbox`（XSalsa20 配合 Poly1305）。
 
-- **The key** is the `secret`, a string of 64 hexadecimal characters. Decode it from hex into the 32 byte key.
-- **The plaintext** is the JSON of what would otherwise be in `data`. If a request type has no `data`, like `get_config`, encrypt an empty object, `{}`.
-- **The ciphertext** is the nonce followed by the encrypted message, encoded as Base64 with the original alphabet and padding. That is `sodium_base64_VARIANT_ORIGINAL`.
+- **密钥**是 `secret`，一个由 64 个十六进制字符组成的字符串。将其从十六进制解码为 32 字节的密钥。
+- **明文**是原本会放在 `data` 中的 JSON。如果请求类型没有 `data`，例如 `get_config`，则加密一个空对象 `{}`。
+- **密文**是随机数（nonce）后跟加密的消息，使用原始字母表和填充进行 Base64 编码。也就是 `sodium_base64_VARIANT_ORIGINAL`。
 
-Put it in the request instead of `data`:
+将其放入请求中以代替 `data`：
 
 ```json
 {
@@ -35,18 +35,18 @@ Put it in the request instead of `data`:
 }
 ```
 
-Responses with content come back in the same shape, `{"encrypted": true, "encrypted_data": "..."}`, encrypted with the same key. Decrypt them the same way. A few responses are never encrypted, like the empty `{}` and the `encryption_required` error: [the response](/companion/mobile-app-api/sending-data/#the-response) lists them. Check whether a body has `encrypted` set before you decrypt it.
+带有内容的响应会以相同的格式返回，即 `{"encrypted": true, "encrypted_data": "..."}`，并使用相同的密钥加密。用同样的方式解密它们。少数响应永远不会被加密，例如空的 `{}` 和 `encryption_required` 错误：[响应](/companion/mobile-app-api/sending-data/#the-response)中列出了它们。在解密之前，请先检查响应体是否设置了 `encrypted`。
 
 > [!NOTE]
-> Older app versions used the secret differently: its first 32 characters as the raw key bytes. Home Assistant still accepts that for registrations that have never sent a request with the hex key. The first request that decrypts with the hex key switches the registration over for good, and responses follow. New apps should only use the hex-decoded key.
+> 旧版本的应用以不同的方式使用该 secret：将其前 32 个字符作为原始密钥字节。对于从未使用十六进制密钥发送过请求的注册，Home Assistant 仍然接受这种方式。第一个使用十六进制密钥成功解密的请求会将该注册永久切换过来，响应也会随之改变。新的应用应只使用十六进制解码后的密钥。
 
-## Choose a library
+## 选择一个库
 
-Libsodium has bindings for most languages. For Swift, the official [swift-sodium](https://github.com/jedisct1/swift-sodium) is a good choice. For other languages, see the [list of bindings](https://doc.libsodium.org/bindings_for_other_languages). When there are several, pick one that is actively maintained and widely used.
+Libsodium 为大多数语言提供了绑定。对于 Swift，官方的 [swift-sodium](https://github.com/jedisct1/swift-sodium) 是一个不错的选择。对于其他语言，请参阅[绑定列表](https://doc.libsodium.org/bindings_for_other_languages)。当有多个选择时，请挑选一个积极维护且广泛使用的库。
 
-## Enable it later
+## 之后开启加密
 
-A registration may not have encryption, for example because it was made by an older app. Turn it on with:
+一个注册可能没有开启加密，例如因为它是由旧版本的应用创建的。可以通过以下请求开启：
 
 ```json
 {
@@ -54,7 +54,7 @@ A registration may not have encryption, for example because it was made by an ol
 }
 ```
 
-The response contains the new secret:
+响应中包含新的 secret：
 
 ```json
 {
@@ -62,4 +62,4 @@ The response contains the new secret:
 }
 ```
 
-This request is not encrypted, and neither is its response. If encryption is already on, an unencrypted request gets the usual `encryption_required` error, and an encrypted one gets a `400` with the error code `encryption_already_enabled`.
+此请求不会被加密，其响应也不会。如果加密已经开启，未加密的请求会收到通常的 `encryption_required` 错误，而加密的请求会收到 `400` 和错误代码 `encryption_already_enabled`。

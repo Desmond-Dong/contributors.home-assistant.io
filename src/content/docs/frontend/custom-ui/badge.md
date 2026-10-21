@@ -1,12 +1,12 @@
 ---
-title: Custom badges
-description: Build your own badge for the top of a dashboard view.
+title: 自定义徽章（badge）
+description: 为仪表盘视图顶部构建你自己的徽章。
 order: 5
 ---
 
-[Badges](/glossary/badge/) are the small pills at the top of a view, above the cards. They show a state at a glance, like the temperature outside or how many lights are on. A custom badge is built the same way as a [custom card](/frontend/custom-ui/card/), just smaller.
+[徽章（badge）](/glossary/badge/)是视图顶部、卡片上方的小胶囊。它们可以一目了然地显示某个状态，比如室外温度或亮着的灯的数量。自定义徽章的构建方式与[自定义卡片（card）](/frontend/custom-ui/card/)相同，只是更小。
 
-## An example
+## 示例
 
 ```js
 class TextBadge extends HTMLElement {
@@ -37,7 +37,7 @@ class TextBadge extends HTMLElement {
 customElements.define("text-badge", TextBadge);
 ```
 
-Load it as a [resource](/frontend/custom-ui/resources/), and add it to a view:
+将其作为[资源（resource）](/frontend/custom-ui/resources/)加载，并添加到视图中：
 
 ```yaml
 views:
@@ -47,15 +47,15 @@ views:
         entity: sensor.outside_temperature
 ```
 
-## What a badge gets
+## 徽章会获得什么
 
-- `setConfig(config)`: the configuration of the badge. Throw an error for an invalid configuration, and Home Assistant shows an error badge instead.
-- `hass`: the full state of Home Assistant, set on every change.
-- `preview`: `true` when the badge is shown in the badge editor.
+- `setConfig(config)`：徽章的配置。如果配置无效，请抛出错误，Home Assistant 将显示一个错误徽章。
+- `hass`：Home Assistant 的完整状态，每次变化时都会更新。
+- `preview`：当徽章显示在徽章编辑器中时为 `true`。
 
-## Badge picker and editor
+## 徽章选择器和编辑器
 
-To show your badge in the badge picker, push an entry to `window.customBadges`:
+要在徽章选择器中显示你的徽章，请向 `window.customBadges` 推送一个条目：
 
 ```js
 window.customBadges = window.customBadges || [];
@@ -68,6 +68,6 @@ window.customBadges.push({
 });
 ```
 
-The keys are the same as for [cards in the card picker](/frontend/custom-ui/card-editor/#show-up-in-the-card-picker), and a badge can also suggest itself for an entity with `getEntitySuggestion`.
+这些键与[卡片选择器中的卡片](/frontend/custom-ui/card-editor/#show-up-in-the-card-picker)相同，并且徽章还可以通过 `getEntitySuggestion` 为实体（entity）推荐自己。
 
-A badge can have a visual editor and a default configuration too. The static `getStubConfig()`, `getConfigForm()`, and `getConfigElement()` work exactly like they do for [custom cards](/frontend/custom-ui/card-editor/).
+徽章也可以拥有可视化编辑器和默认配置。静态方法 `getStubConfig()`、`getConfigForm()` 和 `getConfigElement()` 的工作方式与[自定义卡片](/frontend/custom-ui/card-editor/)完全相同。

@@ -1,27 +1,27 @@
 ---
-title: Android best practices
-description: The coding rules that come up in every Android review. Strong types, time, concurrency, dependency injection, logging, and failing fast.
-sidebarLabel: Best practices
-sidebarGroup: Write code
+title: Android 最佳实践
+description: 每次 Android 代码审查中都会出现的编码规则。强类型、时间、并发、依赖注入、日志记录，以及快速失败。
+sidebarLabel: 最佳实践
+sidebarGroup: 编写代码
 order: 2
 ---
 
-These are the practices reviewers look for in the Android app. Most come down to one idea: let the compiler and the tools catch mistakes, so people don't have to.
+这些是审查者在 Android 应用中关注的实践。大多数归结为一个理念：让编译器和工具来发现错误，而不是靠人。
 
-## General principles
+## 通用原则
 
-- **SOLID, KISS, and DRY.** The usual ones.
-- **Follow the community.** For anything this page doesn't cover, the [Now in Android](https://github.com/android/nowinandroid) app shows the practices the project follows.
-- **Keep it direct.** Don't add an abstraction for a single implementation or a future that may never come. Use the library or API directly, and abstract when a second real use shows up, or to hide an implementation outside its module (a public interface in `:common` with an `internal` implementation bound through Hilt).
-- **Don't store what you can derive** from existing state.
-- **Root cause before fix.** A bug fix states the actual cause and how to reproduce it. No speculative workarounds that patch symptoms.
-- **Small classes, small functions.** A function that is hard to name does too much.
-- **Composition over inheritance.** Build behavior from small, reusable parts instead of deep class hierarchies.
-- **Comments that last.** Document public functions, comment where it helps, and keep comments up to date with the code. Ask yourself if you will understand it in six months.
+- **SOLID、KISS 和 DRY。** 常规原则。
+- **跟随社区。** 对于本页面未涵盖的内容，[Now in Android](https://github.com/android/nowinandroid) 应用展示了本项目所遵循的实践。
+- **保持直接。** 不要为单一实现或可能永远不会到来的未来添加抽象。直接使用库或 API，当出现第二个真实使用场景时再抽象，或者为了隐藏模块之外的实现而抽象（例如在 `:common` 中定义公共接口，并通过 Hilt 绑定 `internal` 实现）。
+- **不要存储可以从现有状态推导出的内容。**
+- **先找根因再修复。** 缺陷修复应说明实际原因以及如何复现。不要使用只修补症状的投机性变通方案。
+- **小类、小函数。** 一个难以命名的函数承担了太多职责。
+- **组合优于继承。** 用小的、可复用的部分构建行为，而不是深层的类层次结构。
+- **经得起时间考验的注释。** 为公共函数编写文档，在有帮助的地方添加注释，并保持注释与代码同步更新。问问自己：六个月后你还能看懂吗？
 
-## Use strong types for logic
+## 使用强类型表达逻辑
 
-Strings are for display and for raw values from outside. Don't use them to control behavior: a typo compiles fine and breaks at runtime. Use a sealed class or interface instead, or an `enum` if you must.
+字符串用于显示以及来自外部的原始值。不要用它们来控制行为：拼写错误也能正常编译，却会在运行时出错。请改用密封类（sealed class）或接口，必要时可以使用 `enum`。
 
 ```kotlin
 private const val DESTINATION_KEY = "destination"
@@ -37,7 +37,7 @@ fun newInstance(destination: Destination): Intent =
     Intent().apply { putExtra(DESTINATION_KEY, destination) }
 ```
 
-Sealed types beat enums: each case can carry its own data, like the `title` above. And when you handle them with `when`, leave out the `else` branch:
+密封类型优于枚举：每个分支都可以携带自己的数据，比如上面的 `title`。而且当你用 `when` 处理它们时，不要写 `else` 分支：
 
 ```kotlin
 fun onIntent(intent: Intent) {
@@ -55,13 +55,13 @@ fun onIntent(intent: Intent) {
 }
 ```
 
-Then adding a case breaks the build everywhere it is not handled yet, which is exactly what you want. Your IDE also finds every place that uses a specific destination, which a string never gives you. The [Kotlin documentation on sealed classes](https://kotlinlang.org/docs/sealed-classes.html) has the details.
+这样，新增一个分支时，所有尚未处理它的地方都会导致构建失败，这正是你想要的效果。你的 IDE 还能找到使用某个特定目的地的所有位置，这是字符串永远无法提供的。详情请参阅 [Kotlin 密封类文档](https://kotlinlang.org/docs/sealed-classes.html)。
 
-If you must use a string, make it a `const val` (see [no magic numbers or strings](/companion/android/code-style/#no-magic-numbers-or-strings)), or wrap it in an [inline value class](https://kotlinlang.org/docs/inline-classes.html).
+如果必须使用字符串，请将其定义为 `const val`（参见[禁止魔法数字或字符串](/companion/android/code-style/#no-magic-numbers-or-strings)），或者将其包装在[内联值类](https://kotlinlang.org/docs/inline-classes.html)中。
 
-## Use real types for time
+## 使用真实类型表示时间
 
-Never use bare numbers for time or durations. Units get mixed up. Use `Instant`, `Duration`, and friends, and convert values from APIs that return milliseconds as early as you can:
+永远不要用裸数字表示时间或时长。单位很容易混淆。使用 `Instant`、`Duration` 及其相关类型，并尽早转换那些返回毫秒的 API 的值：
 
 ```kotlin
 // Bad: seconds or milliseconds?
@@ -71,23 +71,23 @@ const val THRESHOLD = 600000
 val THRESHOLD = 10.minutes
 ```
 
-Never call `System.currentTimeMillis()`. Inject a `kotlin.time.Clock` through Hilt, so tests can control time. If you really need a primitive, put the unit in the name: `THRESHOLD_MS`.
+永远不要调用 `System.currentTimeMillis()`。通过 Hilt 注入 `kotlin.time.Clock`，这样测试就可以控制时间。如果确实需要原始值，请把单位写进名称：`THRESHOLD_MS`。
 
-## Immutability
+## 不可变性
 
-Prefer immutable data classes, and produce changes with `copy()` or functions that return a new instance. Default to `private` or `internal` visibility.
+优先使用不可变的数据类，并通过 `copy()` 或返回新实例的函数来产生变更。可见性默认使用 `private` 或 `internal`。
 
-## Concurrency
+## 并发
 
-- Tie coroutines to a lifecycle, like `viewModelScope` or `lifecycleScope`, so they don't leak.
-- Anything touched from more than one coroutine must be thread-safe. If it isn't, make it safe or don't share it.
-- Race conditions are very hard to debug. Design for them up front.
+- 将协程绑定到生命周期，例如 `viewModelScope` 或 `lifecycleScope`，以避免泄漏。
+- 任何被多个协程访问的内容都必须是线程安全的。如果不是，就让它变得安全，或者不要共享它。
+- 竞态条件非常难以调试。要提前为此做好设计。
 
-## Dependency injection
+## 依赖注入
 
-Everything that can be injected is provided through [Hilt](https://developer.android.com/training/dependency-injection/hilt-android). Never create injected classes by hand.
+所有可以注入的内容都通过 [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) 提供。永远不要手动创建被注入的类。
 
-When you need two bindings of the same type, use a custom qualifier annotation, not `@Named("...")`. A custom annotation is type-checked, easy to find, and safe to rename. The `NoNamedAnnotation` lint rule fails the build on `@Named`:
+当你需要同一类型的两个绑定时，请使用自定义限定符注解，而不是 `@Named("...")`。自定义注解可以进行类型检查、易于查找，并且重命名安全。`NoNamedAnnotation` lint 规则会在使用 `@Named` 时使构建失败：
 
 ```kotlin
 @Qualifier
@@ -99,17 +99,17 @@ annotation class NamedKeyChain
 lateinit var keyChainRepository: KeyChainRepository
 ```
 
-[Pull request #5667](https://github.com/home-assistant/android/pull/5667) shows a real migration from `@Named("keyChainRepository")` to `@NamedKeyChain`.
+[Pull request #5667](https://github.com/home-assistant/android/pull/5667) 展示了一次从 `@Named("keyChainRepository")` 到 `@NamedKeyChain` 的真实迁移。
 
-## Logging
+## 日志记录
 
-Use [Timber](https://github.com/JakeWharton/timber), never `android.util.Log`. The linter fails the build on `Log` calls. Log what helps someone debug a problem, not everything, with messages that say what failed and for what. Never log tokens, passwords, or other sensitive data. For user data that helps in debug builds, wrap it in `sensitive()`, which shows it in debug builds and hides it in release builds.
+使用 [Timber](https://github.com/JakeWharton/timber)，永远不要使用 `android.util.Log`。linter 会在出现 `Log` 调用时使构建失败。只记录有助于他人调试问题的内容，而不是所有内容，消息要说明什么失败了以及针对什么。永远不要记录令牌、密码或其他敏感数据。对于在 debug 构建中有帮助的用户数据，请将其包装在 `sensitive()` 中，它会在 debug 构建中显示该数据，并在 release 构建中隐藏它。
 
-## Fail fast
+## 快速失败
 
-The later you find a bug, the harder it is to fix. Catch errors at build time when you can: sealed types with exhaustive `when`, and a [lint rule](/companion/android/code-style/#custom-lint-rules) when the compiler can't enforce something. When the same remark keeps coming back in reviews, turn it into tooling instead of relying on memory: a custom lint rule, a KTLint override, a `FailFast` check, or a test listener.
+发现缺陷越晚，修复就越困难。尽可能在构建时捕获错误：使用带穷举 `when` 的密封类型，以及在编译器无法强制约束时使用 [lint 规则](/companion/android/code-style/#custom-lint-rules)。当同一条意见在审查中反复出现时，把它变成工具，而不是依赖记忆：自定义 lint 规则、KTLint 覆盖、`FailFast` 检查，或测试监听器。
 
-Don't swallow exceptions. At the very least, log them. Better: use `FailFast`. It logs the error, crashes debug builds so you notice, and falls back to a safe value in release builds:
+不要吞掉异常。至少要记录它们。更好的做法是：使用 `FailFast`。它会记录错误、在 debug 构建中崩溃以便你注意到，并在 release 构建中回退到安全值：
 
 ```kotlin
 import io.homeassistant.companion.android.common.util.FailFast
@@ -122,8 +122,8 @@ val value = FailFast.failOnCatch(
 }
 ```
 
-When `FailFast` triggers, Logcat shows a large `CRITICAL FAILURE: FAIL-FAST` banner from `CrashFailFastHandler`, followed by your message and the stack trace, so it is hard to miss.
+当 `FailFast` 触发时，Logcat 会显示来自 `CrashFailFastHandler` 的大号 `CRITICAL FAILURE: FAIL-FAST` 横幅，随后是你的消息和堆栈跟踪，因此很难被忽略。
 
-## Ship big changes in small steps
+## 以小步骤交付大改动
 
-Small pull requests get reviewed faster. Break a big change into steps that each keep the app working. If a rework can't ship in one small pull request, put the new path behind a flag in the `WIPFeature` object, usually enabled only in debug builds through `BuildConfig.DEBUG`. Merge the steps while users stay on the old path, and remove the flag once the feature is done. See [submit a pull request](/companion/android/submitting/) for the rest.
+小的 pull request 能更快地被审查。把一个大改动拆分成多个步骤，每一步都保持应用可用。如果一次重构无法在一个小的 pull request 中交付，就把新路径放在 `WIPFeature` 对象中的一个标志后面，该标志通常仅在 debug 构建中通过 `BuildConfig.DEBUG` 启用。在用户继续使用旧路径的同时合并这些步骤，功能完成后移除该标志。其余内容请参阅[提交 pull request](/companion/android/submitting/)。

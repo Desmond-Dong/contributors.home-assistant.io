@@ -1,25 +1,25 @@
 ---
-title: Android code style and linting
-description: KTLint, Detekt, the Android linter, and Yamllint in the Android app. How to run them, suppress an issue, and work with the baselines.
-sidebarLabel: Code style and linting
-sidebarGroup: Write code
+title: Android 代码风格与代码检查
+description: Android 应用中的 KTLint、Detekt、Android Linter 和 Yamllint。如何运行它们、抑制问题，以及使用基线（baseline）。
+sidebarLabel: 代码风格与代码检查
+sidebarGroup: 编写代码
 order: 3
 ---
 
-The Android app enforces its code style with tools, so reviews can be about logic instead of formatting. CI runs every one of them on your pull request, and reports findings as comments in the diff.
+Android 应用使用工具来强制执行代码风格，这样代码评审就可以专注于逻辑而不是格式。CI 会在你的拉取请求（pull request）上运行所有这些工具，并将发现的问题以 diff 中的评论形式报告。
 
-## The tools
+## 这些工具
 
-| Tool | Checks | Configured in |
+| 工具 | 检查内容 | 配置位置 |
 | --- | --- | --- |
-| [KTLint](https://pinterest.github.io/ktlint) | Kotlin formatting | `.editorconfig` |
-| [Detekt](https://detekt.dev/) | Maintainability and correctness | `.detekt/detekt.yml` |
-| Android Lint | Android API usage and project rules | `build-logic/convention/src/main/kotlin/AndroidCommonConventionPlugin.kt` |
-| [Yamllint](https://github.com/adrienverge/yamllint) | YAML files | `.yamllint` |
+| [KTLint](https://pinterest.github.io/ktlint) | Kotlin 格式化 | `.editorconfig` |
+| [Detekt](https://detekt.dev/) | 可维护性和正确性 | `.detekt/detekt.yml` |
+| Android Lint | Android API 使用和项目规则 | `build-logic/convention/src/main/kotlin/AndroidCommonConventionPlugin.kt` |
+| [Yamllint](https://github.com/adrienverge/yamllint) | YAML 文件 | `.yamllint` |
 
-Passing all of them does not mean the code is good. It means a reviewer can focus on what matters.
+通过所有这些检查并不意味着代码就是好的。它只意味着评审者可以专注于真正重要的东西。
 
-## Run them
+## 运行它们
 
 ```bash
 # Format Kotlin, run before every commit
@@ -38,45 +38,45 @@ Passing all of them does not mean the code is good. It means a reviewer can focu
 yamllint --strict --format github .
 ```
 
-`--continue` reports issues in every module instead of stopping at the first failure. `build-logic` is an included build, so its tasks need to be called explicitly. For one module, use the module path, like `./gradlew :app:detektMain`.
+`--continue` 会报告所有模块中的问题，而不是在第一次失败时就停止。`build-logic` 是一个包含构建（included build），因此它的任务需要显式调用。对于单个模块，使用模块路径，例如 `./gradlew :app:detektMain`。
 
-To run the KTLint check before every commit, install the git hook once:
+要在每次提交前运行 KTLint 检查，请安装一次 git 钩子（hook）：
 
 ```bash
 ./gradlew addKtlintCheckGitPreCommitHook
 ```
 
-Yamllint does not fix anything; fix what it reports yourself.
+Yamllint 不会修复任何东西；请自行修复它报告的问题。
 
-## Android Lint settings
+## Android Lint 设置
 
-Android Lint is strict: warnings are errors, and the build fails on any issue that is not in the baseline. A few rules are tuned on purpose:
+Android Lint 非常严格：警告会被视为错误，任何不在基线（baseline）中的问题都会导致构建失败。有几条规则是特意调整过的：
 
-- `LogNotTimber` is an error, so all logging goes through Timber.
-- `MissingTranslation` is off, because translations only arrive in release builds from Lokalise.
-- Dependency version checks are off, because Renovate takes care of updates.
+- `LogNotTimber` 是错误级别，因此所有日志都通过 Timber 输出。
+- `MissingTranslation` 已关闭，因为翻译只在发布构建中通过 Lokalise 提供。
+- 依赖版本检查已关闭，因为更新由 Renovate 负责。
 
-## Suppressing an issue
+## 抑制某个问题
 
-Fix issues instead of suppressing them whenever you can. When you can't:
+只要有可能，请修复问题而不是抑制它们。当你无法修复时：
 
-- For one place, use `@Suppress("rule-id")` on the smallest construct possible.
-- For Android Lint, an issue can also go in the module's `lint-baseline.xml`, as described in [baselines](#baselines).
-- To change a rule for the whole project, open a dedicated pull request that explains why. For Android Lint, change the `lint` block in `AndroidCommonConventionPlugin.kt`. For KTLint, change `.editorconfig` and add a comment above the rule with the reason, with a link to a GitHub issue if it needs more explanation. If the change touches code, use two commits: one for the rule, one for the code it changes.
+- 对于单个位置，在尽可能小的代码结构上使用 `@Suppress("rule-id")`。
+- 对于 Android Lint，问题也可以放入模块的 `lint-baseline.xml` 中，详见[基线](#baselines)。
+- 要为整个项目修改某条规则，请打开一个专门的拉取请求并说明原因。对于 Android Lint，修改 `AndroidCommonConventionPlugin.kt` 中的 `lint` 块。对于 KTLint，修改 `.editorconfig` 并在该规则上方添加注释说明原因，如果需要更多解释，请附上 GitHub issue 的链接。如果修改涉及代码，请使用两个提交：一个用于规则，一个用于它所影响的代码。
 
-## Baselines
+## 基线
 
-Modules have baseline files with issues that existed before a tool was enabled:
+各模块都有基线文件，记录了在启用某个工具之前就存在的问题：
 
-- `lint-baseline.xml` for Android Lint.
-- `detekt-baseline-*.xml` for Detekt. Android modules have one per variant, like `detekt-baseline-release.xml`; JVM modules have `detekt-baseline-main.xml`.
+- Android Lint 使用 `lint-baseline.xml`。
+- Detekt 使用 `detekt-baseline-*.xml`。Android 模块每个变体（variant）有一个，例如 `detekt-baseline-release.xml`；JVM 模块使用 `detekt-baseline-main.xml`。
 
-New issues fail CI. Baselined ones don't.
+新问题会导致 CI 失败。基线中的问题则不会。
 
 > [!TIP]
-> Fixing an issue from a baseline and removing it from the file is a great first contribution.
+> 修复基线中的一个问题并将其从文件中移除，是一个很好的首次贡献。
 
-When an update of the Android Gradle Plugin or Detekt changes the rules, regenerate the baselines and look at what changed:
+当 Android Gradle Plugin 或 Detekt 的更新改变了规则时，请重新生成基线并查看变化：
 
 ```bash
 ./gradlew updateLintBaseline
@@ -84,27 +84,27 @@ When an update of the Android Gradle Plugin or Detekt changes the rules, regener
   --continue
 ```
 
-Then go through the new entries. Fix what you can in the same pull request, and open an issue for what has to wait.
+然后逐条查看新增的条目。能在同一个拉取请求中修复的就修复，必须等待的则打开一个 issue。
 
-## Custom lint rules
+## 自定义 lint 规则
 
-The `:lint` module has the project's own lint rules. They check things like a missing `@Serializable` annotation for Kotlinx.serialization, mutable properties on Room entities, and the use of `evaluateJavascript`. If you keep seeing the same mistake in reviews, propose a rule.
+`:lint` 模块包含项目自己的 lint 规则。它们检查诸如 Kotlinx.serialization 缺少 `@Serializable` 注解、Room 实体上的可变属性，以及 `evaluateJavascript` 的使用等问题。如果你在评审中反复看到同样的错误，可以提议添加一条规则。
 
-## SARIF reports in CI
+## CI 中的 SARIF 报告
 
-The linters write SARIF reports, which GitHub shows as annotations on your pull request. Every module writes its own report, and GitHub only accepts one per run, so CI merges them with `.github/scripts/merge_sarif.py`. You don't need this locally, but you can run it after the linters: `python3 .github/scripts/merge_sarif.py` writes `merged_results.sarif` in the folder you run it from.
+这些检查工具会生成 SARIF 报告，GitHub 会将其作为标注（annotation）显示在你的拉取请求上。每个模块都会生成自己的报告，而 GitHub 每次运行只接受一份，因此 CI 会使用 `.github/scripts/merge_sarif.py` 将它们合并。你在本地不需要这样做，但可以在检查工具运行之后执行它：`python3 .github/scripts/merge_sarif.py` 会在你运行它的目录中生成 `merged_results.sarif`。
 
-## Conventions
+## 约定
 
-The tools don't catch everything. These conventions apply too.
+这些工具无法捕获所有问题。以下约定同样适用。
 
-### English
+### 英语
 
-All code and comments are in English. Typos happen, and many contributors are not native speakers. Reviewers may suggest fixes; a spell checker in your IDE helps.
+所有代码和注释都使用英语。拼写错误在所难免，而且许多贡献者并非英语母语者。评审者可能会提出修改建议；在 IDE 中使用拼写检查器会有帮助。
 
-### No magic numbers or strings
+### 不使用魔法数字或字符串
 
-Replace unexplained values with named constants, and explain the value where it is defined:
+用命名常量替换无法解释的值，并在定义该值的地方加以说明：
 
 ```kotlin
 // Explanation, or a link, about why the threshold is 42
@@ -115,25 +115,25 @@ if (value == SUPER_IMPORTANT_THRESHOLD) {
 }
 ```
 
-Constants follow the [Kotlin naming conventions](https://kotlinlang.org/docs/coding-conventions.html#property-names).
+常量遵循 [Kotlin 命名约定](https://kotlinlang.org/docs/coding-conventions.html#property-names)。
 
-### Where constants go
+### 常量放在哪里
 
-1. A constant used outside its file must be easy to identify when imported, by its own name or the name of its parent.
-2. Most constants go in the file of the class they belong to, as `private const val` at the top of the file, outside the class.
-3. Use a `companion object` only when a constant must be reachable from outside, or when several classes in one file need a constant with the same name, like `DEFAULT_TIMEOUT`.
-4. When a file has too many constants, or they are shared across modules, move them to a `*Constants.kt` file and group them in an `object`.
+1. 在文件之外使用的常量，在导入时必须能通过其自身名称或其父级名称轻松识别。
+2. 大多数常量放在它们所属类的文件中，作为 `private const val` 放在文件顶部、类之外。
+3. 仅在常量必须从外部访问，或者同一文件中的多个类需要同名常量（例如 `DEFAULT_TIMEOUT`）时，才使用 `companion object`。
+4. 当一个文件中的常量过多，或者它们跨模块共享时，将它们移到 `*Constants.kt` 文件中，并分组到一个 `object` 里。
 
-If a test needs a private constant, mark it `@VisibleForTesting` instead of making it public.
+如果测试需要使用一个私有常量，请将其标记为 `@VisibleForTesting`，而不是将其设为公开。
 
-These rules are fairly new, so you will find constants in the code that don't follow them yet. Feel free to fix them when you come across them.
+这些规则还比较新，所以你会在代码中发现一些尚未遵循这些规则的常量。遇到时可以随手修复。
 
-### TODOs need an issue
+### TODO 需要关联 issue
 
-TODOs get forgotten. Avoid them. When you and a reviewer agree something must be done later, add a TODO with a full link to a GitHub issue:
+TODO 容易被遗忘。请避免使用。当你和评审者一致认为某件事需要以后再做时，添加一个 TODO，并附上指向 GitHub issue 的完整链接：
 
 ```kotlin
 // TODO Missing feature https://github.com/home-assistant/android/issues/404
 ```
 
-Always use full links, never a bare `#404`: a number is ambiguous outside GitHub. When you link to code, use a permalink (press <kbd>y</kbd> on GitHub), so the link survives later changes.
+始终使用完整链接，绝不要只写 `#404`：纯数字在 GitHub 之外是有歧义的。链接到代码时，请使用永久链接（permalink，在 GitHub 上按 <kbd>y</kbd> 键），这样链接在后续变更后仍然有效。

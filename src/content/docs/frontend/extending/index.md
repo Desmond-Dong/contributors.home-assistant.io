@@ -1,15 +1,15 @@
 ---
-title: Extend the frontend
-description: Changes to the frontend that go together with a change in Core, like a more-info view for a new domain or a WebSocket command for an integration.
+title: 扩展前端
+description: 与 Core 中的更改相配套的前端更改，例如为新域（domain）提供更多信息视图，或为集成提供 WebSocket 命令。
 order: 40
 ---
 
-Sometimes a change in Core needs something new in the frontend: a new entity domain needs controls, or an integration needs to send data the interface does not have yet. These pages cover the frontend side of that.
+有时 Core 中的更改需要前端提供一些新功能：新的实体（entity）域需要控件，或者集成需要发送界面尚不支持的数据。这些页面介绍了这方面的前端部分。
 
-Each of these is a pull request to the [frontend repository](https://github.com/home-assistant/frontend), usually together with one to Core. Link the two in the pull request templates, so reviewers see the whole picture. [Review and release](/frontend/development/review-and-release/#changes-that-need-the-backend) explains how the two are merged.
+每一项都是向[前端仓库](https://github.com/home-assistant/frontend)提交的拉取请求（pull request），通常还会同时向 Core 提交一个。请在拉取请求模板中将两者相互链接，以便审查者看到完整的上下文。[审查与发布](/frontend/development/review-and-release/#changes-that-need-the-backend)解释了这两者是如何合并的。
 
-- [Add a more-info view](/frontend/extending/more-info/): the controls in the more-info dialog for a domain.
-- [Add a state card](/frontend/extending/state-card/): the row that shows an entity and its state.
-- [Add a WebSocket command](/frontend/extending/websocket-api/): send data from your integration to the frontend.
+- [添加更多信息视图](/frontend/extending/more-info/)：某个域在更多信息对话框中的控件。
+- [添加状态卡片](/frontend/extending/state-card/)：显示实体及其状态的那一行。
+- [添加 WebSocket 命令](/frontend/extending/websocket-api/)：将数据从你的集成发送到前端。
 
-Most integrations need none of this. Entities of the existing domains already get their controls, cards, and more-info views. Look at the [more-info views](/design/more-info/) and [dashboard cards](/design/dashboards/) in the Design area to see what is there.
+大多数集成都不需要这些。现有域的实体已经拥有各自的控件、卡片和更多信息视图。请查看设计区域中的[更多信息视图](/design/more-info/)和[仪表盘卡片](/design/dashboards/)，了解已有的内容。

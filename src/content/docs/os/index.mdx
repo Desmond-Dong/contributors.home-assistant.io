@@ -1,34 +1,34 @@
 ---
-title: OS and Supervisor
-description: Work on Home Assistant OS and the Supervisor, the two pieces that turn a board or a virtual machine into a Home Assistant system that runs, updates, and repairs itself.
+title: 操作系统与 Supervisor
+description: 参与 Home Assistant OS 和 Supervisor 的开发工作，这两个组件将一块开发板或一台虚拟机变成一个能够运行、自我更新和自我修复的 Home Assistant 系统。
 ---
 
 import StackDiagram from "../../../components/docs/StackDiagram.astro";
 
-Most people run Home Assistant on [Home Assistant OS](/glossary/home-assistant-os/). They flash an image, plug in the device, and never think about Linux again. That works because of two projects working together:
+大多数人将 Home Assistant 运行在 [Home Assistant OS](/glossary/home-assistant-os/) 上。他们烧录一个镜像，插上设备，之后就再也不用操心 Linux。这之所以可行，是因为有两个项目在协同工作：
 
-- **Home Assistant OS** is a small, read-only Linux system built with Buildroot, a tool that builds a complete embedded Linux system from source. It boots the device, runs Docker, and updates itself with an A/B scheme: it has two copies of the system, A and B, writes an update to the one that is not running, and falls back to the other when the update does not start. RAUC, an update system for embedded Linux, does that work. The OS Agent, a small program on the host, does host tasks for the Supervisor, like moving the data disk.
-- **The Supervisor** is a Python program that runs in a container on top of it. It runs Home Assistant Core, apps, and its own plugins, makes backups, installs updates, and keeps an eye on the health of the system.
+- **Home Assistant OS** 是一个小型的只读 Linux 系统，使用 Buildroot 构建——这是一个可以从源码构建完整嵌入式 Linux 系统的工具。它负责启动设备、运行 Docker，并通过 A/B 方案进行自我更新：系统有两份副本 A 和 B，更新会写入当前未运行的那一份，如果更新后无法启动，则回退到另一份。这项工作由 RAUC 完成，它是一个面向嵌入式 Linux 的更新系统。OS Agent 是主机上的一个小程序，为 Supervisor 执行主机任务，例如迁移数据磁盘。
+- **Supervisor** 是一个运行在其上层容器中的 Python 程序。它运行 Home Assistant Core、应用（apps）以及它自己的插件，负责创建备份、安装更新，并监控系统健康状况。
 
-This area is for developers who want to work on either one. For the OS, you are working with embedded Linux: Buildroot, kernels, bootloaders, and board support. For the Supervisor, you are working with async Python, Docker, and D-Bus, the message bus that Linux services use to talk to each other. Neither needs you to know the other.
+本区域面向希望参与其中任一项目开发的开发者。对于 OS，你面对的是嵌入式 Linux：Buildroot、内核、引导加载程序和开发板支持。对于 Supervisor，你面对的是异步 Python、Docker 和 D-Bus——Linux 服务之间相互通信所使用的消息总线。两者互不依赖，无需同时掌握。
 
-## How the pieces fit
+## 各组件如何协作
 
 <StackDiagram
-  caption="From top to bottom: what runs on what. Select a box to read more about it."
+  caption="自上而下：什么运行在什么之上。点击方框可了解更多信息。"
   layers={[
     {
-      label: "Run by the Supervisor, each in its own container",
+      label: "由 Supervisor 运行，各自位于独立的容器中",
       boxes: [
-        { title: "Home Assistant Core", text: "Home Assistant itself", href: "/core/" },
-        { title: "Apps", text: "Software next to Core", href: "/apps/how-apps-work/" },
-        { title: "Plugins", text: "DNS, audio, CLI, and more", href: "/os/supervisor/plugins/" },
+        { title: "Home Assistant Core", text: "Home Assistant 本身", href: "/core/" },
+        { title: "Apps", text: "与 Core 并列运行的软件", href: "/apps/how-apps-work/" },
+        { title: "Plugins", text: "DNS、音频、CLI 等", href: "/os/supervisor/plugins/" },
       ],
     },
     {
-      label: "Manages everything above, in a container of its own",
+      label: "管理以上所有内容，运行在自己的容器中",
       boxes: [
-        { title: "Supervisor", text: "Runs, updates, and backs up it all", href: "/os/supervisor/architecture/" },
+        { title: "Supervisor", text: "运行、更新并备份这一切", href: "/os/supervisor/architecture/" },
       ],
     },
     {
@@ -36,57 +36,57 @@ This area is for developers who want to work on either one. For the OS, you are 
       href: "/os/operating-system/",
       highlight: true,
       boxes: [
-        { title: "Docker", text: "Runs the containers" },
-        { title: "NetworkManager", text: "Networking", href: "/os/operating-system/networking/" },
-        { title: "RAUC", text: "Updates, with two system slots", href: "/os/operating-system/update-system/" },
-        { title: "OS Agent", text: "Host tasks for the Supervisor" },
-        { title: "Buildroot", text: "Built from source, read-only", href: "/os/operating-system/build/" },
+        { title: "Docker", text: "运行各个容器" },
+        { title: "NetworkManager", text: "网络", href: "/os/operating-system/networking/" },
+        { title: "RAUC", text: "更新，具有两个系统槽位", href: "/os/operating-system/update-system/" },
+        { title: "OS Agent", text: "为 Supervisor 执行主机任务" },
+        { title: "Buildroot", text: "从源码构建，只读", href: "/os/operating-system/build/" },
       ],
     },
     {
-      label: "Boards",
+      label: "开发板",
       href: "/os/operating-system/boards/",
       boxes: [
-        { title: "Green and Yellow", text: "Home Assistant hardware", href: "/os/operating-system/boards/" },
-        { title: "Raspberry Pi", text: "Pi 3, 4, and 5", href: "/os/operating-system/raspberry-pi/" },
-        { title: "ODROID", text: "Hardkernel boards", href: "/os/operating-system/odroid/" },
-        { title: "PC", text: "Generic x86-64 and aarch64", href: "/os/operating-system/generic/" },
-        { title: "Virtual machine", text: "OVA, QCOW2, and more", href: "/os/operating-system/virtual-machine/" },
+        { title: "Green 和 Yellow", text: "Home Assistant 硬件", href: "/os/operating-system/boards/" },
+        { title: "Raspberry Pi", text: "Pi 3、4 和 5", href: "/os/operating-system/raspberry-pi/" },
+        { title: "ODROID", text: "Hardkernel 开发板", href: "/os/operating-system/odroid/" },
+        { title: "PC", text: "通用 x86-64 和 aarch64", href: "/os/operating-system/generic/" },
+        { title: "虚拟机", text: "OVA、QCOW2 等", href: "/os/operating-system/virtual-machine/" },
       ],
     },
   ]}
 />
 
-The [architecture](/architecture/platform/) area explains the big picture. This area goes into the details you need to change things.
+[架构](/architecture/platform/)区域介绍了整体概况。本区域则深入介绍你需要了解的改动细节。
 
-## Start here
+## 从这里开始
 
-- [Your first contribution](/os/first-contribution/): run the Supervisor in its development container, make a change, and open a pull request.
-- [Installation types](/os/installation-types/): where the OS and the Supervisor are used, and where they are not.
+- [你的第一次贡献](/os/first-contribution/)：在开发容器中运行 Supervisor，进行修改，然后提交 pull request。
+- [安装类型](/os/installation-types/)：OS 和 Supervisor 分别在哪些场景下使用，哪些场景下不使用。
 
 ## Home Assistant OS
 
-- [Overview](/os/operating-system/): what is in the OS, how it boots, and how the repository is organized.
-- [Build an image](/os/operating-system/build/): set up the build container and build for a board.
-- [Test your build](/os/operating-system/test/): boot it in QEMU, run the tests, and install it on a device.
-- [Configure the host](/os/operating-system/configuration/): the `CONFIG` USB drive, kernel modules, udev rules, and time servers.
-- [Configure networking](/os/operating-system/networking/): NetworkManager connections, Wi-Fi, and static addresses.
-- [Debug the host](/os/operating-system/debugging/): SSH on port 22222, the serial console, and logs.
-- [Releases and builds](/os/operating-system/releases/): branches, version numbers, and the build pipelines.
-- Reference: [partitions](/os/operating-system/partitions/), [the update system](/os/operating-system/update-system/), [board metadata](/os/operating-system/board-metadata/), and [supported boards](/os/operating-system/boards/).
+- [概览](/os/operating-system/)：OS 中包含什么、如何启动，以及代码仓库的组织方式。
+- [构建镜像](/os/operating-system/build/)：搭建构建容器并为开发板进行构建。
+- [测试你的构建](/os/operating-system/test/)：在 QEMU 中启动、运行测试，并安装到设备上。
+- [配置主机](/os/operating-system/configuration/)：`CONFIG` USB 驱动器、内核模块、udev 规则和时间服务器。
+- [配置网络](/os/operating-system/networking/)：NetworkManager 连接、Wi-Fi 和静态地址。
+- [调试主机](/os/operating-system/debugging/)：端口 22222 上的 SSH、串行控制台和日志。
+- [发布与构建](/os/operating-system/releases/)：分支、版本号和构建流水线。
+- 参考：[分区](/os/operating-system/partitions/)、[更新系统](/os/operating-system/update-system/)、[开发板元数据](/os/operating-system/board-metadata/)和[支持的开发板](/os/operating-system/boards/)。
 
 ## Supervisor
 
-- [Overview](/os/supervisor/): what the Supervisor does, and what it runs.
-- [Set up a development environment](/os/supervisor/development/): run the Supervisor in a development container, and test on a real system.
-- [Debug the Supervisor](/os/supervisor/debugging/): attach a Python debugger and read the logs.
-- [Connect Core to a Supervisor](/os/supervisor/core-connection/): work on the `hassio` integration against a real Supervisor.
-- How it works: [architecture](/os/supervisor/architecture/), [jobs](/os/supervisor/jobs/), [the resolution center](/os/supervisor/resolution-center/), and [plugins](/os/supervisor/plugins/).
+- [概览](/os/supervisor/)：Supervisor 做什么，以及它运行什么。
+- [搭建开发环境](/os/supervisor/development/)：在开发容器中运行 Supervisor，并在真实系统上进行测试。
+- [调试 Supervisor](/os/supervisor/debugging/)：连接 Python 调试器并阅读日志。
+- [将 Core 连接到 Supervisor](/os/supervisor/core-connection/)：针对真实的 Supervisor 开发 `hassio` 集成（integration）。
+- 工作原理：[架构](/os/supervisor/architecture/)、[任务](/os/supervisor/jobs/)、[问题解决中心](/os/supervisor/resolution-center/)和[插件](/os/supervisor/plugins/)。
 
-The Supervisor is also what runs [apps](/glossary/app/). Building apps, and the Supervisor API reference they use, live in the [Apps](/apps/) area.
+Supervisor 也是运行[应用（apps）](/glossary/app/)的组件。应用开发以及它们所使用的 Supervisor API 参考文档位于[应用（Apps）](/apps/)区域。
 
-## Who to talk to
+## 与谁交流
 
-- The **#operating-system** channel on the [Home Assistant Discord](https://www.home-assistant.io/join-chat/) is the place for questions about Home Assistant OS and the Supervisor. Can't see the channel? Under **Channels & Roles**, choose **I want to contribute dev skills to Home Assistant**.
-- Issues and pull requests live in [home-assistant/operating-system](https://github.com/home-assistant/operating-system) and [home-assistant/supervisor](https://github.com/home-assistant/supervisor). The plugins each have their own repository, listed on the [plugins](/os/supervisor/plugins/) page.
-- Adding support for a new board is an architecture decision. Read [ADR-0015](https://github.com/home-assistant/architecture/blob/master/adr/0015-home-assistant-os.md) and [ADR-0017](https://github.com/home-assistant/architecture/blob/master/adr/0017-hardware-screening-os.md), and start a discussion in the [architecture repository](https://github.com/home-assistant/architecture) before you write code.
+- [Home Assistant Discord](https://www.home-assistant.io/join-chat/) 上的 **#operating-system** 频道是提问 Home Assistant OS 和 Supervisor 相关问题的地方。看不到该频道？在 **Channels & Roles** 下选择 **I want to contribute dev skills to Home Assistant**。
+- Issue 和 pull request 位于 [home-assistant/operating-system](https://github.com/home-assistant/operating-system) 和 [home-assistant/supervisor](https://github.com/home-assistant/supervisor)。每个插件都有各自的代码仓库，列在[插件](/os/supervisor/plugins/)页面上。
+- 为新开发板添加支持属于架构决策。请阅读 [ADR-0015](https://github.com/home-assistant/architecture/blob/master/adr/0015-home-assistant-os.md) 和 [ADR-0017](https://github.com/home-assistant/architecture/blob/master/adr/0017-hardware-screening-os.md)，并在编写代码之前先在[架构仓库](https://github.com/home-assistant/architecture)中发起讨论。

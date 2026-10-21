@@ -1,22 +1,22 @@
 ---
-title: Android UI architecture
-description: How a screen is built in the Android app. The view, the ViewModel, its three outputs, and the handlers, managers, use cases, and repositories below it.
-sidebarLabel: UI architecture
-sidebarGroup: Architecture
+title: Android UI 架构
+description: Android 应用中一个屏幕是如何构建的。视图、ViewModel、它的三种输出，以及其下方的处理器、管理器、用例和仓库。
+sidebarLabel: UI 架构
+sidebarGroup: 架构
 order: 2
 ---
 
-Every new screen follows the same pattern. It is an MVI-like take on Google's [recommended app architecture](https://developer.android.com/topic/architecture): the same UI, domain, and data layers, with a strict contract for how inputs and outputs flow. Existing screens are migrated to it over time. The [frontend screen](/companion/android/frontend-screen/) is the reference implementation.
+每个新屏幕都遵循相同的模式。这是对 Google [推荐应用架构](https://developer.android.com/topic/architecture) 的一种类 MVI 的实现：同样的 UI、领域和数据层，并对输入和输出的流动方式制定了严格的契约。现有屏幕会逐步迁移到该模式。[前端屏幕](/companion/android/frontend-screen/) 是参考实现。
 
-## Why this pattern
+## 为什么采用这种模式
 
-A screen has many inputs at once: the user, system callbacks like permission results, timers, and external messages. The pattern reduces all of them to a few well-defined outputs, so the screen stays predictable and testable.
+一个屏幕同时有许多输入：用户、系统回调（如权限结果）、定时器和外部消息。该模式将它们全部简化为少数几个定义明确的输出，因此屏幕保持可预测且易于测试。
 
-It also keeps screens small. Without structure, a screen grows into a ViewModel that knows everything and can't be tested or changed safely. Here, each concern lives in its own small block with one job.
+它还能让屏幕保持小巧。没有结构的话，屏幕会成长为一个无所不知、无法安全测试或修改的 ViewModel。在这里，每个关注点都位于自己的小模块中，只做一件事。
 
-## The flow
+## 数据流
 
-Inputs go down into the ViewModel. The ViewModel delegates work to blocks below it, and reduces their results into up to three outputs that flow back up to the view. The data goes around in one direction only:
+输入向下进入 ViewModel。ViewModel 将工作委托给其下方的模块，并将它们的结果简化为最多三种输出，向上流回视图。数据只沿一个方向流动：
 
 ```mermaid
 flowchart TB
@@ -26,21 +26,21 @@ flowchart TB
     Blocks -->|"Results, flows"| ViewModel
 ```
 
-The three outputs:
+三种输出：
 
-| Output | What it is | Example |
+| 输出 | 是什么 | 示例 |
 | --- | --- | --- |
-| State | What to render. One value, always current | The list of servers, a loading flag |
-| Events | One-shot effects that must happen exactly once | Navigate back, show a snackbar |
-| Actions | Commands for an object only the view holds | Reload the web view, scroll to top |
+| 状态（State） | 要渲染的内容。单一值，始终为最新 | 服务器列表、加载标志 |
+| 事件（Event） | 必须恰好发生一次的一次性效果 | 返回上一页、显示 snackbar |
+| 动作（Action） | 针对仅由视图持有的对象的命令 | 重新加载 web view、滚动到顶部 |
 
-Most inputs produce just a new state. Most screens never need actions.
+大多数输入只会产生一个新状态。大多数屏幕从不需要动作。
 
-## The view
+## 视图
 
-The view is the Compose screen. It renders the state, reports interactions through callbacks, and owns any UI handles the lower layers must not touch, like a `WebView` or a `LazyListState`.
+视图是 Compose 屏幕。它渲染状态、通过回调报告交互，并持有任何下层不得触碰的 UI 句柄，例如 `WebView` 或 `LazyListState`。
 
-Split every screen into a stateful entry point and a stateless content composable. Previews, screenshot tests, and Compose tests then drive the content directly:
+将每个屏幕拆分为一个有状态的入口点和一个无状态的内容 composable。这样预览、截图测试和 Compose 测试就可以直接驱动内容：
 
 ```kotlin
 @Composable
@@ -62,9 +62,9 @@ internal fun SettingsScreenContent(
 }
 ```
 
-## The ViewModel
+## ViewModel
 
-The ViewModel owns the outputs and wires the blocks together:
+ViewModel 持有这些输出，并将各模块连接起来：
 
 ```kotlin
 val viewState: StateFlow<UiState> // what to render
@@ -72,19 +72,19 @@ val events: SharedFlow<UiEvent>   // one-shot effects
 val actions: Flow<UiAction>       // only if the view owns a handle
 ```
 
-Rules:
+规则：
 
-- It never references Compose or platform UI types, so its logic runs as a plain JVM unit test.
-- It outlives configuration changes. `viewModelScope` is only cancelled when the screen is gone for good, so a rotation does not restart loading or flow collection.
-- Keep it thin. A small screen can keep its logic in the ViewModel. When it grows, move cohesive logic into the [blocks](#the-blocks) below.
+- 它绝不引用 Compose 或平台 UI 类型，因此其逻辑可以作为普通的 JVM 单元测试运行。
+- 它的生命周期长于配置变更。`viewModelScope` 只在屏幕永久消失时才会被取消，因此屏幕旋转不会重启加载或流收集。
+- 保持精简。小屏幕可以将其逻辑保留在 ViewModel 中。当它变大时，将内聚的逻辑移到下方的[模块](#the-blocks)中。
 
-### State
+### 状态
 
-The state is the single source of truth for what is on screen.
+状态是屏幕上所显示内容的唯一事实来源。
 
-- **Immutable.** Use `val` and immutable collections, and make changes with `copy()`. In-place mutation breaks change detection in Compose.
-- **Structural equality.** Use a data class. `StateFlow` skips values equal to the current one, so emitting the same state again costs nothing.
-- **Cheap to read.** Compose reads the state on the main thread, on every recomposition. Never compute in a getter. Compute when you build the state, on a background dispatcher:
+- **不可变。** 使用 `val` 和不可变集合，并通过 `copy()` 进行修改。原地修改会破坏 Compose 的变更检测。
+- **结构相等。** 使用 data class。`StateFlow` 会跳过与当前值相等的值，因此再次发出相同的状态没有任何开销。
+- **读取开销低。** Compose 在主线程上、每次重组时都会读取状态。绝不要在 getter 中计算。在构建状态时、在后台调度器上计算：
 
 ```kotlin
 // Bad: maps the list on every recomposition, on the main thread
@@ -97,7 +97,7 @@ data class UiState(val servers: List<Server>) {
 data class UiState(val serverItems: List<HADropdownItem<Int>>)
 ```
 
-Shape the state to the screen. One data class works when the screen always looks the same. When the screen has distinct modes, use a sealed hierarchy, so the compiler forces you to handle each mode and fields of one mode can't leak into another:
+根据屏幕来设计状态的结构。当屏幕外观始终一致时，一个 data class 就够了。当屏幕有明显的不同模式时，使用密封层次结构（sealed hierarchy），这样编译器会强制你处理每种模式，且一种模式的字段不会泄漏到另一种模式中：
 
 ```kotlin
 sealed interface UiState {
@@ -107,9 +107,9 @@ sealed interface UiState {
 }
 ```
 
-### Events
+### 事件
 
-Events are fire-and-forget: navigate, show a snackbar, open a link. Model them as a sealed interface, so the handler's `when` is exhaustive:
+事件是“发出即忘”的：导航、显示 snackbar、打开链接。将它们建模为密封接口（sealed interface），这样处理器的 `when` 就是穷尽的：
 
 ```kotlin
 sealed interface UiEvent {
@@ -118,13 +118,13 @@ sealed interface UiEvent {
 }
 ```
 
-Emit them on a `Flow` and consume each one once, usually in the navigation layer. Never replay an event: replaying "navigate back" after a recomposition navigates twice. If the UI must show something again after rotation, it is state, not an event.
+在 `Flow` 上发出它们，并且每个事件只消费一次，通常在导航层中。绝不要重放事件：重组后重放“返回上一页”会导致导航两次。如果 UI 在旋转后必须再次显示某些内容，那它是状态，而不是事件。
 
-### Actions
+### 动作
 
-Some objects must live in the view, because Compose creates them: a `WebView`, a `LazyListState`, a focus requester. The ViewModel can't hold them. Yet some operations on them are imperative, like "reload now".
+有些对象必须存在于视图中，因为它们由 Compose 创建：`WebView`、`LazyListState`、焦点请求器。ViewModel 无法持有它们。然而对它们的一些操作是命令式的，比如“立即重新加载”。
 
-For those, the ViewModel emits a typed action, and the view runs it against the object it owns. Each action carries its own `run`:
+对于这些情况，ViewModel 发出一个带类型的动作，视图对它持有的对象执行该动作。每个动作都带有自己的 `run`：
 
 ```kotlin
 sealed interface WebViewAction {
@@ -141,70 +141,70 @@ LaunchedEffect(webView) {
 }
 ```
 
-The flow is a buffered `SharedFlow`, consumed once, so commands are not lost while the view is briefly gone. An action that needs a result can carry a `CompletableDeferred`.
+该流是一个带缓冲的 `SharedFlow`，只消费一次，因此当视图短暂消失时命令不会丢失。需要返回结果的动作可以携带一个 `CompletableDeferred`。
 
-An action is not state: a command held as state would run again on every recomposition. It is not an event either: an event is a signal the host reacts to, like navigating, while an action drives one object this screen owns.
+动作不是状态：作为状态持有的命令会在每次重组时再次执行。它也不是事件：事件是宿主做出反应的信号，比如导航，而动作驱动的是该屏幕拥有的某一个对象。
 
-Only use actions for objects that must live in the view. A media player, for example, can live in a manager and be exposed as state. In practice, a screen has at most one such object, and usually none.
+只对必须存在于视图中的对象使用动作。例如，媒体播放器可以存在于管理器中并作为状态暴露。实际上，一个屏幕最多只有一个这样的对象，通常一个都没有。
 
-### Choosing an output
+### 选择输出
 
-Ask what the output is, not where it comes from:
+问自己这个输出是什么，而不是它来自哪里：
 
-| If the output | Use | Why |
+| 如果该输出 | 使用 | 原因 |
 | --- | --- | --- |
-| Decides what is rendered, and must survive recomposition and rotation | State | Emitting the same value again is a no-op |
-| Is a side effect that must happen exactly once | Event | Replaying it would navigate or show a snackbar twice |
-| Is a command for an object the view holds | Action | The ViewModel stays free of UI types |
-| Asks the user something and waits for the answer | Prompt in a manager | One prompt at a time, the caller suspends until the user answers |
+| 决定渲染的内容，并且必须在重组和旋转后保留 | 状态 | 再次发出相同的值是无操作 |
+| 是必须恰好发生一次的副作用 | 事件 | 重放它会导致导航两次或显示两次 snackbar |
+| 是针对视图持有的对象的命令 | 动作 | ViewModel 保持不含 UI 类型 |
+| 向用户提问并等待回答 | 管理器中的提示 | 一次只显示一个提示，调用方挂起直到用户回答 |
 
-## The blocks
+## 模块
 
-The ViewModel delegates feature logic to four kinds of blocks. Name each class after its kind: `*Repository`, `*UseCase`, `*Manager`, `*Handler`.
+ViewModel 将功能逻辑委托给四种模块。按其类型为每个类命名：`*Repository`、`*UseCase`、`*Manager`、`*Handler`。
 
-| Block | What it is | May depend on |
+| 模块 | 是什么 | 可以依赖 |
 | --- | --- | --- |
-| Repository | The single source of truth for one data source or channel: storage, network, a Room DAO, an external bus | Data sources only, never another repository |
-| Use case | One stateless, reusable operation, exposed as `operator fun invoke()` | Repositories |
-| Manager | The logic and in-memory state of one feature concern | Repositories, use cases, platform APIs. Never another manager |
-| Handler | Logic that coordinates one or more managers | Managers, use cases, repositories. Never another handler |
+| 仓库（Repository） | 单一数据源或通道的唯一事实来源：存储、网络、Room DAO、外部总线 | 仅数据源，绝不能是另一个仓库 |
+| 用例（Use case） | 一个无状态、可复用的操作，以 `operator fun invoke()` 形式暴露 | 仓库 |
+| 管理器（Manager） | 一个功能关注点的逻辑和内存中的状态 | 仓库、用例、平台 API。绝不能是另一个管理器 |
+| 处理器（Handler） | 协调一个或多个管理器的逻辑 | 管理器、用例、仓库。绝不能是另一个处理器 |
 
-The difference between a manager and a handler is one question: does it depend on a manager? If yes, it is a handler. Whether it holds state, or translates one input versus driving a multi-step flow, does not matter: a handler can be any of those. That rule makes manager-to-manager dependencies impossible by definition.
+管理器和处理器之间的区别只在于一个问题：它是否依赖某个管理器？如果是，它就是处理器。无论它是否持有状态、是转换单个输入还是驱动多步流程，都无关紧要：处理器可以是其中任何一种。这条规则从定义上使管理器之间的依赖成为不可能。
 
-A handler returns its work to the ViewModel as a sealed result, or as a flow of results. It may keep state for its own feature, which the ViewModel maps into the screen state. The state of the screen always belongs to the ViewModel.
+处理器将其工作以密封结果（sealed result）或结果流的形式返回给 ViewModel。它可以为自身的功能保留状态，ViewModel 会将其映射到屏幕状态中。屏幕的状态始终属于 ViewModel。
 
-A manager talks to the screen in three ways: it exposes pending state as a `StateFlow` the view renders, it returns a sealed result from a `suspend` function, or it exposes a `Flow` of results.
+管理器以三种方式与屏幕通信：它将待处理状态暴露为视图渲染的 `StateFlow`，它从 `suspend` 函数返回密封结果，或者它暴露一个结果的 `Flow`。
 
-Managers are also where prompts live: a dialog, a permission request, or a file picker that waits for the user's answer. Use `SingleSlotQueue` for those. It shows one prompt at a time, exposes the current request as state, and lets the caller `awaitResult` until the user answers. A prompt is not a fourth output: it is pending state the view renders, with the answer coming back as a normal input.
+管理器也是提示（prompt）所在之处：等待用户回答的对话框、权限请求或文件选择器。对它们使用 `SingleSlotQueue`。它一次只显示一个提示，将当前请求暴露为状态，并让调用方 `awaitResult` 直到用户回答。提示不是第四种输出：它是视图渲染的待处理状态，回答作为普通输入返回。
 
-Reach for a use case when logic is needed by more than one caller, or would bloat a ViewModel or manager, but has no state of its own. Examples are `CheckLocalNetworkPermissionUseCase` and `ServerChooserItemsUseCase`.
+当逻辑被多个调用方需要，或者会使 ViewModel 或管理器臃肿，但自身没有状态时，就使用用例。例如 `CheckLocalNetworkPermissionUseCase` 和 `ServerChooserItemsUseCase`。
 
-Database access also goes through a repository: the Room DAO is the data source, and the repository is what the rest of the app sees. Combining several data sources is logic, so it belongs in a use case, manager, or handler, not in a repository.
+数据库访问也要通过仓库：Room DAO 是数据源，而仓库是应用其余部分所看到的东西。组合多个数据源属于逻辑，因此它属于用例、管理器或处理器，而不是仓库。
 
-### Choosing a block
+### 选择模块
 
-Work top to bottom. The first row that fits wins:
+自上而下地判断。第一个符合的行胜出：
 
-| You have | Use |
+| 你有 | 使用 |
 | --- | --- |
-| Access to a data source or communication channel | Repository |
-| One reusable operation without state | Use case |
-| One feature concern with its own state | Manager |
-| Logic that coordinates managers | Handler |
-| Screen-wide state and coordination | ViewModel |
+| 对数据源或通信通道的访问 | 仓库 |
+| 一个无状态的可复用操作 | 用例 |
+| 一个拥有自己状态的功能关注点 | 管理器 |
+| 协调管理器的逻辑 | 处理器 |
+| 屏幕级的状态和协调 | ViewModel |
 
-## Layers and dependencies
+## 层次与依赖
 
-The view and the ViewModel are the UI layer. Handlers, managers, and use cases are the domain layer. Repositories are the data layer. Dependencies only point down:
+视图和 ViewModel 属于 UI 层。处理器、管理器和用例属于领域层。仓库属于数据层。依赖只向下指向：
 
-- The ViewModel can use any block directly.
-- Handlers use managers, use cases, and repositories.
-- Managers use use cases and repositories.
-- Use cases use repositories.
-- No handler uses another handler. Coordinate handlers in the ViewModel.
-- The ViewModel only extracts a handler once coordinating managers would otherwise bloat it.
+- ViewModel 可以直接使用任何模块。
+- 处理器使用管理器、用例和仓库。
+- 管理器使用用例和仓库。
+- 用例使用仓库。
+- 没有处理器使用另一个处理器。在 ViewModel 中协调处理器。
+- 只有当协调管理器会使 ViewModel 臃肿时，ViewModel 才提取出一个处理器。
 
-The same rules as a graph, with every arrow pointing down:
+以图的形式表示同样的规则，每条箭头都向下指向：
 
 ```mermaid
 flowchart TB
@@ -230,29 +230,29 @@ flowchart TB
     UseCases --> Repositories
 ```
 
-Nothing points up or sideways. That keeps the graph free of cycles and every block testable on its own.
+没有任何东西向上或横向指向。这使图保持无环，并且每个模块都可以独立测试。
 
-## Scoping
+## 作用域
 
-Scope a block to how long its state must live:
+根据状态需要存活的时间来为模块设定作用域：
 
-- A block that belongs to one screen is `@ViewModelScoped`. Everything in that screen session shares one instance, and it resets when the session ends.
-- A block that represents an app-wide concern is usually `@Singleton`.
+- 属于单个屏幕的模块使用 `@ViewModelScoped`。该屏幕会话中的所有内容共享一个实例，会话结束时它会重置。
+- 代表应用级关注点的模块通常使用 `@Singleton`。
 
-Shared instances matter. If the ViewModel and a handler both inject a stateful manager, they must get the same object, or their view of the state drifts apart. An unscoped binding gives each consumer its own copy. This is where being stateful matters: a block with state needs a scope that matches how long that state lives.
+共享实例很重要。如果 ViewModel 和一个处理器都注入了一个有状态的管理器，它们必须得到同一个对象，否则它们对状态的视图会逐渐偏离。未设定作用域的绑定会给每个消费者一个自己的副本。这就是有状态与否重要的地方：有状态的模块需要一个与其状态存活时间相匹配的作用域。
 
-Provide everything through Hilt. Never create these blocks by hand.
+通过 Hilt 提供一切。绝不要手动创建这些模块。
 
-## Testing
+## 测试
 
-The split is what makes screens testable:
+这种拆分正是屏幕可测试的原因：
 
-| Layer | Test type | What to check |
+| 层 | 测试类型 | 检查什么 |
 | --- | --- | --- |
-| ViewModel | Unit | Which input produces which state, event, or action |
-| Handlers, managers, use cases | Unit | Each concern on its own |
-| Stateless content | Compose UI | Rendering per state, and that interactions call the right callback |
-| Event handling | Compose UI | Each event triggers the right navigation or effect |
-| Screen | Screenshot | Looks only, no logic |
+| ViewModel | 单元测试 | 哪个输入产生哪个状态、事件或动作 |
+| 处理器、管理器、用例 | 单元测试 | 每个关注点独立测试 |
+| 无状态内容 | Compose UI | 每种状态下的渲染，以及交互是否调用了正确的回调 |
+| 事件处理 | Compose UI | 每个事件触发正确的导航或效果 |
+| 屏幕 | 截图测试 | 仅外观，不含逻辑 |
 
-See [testing](/companion/android/testing/) and [screenshot tests](/companion/android/screenshot-testing/).
+参见[测试](/companion/android/testing/)和[截图测试](/companion/android/screenshot-testing/)。

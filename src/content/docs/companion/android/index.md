@@ -1,6 +1,6 @@
 ---
 title: Android
-description: The Home Assistant app for Android, Wear OS, Android Auto, and Android Automotive. What is in the repository, and where to start.
+description: 适用于 Android、Wear OS、Android Auto 和 Android Automotive 的 Home Assistant 应用。仓库里有什么，以及从哪里开始。
 order: 2
 sidebarGroups:
   - Set up
@@ -10,63 +10,63 @@ sidebarGroups:
   - Ship
 ---
 
-The Android app started in 2019 and is now used by millions of people. Its center is a web view that shows the Home Assistant frontend. Around it sit native features: sensors that report from the phone, notifications, widgets, tiles, NFC tags, Assist, a Wear OS app, and car screens for Android Auto and Android Automotive.
+Android 应用始于 2019 年，如今已有数百万人使用。它的核心是一个显示 Home Assistant 前端的 web view。围绕它的是各种原生功能：从手机上报的传感器、通知、小组件、磁贴、NFC 标签、Assist、Wear OS 应用，以及用于 Android Auto 和 Android Automotive 的车机屏幕。
 
-The project is written entirely in Kotlin. New UI is Jetpack Compose. You will still find older code, like XML layouts and view binding, that predates the current guidelines. That code is migrated over time, and the pages here describe how new code should look.
+该项目完全使用 Kotlin 编写。新的 UI 使用 Jetpack Compose。你仍会找到早于现行规范的老代码，例如 XML 布局和 view binding。这些代码会随时间逐步迁移，这里的页面描述的是新代码应有的样子。
 
-## The repository
+## 仓库
 
-Everything lives in [home-assistant/android](https://github.com/home-assistant/android). It is one Gradle project with several modules:
+所有内容都在 [home-assistant/android](https://github.com/home-assistant/android) 中。它是一个包含多个模块的 Gradle 项目：
 
-| Module | What it is |
+| 模块 | 说明 |
 | --- | --- |
-| `:app` | The phone and tablet app |
-| `:automotive` | The Android Automotive app. Reuses the sources of `:app` |
-| `:wear` | The Wear OS app |
-| `:common` | Code shared by all apps: the data layer, sensors, the WebSocket and REST clients, the design system, and all strings |
-| `:testing-unit` | Helpers shared by the unit tests of every module |
-| `:lint` | The custom lint rules of the project |
-| `:microwakeword` | On-device wake word detection |
-| `:provides-sensor-processor` | A code generator for sensor registration |
-| `build-logic` | Convention plugins that configure every module the same way |
+| `:app` | 手机和平板应用 |
+| `:automotive` | Android Automotive 应用。复用 `:app` 的源代码 |
+| `:wear` | Wear OS 应用 |
+| `:common` | 所有应用共享的代码：数据层、传感器、WebSocket 和 REST 客户端、设计系统，以及所有字符串 |
+| `:testing-unit` | 各模块单元测试共享的辅助工具 |
+| `:lint` | 项目的自定义 lint 规则 |
+| `:microwakeword` | 设备端唤醒词检测 |
+| `:provides-sensor-processor` | 用于传感器注册的代码生成器 |
+| `build-logic` | 以相同方式配置每个模块的约定插件 |
 
-The minimum and target SDK versions are in `gradle/libs.versions.toml`, under the `androidSdk-*` keys.
+最低和目标 SDK 版本位于 `gradle/libs.versions.toml` 中的 `androidSdk-*` 键下。
 
-## Set up
+## 环境搭建
 
-- [Get started](/companion/android/get-started/): install Android Studio, build the app, and run it.
-- [Push notifications](/companion/android/push-notifications/): set up your own Firebase project, if you work on notifications.
+- [入门](/companion/android/get-started/)：安装 Android Studio、构建应用并运行它。
+- [推送通知](/companion/android/push-notifications/)：如果你从事通知相关工作，请设置你自己的 Firebase 项目。
 
-## Architecture
+## 架构
 
-- [Architecture](/companion/android/architecture/): the principles, the tech stack, and how the modules fit together.
-- [UI architecture](/companion/android/ui-architecture/): how a screen is built, from the view down to the repositories.
-- [The frontend screen](/companion/android/frontend-screen/): the screen that hosts the web view, and the reference implementation of the UI architecture.
-- [Flavors and targets](/companion/android/flavors-and-targets/): `full` and `minimal`, and the phone, car, watch, and TV builds.
+- [架构](/companion/android/architecture/)：原则、技术栈，以及各模块如何组合在一起。
+- [UI 架构](/companion/android/ui-architecture/)：一个屏幕是如何构建的，从视图到仓库层。
+- [前端屏幕](/companion/android/frontend-screen/)：承载 web view 的屏幕，也是 UI 架构的参考实现。
+- [变体与目标](/companion/android/flavors-and-targets/)：`full` 和 `minimal`，以及手机、车机、手表和电视构建。
 
-## Write code
+## 编写代码
 
-- [Compose and the design system](/companion/android/compose/): building UI with `HATheme` and the `HA*` components.
-- [Best practices](/companion/android/best-practices/): strong types, concurrency, dependency injection, and failing fast.
-- [Code style and linting](/companion/android/code-style/): KTLint, Detekt, and the Android linter.
-- [Dependencies](/companion/android/dependencies/): the version catalog, lockfiles, and Renovate.
-- [Debug tools](/companion/android/debugging/): the developer playground, StrictMode, and LeakCanary.
+- [Compose 与设计系统](/companion/android/compose/)：使用 `HATheme` 和 `HA*` 组件构建 UI。
+- [最佳实践](/companion/android/best-practices/)：强类型、并发、依赖注入，以及快速失败。
+- [代码风格与 lint](/companion/android/code-style/)：KTLint、Detekt 和 Android linter。
+- [依赖](/companion/android/dependencies/)：版本目录、lockfile 和 Renovate。
+- [调试工具](/companion/android/debugging/)：开发者 playground、StrictMode 和 LeakCanary。
 
-## Test
+## 测试
 
-- [Testing](/companion/android/testing/): how to write tests, and unit tests with JUnit, MockK, Robolectric, and Turbine.
-- [Screenshot tests](/companion/android/screenshot-testing/)
-- [Instrumentation tests](/companion/android/instrumentation-testing/)
-- [End-to-end tests](/companion/android/e2e-testing/)
+- [测试](/companion/android/testing/)：如何编写测试，以及使用 JUnit、MockK、Robolectric 和 Turbine 进行单元测试。
+- [截图测试](/companion/android/screenshot-testing/)
+- [插桩测试](/companion/android/instrumentation-testing/)
+- [端到端测试](/companion/android/e2e-testing/)
 
-## Ship
+## 发布
 
-- [Submit a pull request](/companion/android/submitting/): the checklist, the template, and the review.
-- [Continuous integration](/companion/android/ci/): what runs on your pull request, and after it is merged.
-- [Releases](/companion/android/releases/): from a merged pull request to the Play Store, and building a signed release yourself.
+- [提交 pull request](/companion/android/submitting/)：检查清单、模板和审查流程。
+- [持续集成](/companion/android/ci/)：你的 pull request 上会运行什么，以及合并之后会发生什么。
+- [发布](/companion/android/releases/)：从合并的 pull request 到 Play Store，以及自行构建签名发布版本。
 
-## Who to talk to
+## 联系谁
 
-- The [Android project thread](discord:android-project) on the [Home Assistant Discord](https://www.home-assistant.io/join-chat). Pick the developer role under **Channels & Roles** first.
-- [Issues](https://github.com/home-assistant/android/issues) in the Android repository, for bugs and feature requests.
-- For how the app works for users, see the [companion app documentation](https://companion.home-assistant.io/).
+- [Home Assistant Discord](https://www.home-assistant.io/join-chat) 上的 [Android 项目讨论串](discord:android-project)。请先在 **Channels & Roles** 下选择开发者角色。
+- Android 仓库中的 [Issues](https://github.com/home-assistant/android/issues)，用于提交缺陷和功能请求。
+- 有关应用在用户端的工作方式，请参阅[伴侣应用文档](https://companion.home-assistant.io/)。

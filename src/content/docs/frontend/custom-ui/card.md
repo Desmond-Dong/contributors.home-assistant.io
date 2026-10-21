@@ -1,14 +1,14 @@
 ---
-title: Custom cards
-description: Build your own dashboard card. The element, its configuration, sizing in the sections and masonry views, and the helpers the frontend offers.
+title: 自定义卡片
+description: 构建你自己的仪表盘卡片。包括元素、其配置、在分区视图和瀑布流视图中的尺寸，以及前端提供的辅助工具。
 order: 2
 ---
 
-A custom card is a custom element that Home Assistant puts on a dashboard, just like a built-in card. It gets its configuration and the state of Home Assistant, and renders whatever you want.
+自定义卡片（custom card）是一个自定义元素，Home Assistant 会像内置卡片一样把它放在仪表盘上。它接收自己的配置和 Home Assistant 的状态，并渲染你想要的任何内容。
 
-## A first card
+## 第一个卡片
 
-Create `www/state-card-example.js` in your configuration folder:
+在你的配置文件夹中创建 `www/state-card-example.js`：
 
 ```js
 class StateCardExample extends HTMLElement {
@@ -60,43 +60,43 @@ class StateCardExample extends HTMLElement {
 customElements.define("state-card-example", StateCardExample);
 ```
 
-[Register it as a resource](/frontend/custom-ui/resources/) with the URL `/local/state-card-example.js` and the type **JavaScript module**. Then add it to a dashboard in YAML:
+[将其注册为资源](/frontend/custom-ui/resources/)，URL 为 `/local/state-card-example.js`，类型为 **JavaScript module**。然后在 YAML 中把它添加到仪表盘：
 
 ```yaml
 type: custom:state-card-example
 entity: light.living_room
 ```
 
-The tag name you register, `state-card-example`, becomes the type `custom:state-card-example`.
+你注册的标签名 `state-card-example` 会成为类型 `custom:state-card-example`。
 
-`ha-card` is the element the built-in cards use for their background, border, and shadow. Use it, so your card looks like the others and follows the theme. Like every `ha-*` element, it is not a promised API, see [which tools to use](/frontend/custom-ui/#which-tools-to-use).
+`ha-card` 是内置卡片用于背景、边框和阴影的元素。请使用它，这样你的卡片看起来与其他卡片一致，并遵循主题。与所有 `ha-*` 元素一样，它不是承诺的 API，请参阅[应使用哪些工具](/frontend/custom-ui/#which-tools-to-use)。
 
-## The card API
+## 卡片 API
 
-| Member | Required | What it does |
+| 成员 | 必需 | 作用 |
 | --- | --- | --- |
-| `setConfig(config)` | Yes | Receives the configuration. Called rarely: when the card is created, and when the configuration changes. Throw an `Error` for an invalid configuration. |
-| `hass` | | Set with a new `hass` object whenever the state of Home Assistant changes. That is often. Only update what changed. |
-| `getCardSize()` | | The height of the card in the masonry view, as a number or a promise of a number. 1 is 50 pixels. Defaults to 1. |
-| `getGridOptions()` | | The size of the card in the sections view. |
-| `preview` | | Set to `true` when the card is shown in the card editor. |
+| `setConfig(config)` | 是 | 接收配置。调用频率低：在卡片创建时以及配置更改时调用。配置无效时抛出 `Error`。 |
+| `hass` | | 每当 Home Assistant 的状态变化时，都会设置一个新的 `hass` 对象。这很频繁。只更新发生变化的部分。 |
+| `getCardSize()` | | 卡片在瀑布流视图中的高度，可以是数字或数字的 Promise。1 代表 50 像素。默认为 1。 |
+| `getGridOptions()` | | 卡片在分区视图中的尺寸。 |
+| `preview` | | 当卡片显示在卡片编辑器中时，设置为 `true`。 |
 
-The `hass` object is described in the [hass object reference](/frontend/reference/hass-object/). Its formatters, like `hass.formatEntityState()` and `hass.formatEntityName()`, turn states and names into text in the language and units of the user. Use them instead of showing raw states.
+`hass` 对象在 [hass 对象参考](/frontend/reference/hass-object/)中有描述。它的格式化工具，如 `hass.formatEntityState()` 和 `hass.formatEntityName()`，会把状态和名称转换为用户语言和单位的文本。请使用它们，而不是直接显示原始状态。
 
-## Sizing in the sections view
+## 分区视图中的尺寸
 
-A section is a grid of 12 columns. Rows are 56 pixels high, with 8 pixels between them. `getGridOptions()` tells the grid how big your card is by default, and how far users can resize it:
+分区（section）是一个 12 列的网格。行高为 56 像素，行间距为 8 像素。`getGridOptions()` 告诉网格你的卡片默认多大，以及用户可以把它调整到多大：
 
-| Option | Default | Meaning |
+| 选项 | 默认值 | 含义 |
 | --- | --- | --- |
-| `columns` | `12` | Number of columns, or `"full"` for the full width. |
-| `rows` | `"auto"` | Number of rows. With `"auto"`, the card is as high as its content and can't be resized in height. |
-| `min_columns`, `max_columns` | | Limits for the width. |
-| `min_rows`, `max_rows` | | Limits for the height. |
+| `columns` | `12` | 列数，或 `"full"` 表示全宽。 |
+| `rows` | `"auto"` | 行数。使用 `"auto"` 时，卡片与其内容一样高，且无法调整高度。 |
+| `min_columns`, `max_columns` | | 宽度限制。 |
+| `min_rows`, `max_rows` | | 高度限制。 |
 
-Without `getGridOptions()`, the card takes the full width of the section, and its height follows its content.
+如果没有 `getGridOptions()`，卡片会占据分区的全部宽度，其高度随内容而定。
 
-Use multiples of 3 for `columns`, like 3, 6, 9, or 12. Those line up with the other cards. A card of `rows: 2` is 120 pixels high: two rows of 56 pixels and one gap of 8.
+`columns` 请使用 3 的倍数，例如 3、6、9 或 12。这样能与其他卡片对齐。`rows: 2` 的卡片高 120 像素：两行各 56 像素，加一个 8 像素的间距。
 
 ```js
 getGridOptions() {
@@ -104,18 +104,18 @@ getGridOptions() {
 }
 ```
 
-## Sizing in the masonry view
+## 瀑布流视图中的尺寸
 
-The masonry view places cards in columns, and uses `getCardSize()` to spread them evenly. When you ask another element for its size, wait until it is defined, because cards are loaded lazily:
+瀑布流（masonry）视图将卡片排列在列中，并使用 `getCardSize()` 来均匀分布它们。当你向另一个元素询问其尺寸时，请等待它被定义，因为卡片是懒加载的：
 
 ```js
 await customElements.whenDefined(element.localName);
 return element.getCardSize();
 ```
 
-## Get only the data you need
+## 只获取你需要的数据
 
-`hass` changes on every state change in the home, even when nothing your card shows changed. A card can ask for just a part of the data instead, by requesting a [context](/frontend/architecture/hass-and-contexts/). Fire a `context-request` event when the card is added to the page:
+`hass` 在家中的每次状态变化时都会更新，即使你的卡片显示的内容没有变化。卡片可以改为只请求部分数据，方法是请求一个[上下文（context）](/frontend/architecture/hass-and-contexts/)。在卡片被添加到页面时触发 `context-request` 事件：
 
 ```js
 connectedCallback() {
@@ -139,11 +139,11 @@ disconnectedCallback() {
 }
 ```
 
-The callback gets the value of the context, and with `subscribe` set, it is called again on every change. Always unsubscribe when the card is removed. The keys of the contexts, like `states`, `entities`, `hassApi`, and `hassInternationalization`, are defined in [`src/data/context/index.ts`](https://github.com/home-assistant/frontend/blob/dev/src/data/context/index.ts).
+回调会收到上下文的值，并且设置了 `subscribe` 后，每次变化时都会再次调用。卡片被移除时务必取消订阅。上下文的键，如 `states`、`entities`、`hassApi` 和 `hassInternationalization`，定义在 [`src/data/context/index.ts`](https://github.com/home-assistant/frontend/blob/dev/src/data/context/index.ts) 中。
 
-## Card helpers
+## 卡片辅助工具
 
-The frontend offers a few helpers to custom cards, for example to create a built-in card inside yours:
+前端为自定义卡片提供了一些辅助工具，例如在你的卡片内创建一个内置卡片：
 
 ```js
 const helpers = await window.loadCardHelpers();
@@ -154,9 +154,9 @@ const card = helpers.createCardElement({
 card.hass = this._hass;
 ```
 
-`loadCardHelpers()` is available once the dashboard panel is loaded. It returns `createCardElement`, `createBadgeElement`, `createRowElement`, `createHeaderFooterElement`, and `createHuiElement`, the dialogs `showAlertDialog`, `showConfirmationDialog`, `showPromptDialog`, and `showEnterCodeDialog`, and `importMoreInfoControl`. A card created this way needs `hass` set, just like yours.
+`loadCardHelpers()` 在仪表盘面板加载后可用。它返回 `createCardElement`、`createBadgeElement`、`createRowElement`、`createHeaderFooterElement` 和 `createHuiElement`，对话框 `showAlertDialog`、`showConfirmationDialog`、`showPromptDialog` 和 `showEnterCodeDialog`，以及 `importMoreInfoControl`。以这种方式创建的卡片需要设置 `hass`，就像你自己的卡片一样。
 
-## Next steps
+## 后续步骤
 
-- Add a visual editor, and put your card in the card picker: [Card editor and picker](/frontend/custom-ui/card-editor/).
-- Add quick controls to the tile card: [Custom card features](/frontend/custom-ui/card-feature/).
+- 添加可视化编辑器，并把你的卡片放入卡片选择器：[卡片编辑器和选择器](/frontend/custom-ui/card-editor/)。
+- 为平铺卡片添加快捷控制：[自定义卡片功能](/frontend/custom-ui/card-feature/)。

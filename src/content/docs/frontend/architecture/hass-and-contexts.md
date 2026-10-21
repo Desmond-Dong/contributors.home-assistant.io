@@ -1,54 +1,54 @@
 ---
-title: The hass object and contexts
-description: How components get their data. The hass object that holds everything, and the Lit contexts that give a component only the part it needs.
+title: hass 对象与上下文（contexts）
+description: 组件如何获取数据。承载一切的 hass 对象，以及只向组件提供其所需部分的 Lit 上下文。
 order: 2
 ---
 
-The frontend keeps the state of Home Assistant in one object, `hass`. It holds the states of all entities, the registries, the configuration, the user, the translations, and the functions to call Core. Whenever something changes, the frontend makes a new `hass` object with new versions of only the parts that changed.
+前端将 Home Assistant 的状态保存在一个对象中，即 `hass`。它包含所有实体的状态、各个注册表、配置、用户、翻译，以及调用 Core 的函数。每当有变化时，前端会创建一个新的 `hass` 对象，其中只有发生变化的部分会得到新版本。
 
-That makes it cheap to check for a change: compare by reference.
+这使得检查变化非常廉价：通过引用进行比较。
 
 ```ts
 const changed = newHass.states !== oldHass.states;
 ```
 
-## Two ways to get the data
+## 获取数据的两种方式
 
-**The `hass` property.** Panels, cards, and many components get `hass` set as a property, and pass it down to their children. It is simple, and it is the public API for [custom cards and panels](/frontend/custom-ui/). The downside: a new `hass` arrives on every change in the home, so a component that takes `hass` checks or rerenders far more often than it needs to, and it hides what data the component actually depends on.
+**`hass` 属性。** 面板、卡片和许多组件将 `hass` 作为属性接收，并将其传递给子组件。这种方式简单，并且是[自定义卡片和面板](/frontend/custom-ui/)的公开 API。缺点是：家中每次变化都会带来新的 `hass`，因此接收 `hass` 的组件检查或重新渲染的频率远超实际需要，而且它掩盖了组件真正依赖哪些数据。
 
-**Contexts.** The root element provides the same data as a set of [Lit contexts](https://lit.dev/docs/data/context/), split by topic. A component consumes only the contexts it reads, and updates only when those change.
+**上下文（contexts）。** 根元素以一组 [Lit 上下文](https://lit.dev/docs/data/context/)的形式提供相同的数据，并按主题拆分。组件只消费它读取的上下文，并且只在这些上下文变化时更新。
 
-For new code in the frontend: leaf components consume the narrowest context that covers what they read. Containers that own `hass` and pass it on may keep the property.
+对于前端中的新代码：叶子组件应消费覆盖其读取内容的最窄上下文。拥有 `hass` 并将其向下传递的容器可以继续保留该属性。
 
-## The contexts
+## 上下文列表
 
-The contexts are defined in `src/data/context/index.ts`.
+这些上下文定义在 `src/data/context/index.ts` 中。
 
-| Context | Contains | Replaces |
+| 上下文 | 包含内容 | 替代 |
 | --- | --- | --- |
-| `statesContext` | The states of all entities | `hass.states` |
-| `entitiesContext` | The entity registry, for display | `hass.entities` |
-| `devicesContext` | The device registry | `hass.devices` |
-| `areasContext` | The area registry | `hass.areas` |
-| `floorsContext` | The floor registry | `hass.floors` |
-| `registriesContext` | All four registries together | |
-| `servicesContext` | The available actions | `hass.services` |
-| `internationalizationContext` | Language, locale, `localize`, and translation loaders | `hass.localize`, `hass.locale`, `hass.language` |
-| `formattersContext` | The entity formatters | `hass.formatEntityState` and the others |
-| `configContext` | Core configuration, the user, and auth | `hass.config`, `hass.user`, `hass.auth`, `hass.userData` |
-| `connectionContext` | The WebSocket connection and its state | `hass.connection`, `hass.connected` |
-| `apiContext` | The functions to call Core | `hass.callService`, `hass.callWS`, `hass.callApi`, and others |
-| `uiContext` | Themes, panels, sidebar, and other UI state | `hass.themes`, `hass.panels`, and others |
-| `narrowViewportContext` | Whether the main view uses the narrow layout | |
-| `reducedMotionContext` | Whether the user prefers reduced motion | |
+| `statesContext` | 所有实体的状态 | `hass.states` |
+| `entitiesContext` | 实体注册表，用于显示 | `hass.entities` |
+| `devicesContext` | 设备注册表 | `hass.devices` |
+| `areasContext` | 区域注册表 | `hass.areas` |
+| `floorsContext` | 楼层注册表 | `hass.floors` |
+| `registriesContext` | 以上四个注册表的合集 | |
+| `servicesContext` | 可用的动作 | `hass.services` |
+| `internationalizationContext` | 语言、区域设置、`localize` 以及翻译加载器 | `hass.localize`、`hass.locale`、`hass.language` |
+| `formattersContext` | 实体格式化器 | `hass.formatEntityState` 及其他 |
+| `configContext` | Core 配置、用户和认证 | `hass.config`、`hass.user`、`hass.auth`、`hass.userData` |
+| `connectionContext` | WebSocket 连接及其状态 | `hass.connection`、`hass.connected` |
+| `apiContext` | 调用 Core 的函数 | `hass.callService`、`hass.callWS`、`hass.callApi` 等 |
+| `uiContext` | 主题、面板、侧边栏及其他 UI 状态 | `hass.themes`、`hass.panels` 等 |
+| `narrowViewportContext` | 主视图是否使用窄屏布局 | |
+| `reducedMotionContext` | 用户是否偏好减少动态效果 | |
 
-Some contexts are lazy: they subscribe to Core only when the first component consumes them, and unsubscribe after the last one goes away. These are `labelsContext`, `fullEntitiesContext`, `configEntriesContext`, `manifestsContext`, `triggerDescriptionsContext`, and `conditionDescriptionsContext`.
+有些上下文是惰性的：只有当第一个组件消费它们时才会订阅 Core，并在最后一个组件离开后取消订阅。这些包括 `labelsContext`、`fullEntitiesContext`、`configEntriesContext`、`manifestsContext`、`triggerDescriptionsContext` 和 `conditionDescriptionsContext`。
 
-Older single-value contexts, like `localizeContext`, `themesContext`, and `userContext`, are deprecated. Use the grouped ones.
+较旧的单值上下文，如 `localizeContext`、`themesContext` 和 `userContext`，已被弃用。请使用分组后的上下文。
 
-## Consume a context
+## 消费上下文
 
-Import `consume` from `src/common/decorators/consume`, not from `@lit/context`. The `@lit/context` version rerenders the component on every change of every consumed context. The frontend's version leaves that to the field, and ESLint blocks the other one.
+请从 `src/common/decorators/consume` 导入 `consume`，而不是从 `@lit/context`。`@lit/context` 的版本会在每个被消费的上下文每次变化时都重新渲染组件。前端的版本将这一决定留给字段本身，并且 ESLint 会阻止使用另一个版本。
 
 ```ts
 @state()
@@ -56,13 +56,13 @@ Import `consume` from `src/common/decorators/consume`, not from `@lit/context`. 
 private _labels?: LabelRegistryEntry[];
 ```
 
-How you combine the decorators decides when the component renders:
+如何组合这些装饰器决定了组件何时渲染：
 
-- `@state()` with `@consume`: the component rerenders when the context changes.
-- `@state()` with `@consume` and `@transform`: the component rerenders only when the transformed value changes.
-- `@consume` alone: the field stays current, but never triggers a render. Use this for values you only read in event handlers, like `apiContext`.
+- `@state()` 搭配 `@consume`：上下文变化时组件重新渲染。
+- `@state()` 搭配 `@consume` 和 `@transform`：仅当转换后的值变化时组件才重新渲染。
+- 仅使用 `@consume`：字段保持最新，但从不触发渲染。适用于只在事件处理器中读取的值，例如 `apiContext`。
 
-To take one value out of a grouped context, add `@transform` from `src/common/decorators/transform`:
+要从分组上下文中取出单个值，请添加来自 `src/common/decorators/transform` 的 `@transform`：
 
 ```ts
 @state()
@@ -73,9 +73,9 @@ To take one value out of a grouped context, add `@transform` from `src/common/de
 private _themes!: Themes;
 ```
 
-### One entity
+### 单个实体
 
-For a component that shows one entity, `src/common/decorators/consume-context-entry.ts` has helpers that follow an entity ID held on the component:
+对于显示单个实体的组件，`src/common/decorators/consume-context-entry.ts` 提供了一些辅助函数，可以跟踪组件上持有的实体 ID（entity ID）：
 
 ```ts
 @state()
@@ -90,16 +90,16 @@ private _entity?: EntityRegistryDisplayEntry;
 private _localize!: LocalizeFunc;
 ```
 
-`consumeEntityStates` does the same for a list of entity IDs, and keeps the previous record when none of those entities changed.
+`consumeEntityStates` 对一组实体 ID 执行相同的操作，并且当这些实体都没有变化时保留之前的记录。
 
-The button card in `src/panels/lovelace/cards/hui-button-card.ts` is the reference example of a component that uses contexts instead of `hass`.
+`src/panels/lovelace/cards/hui-button-card.ts` 中的按钮卡片是使用上下文而非 `hass` 的组件的参考示例。
 
-### In a reactive controller
+### 在响应式控制器中
 
-A reactive controller extends `ContextController` and declares its fields with `consumeContext()`, both from `src/common/decorators/consume.ts`. `@state()` and `@transform` don't work on controllers: call `host.requestUpdate()` when the host needs to render. `src/data/service-info-controller.ts` is an example.
+响应式控制器（reactive controller）继承 `ContextController` 并使用 `consumeContext()` 声明其字段，两者均来自 `src/common/decorators/consume.ts`。`@state()` 和 `@transform` 在控制器上不起作用：当宿主需要渲染时，请调用 `host.requestUpdate()`。`src/data/service-info-controller.ts` 是一个示例。
 
-## Outside the frontend
+## 前端之外
 
-Custom cards and panels can request contexts too, without importing anything from the frontend, by firing a `context-request` event. [Custom cards](/frontend/custom-ui/card/#get-only-the-data-you-need) shows how.
+自定义卡片和面板也可以请求上下文，无需从前端导入任何内容，只需触发一个 `context-request` 事件即可。[自定义卡片](/frontend/custom-ui/card/#get-only-the-data-you-need)展示了具体做法。
 
-The methods and properties of `hass` itself are listed in [the hass object reference](/frontend/reference/hass-object/).
+`hass` 本身的方法和属性列在 [hass 对象参考](/frontend/reference/hass-object/)中。

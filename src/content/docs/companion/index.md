@@ -1,56 +1,56 @@
 ---
-title: Companion apps
-description: The official Home Assistant apps for Android, iOS, iPadOS, macOS, watchOS, Wear OS, and the car. How they are built, and how to help build them.
+title: 伴侣应用（Companion apps）
+description: 适用于 Android、iOS、iPadOS、macOS、watchOS、Wear OS 以及车载系统的官方 Home Assistant 应用。它们是如何构建的，以及如何参与构建。
 ---
 
-The companion apps put Home Assistant in your pocket, on your wrist, and in your car. They show the same frontend you know from the browser, and add what only an app on the device can do: sensors, location, notifications, widgets, watch apps, and car screens.
+伴侣应用（companion apps）让你把 Home Assistant 装进口袋、戴在手腕上、带进汽车里。它们显示与你在浏览器中看到的相同的前端，并增加了只有设备上的应用才能实现的功能：传感器、位置、通知、小组件、手表应用以及车载屏幕。
 
-There are two apps, each in its own repository, built by its own group of contributors:
+共有两个应用，各自位于独立的仓库中，由各自的贡献者团队构建：
 
-| App | Runs on | Language | Repository |
+| 应用 | 运行平台 | 语言 | 仓库 |
 | --- | --- | --- | --- |
-| Android | Android phones and tablets, Wear OS, Android Auto, Android Automotive, Meta Quest | Kotlin | [home-assistant/android](https://github.com/home-assistant/android) |
-| Apple | iPhone, iPad, Mac, Apple Watch, CarPlay | Swift | [home-assistant/iOS](https://github.com/home-assistant/iOS) |
+| Android | Android 手机和平板、Wear OS、Android Auto、Android Automotive、Meta Quest | Kotlin | [home-assistant/android](https://github.com/home-assistant/android) |
+| Apple | iPhone、iPad、Mac、Apple Watch、CarPlay | Swift | [home-assistant/iOS](https://github.com/home-assistant/iOS) |
 
-Both talk to Home Assistant through the same integration in Core: `mobile_app`. That integration is a public API, so other apps can use it too.
+两者都通过 Core 中同一个集成（integration）`mobile_app` 与 Home Assistant 通信。该集成是一个公开的 API，因此其他应用也可以使用它。
 
-This area is for developers who want to work on either app, and for anyone building an app of their own that talks to Home Assistant. You need to be comfortable with Kotlin and Android Studio, or with Swift and Xcode. If you want to help without writing code, there is plenty to do too: see [ways to help](#ways-to-help).
+本板块面向希望参与这两个应用开发的开发者，以及任何想要构建自己的、与 Home Assistant 通信的应用的人。你需要熟悉 Kotlin 和 Android Studio，或者熟悉 Swift 和 Xcode。如果你不想写代码也想帮忙，同样有很多事情可做：参见[参与方式](#ways-to-help)。
 
-## Ways to help
+## 参与方式
 
-- **Fix a bug or build a feature**: pick an issue in the Android or iOS repository.
-- **Test betas**: join the [Android beta on Google Play](https://play.google.com/apps/testing/io.homeassistant.companion.android) or the [iOS beta on TestFlight](https://www.home-assistant.io/ios/beta/), and report what breaks.
-- **Test pull requests**: install a build from a pull request and tell the author if it works. See [testing pull request builds](/companion/android/get-started/#test-a-pull-request-build).
-- **Review**: everyone can comment on a pull request. Even a short review helps.
-- **Translate**: both apps are translated on Lokalise. See [Translations](/translate/).
-- **Document**: the user documentation lives at [companion.home-assistant.io](https://companion.home-assistant.io/), in the [companion.home-assistant](https://github.com/home-assistant/companion.home-assistant) repository.
+- **修复缺陷或开发功能**：在 Android 或 iOS 仓库中挑选一个 issue。
+- **测试测试版**：加入 [Google Play 上的 Android 测试版](https://play.google.com/apps/testing/io.homeassistant.companion.android)或 [TestFlight 上的 iOS 测试版](https://www.home-assistant.io/ios/beta/)，并报告出现的问题。
+- **测试拉取请求（pull request）**：安装某个拉取请求的构建版本，并告诉作者它是否正常工作。参见[测试拉取请求构建](/companion/android/get-started/#test-a-pull-request-build)。
+- **审查（review）**：任何人都可以对拉取请求发表评论。即使是一段简短的审查也有帮助。
+- **翻译**：两个应用都在 Lokalise 上进行翻译。参见[翻译](/translate/)。
+- **编写文档**：用户文档位于 [companion.home-assistant.io](https://companion.home-assistant.io/)，存放在 [companion.home-assistant](https://github.com/home-assistant/companion.home-assistant) 仓库中。
 
-## Start here
+## 从这里开始
 
-- [Your first contribution](/companion/first-contribution/): choose your platform, build the app, and open your first pull request.
-- [How the apps fit in](/architecture/platform/companion-apps/): the big picture, from the web view to the push service.
+- [你的第一次贡献](/companion/first-contribution/)：选择你的平台，构建应用，并提交你的第一个拉取请求。
+- [应用如何融入整体](/architecture/platform/companion-apps/)：从网页视图到推送服务的整体概览。
 
 ## Android
 
-- [Android overview](/companion/android/): the repository, the modules, and where to find what.
-- [Get started](/companion/android/get-started/): set up Android Studio and build the app.
-- [Architecture](/companion/android/architecture/) and [UI architecture](/companion/android/ui-architecture/): how the app and its screens are structured.
-- [Testing](/companion/android/testing/): unit, screenshot, instrumentation, and end-to-end tests.
-- [Submit a pull request](/companion/android/submitting/): the checklist and the review process.
+- [Android 概览](/companion/android/)：仓库、模块，以及在哪里找到所需内容。
+- [入门](/companion/android/get-started/)：设置 Android Studio 并构建应用。
+- [架构](/companion/android/architecture/)和 [UI 架构](/companion/android/ui-architecture/)：应用及其界面是如何组织的。
+- [测试](/companion/android/testing/)：单元测试、截图测试、插桩测试和端到端测试。
+- [提交拉取请求](/companion/android/submitting/)：检查清单和审查流程。
 
 ## Apple
 
-- [Apple overview](/companion/apple/): the repository, the targets, and where to find what.
-- [Get started](/companion/apple/get-started/): set up Xcode, signing, and build the app.
-- [Architecture](/companion/apple/architecture/) and [targets](/companion/apple/targets/): how the code is shared across iPhone, Watch, CarPlay, widgets, and Mac.
-- [Submit a pull request](/companion/apple/submitting/): the checklist and the review process.
+- [Apple 概览](/companion/apple/)：仓库、target，以及在哪里找到所需内容。
+- [入门](/companion/apple/get-started/)：设置 Xcode、签名，并构建应用。
+- [架构](/companion/apple/architecture/)和 [target](/companion/apple/targets/)：代码如何在 iPhone、Watch、CarPlay、小组件和 Mac 之间共享。
+- [提交拉取请求](/companion/apple/submitting/)：检查清单和审查流程。
 
-## The mobile app API
+## 移动应用 API
 
-- [Mobile app API](/companion/mobile-app-api/): how an app connects to Home Assistant, registers itself, sends sensor data and location, and receives notifications. For both official apps, and for your own.
+- [移动应用 API](/companion/mobile-app-api/)：应用如何连接到 Home Assistant、注册自身、发送传感器数据和位置信息，以及接收通知。适用于两个官方应用，也适用于你自己的应用。
 
-## Who to talk to
+## 联系谁
 
-- Join the [Home Assistant Discord](https://www.home-assistant.io/join-chat) and pick the developer role under **Channels & Roles**. Then head to the [Android project thread](discord:android-project), or to the **#apple-apps** channel. Questions that go beyond one app, like the `mobile_app` integration, fit the **#developers** channel.
-- Bugs and feature requests go to the issues of the [Android](https://github.com/home-assistant/android/issues) or [iOS](https://github.com/home-assistant/iOS/issues) repository.
-- Questions about the `mobile_app` integration in Core go to the [core repository](https://github.com/home-assistant/core).
+- 加入 [Home Assistant Discord](https://www.home-assistant.io/join-chat)，并在 **Channels & Roles** 下选择开发者角色。然后前往 [Android 项目讨论帖](discord:android-project)，或 **#apple-apps** 频道。超出单个应用范围的问题，例如 `mobile_app` 集成，适合在 **#developers** 频道讨论。
+- 缺陷和功能请求请提交到 [Android](https://github.com/home-assistant/android/issues) 或 [iOS](https://github.com/home-assistant/iOS/issues) 仓库的 issues。
+- 关于 Core 中 `mobile_app` 集成的问题请前往 [core 仓库](https://github.com/home-assistant/core)。

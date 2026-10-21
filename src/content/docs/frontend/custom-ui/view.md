@@ -1,17 +1,17 @@
 ---
-title: Custom views
-description: Write your own view layout, to arrange the cards of a dashboard view in a way the built-in views can't.
+title: 自定义视图
+description: 编写自己的视图布局，以内置视图无法实现的方式排列仪表盘视图中的卡片。
 order: 7
 ---
 
-A [view](/glossary/view/) decides how its cards are arranged. The built-in view types are sections, masonry, sidebar, and panel. A custom view type lets you write your own layout, like a free-form canvas or a fixed grid.
+[视图](/glossary/view/)决定其卡片的排列方式。内置的视图类型包括 sections、masonry、sidebar 和 panel。自定义视图类型让你可以编写自己的布局，例如自由画布或固定网格。
 
-Home Assistant still creates the cards and badges, and keeps them up to date. Your view only places them.
+Home Assistant 仍会创建卡片和徽章（badge），并保持它们处于最新状态。你的视图只负责放置它们。
 
 > [!NOTE]
-> Looking to generate the cards of a view from code? That is a [view strategy](/frontend/custom-ui/strategy/#a-view-strategy), not a custom view.
+> 想通过代码生成视图中的卡片？那是[视图策略（view strategy）](/frontend/custom-ui/strategy/#a-view-strategy)，而不是自定义视图。
 
-## An example
+## 一个示例
 
 ```js
 class MyNewView extends HTMLElement {
@@ -35,7 +35,7 @@ class MyNewView extends HTMLElement {
 customElements.define("my-new-view", MyNewView);
 ```
 
-Load it as a [resource](/frontend/custom-ui/resources/), and set it as the type of a view:
+将其作为[资源（resource）](/frontend/custom-ui/resources/)加载，并将其设置为某个视图的类型：
 
 ```yaml
 views:
@@ -46,23 +46,23 @@ views:
         entity: light.living_room
 ```
 
-## What a view gets
+## 视图会获得什么
 
-| Property | What it is |
+| 属性 | 说明 |
 | --- | --- |
-| `setConfig(config)` | The configuration of the view. |
-| `hass` | The full state of Home Assistant. |
-| `lovelace` | The dashboard: its configuration, whether it is in edit mode, and functions to save it. |
-| `narrow` | `true` on a narrow screen. |
-| `path` | Where the view sits in the dashboard configuration, like `["views", 0]`. |
-| `cards` | The card elements, ready to place. |
-| `badges` | The badge elements. |
+| `setConfig(config)` | 视图的配置。 |
+| `hass` | Home Assistant 的完整状态。 |
+| `lovelace` | 仪表盘：其配置、是否处于编辑模式，以及保存配置的函数。 |
+| `narrow` | 在窄屏上为 `true`。 |
+| `path` | 视图在仪表盘配置中的位置，例如 `["views", 0]`。 |
+| `cards` | 卡片元素，已准备好放置。 |
+| `badges` | 徽章元素。 |
 
-The [masonry view](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/views/hui-masonry-view.ts) is the built-in example of a view element.
+[masonry 视图](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/views/hui-masonry-view.ts)是内置的视图元素示例。
 
-## Store layout data per card
+## 为每张卡片存储布局数据
 
-If your view needs to remember something about each card, like a position or a size, store it in the `view_layout` option of the card. Home Assistant keeps it with the card configuration, and ignores it otherwise:
+如果你的视图需要记住每张卡片的某些信息，例如位置或大小，可以将其存储在卡片的 `view_layout` 选项中。Home Assistant 会将其与卡片配置一起保存，其他情况下会忽略它：
 
 ```yaml
 - type: tile
@@ -72,17 +72,17 @@ If your view needs to remember something about each card, like a position or a s
     row: 1
 ```
 
-## Edit, delete, and add cards
+## 编辑、删除和添加卡片
 
-In edit mode, your view can open the dialogs of the dashboard editor by firing events. Each event has the `path` of the card in the dashboard configuration: the `path` of your view, followed by `"cards"` and the index of the card.
+在编辑模式下，你的视图可以通过触发事件来打开仪表盘编辑器的对话框。每个事件都带有卡片在仪表盘配置中的 `path`：即你视图的 `path`，后跟 `"cards"` 和卡片的索引。
 
-| Event | Detail | What it does |
+| 事件 | Detail | 作用 |
 | --- | --- | --- |
-| `ll-create-card` | `{ path: [...path, "cards"] }` | The card picker, to add a card to the view. |
-| `ll-edit-card` | `{ path: [...path, "cards", index] }` | The editor of the card. |
-| `ll-delete-card` | `{ path: [...path, "cards", index], silent: false }` | Deletes the card. With `silent: false`, a message with an undo button follows. |
+| `ll-create-card` | `{ path: [...path, "cards"] }` | 卡片选择器，用于向视图添加卡片。 |
+| `ll-edit-card` | `{ path: [...path, "cards", index] }` | 卡片的编辑器。 |
+| `ll-delete-card` | `{ path: [...path, "cards", index], silent: false }` | 删除卡片。设置 `silent: false` 后，随后会显示一条带有撤销按钮的消息。 |
 
-Fire them so they bubble and cross shadow roots:
+触发事件时，要让它们能够冒泡并穿越 shadow root：
 
 ```js
 this.dispatchEvent(
@@ -94,4 +94,4 @@ this.dispatchEvent(
 );
 ```
 
-Older views send a path of numbers only, like `[0, 3]` for the fourth card of the first view. That still works for now.
+较旧的视图只发送由数字组成的路径，例如第一个视图的第四张卡片为 `[0, 3]`。目前这种方式仍然有效。

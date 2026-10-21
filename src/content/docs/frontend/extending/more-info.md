@@ -1,18 +1,18 @@
 ---
-title: Add a more-info view
-description: Give the entities of a domain their own controls in the more-info dialog.
+title: 添加更多信息视图
+description: 让某个域的实体在更多信息对话框中拥有自己的控件。
 order: 1
 ---
 
-The [more-info dialog](/glossary/more-info-dialog/) opens when you select an entity. What it shows depends on the domain of the entity: a light gets a brightness slider, a lock a big lock button. Domains without a view of their own get the default content: a state row, the history, and, for most domains, the logbook. The attributes of an entity are not part of the view: the dialog shows them in a separate details view, from its three-dots menu.
+当你选择一个实体（entity）时，会打开[更多信息对话框](/glossary/more-info-dialog/)。它显示的内容取决于实体所属的域（domain）：灯会有亮度滑块，锁会有一个大的锁定按钮。没有自己视图的域会显示默认内容：一行状态、历史记录，以及（对大多数域而言）日志簿。实体的属性不属于视图的一部分：对话框会通过其三点菜单，在单独的详情视图中显示它们。
 
-Before you build one, look at the [more-info views](/design/more-info/) in the Design area. They show every existing view, and the principles new ones follow: one big main control, secondary controls below it, and only the controls the device supports.
+在构建之前，请先查看设计区域中的[更多信息视图](/design/more-info/)。它们展示了所有现有的视图，以及新视图应遵循的原则：一个大的主控件，其下方是次要控件，并且只显示设备支持的控件。
 
-## Add a view for a domain
+## 为一个域添加视图
 
-This example adds a view for a domain called `example`.
+本示例为一个名为 `example` 的域添加视图。
 
-1. Create `src/dialogs/more-info/controls/more-info-example.ts`, with an element called `more-info-example`. The dialog sets `hass`, `stateObj`, and `entry` (the entity registry entry) on it.
+1. 创建 `src/dialogs/more-info/controls/more-info-example.ts`，其中包含一个名为 `more-info-example` 的元素。对话框会在其上设置 `hass`、`stateObj` 和 `entry`（实体注册表条目）。
 
    ```ts
    @customElement("more-info-example")
@@ -30,23 +30,23 @@ This example adds a view for a domain called `example`.
    }
    ```
 
-2. Add `"example"` to `DOMAINS_WITH_MORE_INFO` in `src/dialogs/more-info/const.ts`.
-3. Add a lazy import to `LAZY_LOADED_MORE_INFO_CONTROL` in `src/dialogs/more-info/state_more_info_control.ts`:
+2. 在 `src/dialogs/more-info/const.ts` 中，将 `"example"` 添加到 `DOMAINS_WITH_MORE_INFO`。
+3. 在 `src/dialogs/more-info/state_more_info_control.ts` 中，向 `LAZY_LOADED_MORE_INFO_CONTROL` 添加一个懒加载导入：
 
    ```ts
    example: () => import("./controls/more-info-example"),
    ```
 
-4. For a view that follows the newer design, which starts with the large state instead of a state row, also add the domain to `DOMAINS_WITH_NEW_MORE_INFO` in the same `const.ts`.
+4. 对于遵循较新设计的视图（以大号状态显示代替状态行），还需在同一 `const.ts` 中将该域添加到 `DOMAINS_WITH_NEW_MORE_INFO`。
 
-The other lists in `const.ts` fine-tune the dialog. `DOMAINS_HIDE_DEFAULT_MORE_INFO` lists domains without a view of their own that skip the default view element, and `DOMAINS_MORE_INFO_NO_HISTORY` hides the history and the logbook.
+`const.ts` 中的其他列表用于微调对话框。`DOMAINS_HIDE_DEFAULT_MORE_INFO` 列出了没有自己视图、会跳过默认视图元素的域，而 `DOMAINS_MORE_INFO_NO_HISTORY` 则隐藏历史记录和日志簿。
 
-## Reuse the controls
+## 复用控件
 
-Don't build the controls from scratch. The more-info views share components from `src/dialogs/more-info/components/` and the big touch controls, like `ha-control-slider` and `ha-control-switch`, from `src/components/`. The existing views, like `more-info-lock.ts` or `more-info-fan.ts`, are good starting points.
+不要从零开始构建控件。更多信息视图共享来自 `src/dialogs/more-info/components/` 的组件，以及来自 `src/components/` 的大型触控控件，例如 `ha-control-slider` 和 `ha-control-switch`。现有的视图，例如 `more-info-lock.ts` 或 `more-info-fan.ts`，都是很好的起点。
 
-Show only what the entity supports: check its `supported_features` and attributes before you render a control.
+只显示实体支持的内容：在渲染控件之前，先检查其 `supported_features` 和属性。
 
-## Add it to the gallery
+## 将其添加到画廊
 
-Add the new view to the more-info section of the [gallery](/frontend/development/gallery-and-demo/), with a few entities in different states, so reviewers can see it without the device.
+将新视图添加到[画廊](/frontend/development/gallery-and-demo/)的更多信息部分，并附带几个处于不同状态的实体，以便审核者无需设备即可查看它。

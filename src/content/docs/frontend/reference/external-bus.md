@@ -1,16 +1,16 @@
 ---
-title: External bus
-description: The message bus between the frontend and an app that embeds it, like the companion apps. How messages are sent, and every message there is.
+title: 外部总线
+description: 前端与嵌入它的应用（如伴侣应用）之间的消息总线。消息如何发送，以及所有消息的完整列表。
 order: 4
 ---
 
-An app that embeds the frontend, like the [companion apps](/companion/), can do things a browser can't: scan a barcode, write an NFC tag, commission a Matter device, or show a native screen. The external bus is how the frontend and the app talk about that. It works next to [external authentication](/frontend/reference/external-auth/), and uses the same bridges. The code is in [`src/external_app/`](https://github.com/home-assistant/frontend/tree/dev/src/external_app).
+嵌入前端的应用，例如[伴侣应用](/companion/)，可以做一些浏览器做不到的事情：扫描条形码、写入 NFC 标签、调试（commission）Matter 设备，或显示原生界面。外部总线就是前端与应用之间沟通这些事情的途径。它与[外部认证](/frontend/reference/external-auth/)协同工作，并使用相同的桥接机制。代码位于 [`src/external_app/`](https://github.com/home-assistant/frontend/tree/dev/src/external_app)。
 
-## Sending messages
+## 发送消息
 
-Messages are JSON objects.
+消息是 JSON 对象。
 
-**From the frontend to the app**, the frontend uses the bridge that is available:
+**从前端到应用**，前端使用可用的桥接：
 
 ```js
 // Android, V2: the message is wrapped and serialized
@@ -25,15 +25,15 @@ window.externalApp.externalBus(JSON.stringify(message));
 window.webkit.messageHandlers.externalBus.postMessage(message);
 ```
 
-**From the app to the frontend**, the app calls a function the frontend defines:
+**从应用到前端**，应用调用前端定义的函数：
 
 ```js
 window.externalBus(message);
 ```
 
-## Message format
+## 消息格式
 
-Every message has an `id` and a `type`, and a `payload` when the type needs one:
+每条消息都有一个 `id` 和一个 `type`，当该类型需要时还会有一个 `payload`：
 
 ```ts
 interface Message {
@@ -43,7 +43,7 @@ interface Message {
 }
 ```
 
-Some messages expect an answer. The answer is a `result` message with the same `id`:
+有些消息需要应答。应答是一条具有相同 `id` 的 `result` 消息：
 
 ```ts
 interface SuccessResult {
@@ -61,7 +61,7 @@ interface ErrorResult {
 }
 ```
 
-Messages from the app to the frontend are commands, with `type: "command"` and the name of the command in `command`:
+从应用发送到前端的消息是命令，带有 `type: "command"`，命令名称放在 `command` 中：
 
 ```json
 {
@@ -72,50 +72,50 @@ Messages from the app to the frontend are commands, with `type: "command"` and t
 }
 ```
 
-The frontend answers every command with a result. Go by when the two general error codes are sent, not by their names alone:
+前端会用结果应答每条命令。请根据两个通用错误代码的发送时机来判断，而不要仅凭名称：
 
-- `unknown_command`: the frontend has no command handler yet, because it is still starting up. The command itself may well be known.
-- `not_ready`: the command handler is in place, but it does not handle this command.
+- `unknown_command`：前端还没有命令处理器，因为它仍在启动中。命令本身很可能是已知的。
+- `not_ready`：命令处理器已就位，但它不处理这条命令。
 
-Both are sent by `receiveMessage` in [`src/external_app/external_messaging.ts`](https://github.com/home-assistant/frontend/blob/dev/src/external_app/external_messaging.ts).
+两者都由 [`src/external_app/external_messaging.ts`](https://github.com/home-assistant/frontend/blob/dev/src/external_app/external_messaging.ts) 中的 `receiveMessage` 发送。
 
-## From the frontend to the app
+## 从前端到应用
 
-### Messages that expect an answer
+### 需要应答的消息
 
 #### config/get
 
-The frontend asks what the app can do, right after it connects. Payload: none. The app answers with an object. All keys are optional:
+前端在连接后立即询问应用能做什么。载荷（payload）：无。应用以一个对象应答。所有键都是可选的：
 
-| Key | Type | Meaning |
+| 键 | 类型 | 含义 |
 | --- | --- | --- |
-| `hasSettingsScreen` | boolean | The app shows its own settings on `config_screen/show`. |
-| `hasSidebar` | boolean | The app has a sidebar of its own. |
-| `canWriteTag` | boolean | The device can write NFC tags. |
-| `hasExoPlayer` | boolean | The app can play HLS video natively with ExoPlayer. |
-| `canCommissionMatter` | boolean | The app can commission Matter devices. |
-| `hasMatterStatusReport` | boolean | The app reports the end of Matter commissioning with `matter/commission/finish`. |
-| `canImportThreadCredentials` | boolean | The app can import Thread credentials. |
-| `canTransferThreadCredentialsToKeychain` | boolean | The app can store Thread credentials in the keychain of the platform. Apple only. |
-| `hasAssist` | boolean | The app has a native Assist interface, used instead of the one of the frontend. |
-| `hasAssistSettings` | boolean | The app has Assist settings for the device, shown in the voice assistant settings. |
-| `hasBarCodeScanner` | number | `1` when the app can scan barcodes, `0` otherwise. |
-| `canSetupImprov` | boolean | The app can set up Improv Wi-Fi devices. |
-| `hasEntityAddTo` | boolean | The app can add entities to places of its own, like a widget, from the more-info dialog. |
-| `hasSplashscreen` | boolean | The app covers the frontend with its own loading screen until `frontend/loaded`. |
-| `appVersion` | string | The version of the app. |
+| `hasSettingsScreen` | boolean | 应用在 `config_screen/show` 时显示自己的设置界面。 |
+| `hasSidebar` | boolean | 应用有自己的侧边栏。 |
+| `canWriteTag` | boolean | 设备可以写入 NFC 标签。 |
+| `hasExoPlayer` | boolean | 应用可以使用 ExoPlayer 原生播放 HLS 视频。 |
+| `canCommissionMatter` | boolean | 应用可以调试（commission）Matter 设备。 |
+| `hasMatterStatusReport` | boolean | 应用通过 `matter/commission/finish` 报告 Matter 调试的结束。 |
+| `canImportThreadCredentials` | boolean | 应用可以导入 Thread 凭据。 |
+| `canTransferThreadCredentialsToKeychain` | boolean | 应用可以将 Thread 凭据存储在平台的钥匙串中。仅限 Apple。 |
+| `hasAssist` | boolean | 应用有原生的 Assist 界面，用于替代前端的 Assist 界面。 |
+| `hasAssistSettings` | boolean | 应用有针对设备的 Assist 设置，显示在语音助手设置中。 |
+| `hasBarCodeScanner` | number | 当应用可以扫描条形码时为 `1`，否则为 `0`。 |
+| `canSetupImprov` | boolean | 应用可以设置 Improv Wi-Fi 设备。 |
+| `hasEntityAddTo` | boolean | 应用可以在更多信息（more-info）对话框中把实体（entity）添加到自己的位置，例如小组件。 |
+| `hasSplashscreen` | boolean | 应用用自己的加载屏幕覆盖前端，直到 `frontend/loaded`。 |
+| `appVersion` | string | 应用的版本。 |
 
 #### entity/add_to/get_actions
 
-The frontend asks where an entity can be added, like a home screen widget or a watch face.
+前端询问一个实体可以添加到哪里，例如主屏幕小组件或表盘。
 
-Payload:
+载荷：
 
 ```ts
 { entity_id: string }
 ```
 
-Answer:
+应答：
 
 ```ts
 {
@@ -129,54 +129,54 @@ Answer:
 }
 ```
 
-`name` and `details` are shown as they are, so translate them in the app. `mdi_icon` is an icon name like `mdi:car`. `app_payload` is any string, which the frontend sends back with `entity/add_to` when the user picks the action.
+`name` 和 `details` 会按原样显示，因此请在应用中翻译它们。`mdi_icon` 是类似 `mdi:car` 的图标名称。`app_payload` 是任意字符串，当用户选择该操作时，前端会通过 `entity/add_to` 将其传回。
 
-### Messages without an answer
+### 无需应答的消息
 
-| Type | Payload | Meaning |
+| 类型 | 载荷 | 含义 |
 | --- | --- | --- |
-| `assist/settings` | | Open the Assist settings of the app. |
-| `assist/show` | `{ pipeline_id, start_listening }`, optional | Show the native Assist interface. `pipeline_id` is an ID, `"preferred"`, or `"last_used"`. |
-| `bar_code/scan` | `{ title, description, alternative_option_label? }` | Open the barcode scanner. Without `alternative_option_label`, hide the button for the alternative option. |
-| `bar_code/notify` | `{ message }` | Show a message in the barcode scanner. |
-| `bar_code/close` | | Close the barcode scanner. |
-| `config_screen/show` | | Open the settings of the app. |
-| `connection-status` | `{ event }` | The connection to Home Assistant changed. `event` is `"connected"`, `"disconnected"`, or `"auth-invalid"`. |
-| `entity/add_to` | `{ entity_id, app_payload }` | Add the entity, with the `app_payload` from `entity/add_to/get_actions`. |
-| `entity/controlled` | `{ entity_ids, domain, service }` | The user performed an action on these entities in the frontend. |
-| `exoplayer/play_hls` | `{ url, muted }` | Play an HLS stream natively. |
-| `exoplayer/resize` | `{ left, top, right, bottom }` | Move the native player to these coordinates. |
-| `exoplayer/stop` | | Stop the native player. |
-| `focus_element` | `{ element_id }` | Focus an element. |
-| `frontend/loaded` | | The frontend has removed its launch screen. With `hasSplashscreen`, that is after the first page has rendered. |
-| `frontend/reload_and_clear_cache` | | Clear the cache of the web view and reload. Sent to iOS and macOS only, when the frontend detects an outdated build. |
-| `haptic` | `{ hapticType }` | Give haptic feedback: `"success"`, `"warning"`, `"failure"`, `"light"`, `"medium"`, `"heavy"`, or `"selection"`. |
-| `improv/scan` | | Scan for Improv Wi-Fi devices. |
-| `improv/configure_device` | `{ name }` | Set up the Improv Wi-Fi device with this name. |
-| `matter/commission` | `{ mac_extended_address, extended_pan_id, border_agent_id, active_operational_dataset }`, optional | Start commissioning a Matter device. The payload describes the preferred Thread network. Each value can be `null`. |
-| `more_info/opened` | `{ entity_id }` | The more-info dialog opened for this entity. |
-| `more_info/closed` | `{ entity_id }` | The more-info dialog closed. |
-| `sidebar/show` | | Show the sidebar of the app. |
-| `tag/write` | `{ tag, name }` | Open the screen to write an NFC tag. `name` is `null` when the user did not name the tag. |
-| `theme-update` | | The theme changed. Update the colors of the status bar and navigation bar. |
-| `thread/import_credentials` | | Import Thread credentials from the device, and send them to Home Assistant over the WebSocket API. |
-| `thread/store_in_platform_keychain` | `{ mac_extended_address, border_agent_id, active_operational_dataset, extended_pan_id }` | Store Thread credentials in the keychain of the platform. |
+| `assist/settings` | | 打开应用的 Assist 设置。 |
+| `assist/show` | `{ pipeline_id, start_listening }`，可选 | 显示原生 Assist 界面。`pipeline_id` 是一个 ID、`"preferred"` 或 `"last_used"`。 |
+| `bar_code/scan` | `{ title, description, alternative_option_label? }` | 打开条形码扫描器。没有 `alternative_option_label` 时，隐藏替代选项的按钮。 |
+| `bar_code/notify` | `{ message }` | 在条形码扫描器中显示一条消息。 |
+| `bar_code/close` | | 关闭条形码扫描器。 |
+| `config_screen/show` | | 打开应用的设置。 |
+| `connection-status` | `{ event }` | 与 Home Assistant 的连接发生了变化。`event` 为 `"connected"`、`"disconnected"` 或 `"auth-invalid"`。 |
+| `entity/add_to` | `{ entity_id, app_payload }` | 添加该实体，使用来自 `entity/add_to/get_actions` 的 `app_payload`。 |
+| `entity/controlled` | `{ entity_ids, domain, service }` | 用户在前端对这些实体执行了操作。 |
+| `exoplayer/play_hls` | `{ url, muted }` | 原生播放 HLS 流。 |
+| `exoplayer/resize` | `{ left, top, right, bottom }` | 将原生播放器移动到这些坐标。 |
+| `exoplayer/stop` | | 停止原生播放器。 |
+| `focus_element` | `{ element_id }` | 聚焦某个元素。 |
+| `frontend/loaded` | | 前端已移除其启动屏幕。在设置了 `hasSplashscreen` 的情况下，这是在第一页渲染完成之后。 |
+| `frontend/reload_and_clear_cache` | | 清除 Web 视图的缓存并重新加载。仅发送给 iOS 和 macOS，当前端检测到过期的构建时。 |
+| `haptic` | `{ hapticType }` | 提供触觉反馈：`"success"`、`"warning"`、`"failure"`、`"light"`、`"medium"`、`"heavy"` 或 `"selection"`。 |
+| `improv/scan` | | 扫描 Improv Wi-Fi 设备。 |
+| `improv/configure_device` | `{ name }` | 设置具有此名称的 Improv Wi-Fi 设备。 |
+| `matter/commission` | `{ mac_extended_address, extended_pan_id, border_agent_id, active_operational_dataset }`，可选 | 开始调试（commission）Matter 设备。载荷描述了首选的 Thread 网络。每个值都可以为 `null`。 |
+| `more_info/opened` | `{ entity_id }` | 该实体的更多信息（more-info）对话框已打开。 |
+| `more_info/closed` | `{ entity_id }` | 更多信息对话框已关闭。 |
+| `sidebar/show` | | 显示应用的侧边栏。 |
+| `tag/write` | `{ tag, name }` | 打开写入 NFC 标签的界面。当用户没有为标签命名时，`name` 为 `null`。 |
+| `theme-update` | | 主题已更改。更新状态栏和导航栏的颜色。 |
+| `thread/import_credentials` | | 从设备导入 Thread 凭据，并通过 WebSocket API 将其发送到 Home Assistant。 |
+| `thread/store_in_platform_keychain` | `{ mac_extended_address, border_agent_id, active_operational_dataset, extended_pan_id }` | 将 Thread 凭据存储在平台的钥匙串中。 |
 
-## From the app to the frontend
+## 从应用到前端
 
-All commands get a result back. On success, `result` is `null`.
+所有命令都会收到一个结果。成功时，`result` 为 `null`。
 
-| Command | Payload | Meaning |
+| 命令 | 载荷 | 含义 |
 | --- | --- | --- |
-| `automation/editor/show` | `{ config? }`, optional | Open the automation editor for a new automation. `config` can fill in `alias`, `description`, `triggers`, `conditions`, `actions`, `mode`, and `max`. |
-| `bar_code/scan_result` | `{ rawValue, format }` | A scanned barcode. `format` is one of the [Barcode Detection API formats](https://developer.mozilla.org/docs/Web/API/Barcode_Detection_API#supported_barcode_formats), or `"unknown"`. |
-| `bar_code/aborted` | `{ reason }` | The scan stopped. `reason` is `"canceled"` or `"alternative_options"`. |
-| `improv/discovered_device` | `{ name }` | An Improv Wi-Fi device was found. |
-| `improv/device_setup_done` | | Setting up the Improv Wi-Fi device is done. |
-| `kiosk_mode/set` | `{ enable }` | Turn kiosk mode on or off. |
-| `matter/commission/finish` | `{ name, success }` | Commissioning a Matter device ended. `name`, when not `null`, is proposed as the name of the new device. With `success: false`, the frontend closes its dialog and shows that adding the device failed, unless the device already showed up. |
-| `navigate` | `{ path, options? }` | Go to a page. `path` starts with `/`, like `/config/voice-assistants/assistants`. `options.replace` replaces the current history entry, and `options.data` is stored in the history state. |
-| `notifications/show` | | Open the notifications. |
-| `restart` | | Reconnect the frontend to Home Assistant. |
-| `sidebar/show` | | Open the sidebar. Fails with `not_allowed` while a dialog is open. |
-| `sidebar/toggle` | | Open or close the sidebar. Fails with `not_allowed` while a dialog is open. |
+| `automation/editor/show` | `{ config? }`，可选 | 打开自动化（automation）编辑器以创建新的自动化。`config` 可以填充 `alias`、`description`、`triggers`、`conditions`、`actions`、`mode` 和 `max`。 |
+| `bar_code/scan_result` | `{ rawValue, format }` | 扫描到的条形码。`format` 是[条形码检测 API 格式](https://developer.mozilla.org/docs/Web/API/Barcode_Detection_API#supported_barcode_formats)之一，或 `"unknown"`。 |
+| `bar_code/aborted` | `{ reason }` | 扫描已停止。`reason` 为 `"canceled"` 或 `"alternative_options"`。 |
+| `improv/discovered_device` | `{ name }` | 发现了一个 Improv Wi-Fi 设备。 |
+| `improv/device_setup_done` | | Improv Wi-Fi 设备的设置已完成。 |
+| `kiosk_mode/set` | `{ enable }` | 开启或关闭 kiosk 模式。 |
+| `matter/commission/finish` | `{ name, success }` | Matter 设备的调试已结束。`name` 在不为 `null` 时，将作为新设备的名称建议。当 `success: false` 时，前端会关闭其对话框并显示添加设备失败，除非该设备已经出现。 |
+| `navigate` | `{ path, options? }` | 前往某个页面。`path` 以 `/` 开头，例如 `/config/voice-assistants/assistants`。`options.replace` 替换当前的历史记录条目，`options.data` 存储在历史状态中。 |
+| `notifications/show` | | 打开通知。 |
+| `restart` | | 将前端重新连接到 Home Assistant。 |
+| `sidebar/show` | | 打开侧边栏。当对话框打开时会以 `not_allowed` 失败。 |
+| `sidebar/toggle` | | 打开或关闭侧边栏。当对话框打开时会以 `not_allowed` 失败。 |

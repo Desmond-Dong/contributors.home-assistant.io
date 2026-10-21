@@ -1,14 +1,14 @@
 ---
-title: Set up the environment
-description: Get the frontend code and its dependencies, with the devcontainer or on your own machine.
+title: 搭建环境
+description: 获取前端代码及其依赖，使用 devcontainer 或在自己的机器上进行。
 order: 1
 ---
 
-You can work on the frontend in a devcontainer, or directly on your machine. The devcontainer is the easier start: it brings the right Node.js, pnpm, and Python, and it can run Home Assistant Core next to the frontend.
+你可以在 devcontainer 中进行前端开发，也可以直接在自己的机器上进行。devcontainer 是更简单的入门方式：它自带合适的 Node.js、pnpm 和 Python，并且可以在前端旁边运行 Home Assistant Core。
 
-## Get the code
+## 获取代码
 
-Fork the [frontend repository](https://github.com/home-assistant/frontend) on GitHub, then clone your fork and add the main repository as `upstream`:
+在 GitHub 上 fork [前端仓库](https://github.com/home-assistant/frontend)，然后克隆你的 fork，并将主仓库添加为 `upstream`：
 
 ```shell
 git clone git@github.com:YOUR_GIT_USERNAME/frontend.git
@@ -16,50 +16,50 @@ cd frontend
 git remote add upstream https://github.com/home-assistant/frontend.git
 ```
 
-Branch off `dev` for every change. That is the branch pull requests go to.
+每次修改都应从 `dev` 分支切出新分支。拉取请求（pull request）都是提交到 `dev` 分支的。
 
-## With the devcontainer
+## 使用 devcontainer
 
-You need Visual Studio Code with the Dev Containers extension, and Docker or a compatible container runtime.
+你需要安装了 Dev Containers 扩展的 Visual Studio Code，以及 Docker 或兼容的容器运行时。
 
-1. Open the cloned repository in Visual Studio Code.
-2. When asked, select **Reopen in Container**. Or open the command palette and run **Dev Containers: Reopen in Container**.
-3. Wait for the container to build. Every time the container starts, it runs `script/bootstrap`, which installs the Node.js version from `.nvmrc` and the dependencies.
+1. 在 Visual Studio Code 中打开克隆的仓库。
+2. 在提示时选择 **Reopen in Container**。或者打开命令面板并运行 **Dev Containers: Reopen in Container**。
+3. 等待容器构建完成。容器每次启动时都会运行 `script/bootstrap`，它会安装 `.nvmrc` 中指定的 Node.js 版本以及依赖项。
 
-The container has the recommended extensions for ESLint, Prettier, and Lit, and formats files when you save.
+容器中预装了 ESLint、Prettier 和 Lit 的推荐扩展，并在你保存文件时自动格式化。
 
-Port 8123 in the container is published as port **8124** on your computer. Whatever runs on 8123 inside the container, you open at `http://localhost:8124`.
+容器中的 8123 端口会映射为你电脑上的 **8124** 端口。无论容器内 8123 端口上运行着什么，你都可以通过 `http://localhost:8124` 访问。
 
-## On your own machine
+## 在自己的机器上
 
-You need:
+你需要：
 
-- **Node.js**, in the version from the [`.nvmrc`](https://github.com/home-assistant/frontend/blob/dev/.nvmrc) file. With [nvm](https://github.com/nvm-sh/nvm), run `nvm install` in the repository and it picks the right one.
-- **pnpm**, in the version pinned in the `packageManager` field of `package.json`. With Corepack, that version is used automatically:
+- **Node.js**，版本以 [`.nvmrc`](https://github.com/home-assistant/frontend/blob/dev/.nvmrc) 文件中指定的为准。如果使用 [nvm](https://github.com/nvm-sh/nvm)，只需在仓库中运行 `nvm install`，它会自动选择正确的版本。
+- **pnpm**，版本以 `package.json` 中 `packageManager` 字段锁定的版本为准。如果使用 Corepack，该版本会被自动使用：
 
   ```shell
   corepack enable pnpm
   ```
 
-  If your Node.js does not include Corepack, install it with `npm install -g corepack`, or [install pnpm directly](https://pnpm.io/installation).
+  如果你的 Node.js 不包含 Corepack，可以用 `npm install -g corepack` 安装它，或者[直接安装 pnpm](https://pnpm.io/installation)。
 
-Then install the dependencies:
+然后安装依赖项：
 
 ```shell
 nvm use
 script/setup
 ```
 
-`script/setup` runs `script/bootstrap`, which runs `pnpm install`. Run it again after you pull changes that touch `package.json` or `pnpm-lock.yaml`.
+`script/setup` 会运行 `script/bootstrap`，后者会运行 `pnpm install`。当你拉取的更改涉及 `package.json` 或 `pnpm-lock.yaml` 时，请重新运行它。
 
-## Translations
+## 翻译
 
-Without anything else, the frontend runs in English only. To get the latest translations of all languages, start a development server with `--fetch-translations`, like `pnpm dev --fetch-translations`. The first time, it asks you to authorize with GitHub, and it saves the token in `translations/token.json`. If that authorization stops working, for example with a "Bad credentials" error, delete the file and run the command again.
+默认情况下，前端仅以英文运行。要获取所有语言的最新翻译，请使用 `--fetch-translations` 参数启动开发服务器，例如 `pnpm dev --fetch-translations`。首次运行时，它会要求你通过 GitHub 进行授权，并将令牌保存在 `translations/token.json` 中。如果该授权失效，例如出现 "Bad credentials" 错误，请删除该文件并重新运行命令。
 
-## AI tools
+## AI 工具
 
-The repository has instructions for AI coding tools in `AGENTS.md`, and skills in `.agents/skills/` for components, styling, user-facing text, testing, and review. Claude Code, GitHub Copilot, and Codex pick them up by themselves. [Contribute with AI tools](/start/ai-tools/) lists them, with a workflow for adding a card, and explains what the [AI policy](/start/ai-policy/) asks of you.
+仓库在 `AGENTS.md` 中提供了面向 AI 编程工具的说明，并在 `.agents/skills/` 中提供了关于组件、样式、面向用户的文本、测试和审查的技能（skills）。Claude Code、GitHub Copilot 和 Codex 会自动识别它们。[使用 AI 工具贡献](/start/ai-tools/)列出了这些工具，并提供了添加卡片的流程，还解释了 [AI 政策](/start/ai-policy/)对你的要求。
 
-## Next step
+## 下一步
 
-[Run the frontend](/frontend/development/run/) against a Home Assistant instance.
+[运行前端](/frontend/development/run/)，连接到一个 Home Assistant 实例。

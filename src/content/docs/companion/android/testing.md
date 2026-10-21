@@ -1,27 +1,27 @@
 ---
-title: Testing the Android app
-description: How to write tests for the Android app, and how to write unit tests with JUnit, MockK, Robolectric, and Turbine.
+title: 测试 Android 应用
+description: 如何为 Android 应用编写测试，以及如何使用 JUnit、MockK、Robolectric 和 Turbine 编写单元测试。
 sidebarLabel: Testing and unit tests
 sidebarGroup: Test
 order: 1
 ---
 
-Tests exist because people make mistakes. A test that catches a bug before it ships saves users from frustration and you from a debugging session. Every pull request that changes behavior comes with tests.
+测试之所以存在，是因为人都会犯错。一个能在缺陷发布前将其捕获的测试，可以让用户免受困扰，也让你免于调试之苦。每个改变行为的拉取请求（pull request）都应附带测试。
 
-## Kinds of tests
+## 测试的种类
 
-| Kind | Runs on | Use it for | Page |
+| 种类 | 运行环境 | 用途 | 页面 |
 | --- | --- | --- | --- |
-| Unit | The JVM, with Robolectric when needed | Logic: ViewModels, managers, repositories | This page |
-| Screenshot | The JVM | How Compose UI looks | [Screenshot tests](/companion/android/screenshot-testing/) |
-| Instrumentation | An emulator | Behavior on a real Android runtime | [Instrumentation tests](/companion/android/instrumentation-testing/) |
-| End-to-end | Emulators, against a real Home Assistant | The critical path, from login to the dashboard | [End-to-end tests](/companion/android/e2e-testing/) |
+| 单元测试 | JVM，必要时使用 Robolectric | 逻辑：ViewModel、管理器、仓库 | 本页 |
+| 截图测试 | JVM | Compose UI 的外观 | [截图测试](/companion/android/screenshot-testing/) |
+| 插桩测试 | 模拟器 | 真实 Android 运行时上的行为 | [插桩测试](/companion/android/instrumentation-testing/) |
+| 端到端测试 | 模拟器，对接真实的 Home Assistant | 关键路径，从登录到仪表盘 | [端到端测试](/companion/android/e2e-testing/) |
 
-Start with unit tests. They are fast, and most code should be testable that way. Move up the list only when you have to.
+从单元测试开始。它们速度快，而且大多数代码都应该能以这种方式测试。只有在不得已时才向上面的列表逐级提升。
 
-## Naming tests
+## 测试命名
 
-Name tests as sentences, following [GIVEN, WHEN, THEN](https://en.wikipedia.org/wiki/Given-When-Then). You see what broke without reading the test:
+按照 [GIVEN, WHEN, THEN](https://en.wikipedia.org/wiki/Given-When-Then) 的方式，把测试命名为句子。这样不用读测试内容就能知道哪里出了问题：
 
 ```kotlin
 @Test
@@ -30,37 +30,37 @@ fun `Given user authenticated when opening app then show dashboard`() {
 }
 ```
 
-- **Given** is the starting situation, the setup.
-- **When** is the action or event you test.
-- **Then** is the outcome you expect.
+- **Given** 是起始状态，即准备工作。
+- **When** 是你要测试的动作或事件。
+- **Then** 是你期望的结果。
 
-## What to test
+## 测试什么
 
-- **Test behavior through the public API**, not implementation details. Tests that follow the public interface survive refactors.
-- **Don't widen visibility for a test.** Test through the public entry point. When there is no other way, use [`@VisibleForTesting`](https://developer.android.com/reference/kotlin/androidx/annotation/VisibleForTesting), for example for a constructor that takes a `CoroutineScope` or a `Clock`. Lint flags any use of such a member outside tests, and CI fails on lint warnings.
-- **Test your code, not libraries.** If you find yourself testing a library, contribute the test to that library. When you do want to pin a library's behavior, say why in the test.
-- **Write tests as you build.** Tests are a tool while you develop, not a chore for afterwards. They let you check your code without running the whole app, and writing them early keeps the code testable.
-- **Don't test for the sake of it.** Skip trivial code. A test should help you now or the next person later.
-- **Keep tests independent.** A test must not rely on another test, or on the order they run in.
-- **One behavior per test.** Merge near-identical tests into a parameterized one with `@ParameterizedTest`.
-- **Keep a feature's tests in one class**, mirroring the source structure under `src/test/kotlin/`.
-- **Never `Thread.sleep`.** Use `runTest`, which fakes time.
+- **通过公共 API 测试行为**，而不是实现细节。遵循公共接口的测试能在重构中存活下来。
+- **不要为了测试而放宽可见性。** 通过公共入口点进行测试。实在没有其他办法时，可以使用 [`@VisibleForTesting`](https://developer.android.com/reference/kotlin/androidx/annotation/VisibleForTesting)，例如针对接受 `CoroutineScope` 或 `Clock` 的构造函数。Lint 会标记在测试之外使用此类成员的任何情况，CI 会因 lint 警告而失败。
+- **测试你自己的代码，而不是库。** 如果你发现自己在测试某个库，请把测试贡献给那个库。当你确实想固定某个库的行为时，请在测试中说明原因。
+- **边构建边写测试。** 测试是开发过程中的工具，而不是事后的负担。它们让你无需运行整个应用就能检查代码，而且尽早编写测试能让代码保持可测试性。
+- **不要为了测试而测试。** 跳过琐碎的代码。一个测试应该能在此刻或将来帮到你或下一个人。
+- **保持测试相互独立。** 一个测试不得依赖另一个测试，也不得依赖它们的运行顺序。
+- **每个测试只测一个行为。** 将几乎相同的测试合并为一个使用 `@ParameterizedTest` 的参数化测试。
+- **把一个功能的测试放在同一个类中**，与 `src/test/kotlin/` 下的源码结构保持一致。
+- **绝不使用 `Thread.sleep`。** 使用可以伪造时间的 `runTest`。
 
-## Unit tests
+## 单元测试
 
 ```bash
 ./gradlew test
 ./gradlew :common:test
 ```
 
-### Frameworks
+### 框架
 
-- **[JUnit Jupiter](https://junit.org/)** for unit tests. JUnit 4 only where Robolectric needs it; both run on the JUnit Platform.
-- **[MockK](https://mockk.io/)** for mocks. Prefer real objects or fakes when you can.
-- **[Turbine](https://github.com/cashapp/turbine)** for every Flow test.
-- **[Robolectric](https://robolectric.org/)** for code that needs Android APIs you can't mock or fake well. Prefer it over instrumentation tests.
+- **[JUnit Jupiter](https://junit.org/)** 用于单元测试。仅在 Robolectric 需要时使用 JUnit 4；两者都运行在 JUnit Platform 上。
+- **[MockK](https://mockk.io/)** 用于模拟（mock）。尽可能优先使用真实对象或伪造对象（fake）。
+- **[Turbine](https://github.com/cashapp/turbine)** 用于所有 Flow 测试。
+- **[Robolectric](https://robolectric.org/)** 用于那些你无法很好地模拟或伪造的、需要 Android API 的代码。相比插桩测试，优先使用它。
 
-A test looks like this:
+一个测试大致如下：
 
 ```kotlin
 @Test
@@ -79,7 +79,7 @@ fun `Given a valid user ID when fetching details then return user`() {
 
 ### Robolectric
 
-Every Robolectric test class needs both of these annotations. Without them, Robolectric starts the real application, which turns on StrictMode and FailFast and can crash the test JVM:
+每个 Robolectric 测试类都需要同时加上这两个注解。没有它们，Robolectric 会启动真实的应用程序，从而开启 StrictMode 和 FailFast，可能导致测试 JVM 崩溃：
 
 ```kotlin
 @RunWith(RobolectricTestRunner::class)
@@ -89,17 +89,17 @@ class MyTest {
 }
 ```
 
-Robolectric only works with JUnit 4 (see [this Robolectric issue](https://github.com/robolectric/robolectric/issues/3477)), so the project keeps JUnit 4 for those tests. If your code depends on the real state of the Android system, write an [instrumentation test](/companion/android/instrumentation-testing/) instead.
+Robolectric 只支持 JUnit 4（参见[这个 Robolectric issue](https://github.com/robolectric/robolectric/issues/3477)），因此项目为这些测试保留了 JUnit 4。如果你的代码依赖 Android 系统的真实状态，请改为编写[插桩测试](/companion/android/instrumentation-testing/)。
 
-### Flows
+### Flow
 
-Use Turbine to test Flows. Assert with `awaitItem`, `awaitComplete`, and `expectNoEvents`. Use `turbineScope` and `testIn` when you collect several flows at once. A flow made with `shareIn` never completes: end with `expectNoEvents()` and `cancelAndConsumeRemainingEvents()` instead of `awaitComplete()`.
+使用 Turbine 来测试 Flow。使用 `awaitItem`、`awaitComplete` 和 `expectNoEvents` 进行断言。当你同时收集多个 flow 时，使用 `turbineScope` 和 `testIn`。通过 `shareIn` 创建的 flow 永远不会完成：应以 `expectNoEvents()` 和 `cancelAndConsumeRemainingEvents()` 结束，而不是 `awaitComplete()`。
 
-Never synchronize on emissions with latches, sleeps, or `verify(timeout = ...)`.
+绝不要使用闩锁（latch）、睡眠或 `verify(timeout = ...)` 来同步发射（emission）。
 
-### Coroutines and the main dispatcher
+### 协程与主调度器
 
-Code that runs in `viewModelScope` uses the main dispatcher, which doesn't exist on the JVM. Replace it with a test dispatcher, using the helper that matches your framework:
+在 `viewModelScope` 中运行的代码使用主调度器（main dispatcher），而它在 JVM 上并不存在。请使用与你的框架匹配的辅助工具，将其替换为测试调度器：
 
 ```kotlin
 // JUnit Jupiter
@@ -111,10 +111,10 @@ class MyViewModelTest
 val mainDispatcherRule = MainDispatcherJUnit4Rule()
 ```
 
-Only add it to tests that actually touch the main dispatcher. Both use a `StandardTestDispatcher`; advance it with `runTest` and `advanceUntilIdle`. Don't switch to `UnconfinedTestDispatcher` to make a test pass. That hides an ordering the test should check.
+只把它添加到真正涉及主调度器的测试中。两者都使用 `StandardTestDispatcher`；用 `runTest` 和 `advanceUntilIdle` 来推进它。不要为了让测试通过而切换到 `UnconfinedTestDispatcher`。那会掩盖测试本应检查的顺序问题。
 
-### Shared test helpers
+### 共享测试辅助工具
 
-The `:testing-unit` module holds helpers used by tests in several modules. Look there before you write a new one. Among others, it has the main dispatcher helpers above, a `FakeClock`, and `TestSharedFlow`. Keep `:testing-unit` independent from `:common`, to avoid circular dependencies.
+`:testing-unit` 模块存放着多个模块的测试所使用的辅助工具。在编写新的辅助工具之前，先去那里看看。其中包括上述主调度器辅助工具、一个 `FakeClock` 和 `TestSharedFlow`。保持 `:testing-unit` 独立于 `:common`，以避免循环依赖。
 
-Rules that must apply to every test in a module, like resetting process-wide state, are JUnit Platform listeners registered through `ServiceLoader`. Robolectric runs tests in its own class loader, so such rules also need a Robolectric plugin. The existing `TestStateResetPlatformListener` and `TestStateResetRobolectricPlugin` show how.
+必须对模块中每个测试都生效的规则，例如重置进程级状态，是通过 `ServiceLoader` 注册的 JUnit Platform 监听器。Robolectric 在自己的类加载器中运行测试，因此这类规则还需要一个 Robolectric 插件。现有的 `TestStateResetPlatformListener` 和 `TestStateResetRobolectricPlugin` 展示了具体做法。

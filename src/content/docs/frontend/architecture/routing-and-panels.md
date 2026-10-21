@@ -1,14 +1,14 @@
 ---
-title: Routing and panels
-description: How a URL becomes a page. Panels registered by Core, the panel resolver, and the routers inside each panel.
+title: 路由与面板
+description: URL 如何变成一个页面。Core 注册的面板、面板解析器，以及每个面板内部的路由器。
 order: 6
 ---
 
-Every page in Home Assistant is a [panel](/glossary/panel/): a dashboard, the map, the logbook, the settings, or a panel added by an integration. The sidebar lists them, and the first part of the URL picks one.
+Home Assistant 中的每个页面都是一个[面板（panel）](/glossary/panel/)：仪表盘、地图、日志簿、设置，或者由某个集成添加的面板。侧边栏列出这些面板，URL 的第一部分决定选择哪一个。
 
-## Panels come from Core
+## 面板来自 Core
 
-Core decides which panels exist. Integrations register them with `async_register_built_in_panel()` from the `frontend` integration, which takes the name of the frontend component that renders the panel, the URL path, the sidebar title and icon, and whether only administrators may see it:
+Core 决定存在哪些面板。集成通过 `frontend` 集成的 `async_register_built_in_panel()` 注册面板，该函数接受渲染面板的前端组件名称、URL 路径、侧边栏标题和图标，以及是否仅管理员可见：
 
 ```python
 from homeassistant.components import frontend
@@ -21,25 +21,25 @@ frontend.async_register_built_in_panel(
 )
 ```
 
-Without a `frontend_url_path`, the URL path is the component name, so this panel opens at `/logbook`. The sidebar title of a built-in panel is a translation key.
+如果没有指定 `frontend_url_path`，URL 路径就是组件名称，因此该面板会在 `/logbook` 打开。内置面板的侧边栏标题是一个翻译键。
 
-The frontend fetches the list of panels at startup, and it is available as `hass.panels`, or in the `uiContext`.
+前端在启动时获取面板列表，它可以通过 `hass.panels` 或 `uiContext` 访问。
 
-The `component_name` refers to a panel built into the frontend. To add a panel without changing the frontend, integrations and users register a custom panel instead. See [Custom panels](/frontend/custom-ui/panel/).
+`component_name` 指的是前端内置的面板。要在不修改前端的情况下添加面板，集成和用户可以注册自定义面板。参见[自定义面板](/frontend/custom-ui/panel/)。
 
-## From URL to panel
+## 从 URL 到面板
 
-Routing in the frontend is decentralized. Each level only knows about its own part of the URL, and passes the rest down.
+前端中的路由是分散式的。每一层只知道自己负责的 URL 部分，并将其余部分向下传递。
 
-1. `src/layouts/partial-panel-resolver.ts` looks at the first part of the URL, finds the panel registered for it, and loads the code of its component. The map of component names to code is at the top of that file, so adding a built-in panel means adding it there.
-2. The panel gets a `route` property: an object with a `prefix`, the part of the URL that was already handled, and a `path`, the rest.
-3. A panel with pages of its own passes the rest of the route on to them, and so on.
+1. `src/layouts/partial-panel-resolver.ts` 查看 URL 的第一部分，找到为其注册的面板，并加载其组件的代码。组件名称到代码的映射位于该文件的顶部，因此添加内置面板意味着在那里添加它。
+2. 面板会获得一个 `route` 属性：一个包含 `prefix`（已经处理过的 URL 部分）和 `path`（剩余部分）的对象。
+3. 拥有自己页面的面板会将路由的剩余部分传递给它们，依此类推。
 
-Panels are loaded only when someone opens them.
+面板只有在有人打开它们时才会被加载。
 
-## Routers inside a panel
+## 面板内部的路由器
 
-A panel with several pages extends `HassRouterPage` from `src/layouts/hass-router-page.ts`. It maps the next part of the URL to an element, and loads that element's code when it is first needed:
+拥有多个页面的面板会继承 `src/layouts/hass-router-page.ts` 中的 `HassRouterPage`。它将 URL 的下一部分映射到一个元素，并在首次需要时加载该元素的代码：
 
 ```ts
 @customElement("ha-panel-profile")
@@ -70,15 +70,15 @@ class HaPanelProfile extends HassRouterPage {
 }
 ```
 
-`updatePageEl()` passes the data the page needs, including `routeTail`, the part of the route that is left for the page. `RouterOptions` has more options, like `cacheAll` to keep pages in memory, and `beforeRender` to redirect.
+`updatePageEl()` 传递页面所需的数据，包括 `routeTail`，即留给页面的路由剩余部分。`RouterOptions` 还有更多选项，比如用于将页面保留在内存中的 `cacheAll`，以及用于重定向的 `beforeRender`。
 
-## Navigate
+## 导航
 
-To go to another page, use `navigate()` from `src/common/navigate.ts`, never `history.pushState` directly:
+要跳转到另一个页面，请使用 `src/common/navigate.ts` 中的 `navigate()`，切勿直接使用 `history.pushState`：
 
 ```ts
 navigate("/config/areas/dashboard");
 navigate("/config/areas/dashboard", { replace: true });
 ```
 
-`navigate()` updates the history, tells the app the location changed, and respects guards for unsaved changes.
+`navigate()` 会更新历史记录，通知应用位置已更改，并遵守未保存更改的守卫（guard）。

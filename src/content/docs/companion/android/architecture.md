@@ -1,77 +1,77 @@
 ---
-title: Android architecture
-description: The principles behind the Android app, the modules, the tech stack, and how the phone, car, and watch apps fit together.
-sidebarLabel: Architecture
+title: Android 架构
+description: Android 应用背后的原则、模块、技术栈，以及手机、汽车和手表应用如何协同工作。
+sidebarLabel: 架构
 sidebarGroup: Architecture
 order: 1
 ---
 
-The app follows Google's [recommended app architecture](https://developer.android.com/topic/architecture) and takes inspiration from [Now in Android](https://github.com/android/nowinandroid). The project has a long history, so you will find code that does not follow these rules yet. This page describes where the project is going. When in doubt, follow this page, not the code next to yours.
+该应用遵循 Google 的[推荐应用架构](https://developer.android.com/topic/architecture)，并从 [Now in Android](https://github.com/android/nowinandroid) 中汲取灵感。这个项目历史悠久，因此你会发现一些尚未遵循这些规则的代码。本页描述的是项目的发展方向。如有疑问，请遵循本页，而不是你旁边的代码。
 
-## A web view with native features
+## 带有原生功能的 Web 视图
 
-Home Assistant has always been a strong progressive web app, and the Android app builds on that. Its main screen is a [WebView](https://developer.android.com/reference/android/webkit/WebView) that shows the Home Assistant frontend. The app and the frontend talk to each other through a JavaScript bridge: the frontend asks the app for an access token through [external authentication](/frontend/reference/external-auth/), and they exchange messages over [the external bus](/frontend/reference/external-bus/). See [the frontend screen](/companion/android/frontend-screen/) for how that works.
+Home Assistant 一直是一个强大的渐进式 Web 应用（progressive web app），Android 应用正是建立在这一基础之上。它的主屏幕是一个显示 Home Assistant 前端的 [WebView](https://developer.android.com/reference/android/webkit/WebView)。应用与前端之间通过 JavaScript 桥接进行通信：前端通过[外部认证（external authentication）](/frontend/reference/external-auth/)向应用请求访问令牌，并通过[外部总线（external bus）](/frontend/reference/external-bus/)交换消息。具体工作原理请参阅[前端屏幕](/companion/android/frontend-screen/)。
 
-Everything else is native: onboarding, settings, sensors, notifications, widgets, tiles, Assist, and the car and watch apps.
+其余一切都是原生的：入门引导、设置、传感器、通知、小组件、磁贴、Assist，以及汽车和手表应用。
 
-## Principles
+## 原则
 
-- **Kotlin only.** The whole codebase is Kotlin, and it stays that way.
-- **Compose for all new UI.** No new XML layouts, data binding, or view binding. New widgets use Jetpack Glance. New screens use the `HATheme` theme. The older `HomeAssistantAppTheme` is Material 2 and deprecated. See [Compose and the design system](/companion/android/compose/).
-- **Coroutines and Flow for all concurrency.**
-- **Hilt for dependency injection.** Never create injected classes by hand.
-- **Keep code flavor agnostic.** Put code in the `main` source set so both [flavors](/companion/android/flavors-and-targets/) get it. Only code that needs Google Play Services goes in `full`.
-- **Keep up with Android.** The target SDK follows the latest Android releases, and new Android versions get tested as they come out.
-- **Gate features on the server version** when they need something from Home Assistant that older versions don't have, for example `server.version?.isAtLeast(2025, 6, 0)`.
+- **仅使用 Kotlin。** 整个代码库都是 Kotlin，并将保持不变。
+- **所有新 UI 都使用 Compose。** 不再使用新的 XML 布局、数据绑定或视图绑定。新小组件使用 Jetpack Glance。新屏幕使用 `HATheme` 主题。较旧的 `HomeAssistantAppTheme` 是 Material 2，已弃用。请参阅 [Compose 与设计系统](/companion/android/compose/)。
+- **所有并发都使用协程（coroutines）和 Flow。**
+- **依赖注入使用 Hilt。** 切勿手动创建需要注入的类。
+- **保持代码与产品变体（flavor）无关。** 将代码放在 `main` 源集中，让两个[变体](/companion/android/flavors-and-targets/)都能使用。只有需要 Google Play Services 的代码才放入 `full`。
+- **紧跟 Android 的发展。** 目标 SDK 跟随最新的 Android 版本，新版本发布时会进行测试。
+- **根据服务器版本控制功能**，当功能需要较旧版本 Home Assistant 所不具备的能力时，例如 `server.version?.isAtLeast(2025, 6, 0)`。
 
-## Modules
+## 模块
 
-The modules are listed on the [Android overview](/companion/android/#the-repository). A few things worth knowing:
+模块列表见 [Android 概览](/companion/android/#the-repository)。以下几点值得了解：
 
-- Shared Gradle configuration lives in convention plugins in `build-logic`, an included build. If you need the same setting in several modules, it belongs there.
-- `:common` holds everything the phone, car, and watch apps share, including all user facing strings in `common/src/main/res/values/strings.xml`. Only edit the English file: translations come from Lokalise. See [Translations](/translate/).
-- `:automotive` has no sources of its own. It compiles the sources of `:app` with a different manifest and a higher minimum SDK.
+- 共享的 Gradle 配置位于 `build-logic`（一个包含的构建）中的约定插件里。如果你需要在多个模块中使用相同的设置，就应该放在那里。
+- `:common` 存放手机、汽车和手表应用共享的所有内容，包括 `common/src/main/res/values/strings.xml` 中的所有面向用户的字符串。只编辑英文文件：翻译来自 Lokalise。请参阅[翻译](/translate/)。
+- `:automotive` 没有自己的源代码。它使用不同的清单文件和更高的最低 SDK 来编译 `:app` 的源代码。
 
-Inside a module, code is packaged by feature: `sensors/`, `notifications/`, `settings/`, `onboarding/`, `widgets/`, `frontend/`, and so on.
+在模块内部，代码按功能打包：`sensors/`、`notifications/`、`settings/`、`onboarding/`、`widgets/`、`frontend/` 等等。
 
-## The tech stack
+## 技术栈
 
-| Concern | What the app uses |
+| 关注点 | 应用使用的技术 |
 | --- | --- |
-| UI | [Jetpack Compose](https://developer.android.com/compose), [Glance](https://developer.android.com/develop/ui/compose/glance) for widgets |
-| Navigation | Navigation Compose with type-safe routes |
-| Dependency injection | [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) |
-| Concurrency | [Kotlin coroutines](https://kotlinlang.org/docs/coroutines-overview.html) and Flow |
+| UI | [Jetpack Compose](https://developer.android.com/compose)，小组件使用 [Glance](https://developer.android.com/develop/ui/compose/glance) |
+| 导航 | Navigation Compose，使用类型安全的路由 |
+| 依赖注入 | [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) |
+| 并发 | [Kotlin 协程](https://kotlinlang.org/docs/coroutines-overview.html)和 Flow |
 | WebSocket API | [OkHttp](https://square.github.io/okhttp/) |
 | REST API | [Retrofit](https://square.github.io/retrofit/) |
-| Serialization | Kotlinx.serialization |
-| Database | [Room](https://developer.android.com/training/data-storage/room), for user data |
-| App settings | SharedPreferences, behind a `LocalStorage` abstraction |
-| Logging | [Timber](https://github.com/JakeWharton/timber) |
+| 序列化 | Kotlinx.serialization |
+| 数据库 | [Room](https://developer.android.com/training/data-storage/room)，用于用户数据 |
+| 应用设置 | SharedPreferences，封装在 `LocalStorage` 抽象之后 |
+| 日志 | [Timber](https://github.com/JakeWharton/timber) |
 
-## Talking to Home Assistant
+## 与 Home Assistant 通信
 
-The app uses three channels:
+该应用使用三个通道：
 
-- **The webhook** of the [`mobile_app` integration](/companion/mobile-app-api/), for sensor updates, location, and registration updates.
-- **The WebSocket API**, kept open for real-time features like Assist, entity state in widgets, and notifications without Firebase.
-- **The REST API**, for the rest.
+- [`mobile_app` 集成](/companion/mobile-app-api/)的 **Webhook**，用于传感器更新、位置信息和注册更新。
+- **WebSocket API**，保持开启以支持实时功能，如 Assist、小组件中的实体状态，以及不依赖 Firebase 的通知。
+- **REST API**，用于其余部分。
 
-Sensors are collected in the background and sent to Home Assistant by foreground services and workers.
+传感器在后台收集，并通过前台服务和工作器（worker）发送到 Home Assistant。
 
 ## Wear OS
 
-The Wear OS app is a separate app in `:wear`. It cannot onboard on its own: it gets the server URL and credentials from the phone app through the [Wearable Data Layer](https://developer.android.com/training/wearables/data/data-layer). That requires Google Play Services, so it only works with the `full` flavor of the phone app. After setup, the watch talks to Home Assistant directly, over the WebSocket API and its own webhook.
+Wear OS 应用是 `:wear` 中的一个独立应用。它无法自行完成入门引导：它通过 [Wearable Data Layer](https://developer.android.com/training/wearables/data/data-layer) 从手机应用获取服务器 URL 和凭据。这需要 Google Play Services，因此只能与手机应用的 `full` 变体配合使用。设置完成后，手表通过 WebSocket API 和自己的 webhook 直接与 Home Assistant 通信。
 
-## Android Automotive and Android Auto
+## Android Automotive 和 Android Auto
 
-Android Auto runs from the phone app: it projects car screens from `:app` onto the car display. Android Automotive is a separate build, `:automotive`, that runs on the car itself. Both use the same sources.
+Android Auto 从手机应用运行：它将 `:app` 中的汽车屏幕投射到车载显示屏上。Android Automotive 是一个独立的构建版本 `:automotive`，直接在汽车上运行。两者使用相同的源代码。
 
-## Deep links
+## 深层链接（Deep link）
 
-The app handles `homeassistant://` links to open specific parts of the app. They are documented for users in the [URL handler documentation](https://companion.home-assistant.io/docs/integrations/url-handler/).
+该应用处理 `homeassistant://` 链接以打开应用的特定部分。面向用户的说明见 [URL 处理器文档](https://companion.home-assistant.io/docs/integrations/url-handler/)。
 
-## Next
+## 下一步
 
-- [UI architecture](/companion/android/ui-architecture/): how a single screen is structured.
-- [Best practices](/companion/android/best-practices/): the coding rules that come up in every review.
+- [UI 架构](/companion/android/ui-architecture/)：单个屏幕是如何构建的。
+- [最佳实践](/companion/android/best-practices/)：每次代码审查中都会出现的编码规则。

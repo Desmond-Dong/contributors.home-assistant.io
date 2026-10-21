@@ -1,35 +1,35 @@
 ---
-title: Register resources
-description: Make your JavaScript file available to Home Assistant and load it into every dashboard.
+title: 注册资源
+description: 让你的 JavaScript 文件可供 Home Assistant 使用，并加载到每个仪表盘中。
 order: 1
 ---
 
-Before a dashboard can use your card, badge, feature, view, or strategy, Home Assistant has to load its JavaScript. That takes two steps: serve the file, then register it as a resource.
+在仪表盘可以使用你的卡片（card）、徽章（badge）、功能（feature）、视图（view）或策略（strategy）之前，Home Assistant 必须先加载它的 JavaScript。这需要两个步骤：提供文件，然后将其注册为资源。
 
-## Serve the file
+## 提供文件
 
-Create a folder called `www` in your Home Assistant configuration folder, next to `configuration.yaml`. Files in it are served at `/local/`, so `www/my-card.js` becomes `/local/my-card.js`.
+在 Home Assistant 配置文件夹中、`configuration.yaml` 旁边，创建一个名为 `www` 的文件夹。其中的文件会通过 `/local/` 路径提供，因此 `www/my-card.js` 会变成 `/local/my-card.js`。
 
-Home Assistant only picks up the `www` folder at startup. If you just created it, restart Home Assistant once.
+Home Assistant 只在启动时读取 `www` 文件夹。如果你刚刚创建了它，请重启一次 Home Assistant。
 
 > [!WARNING]
-> Files in `www` are served without authentication. Anyone who can reach your Home Assistant can download them. Don't put secrets there.
+> `www` 中的文件在提供时不需要身份验证。任何能访问你的 Home Assistant 的人都可以下载它们。不要把机密信息放在那里。
 
-You can also load a resource from any other URL, like a file published by your project.
+你也可以从任何其他 URL 加载资源，比如你的项目发布的文件。
 
-## Register it
+## 注册资源
 
-Resources are managed in the UI by default:
+默认情况下，资源在 UI 中管理：
 
-1. Go to **Settings** > **Dashboards**.
-2. In the top-right menu, select **Resources**.
-3. Select **Add resource**, enter the URL, like `/local/my-card.js`, and choose **JavaScript module**.
+1. 前往 **设置** > **仪表盘**。
+2. 在右上角菜单中，选择 **资源**。
+3. 选择 **添加资源**，输入 URL，例如 `/local/my-card.js`，并选择 **JavaScript 模块**。
 
-Resources are loaded for all dashboards. After you change a resource, reload the page in your browser. Your browser may cache the old file: adding a version to the URL, like `/local/my-card.js?v=2`, forces a fresh copy.
+资源会为所有仪表盘加载。更改资源后，请在浏览器中重新加载页面。你的浏览器可能会缓存旧文件：在 URL 中添加版本号，例如 `/local/my-card.js?v=2`，可以强制获取新副本。
 
-### In YAML
+### 在 YAML 中
 
-To manage resources in YAML instead, set `resource_mode` to `yaml` in the `lovelace` section of `configuration.yaml`, and list them there:
+要改为在 YAML 中管理资源，请在 `configuration.yaml` 的 `lovelace` 部分将 `resource_mode` 设置为 `yaml`，并在那里列出它们：
 
 ```yaml
 lovelace:
@@ -39,21 +39,21 @@ lovelace:
       type: module
 ```
 
-With `resource_mode: yaml`, the **Resources** page in the UI no longer manages them. After a change, run the `lovelace.reload_resources` [action](/glossary/action/), or restart Home Assistant, then reload the page in your browser.
+使用 `resource_mode: yaml` 后，UI 中的 **资源** 页面将不再管理它们。更改后，请运行 `lovelace.reload_resources` [动作](/glossary/action/)，或重启 Home Assistant，然后在浏览器中重新加载页面。
 
-## Resource types
+## 资源类型
 
-| Type | Use for |
+| 类型 | 用途 |
 | --- | --- |
-| `module` | A JavaScript module. Use this for everything new. |
-| `css` | A stylesheet. |
-| `js` | A classic JavaScript file, without `import` and `export`. Deprecated. |
-| `html` | An HTML import. Deprecated, and no longer loaded by the frontend. |
+| `module` | JavaScript 模块。所有新内容都使用此类型。 |
+| `css` | 样式表。 |
+| `js` | 经典 JavaScript 文件，不使用 `import` 和 `export`。已弃用。 |
+| `html` | HTML 导入。已弃用，前端不再加载。 |
 
-The UI only offers `module` and `css` for a new resource. It shows `js` and `html` only for an existing resource that already has that type.
+对于新资源，UI 只提供 `module` 和 `css`。只有当现有资源已经具有该类型时，才会显示 `js` 和 `html`。
 
-In safe mode, Home Assistant loads no resources at all, so custom cards don't show up there.
+在安全模式下，Home Assistant 不会加载任何资源，因此自定义卡片不会在那里显示。
 
-## Registering pickers
+## 注册选择器
 
-Some registrations only work once the resource is loaded: a card in the card picker, a feature in the feature picker, or a dashboard in the new dashboard dialog. If yours does not show up, check that the resource loads (look for errors in the browser console), then reload the page and open the dialog again.
+某些注册只有在资源加载后才会生效：卡片选择器中的卡片、功能选择器中的功能，或新建仪表盘对话框中的仪表盘。如果你的没有显示，请检查资源是否已加载（在浏览器控制台中查找错误），然后重新加载页面并再次打开对话框。

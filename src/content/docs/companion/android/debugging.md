@@ -1,50 +1,50 @@
 ---
-title: Android debug tools
-description: The developer playground, the Compose catalog, StrictMode, and LeakCanary in debug builds of the Android app.
-sidebarLabel: Debug tools
+title: Android 调试工具
+description: Android 应用调试构建中的开发者游乐场、Compose 目录、StrictMode 和 LeakCanary。
+sidebarLabel: 调试工具
 sidebarGroup: Write code
 order: 5
 ---
 
-Debug builds of the Android app come with a few tools that make development faster and catch problems early. None of them are in release builds.
+Android 应用的调试构建（debug build）自带一些工具，可以加快开发速度并尽早发现问题。这些工具都不会出现在发布构建（release build）中。
 
-## The developer playground
+## 开发者游乐场
 
-The app depends on a server and a web view, so trying something often means going through onboarding and a few screens first. The developer playground skips that. It is an [app shortcut](https://developer.android.com/develop/ui/views/launch/shortcuts/creating-shortcuts#static) in debug builds: long-press the app icon and select **DevPlayground**. In Android Studio, the `dev playground` run configuration opens it directly. Its code is in the `app/src/debug` source set, so it never ends up in a release.
+应用依赖服务器和网页视图，因此想尝试某个功能往往意味着要先完成引导流程并经过几个界面。开发者游乐场跳过了这些步骤。它是调试构建中的一个[应用快捷方式](https://developer.android.com/develop/ui/views/launch/shortcuts/creating-shortcuts#static)：长按应用图标并选择 **DevPlayground**。在 Android Studio 中，`dev playground` 运行配置可以直接打开它。它的代码位于 `app/src/debug` 源集中，因此永远不会进入发布版本。
 
-From the playground you can, among other things, crash the app or trigger a fail fast on purpose, start the NFC tag emulator, and open the [Compose catalog](/companion/android/compose/#the-compose-catalog) of all `HA*` components.
+在游乐场中，你可以（除其他功能外）故意让应用崩溃或触发快速失败（fail fast）、启动 NFC 标签模拟器，以及打开包含所有 `HA*` 组件的 [Compose 目录](/companion/android/compose/#the-compose-catalog)。
 
-Use the playground however you like. Only commit changes that help other developers too, like the crash button that tests crash reporting, or the catalog that shows all components and themes. Committed playground code follows the [code style](/companion/android/code-style/) and [best practices](/companion/android/best-practices/) like any other code. Translations are not needed there.
+请随意使用游乐场。但只提交对其他开发者也有帮助的更改，例如用于测试崩溃报告的崩溃按钮，或展示所有组件和主题的目录。已提交的游乐场代码与其他代码一样，需遵循[代码风格](/companion/android/code-style/)和[最佳实践](/companion/android/best-practices/)。那里不需要翻译。
 
 ## StrictMode
 
-[StrictMode](https://developer.android.com/reference/android/os/StrictMode) is on in debug builds, on devices with Android 12 or newer. It catches disk and network access on the main thread, and behavior that newer Android versions deprecate, which makes moving to a new Android API level easier.
+[StrictMode](https://developer.android.com/reference/android/os/StrictMode) 在 Android 12 或更新版本的设备上的调试构建中是开启的。它会捕获主线程上的磁盘和网络访问，以及较新 Android 版本已弃用的行为，这使得迁移到新的 Android API 级别更加容易。
 
-A violation of either policy, the [VM policy](https://developer.android.com/reference/android/os/StrictMode.VmPolicy.Builder) or the [thread policy](https://developer.android.com/reference/android/os/StrictMode.ThreadPolicy.Builder), goes to `FailFast`, so a debug build crashes on it. Known violations from code the project doesn't control, like the WebView or vendor frameworks, are ignored through the rules in `app/src/main/kotlin/io/homeassistant/companion/android/util/IgnoreViolationRules.kt`.
+无论是 [VM 策略](https://developer.android.com/reference/android/os/StrictMode.VmPolicy.Builder)还是[线程策略](https://developer.android.com/reference/android/os/StrictMode.ThreadPolicy.Builder)的违规，都会进入 `FailFast`，因此调试构建会因此崩溃。来自项目无法控制的代码的已知违规（例如 WebView 或厂商框架），会通过 `app/src/main/kotlin/io/homeassistant/companion/android/util/IgnoreViolationRules.kt` 中的规则被忽略。
 
-If StrictMode blocks you, turn it off for a build:
+如果 StrictMode 阻碍了你，可以在某次构建中将其关闭：
 
 ```bash
 ./gradlew :app:assembleFullDebug -PnoStrictMode
 ```
 
-Or uncomment `noStrictMode=true` in `gradle.properties`. If you had to turn it off, open an issue or mention it on [Discord](https://www.home-assistant.io/join-chat/), so the underlying problem gets fixed.
+或者在 `gradle.properties` 中取消注释 `noStrictMode=true`。如果你不得不将其关闭，请提交一个 issue 或在 [Discord](https://www.home-assistant.io/join-chat/) 上提及，以便从根本上解决问题。
 
 ## LeakCanary
 
-[LeakCanary](https://square.github.io/leakcanary/) is included in debug builds and reports memory leaks while you work, so you can fix them early. If it reports one, open an issue. If the leak comes from a library and can't be fixed now, document it.
+[LeakCanary](https://square.github.io/leakcanary/) 已包含在调试构建中，会在你工作时报告内存泄漏，以便你尽早修复。如果它报告了泄漏，请提交一个 issue。如果泄漏来自某个库且目前无法修复，请将其记录下来。
 
-To build without it, for example for performance testing:
+要在构建时不包含它，例如进行性能测试时：
 
 ```bash
 ./gradlew :app:assembleFullDebug -PnoLeakCanary
 ```
 
-Or set `noLeakCanary=true` in `gradle.properties`, in the project or in your Gradle user home.
+或者在 `gradle.properties` 中设置 `noLeakCanary=true`，可以在项目中设置，也可以在你的 Gradle 用户主目录中设置。
 
 > [!WARNING]
-> Without LeakCanary, the resolved dependencies change, and Gradle complains about the lockfile. Update the lockfiles locally as described in [dependencies](/companion/android/dependencies/#lockfiles), but don't commit those changes. The lockfile check on pull requests regenerates the lockfiles with LeakCanary included, and fails when they differ from what you committed.
+> 没有 LeakCanary 时，解析出的依赖项会发生变化，Gradle 会针对锁文件报错。请按照[依赖项](/companion/android/dependencies/#lockfiles)中的说明在本地更新锁文件，但不要提交这些更改。拉取请求上的锁文件检查会在包含 LeakCanary 的情况下重新生成锁文件，如果与你提交的内容不同则会失败。
 
 ## FailFast
 
-`FailFast` crashes debug builds when it catches an error that release builds would quietly survive. The log shows a big `CRITICAL FAILURE: FAIL-FAST` banner with the stack trace. See [fail fast](/companion/android/best-practices/#fail-fast).
+`FailFast` 会在捕获到发布构建可以默默容忍的错误时使调试构建崩溃。日志中会显示一个带有堆栈跟踪的大号 `CRITICAL FAILURE: FAIL-FAST` 横幅。参见[快速失败](/companion/android/best-practices/#fail-fast)。

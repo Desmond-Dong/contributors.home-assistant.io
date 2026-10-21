@@ -1,41 +1,41 @@
 ---
-title: Supported boards
-description: Every board Home Assistant OS builds for, with its build target, bootloader, and machine type.
+title: 支持的开发板
+description: Home Assistant OS 构建所面向的每一块开发板，包括其构建目标、引导加载程序和机器类型。
 sidebarGroup: Boards
 order: 1
 ---
 
-Home Assistant OS builds one image per target. Each target has a configuration in `buildroot-external/configs/<target>_defconfig`, and a board folder with its [metadata](/os/operating-system/board-metadata/) in `buildroot-external/board/`. Since Home Assistant OS 17, every target is 64-bit.
+Home Assistant OS 为每个目标构建一个镜像。每个目标在 `buildroot-external/configs/<target>_defconfig` 中有一个配置，并在 `buildroot-external/board/` 中有一个包含其[元数据](/os/operating-system/board-metadata/)的开发板文件夹。自 Home Assistant OS 17 起，所有目标均为 64 位。
 
-## All targets
+## 所有目标
 
-| Board | Build target | Bootloader | Partition table | Machine | Notes |
+| 开发板 | 构建目标 | 引导加载程序 | 分区表 | 机器 | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| Home Assistant Green | `green` | U-Boot | Hybrid | `green` | |
-| Home Assistant Yellow | `yellow` | U-Boot | Hybrid | `yellow` | Carrier board for Raspberry Pi Compute Module 4 and 5 |
-| Raspberry Pi 3 | `rpi3_64` | U-Boot | Hybrid | `raspberrypi3-64` | [Raspberry Pi](/os/operating-system/raspberry-pi/) |
-| Raspberry Pi 4 | `rpi4_64` | U-Boot | Hybrid | `raspberrypi4-64` | [Raspberry Pi](/os/operating-system/raspberry-pi/) |
+| Home Assistant Green | `green` | U-Boot | 混合 | `green` | |
+| Home Assistant Yellow | `yellow` | U-Boot | 混合 | `yellow` | Raspberry Pi Compute Module 4 和 5 的载板 |
+| Raspberry Pi 3 | `rpi3_64` | U-Boot | 混合 | `raspberrypi3-64` | [Raspberry Pi](/os/operating-system/raspberry-pi/) |
+| Raspberry Pi 4 | `rpi4_64` | U-Boot | 混合 | `raspberrypi4-64` | [Raspberry Pi](/os/operating-system/raspberry-pi/) |
 | Raspberry Pi 5 | `rpi5_64` | Tryboot | GPT | `raspberrypi5-64` | [Raspberry Pi](/os/operating-system/raspberry-pi/) |
 | ODROID-C2 | `odroid_c2` | U-Boot | MBR | `odroid-c2` | [ODROID](/os/operating-system/odroid/) |
 | ODROID-C4 | `odroid_c4` | U-Boot | MBR | `odroid-c4` | [ODROID](/os/operating-system/odroid/) |
-| ODROID-M1 | `odroid_m1` | U-Boot | Hybrid | `odroid-m1` | [ODROID](/os/operating-system/odroid/) |
-| ODROID-M1S | `odroid_m1s` | U-Boot | Hybrid | `odroid-m1` | [ODROID](/os/operating-system/odroid/) |
-| ODROID-N2 and N2+ | `odroid_n2` | U-Boot | MBR | `odroid-n2` | [ODROID](/os/operating-system/odroid/), also Home Assistant Blue |
+| ODROID-M1 | `odroid_m1` | U-Boot | 混合 | `odroid-m1` | [ODROID](/os/operating-system/odroid/) |
+| ODROID-M1S | `odroid_m1s` | U-Boot | 混合 | `odroid-m1` | [ODROID](/os/operating-system/odroid/) |
+| ODROID-N2 和 N2+ | `odroid_n2` | U-Boot | MBR | `odroid-n2` | [ODROID](/os/operating-system/odroid/)，也是 Home Assistant Blue |
 | Khadas VIM3 | `khadas_vim3` | U-Boot | MBR | `khadas-vim3` | |
-| Generic x86-64 | `generic_x86_64` | GRUB | GPT | `generic-x86-64` | [Generic systems](/os/operating-system/generic/) |
-| Generic aarch64 | `generic_aarch64` | GRUB | GPT | `qemuarm-64` | [Generic systems](/os/operating-system/generic/), also virtual machine images |
-| Virtual machine | `ova` | GRUB | GPT | `qemux86-64` | [Virtual machines](/os/operating-system/virtual-machine/) |
+| 通用 x86-64 | `generic_x86_64` | GRUB | GPT | `generic-x86-64` | [通用系统](/os/operating-system/generic/) |
+| 通用 aarch64 | `generic_aarch64` | GRUB | GPT | `qemuarm-64` | [通用系统](/os/operating-system/generic/)，也是虚拟机镜像 |
+| 虚拟机 | `ova` | GRUB | GPT | `qemux86-64` | [虚拟机](/os/operating-system/virtual-machine/) |
 
-The build target is what you pass to `make`, see [build an image](/os/operating-system/build/). The board identifier in image file names uses dashes instead, like `haos_rpi4-64-18.3.img.xz`.
+构建目标是传递给 `make` 的参数，参见[构建镜像](/os/operating-system/build/)。镜像文件名中的开发板标识符则使用连字符，例如 `haos_rpi4-64-18.3.img.xz`。
 
-## Kernels
+## 内核
 
-Most boards run the mainline Linux kernel. Raspberry Pi boards and Home Assistant Yellow run the [Raspberry Pi fork](https://github.com/raspberrypi/linux). The current versions are in `Documentation/kernel.md` in the repository.
+大多数开发板运行主线 Linux 内核。Raspberry Pi 开发板和 Home Assistant Yellow 运行 [Raspberry Pi 分支（fork）](https://github.com/raspberrypi/linux)。当前版本见仓库中的 `Documentation/kernel.md`。
 
-## Boards that were removed
+## 已移除的开发板
 
-The 32-bit targets were removed in Home Assistant OS 17: Raspberry Pi 2, the 32-bit builds of Raspberry Pi 3 and 4, ODROID-XU4, and ASUS Tinker Board. Raspberry Pi 1 and Zero W were dropped before that. Existing installations on those boards no longer get updates.
+Home Assistant OS 17 移除了 32 位目标：Raspberry Pi 2、Raspberry Pi 3 和 4 的 32 位构建、ODROID-XU4 以及 ASUS Tinker Board。Raspberry Pi 1 和 Zero W 在此之前已被弃用。这些开发板上的现有安装不再获得更新。
 
-## Adding a board
+## 添加开发板
 
-Which boards are supported is a decision of the project, not only a question of code. [ADR-0015](https://github.com/home-assistant/architecture/blob/master/adr/0015-home-assistant-os.md) defines the supported hardware, and [ADR-0017](https://github.com/home-assistant/architecture/blob/master/adr/0017-hardware-screening-os.md) lists what a new board must meet, like long availability and upstream kernel support. Propose a new board in the [architecture repository](https://github.com/home-assistant/architecture) before you start.
+支持哪些开发板是项目的决定，而不仅仅是代码问题。[ADR-0015](https://github.com/home-assistant/architecture/blob/master/adr/0015-home-assistant-os.md) 定义了支持的硬件，[ADR-0017](https://github.com/home-assistant/architecture/blob/master/adr/0017-hardware-screening-os.md) 列出了新开发板必须满足的条件，例如长期供货和上游内核支持。在开始之前，请先在[架构仓库](https://github.com/home-assistant/architecture)中提议新开发板。

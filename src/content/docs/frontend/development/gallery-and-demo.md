@@ -1,55 +1,55 @@
 ---
-title: The gallery and the demo
-description: Two ways to run the real frontend without a Home Assistant. The gallery for components and cards, the demo for the whole app.
+title: 画廊与演示
+description: 在没有 Home Assistant 的情况下运行真实前端的两种方式。画廊用于组件和卡片，演示用于整个应用。
 order: 3
 ---
 
-Not every change needs a running Home Assistant. The [frontend repository](https://github.com/home-assistant/frontend) has two apps that run the real frontend code against fake data: the gallery and the demo.
+并非每次修改都需要运行中的 Home Assistant。[前端仓库](https://github.com/home-assistant/frontend) 包含两个应用，它们使用假数据运行真实的前端代码：画廊（gallery）和演示（demo）。
 
-## The gallery
+## 画廊
 
-The gallery shows components, dashboard cards, and more-info views on their own, in every state that matters: on, off, unavailable, loading, in light and dark, and right to left. It is a development tool: run it locally to build and check a component without a Home Assistant.
+画廊单独展示组件、仪表盘卡片和更多信息（more-info）视图，并覆盖所有重要的状态：开启、关闭、不可用、加载中、浅色与深色模式，以及从右到左布局。它是一个开发工具：在本地运行它，即可在没有 Home Assistant 的情况下构建和检查组件。
 
-Run it locally on port 8100:
+在本地 8100 端口运行：
 
 ```shell
 pnpm dev:gallery
 ```
 
-The gallery lives in the `gallery/` folder:
+画廊位于 `gallery/` 文件夹中：
 
-- `gallery/src/pages/<category>/<page>.markdown`: the description of a page, with optional front matter for `title` and `subtitle`.
-- `gallery/src/pages/<category>/<page>.ts`: the live demo of the same page. It defines a custom element named after the page, like `demo-components-ha-button` for `components/ha-button`.
-- `gallery/sidebar.js`: the sections of the sidebar and the order of pages in them.
-- `gallery/src/data/` and `gallery/src/components/`: fake `hass` objects, sample states, and helpers like `demo-cards` and `demo-more-infos` that render a list of card configurations or entities.
+- `gallery/src/pages/<category>/<page>.markdown`：页面的描述，带有可选的 front matter，用于 `title` 和 `subtitle`。
+- `gallery/src/pages/<category>/<page>.ts`：同一页面的实时演示。它定义了一个以页面命名的自定义元素，例如 `components/ha-button` 对应的 `demo-components-ha-button`。
+- `gallery/sidebar.js`：侧边栏的各个分区以及页面在其中的顺序。
+- `gallery/src/data/` 和 `gallery/src/components/`：假的 `hass` 对象、示例状态，以及像 `demo-cards` 和 `demo-more-infos` 这样的辅助元素，用于渲染卡片配置或实体（entity）列表。
 
-Gallery pages use the real components from `src/`, not copies. When your change alters how a documented component behaves, update its gallery page in the same pull request. Maintainers can add the `needs design preview` label to deploy a preview of the gallery for your pull request.
+画廊页面使用来自 `src/` 的真实组件，而不是副本。当你的修改改变了某个已记录组件的行为时，请在同一个拉取请求（pull request）中更新它的画廊页面。维护者可以添加 `needs design preview` 标签，为你的拉取请求部署画廊预览。
 
 > [!NOTE]
-> The published design guidance lives in the [Design](/design/) area of this site, not in the gallery. It replaces design.home-assistant.io. The [components](/design/components/), [dashboard cards](/design/dashboards/), and [more-info views](/design/more-info/) each have a page there, with usage, specs, accessibility, and live examples. When your change alters how a component looks or behaves, update its page there too, with a pull request to [this site](https://github.com/home-assistant/contributors.home-assistant.io).
+> 已发布的设计指南位于本网站的 [Design](/design/) 区域，而不是画廊中。它取代了 design.home-assistant.io。[组件](/design/components/)、[仪表盘卡片](/design/dashboards/) 和 [更多信息视图](/design/more-info/) 在那里各有一个页面，包含用法、规格、无障碍性和实时示例。当你的修改改变了组件的外观或行为时，也请通过向[本网站](https://github.com/home-assistant/contributors.home-assistant.io)提交拉取请求来更新其对应页面。
 
-## The demo
+## 演示
 
-The demo is the complete Home Assistant frontend, running against a mocked backend in your browser. It is published at [demo.home-assistant.io](https://demo.home-assistant.io/). It is the easiest way to load the full app without a server, for example to check a dashboard or take screenshots.
+演示是完整的 Home Assistant 前端，在浏览器中针对模拟的后端运行。它发布于 [demo.home-assistant.io](https://demo.home-assistant.io/)。这是在没有服务器的情况下加载完整应用的最简单方式，例如检查仪表盘或截取屏幕截图。
 
-Run it locally on port 8090:
+在本地 8090 端口运行：
 
 ```shell
 pnpm dev:demo
 ```
 
-The demo has several homes to choose from. Select one with the `demo` query parameter, and a page with the part after the `#`:
+演示有多个可选的主界面。使用 `demo` 查询参数选择一个，并用 `#` 之后的部分指定页面：
 
 ```text
 http://localhost:8090/?demo=<slug>#/energy
 ```
 
-The slugs are in `demo/src/configs/demo-configs.ts`. Each home has its own folder in `demo/src/configs/`, with its entities, dashboard, and theme. The mocked WebSocket and REST APIs live in `demo/src/stubs/`.
+这些 slug 位于 `demo/src/configs/demo-configs.ts` 中。每个主界面在 `demo/src/configs/` 中都有自己的文件夹，包含其实体、仪表盘和主题。模拟的 WebSocket 和 REST API 位于 `demo/src/stubs/` 中。
 
-The gallery imports some of those stubs too. When you change a stub, check both the demo and the gallery pages that use it.
+画廊也导入了其中一些 stub。当你修改某个 stub 时，请同时检查使用它的演示和画廊页面。
 
-Some demo data is generated from Core: the action descriptions in `src/fake_data/demo_services.ts`, and the trigger and condition descriptions in `demo/src/stubs/`. Don't edit those by hand. Run `script/gen_demo_core_data` to regenerate them from the `dev` branch of Core.
+一些演示数据由 Core 生成：`src/fake_data/demo_services.ts` 中的动作描述，以及 `demo/src/stubs/` 中的触发器和条件描述。不要手动编辑它们。运行 `script/gen_demo_core_data` 可以从 Core 的 `dev` 分支重新生成它们。
 
-## Translations in the gallery and the demo
+## 画廊和演示中的翻译
 
-Both start in English. Add `--fetch-translations` to load the latest translations, like `pnpm dev:demo --fetch-translations`. Both also accept the [background flags](/frontend/development/run/#keep-a-server-running-in-the-background).
+两者默认以英文启动。添加 `--fetch-translations` 可以加载最新翻译，例如 `pnpm dev:demo --fetch-translations`。两者也接受[后台运行标志](/frontend/development/run/#keep-a-server-running-in-the-background)。

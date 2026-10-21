@@ -1,31 +1,31 @@
 ---
-title: Debug the Supervisor
-description: Attach a Python debugger to a running Supervisor, locally or on a remote device, and find its logs.
-sidebarLabel: Debug the Supervisor
+title: 调试 Supervisor
+description: 将 Python 调试器附加到本地或远程设备上正在运行的 Supervisor，并查找其日志。
+sidebarLabel: 调试 Supervisor
 sidebarGroup: Guides
 order: 2
 ---
 
-The Supervisor ships with [debugpy](https://github.com/microsoft/debugpy), so you can attach the Visual Studio Code debugger to it, set breakpoints, and step through the code. That works in the development container and on a real device.
+Supervisor 内置了 [debugpy](https://github.com/microsoft/debugpy)，因此你可以将 Visual Studio Code 调试器附加到它上面，设置断点并单步调试代码。这在开发容器和真实设备上都适用。
 
-## Turn on debug mode
+## 开启调试模式
 
-The debugger only starts when debug mode is on. Debug mode is read at startup, so restart the Supervisor after you change it:
+调试器只有在调试模式开启时才会启动。调试模式在启动时读取，因此修改后需要重启 Supervisor：
 
 ```shell
 ha supervisor options --debug=true
 ha supervisor restart
 ```
 
-Write `=true` out. The CLI reads a bare `--debug` as `false`, so it turns debug mode off.
+请完整写出 `=true`。CLI 会将单独的 `--debug` 读取为 `false`，因此这样会关闭调试模式。
 
-The Supervisor now listens for a debugger on port 33333. To debug what happens during startup, add `--debug-block=true` as well. The Supervisor then waits until a debugger is attached before it continues.
+现在 Supervisor 会在端口 33333 上监听调试器。要调试启动过程中发生的事情，请同时添加 `--debug-block=true`。这样 Supervisor 会等待调试器附加后才继续运行。
 
-Turn it off again with `ha supervisor options --debug=false`.
+使用 `ha supervisor options --debug=false` 可以再次关闭调试模式。
 
-## Attach the debugger
+## 附加调试器
 
-The repository has a launch configuration for this, **Supervisor remote debug**, in `.vscode/launch.json`:
+仓库中为此提供了一个启动配置 **Supervisor remote debug**，位于 `.vscode/launch.json`：
 
 ```json
 {
@@ -43,22 +43,22 @@ The repository has a launch configuration for this, **Supervisor remote debug**,
 }
 ```
 
-`172.30.32.2` is the address of the Supervisor on the `hassio` network, which works from inside the development container. Select the configuration in the **Run and Debug** view, and start it.
+`172.30.32.2` 是 Supervisor 在 `hassio` 网络上的地址，在开发容器内部可以访问。在 **Run and Debug** 视图中选择该配置并启动。
 
-## Debug a remote device
+## 调试远程设备
 
-On a device, the `hassio` network is not reachable from your computer. The **Remote ptvsd debugger** app forwards port 33333 of the host to the Supervisor:
+在设备上，你的计算机无法直接访问 `hassio` 网络。**Remote ptvsd debugger** 应用会将主机的端口 33333 转发到 Supervisor：
 
-1. Add the [development apps repository](https://github.com/home-assistant/apps-development) to the app store of the device.
-2. Install and start the **Remote ptvsd debugger** app.
-3. Turn on debug mode, as above.
-4. In your launch configuration, set `host` to the IP address of the device.
+1. 将[开发应用仓库](https://github.com/home-assistant/apps-development)添加到设备的应用商店中。
+2. 安装并启动 **Remote ptvsd debugger** 应用。
+3. 按上文所述开启调试模式。
+4. 在你的启动配置中，将 `host` 设置为设备的 IP 地址。
 
-Make sure the code in your workspace matches the version on the device. Otherwise, breakpoints end up on the wrong lines.
+请确保你工作区中的代码与设备上的版本一致。否则，断点会落在错误的行上。
 
-## Logs
+## 日志
 
-Read the log of the Supervisor in one of these ways:
+可以通过以下任一方式查看 Supervisor 的日志：
 
 ```shell
 # From the Home Assistant CLI
@@ -68,6 +68,6 @@ ha supervisor logs
 docker logs -f hassio_supervisor
 ```
 
-For more detail, raise the log level with `ha supervisor options --logging debug`.
+如需更详细的信息，可以使用 `ha supervisor options --logging debug` 提高日志级别。
 
-If the Supervisor does not start at all, look at the service that starts it: `journalctl -u haos-supervisor` on the host shell. [Debug the host](/os/operating-system/debugging/) explains how to get there. When the Supervisor is down, the observer on port 4357 still shows its state and logs.
+如果 Supervisor 完全无法启动，请查看启动它的服务：在主机 shell 中运行 `journalctl -u haos-supervisor`。[调试主机](/os/operating-system/debugging/)介绍了如何进入主机 shell。当 Supervisor 宕机时，端口 4357 上的观察者（observer）仍会显示其状态和日志。

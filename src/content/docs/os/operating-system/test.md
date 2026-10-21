@@ -1,22 +1,22 @@
 ---
-title: Test your build
-description: Boot your image in QEMU, run the automated tests, and install your build on a real device.
+title: 测试你的构建
+description: 在 QEMU 中启动你的镜像、运行自动化测试，并将你的构建安装到真实设备上。
 sidebarGroup: Guides
 order: 2
 ---
 
-A build that finishes is not a build that works. Before you open a pull request, boot your image. For most changes, a virtual machine is enough. For board specific changes, you need the board.
+构建完成并不代表构建可用。在提交拉取请求（pull request）之前，请先启动你的镜像。对于大多数更改，虚拟机就足够了；对于特定开发板的更改，则需要相应的开发板。
 
-## Boot it in QEMU
+## 在 QEMU 中启动
 
-The `ova` target builds images for virtual machines, including a compressed QCOW2 image that QEMU runs once you unpack it. `--keep` leaves the compressed file in place, because the automated tests below unpack it again. Home Assistant OS needs UEFI, so QEMU needs UEFI firmware too. On Debian and Ubuntu, the `ovmf` package provides it.
+`ova` 目标会为虚拟机构建镜像，其中包括一个压缩的 QCOW2 镜像，解压后即可在 QEMU 中运行。`--keep` 会保留压缩文件，因为下文的自动化测试会再次解压它。Home Assistant OS 需要 UEFI，因此 QEMU 也需要 UEFI 固件。在 Debian 和 Ubuntu 上，`ovmf` 软件包提供了该固件。
 
 ```shell
 scripts/enter.sh make O=output_ova ova
 unxz --keep output_ova/images/haos_ova-*.qcow2.xz
 ```
 
-Then start it. The path of the firmware file differs between distributions, so check where your `ovmf` package put it:
+然后启动它。固件文件的路径因发行版而异，请检查你的 `ovmf` 软件包将其放在了哪里：
 
 ```shell
 IMAGE=output_ova/images/haos_ova-18.4.dev0.qcow2
@@ -27,29 +27,29 @@ qemu-system-x86_64 -enable-kvm -name haos -smp 2 -m 2G \
   -drive file="$FIRMWARE",if=pflash,format=raw,readonly=on
 ```
 
-The boot ends at the Home Assistant CLI prompt, `ha >`. Type `login` to get a root shell on the host.
+启动结束后会停在 Home Assistant CLI 提示符 `ha >`。输入 `login` 即可在宿主机上获得 root shell。
 
-On an Arm machine, use the `generic_aarch64` target. Next to its disk image, it builds QCOW2, VMDK, and VDI images for Arm virtual machines.
+在 Arm 机器上，请使用 `generic_aarch64` 目标。除了磁盘镜像之外，它还会为 Arm 虚拟机构建 QCOW2、VMDK 和 VDI 镜像。
 
-## Run the automated tests
+## 运行自动化测试
 
-The `tests/` folder has tests that boot the OVA image in QEMU and check that the system and the Supervisor come up. They use [labgrid](https://labgrid.readthedocs.io/) and pytest. The test setup expects the image as `tests/haos.qcow2`, and the OVMF firmware at `/usr/share/ovmf/OVMF.fd`:
+`tests/` 文件夹中包含一些测试，它们会在 QEMU 中启动 OVA 镜像，并检查系统和 Supervisor 是否正常启动。这些测试使用 [labgrid](https://labgrid.readthedocs.io/) 和 pytest。测试环境要求镜像位于 `tests/haos.qcow2`，OVMF 固件位于 `/usr/share/ovmf/OVMF.fd`：
 
 ```shell
 unxz -c output_ova/images/haos_ova-*.qcow2.xz > tests/haos.qcow2
 tests/run_tests.sh
 ```
 
-Unless you already work in a Python virtual environment, the script creates one in `tests/venv` and installs the test dependencies into it. The same tests run in CI, on every release build and on pull requests with the `run-ova-test` label.
+除非你已经在 Python 虚拟环境中工作，否则该脚本会在 `tests/venv` 中创建一个虚拟环境，并将测试依赖安装到其中。同样的测试也会在 CI 中运行，包括每次发布构建，以及带有 `run-ova-test` 标签的拉取请求。
 
-## Install your build on a device
+## 将你的构建安装到设备上
 
-You can flash the disk image to an SD card or disk, like any release. To keep the data on an existing installation instead, install the RAUC update bundle.
+你可以像刷写任何正式版本一样，将磁盘镜像刷写到 SD 卡或磁盘上。如果想保留现有安装中的数据，可以改为安装 RAUC 更新包（update bundle）。
 
 > [!IMPORTANT]
-> An official release only trusts bundles signed by the release certificate. Your build is signed with your own self-signed certificate, so the installation fails with a signature error. [Install a self-signed build](/os/operating-system/update-system/#install-a-self-signed-build) shows how to make the device accept it.
+> 官方发布版本只信任由发布证书签名的更新包。你的构建使用你自己的自签名证书签名，因此安装会因签名错误而失败。[安装自签名的构建](/os/operating-system/update-system/#install-a-self-signed-build)介绍了如何让设备接受它。
 
-Once the device accepts your certificate, copy the `.raucb` file to the device, then run this on the host shell (see [debug the host](/os/operating-system/debugging/)):
+一旦设备接受了你的证书，将 `.raucb` 文件复制到设备上，然后在宿主 shell 中运行以下命令（参见[调试宿主机](/os/operating-system/debugging/)）：
 
 ```shell
 cd /mnt/data
@@ -57,8 +57,8 @@ rauc install haos_rpi4-64-18.4.dev0.raucb
 systemctl reboot
 ```
 
-The device reboots into the slot that was just written. If that slot does not boot, it falls back to the other one. See [the update system](/os/operating-system/update-system/).
+设备会重启进入刚刚写入的槽位（slot）。如果该槽位无法启动，则会回退到另一个槽位。参见[更新系统](/os/operating-system/update-system/)。
 
-## Use a development build
+## 使用开发版构建
 
-You don't always need to build yourself. Development builds of the `dev` branch are published on [os-artifacts.home-assistant.io](https://os-artifacts.home-assistant.io/index.html). They are built and signed by the same pipeline as releases, so you can try a change that was merged recently without setting up a build. [Releases and builds](/os/operating-system/releases/#build-pipelines) explains how they are made.
+你并不总是需要自己构建。`dev` 分支的开发版构建发布在 [os-artifacts.home-assistant.io](https://os-artifacts.home-assistant.io/index.html) 上。它们由与正式版本相同的流水线构建和签名，因此你无需搭建构建环境即可试用最近合并的更改。[发布与构建](/os/operating-system/releases/#build-pipelines)解释了它们的制作方式。

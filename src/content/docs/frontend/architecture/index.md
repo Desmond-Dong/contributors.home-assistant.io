@@ -1,60 +1,60 @@
 ---
-title: Frontend architecture
-description: How the frontend is put together, from the first script that loads to the panels, dialogs, and the data that flows through them.
+title: 前端架构
+description: 前端是如何组装起来的，从最先加载的脚本，到各个面板、对话框，以及在其中流转的数据。
 order: 20
-sidebarLabel: Architecture
+sidebarLabel: 架构
 ---
 
-The frontend is a single-page application made of web components. Each component bundles its template, styles, and logic, and shows up in the browser as an HTML tag, like `<ha-button>` or `<hui-tile-card>`. Components are composed into bigger components, all the way up to the app itself.
+前端是一个由 web components 组成的单页应用。每个组件都将其模板、样式和逻辑打包在一起，并在浏览器中以 HTML 标签的形式呈现，例如 `<ha-button>` 或 `<hui-tile-card>`。组件可以组合成更大的组件，层层向上，直到应用本身。
 
-## The parts
+## 组成部分
 
-The frontend loads in four layers.
+前端分四层加载。
 
-### Bootstrap
+### 引导（Bootstrap）
 
-`src/entrypoints/core.ts` is a tiny script that loads first. It checks for login credentials and opens the WebSocket connection to Home Assistant Core. Because it is so small, the data starts flowing while the rest of the interface is still downloading.
+`src/entrypoints/core.ts` 是一个最先加载的小脚本。它检查登录凭据，并打开与 Home Assistant Core 的 WebSocket 连接。由于它非常小，在界面的其余部分还在下载时，数据就已经开始流动了。
 
-### App shell
+### 应用外壳（App shell）
 
-`src/entrypoints/app.ts` loads the root element, `<home-assistant>` in `src/layouts/home-assistant.ts`, and the global styles. The root element sets up the state of the app through a stack of mixins in `src/state/`: the connection, translations, themes, dialogs, the sidebar, and more. It then renders `src/layouts/home-assistant-main.ts`, which draws the sidebar and hands the current URL to the panel resolver.
+`src/entrypoints/app.ts` 加载根元素 `<home-assistant>`（位于 `src/layouts/home-assistant.ts`）以及全局样式。根元素通过 `src/state/` 中的一系列 mixin 来设置应用的状态：连接、翻译、主题、对话框、侧边栏等等。然后它渲染 `src/layouts/home-assistant-main.ts`，由后者绘制侧边栏，并将当前 URL 交给面板解析器。
 
-### Panels
+### 面板（Panels）
 
-Every page in Home Assistant is a [panel](/glossary/panel/): dashboards, the map, history, the settings. Panels live in `src/panels/`, and are loaded only when someone opens them. Core decides which panels exist, and integrations can add their own. [Routing and panels](/frontend/architecture/routing-and-panels/) explains how.
+Home Assistant 中的每个页面都是一个[面板（panel）](/glossary/panel/)：仪表盘、地图、历史记录、设置。面板位于 `src/panels/` 中，只有在有人打开它们时才会加载。Core 决定存在哪些面板，集成也可以添加自己的面板。[路由与面板](/frontend/architecture/routing-and-panels/)解释了其工作原理。
 
-### Dialogs
+### 对话框（Dialogs）
 
-Dialogs live in `src/dialogs/`, and can open on top of any page. The best known is the [more-info dialog](/glossary/more-info-dialog/), which shows the state, history, and settings of one entity.
+对话框位于 `src/dialogs/` 中，可以在任何页面之上打开。最著名的是[更多信息对话框（more-info dialog）](/glossary/more-info-dialog/)，它显示一个实体（entity）的状态、历史记录和设置。
 
-## Where things live
+## 文件位置
 
-| Folder | What is in it |
+| 文件夹 | 内容 |
 | --- | --- |
-| `src/components/` | Shared `ha-*` components, used everywhere. |
-| `src/panels/` | One folder per panel. Dashboards are in `src/panels/lovelace/`. |
-| `src/dialogs/` | Dialogs, including the more-info dialog. |
-| `src/data/` | Types and functions that talk to Core: WebSocket commands, subscriptions, and contexts. |
-| `src/common/` | Small helpers without UI: formatting, entity helpers, decorators, and DOM utilities. |
-| `src/state/` | The mixins that make up the app state of the root element. |
-| `src/layouts/` | The root element, the main layout, the panel resolver, and page layouts. |
-| `src/resources/` | Global styles and theme definitions. |
-| `src/translations/` | `en.json`, the English source of all frontend text. |
-| `src/external_app/` | The bridge to the companion apps. |
+| `src/components/` | 共享的 `ha-*` 组件，随处使用。 |
+| `src/panels/` | 每个面板一个文件夹。仪表盘位于 `src/panels/lovelace/`。 |
+| `src/dialogs/` | 对话框，包括更多信息对话框。 |
+| `src/data/` | 与 Core 通信的类型和函数：WebSocket 命令、订阅和上下文。 |
+| `src/common/` | 不含 UI 的小型辅助工具：格式化、实体辅助函数、装饰器和 DOM 工具。 |
+| `src/state/` | 构成根元素应用状态的 mixin。 |
+| `src/layouts/` | 根元素、主布局、面板解析器和页面布局。 |
+| `src/resources/` | 全局样式和主题定义。 |
+| `src/translations/` | `en.json`，所有前端文本的英文源文件。 |
+| `src/external_app/` | 与配套应用（companion apps）之间的桥接。 |
 
-## How data flows
+## 数据如何流动
 
-The frontend talks to Core mostly over the [WebSocket API](https://github.com/home-assistant/home-assistant-js-websocket), and in a few places over the REST API.
+前端主要通过 [WebSocket API](https://github.com/home-assistant/home-assistant-js-websocket) 与 Core 通信，少数地方使用 REST API。
 
-Data flows one way. When something changes in Core, like a light turning on, the root element receives the update and makes a new `hass` object, and the change flows down the component tree to every component that needs it. When a component wants to change something, it calls Core, and waits for the change to come back down.
+数据单向流动。当 Core 中发生某些变化时，比如一盏灯被打开，根元素会收到更新并创建一个新的 `hass` 对象，这个变化沿着组件树向下传递到每个需要它的组件。当某个组件想要改变一些东西时，它会调用 Core，并等待变化从上方传下来。
 
-Components that need only part of the data consume a [Lit context](/frontend/architecture/hass-and-contexts/) instead of the whole `hass` object. Data that is not part of `hass`, like the label registry or the list of backups, is loaded through [subscriptions and commands](/frontend/architecture/data/) that keep it in sync with Core.
+只需要部分数据的组件会使用 [Lit 上下文（context）](/frontend/architecture/hass-and-contexts/)，而不是整个 `hass` 对象。不属于 `hass` 的数据，比如标签注册表或备份列表，则通过[订阅和命令](/frontend/architecture/data/)加载，以保持与 Core 的同步。
 
-## Pages
+## 相关页面
 
-- [Components and Lit](/frontend/architecture/components/): web components, Lit, and the `ha-*` components built on Web Awesome.
-- [The hass object and contexts](/frontend/architecture/hass-and-contexts/): how components get their data.
-- [The data layer](/frontend/architecture/data/): WebSocket commands, subscriptions, and collections.
-- [Translations in the frontend](/frontend/architecture/translations/): how text gets translated.
-- [Theming and design tokens](/frontend/architecture/theming/): theme variables and tokens, and how themes apply.
-- [Routing and panels](/frontend/architecture/routing-and-panels/): how a URL becomes a page.
+- [组件与 Lit](/frontend/architecture/components/)：web components、Lit，以及基于 Web Awesome 构建的 `ha-*` 组件。
+- [hass 对象与上下文](/frontend/architecture/hass-and-contexts/)：组件如何获取数据。
+- [数据层](/frontend/architecture/data/)：WebSocket 命令、订阅和集合。
+- [前端中的翻译](/frontend/architecture/translations/)：文本如何被翻译。
+- [主题与设计令牌](/frontend/architecture/theming/)：主题变量和令牌，以及主题如何应用。
+- [路由与面板](/frontend/architecture/routing-and-panels/)：URL 如何变成一个页面。

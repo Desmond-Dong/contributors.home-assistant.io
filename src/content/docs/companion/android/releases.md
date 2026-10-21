@@ -1,6 +1,6 @@
 ---
-title: Android releases
-description: How a change to the Android app travels from a merged pull request to internal testers, the beta, and production, and how to build a signed release yourself.
+title: Android 版本发布
+description: 对 Android 应用的更改如何从合并的拉取请求（pull request）流转到内部测试人员、Beta 版和生产环境，以及如何自行构建签名的发布版本。
 sidebarLabel: Releases
 sidebarGroup: Ship
 order: 3
@@ -8,75 +8,75 @@ source: https://github.com/home-assistant/android/tree/main/.github/workflows
 lastVerified: 2026-10-14
 ---
 
-Every merged pull request ships to internal testers right away. Every week, the latest build goes to the open beta. When a beta is stable, a maintainer promotes it to production. This page describes that path, and how to build a signed release on your own machine.
+每个合并的拉取请求都会立即发布给内部测试人员。每周，最新的构建版本会发布到公开 Beta 版。当 Beta 版稳定后，维护者会将其提升为生产版本。本页介绍这一流程，以及如何在自己的机器上构建签名的发布版本。
 
-## From merge to production
+## 从合并到生产
 
-### Internal testing
+### 内部测试
 
-When a pull request is merged into `main`, CI builds the release versions and publishes them to the internal testing track on the Play Store. Internal testers get every change immediately. The app does a lot, so they can't test every feature on every build.
+当拉取请求合并到 `main` 分支时，CI 会构建发布版本并将其发布到 Play Store 的内部测试轨道。内部测试人员会立即获得每一项更改。这个应用功能繁多，因此他们无法在每个构建版本上测试每个功能。
 
-APKs of every commit on `main` are also attached to the [On Push workflow runs](https://github.com/home-assistant/android/actions/workflows/onPush.yml).
+`main` 分支上每个提交的 APK 也会附加到 [On Push 工作流运行](https://github.com/home-assistant/android/actions/workflows/onPush.yml)中。
 
-### Weekly beta
+### 每周 Beta
 
-Every Sunday at 04:00 UTC (Saturday evening in the Americas), CI tags a new version, creates a GitHub pre-release with the APKs, and promotes the latest `main` build to the open beta. Before that cutoff, the in-app changelog in `ChangelogContent.kt` should list the new features and backward-incompatible changes of the week.
+每周日 04:00 UTC（美洲时间为周六晚上），CI 会标记一个新版本，创建包含 APK 的 GitHub 预发布版本，并将最新的 `main` 构建版本提升为公开 Beta 版。在此截止时间之前，`ChangelogContent.kt` 中的应用内更新日志应列出本周的新功能和不向后兼容的更改。
 
-Anyone can [join the beta on Google Play](https://play.google.com/apps/testing/io.homeassistant.companion.android). Beta users find the problems that tests and internal testers can't.
+任何人都可以[在 Google Play 上加入 Beta 测试](https://play.google.com/apps/testing/io.homeassistant.companion.android)。Beta 用户能发现测试和内部测试人员无法发现的问题。
 
-Google reviews every build that goes to the open beta. How long that takes varies, and it can be more than a week. When the next weekly beta comes in while the previous one is still in review, the previous one is dropped. This doesn't block anything, but it is worth knowing when you wonder why a beta is late.
+Google 会审核每一个进入公开 Beta 版的构建版本。审核所需时间不定，可能超过一周。当上一个每周 Beta 版仍在审核中而下一个每周 Beta 版到来时，上一个会被丢弃。这不会阻塞任何流程，但当你疑惑为什么某个 Beta 版延迟时，了解这一点会很有帮助。
 
-### Promoting to production
+### 提升为生产版本
 
-A maintainer promotes the beta to production when it is stable, and it reaches everyone who installs the app from [Google Play](https://play.google.com/store/apps/details?id=io.homeassistant.companion.android).
+当 Beta 版稳定后，维护者会将其提升为生产版本，并推送给所有从 [Google Play](https://play.google.com/store/apps/details?id=io.homeassistant.companion.android) 安装该应用的用户。
 
-Before promoting:
+在提升之前：
 
-- Wait a few days after the beta release, so beta users can find regressions.
-- Check that the in-app changelog in `app/src/main/kotlin/io/homeassistant/companion/android/changelog/ChangelogContent.kt` covers what ships.
-- Check Sentry for an unusual number of issues in the beta.
-- Check the [Google Play Console](https://play.google.com/console) for crashes, ANRs, and other anomalies.
-- Prepare a pull request in the [companion documentation](https://github.com/home-assistant/companion.home-assistant) that removes the beta labels of the features in this release.
+- 在 Beta 版发布后等待几天，让 Beta 用户有时间发现回归问题。
+- 检查 `app/src/main/kotlin/io/homeassistant/companion/android/changelog/ChangelogContent.kt` 中的应用内更新日志是否涵盖了本次发布的内容。
+- 检查 Sentry 中 Beta 版的问题数量是否异常。
+- 检查 [Google Play Console](https://play.google.com/console) 是否有崩溃、ANR 和其他异常情况。
+- 在[配套应用文档](https://github.com/home-assistant/companion.home-assistant)中准备一个拉取请求，移除本次发布中各功能的 Beta 标签。
 
-To promote:
+提升步骤：
 
-1. Edit the latest beta release on [GitHub](https://github.com/home-assistant/android/releases). Keep the generated list of commits, and add a **Highlights of this release** section on top that matches `ChangelogContent.kt`. See [2026.6.1](https://github.com/home-assistant/android/releases/tag/2026.6.1) for an example.
-2. Clear the **pre-release** checkbox, and set it as the **latest** release.
+1. 在 [GitHub](https://github.com/home-assistant/android/releases) 上编辑最新的 Beta 版发布。保留自动生成的提交列表，并在顶部添加一个与 `ChangelogContent.kt` 相符的**本次发布亮点**部分。示例请参见 [2026.6.1](https://github.com/home-assistant/android/releases/tag/2026.6.1)。
+2. 取消勾选 **pre-release**（预发布）复选框，并将其设置为 **latest**（最新）发布。
 
-That starts `release.yml`, which uses Fastlane to promote the beta track to production for the phone, Wear OS, and Automotive apps. Google reviews the release first, which usually takes a few days. Nothing needs to happen during that review.
+这会触发 `release.yml`，它使用 Fastlane 将 Beta 轨道提升为生产版本，涵盖手机、Wear OS 和 Automotive 应用。Google 会先审核该发布，这通常需要几天时间。审核期间无需进行任何操作。
 
-### Other stores
+### 其他商店
 
-The Play Store only covers the `full` flavor. After a release:
+Play Store 仅覆盖 `full` 变体。发布之后：
 
-- Send the `minimal` Automotive app to the Harman Ignite store.
-- Submit the release for review in the [Amazon developer console](https://developer.amazon.com/apps-and-games/console/apps/list.html). The APK and changelog were already uploaded when the beta was built, by the `prep_amazon` Fastlane lane in `onPush.yml`.
-- Release the `minimal` app on the Meta Quest store.
-- F-Droid builds the release on its own, a few days later. See [F-Droid](/companion/android/ci/#f-droid).
+- 将 `minimal` Automotive 应用发送到 Harman Ignite 商店。
+- 在 [Amazon 开发者控制台](https://developer.amazon.com/apps-and-games/console/apps/list.html)中提交发布以供审核。APK 和更新日志在构建 Beta 版时已由 `onPush.yml` 中的 `prep_amazon` Fastlane lane 上传。
+- 在 Meta Quest 商店上发布 `minimal` 应用。
+- F-Droid 会在几天后自行构建发布版本。参见 [F-Droid](/companion/android/ci/#f-droid)。
 
-### Once it is live
+### 发布上线后
 
-- Merge the documentation pull request that removes the beta labels.
-- If the release fixes security issues since the last production release, add a **Disclosed security advisories** section to the GitHub release notes, after the highlights, with a link to each advisory.
-- For a release with a major change or a great new feature, ask the community manager to help promote it, like with a blog post or on social media.
+- 合并移除 Beta 标签的文档拉取请求。
+- 如果本次发布修复了自上一个生产版本以来的安全问题，请在 GitHub 发布说明中亮点部分之后添加一个**已披露的安全公告**部分，并为每个公告提供链接。
+- 对于包含重大更改或出色新功能的发布，请社区经理协助宣传，例如发布博客文章或在社交媒体上推广。
 
-## Build a signed release yourself
+## 自行构建签名发布版本
 
-You only need this if you publish your own build. A release build must be signed.
+只有在你发布自己的构建版本时才需要这样做。发布构建必须经过签名。
 
 > [!WARNING]
-> Keep your keystore and its passwords safe, and never commit them.
+> 请妥善保管你的密钥库（keystore）及其密码，切勿提交到代码库中。
 
-1. Create a keystore in Android Studio with **Build** > **Generate Signed App Bundle or APK**, or use an existing one. Remember the passwords and the key alias.
-2. Name it `release_keystore.keystore` and put it in each app module you build: `app/`, `wear/`, or `automotive/`. Or set `KEYSTORE_PATH` to its location.
-3. Set the signing variables:
+1. 在 Android Studio 中通过 **Build** > **Generate Signed App Bundle or APK** 创建密钥库，或使用现有的密钥库。记住密码和密钥别名。
+2. 将其命名为 `release_keystore.keystore`，并放到你构建的每个应用模块中：`app/`、`wear/` 或 `automotive/`。或者将 `KEYSTORE_PATH` 设置为它的位置。
+3. 设置签名变量：
    - `KEYSTORE_PASSWORD`
    - `KEYSTORE_ALIAS`
    - `KEYSTORE_ALIAS_PASSWORD`
-   - `KEYSTORE_PATH`, if the keystore is somewhere else
+   - `KEYSTORE_PATH`（如果密钥库在其他位置）
 
-   The signing configuration that reads them lives in `build-logic/convention/src/main/kotlin/AndroidApplicationConventionPlugin.kt`.
-4. Build APKs or app bundles, for all apps or for one module:
+   读取这些变量的签名配置位于 `build-logic/convention/src/main/kotlin/AndroidApplicationConventionPlugin.kt`。
+4. 为所有应用或单个模块构建 APK 或应用包（app bundle）：
 
 ```bash
 # APKs
@@ -88,4 +88,4 @@ You only need this if you publish your own build. A release build must be signed
 ./gradlew :wear:bundleRelease
 ```
 
-You can also build from Android Studio, with **Build** > **Generate Signed App Bundle or APK**.
+你也可以在 Android Studio 中通过 **Build** > **Generate Signed App Bundle or APK** 进行构建。

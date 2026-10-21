@@ -1,23 +1,23 @@
 ---
-title: Web view
-description: Show the Home Assistant frontend inside an app without asking the user to log in a second time.
+title: Web 视图
+description: 在应用内显示 Home Assistant 前端，而无需用户再次登录。
 order: 6
 ---
 
-The user already logged in when they set up your app. They shouldn't have to log in again to see their dashboards. The frontend supports that: when it runs inside an app, it can ask the app for an access token instead of showing a login page.
+用户在设置您的应用时已经登录过了。他们不应该为了查看自己的仪表盘（dashboard）而再次登录。前端支持这一点：当前端运行在应用内时，它可以向应用请求访问令牌（access token），而不是显示登录页面。
 
-## External authentication
+## 外部认证
 
-The app injects a small JavaScript bridge into the web view. When the frontend needs a token, it calls the app through that bridge, and the app answers with an access token. When the user logs out in the frontend, it asks the app to revoke the token.
+应用会向 Web 视图中注入一个小型的 JavaScript 桥接。当前端需要令牌时，它会通过该桥接调用应用，应用则以访问令牌作为回应。当用户在前端中注销时，前端会请求应用撤销该令牌。
 
-The app refreshes the access token itself, with the refresh token it got at [login](/companion/mobile-app-api/setup/#log-the-user-in). The frontend never sees the refresh token.
+应用会使用在[登录](/companion/mobile-app-api/setup/#log-the-user-in)时获取的刷新令牌（refresh token）自行刷新访问令牌。前端永远不会看到刷新令牌。
 
-## The external bus
+## 外部总线
 
-The same bridge carries the external bus: messages in both directions between the frontend and the app. Through it, the frontend can open the native settings of the app, start a barcode scanner, start Assist, or hand an entity to the app's own **Add to** actions, and the app can tell the frontend what it supports.
+同一个桥接还承载着外部总线（external bus）：前端与应用之间的双向消息。通过它，前端可以打开应用的原生设置、启动条码扫描器、启动 Assist，或者将实体（entity）交给应用自身的 **Add to** 操作，而应用也可以告知前端它支持哪些功能。
 
-Both protocols are documented on the frontend side: [external authentication](/frontend/reference/external-auth/) and the [external bus](/frontend/reference/external-bus/). For how the Android app implements them, see [the frontend screen](/companion/android/frontend-screen/#talking-to-the-frontend).
+这两种协议都在前端一侧有文档说明：[外部认证](/frontend/reference/external-auth/)和[外部总线](/frontend/reference/external-bus/)。关于 Android 应用如何实现它们，请参阅[前端界面](/companion/android/frontend-screen/#talking-to-the-frontend)。
 
-## Needs a direct connection
+## 需要直接连接
 
-The web view loads the frontend from the instance itself: the internal URL, the external URL, or the remote URL of Home Assistant Link. The webhook's cloudhook URL is no use here.
+Web 视图从实例本身加载前端：使用内部 URL、外部 URL 或 Home Assistant Link 的远程 URL。Webhook 的 cloudhook URL 在这里没有用处。

@@ -1,54 +1,54 @@
 ---
 title: Raspberry Pi
-description: Raspberry Pi specifics for Home Assistant OS, like the serial console, I2C, and booting from USB.
+description: Home Assistant OS 在 Raspberry Pi 上的特定内容，例如串行控制台、I2C 以及从 USB 启动。
 sidebarGroup: Boards
 order: 2
 ---
 
-Home Assistant OS supports the Raspberry Pi 3, 4, and 5, all 64-bit. Home Assistant Yellow is built on the same board support, with a Compute Module 4 or 5.
+Home Assistant OS 支持 Raspberry Pi 3、4 和 5，均为 64 位。Home Assistant Yellow 基于相同的板卡支持构建，使用 Compute Module 4 或 5。
 
-| Board | Build target | Bootloader |
+| 板卡 | 构建目标 | 引导加载程序 |
 | --- | --- | --- |
-| Raspberry Pi 3 Model B and B+ | `rpi3_64` | U-Boot |
+| Raspberry Pi 3 Model B 和 B+ | `rpi3_64` | U-Boot |
 | Raspberry Pi 4 Model B | `rpi4_64` | U-Boot |
 | Raspberry Pi 5 | `rpi5_64` | Firmware tryboot |
 | Home Assistant Yellow | `yellow` | U-Boot |
 
-All of them use the [Raspberry Pi Linux kernel](https://github.com/raspberrypi/linux), not mainline. The board files are in `buildroot-external/board/raspberrypi/`.
+它们都使用 [Raspberry Pi Linux 内核](https://github.com/raspberrypi/linux)，而非主线内核。板卡文件位于 `buildroot-external/board/raspberrypi/`。
 
-## How they boot
+## 启动方式
 
-On Raspberry Pi 3 and 4, the Raspberry Pi firmware loads U-Boot (`kernel=u-boot.bin` in `config.txt`), and U-Boot picks the slot. Raspberry Pi 5 boots without U-Boot: the firmware loads the kernel of the active slot directly, and an update uses the firmware's tryboot mechanism to test the new slot. Always reboot a Raspberry Pi 5 with `systemctl reboot` after a manual update, see [the update system](/os/operating-system/update-system/#how-an-update-runs).
+在 Raspberry Pi 3 和 4 上，Raspberry Pi 固件会加载 U-Boot（`config.txt` 中的 `kernel=u-boot.bin`），然后由 U-Boot 选择启动槽位。Raspberry Pi 5 无需 U-Boot 即可启动：固件直接加载活动槽位的内核，更新时则使用固件的 tryboot 机制来测试新槽位。手动更新后，请务必使用 `systemctl reboot` 重启 Raspberry Pi 5，参见[更新系统](/os/operating-system/update-system/#how-an-update-runs)。
 
-`config.txt` and `cmdline.txt` are on the boot partition. Changes to them survive OS updates.
+`config.txt` 和 `cmdline.txt` 位于启动分区上。对它们的更改在操作系统更新后仍然保留。
 
-## Serial console
+## 串行控制台
 
-On Raspberry Pi 3 and 4, the serial console is not enabled by default. To enable it on the GPIO header (pin 6 is ground, pin 8 is TX, pin 10 is RX):
+在 Raspberry Pi 3 和 4 上，串行控制台默认未启用。要在 GPIO 排针上启用它（引脚 6 为地线，引脚 8 为 TX，引脚 10 为 RX）：
 
-1. Add `enable_uart=1` and `dtoverlay=disable-bt` to `config.txt`. The overlay moves Bluetooth off the main UART.
-2. Add `console=ttyAMA0,115200` to `cmdline.txt`.
+1. 在 `config.txt` 中添加 `enable_uart=1` 和 `dtoverlay=disable-bt`。该 overlay 会将蓝牙从主 UART 上移开。
+2. 在 `cmdline.txt` 中添加 `console=ttyAMA0,115200`。
 
-Home Assistant Yellow has its serial console enabled, on `ttyAMA2` at 115200 baud.
+Home Assistant Yellow 的串行控制台已启用，位于 `ttyAMA2`，波特率为 115200。
 
 ## I2C
 
-1. Add `dtparam=i2c_arm=on` to `config.txt`.
-2. Load the `i2c-dev` module at boot: a file with the line `i2c-dev` in the `modules/` folder of a [CONFIG USB drive](/os/operating-system/configuration/#the-config-usb-drive), or in `/etc/modules-load.d/` on the host.
+1. 在 `config.txt` 中添加 `dtparam=i2c_arm=on`。
+2. 在启动时加载 `i2c-dev` 模块：在 [CONFIG USB 闪存盘](/os/operating-system/configuration/#the-config-usb-drive)的 `modules/` 文件夹中放置一个包含 `i2c-dev` 一行的文件，或在主机的 `/etc/modules-load.d/` 中放置。
 
-## Boot from USB
+## 从 USB 启动
 
-Raspberry Pi 4 and 5 can boot from a USB drive, if their bootloader in EEPROM is recent enough. Home Assistant OS includes the EEPROM tools. `ha os boards raspberrypi firmware update` updates the bootloader from the CLI.
+Raspberry Pi 4 和 5 可以从 USB 驱动器启动，前提是它们 EEPROM 中的引导加载程序足够新。Home Assistant OS 包含 EEPROM 工具。`ha os boards raspberrypi firmware update` 可从 CLI 更新引导加载程序。
 
-Some things to know:
+需要了解的一些事项：
 
-- Remove every bootable SD card. The firmware tries the SD card first.
-- Booting is slower, because the firmware looks at the SD card before USB.
-- Not every USB to SATA adapter works. On Raspberry Pi 4, `cmdline.txt` already contains `usb-storage.quirks` for adapters known to need them. The Raspberry Pi 5 image has none. If yours misbehaves, find its USB ID and add a quirk for it.
-- Without an SD card, add `dtparam=sd_poll_once=on` to `config.txt`, to stop the kernel from polling the empty slot.
+- 移除所有可启动的 SD 卡。固件会首先尝试 SD 卡。
+- 启动速度较慢，因为固件在 USB 之前会先检查 SD 卡。
+- 并非所有 USB 转 SATA 适配器都能正常工作。在 Raspberry Pi 4 上，`cmdline.txt` 已包含针对已知需要它的适配器的 `usb-storage.quirks`。Raspberry Pi 5 镜像则没有。如果你的适配器表现异常，请找到它的 USB ID 并为其添加一个 quirk。
+- 在没有 SD 卡的情况下，在 `config.txt` 中添加 `dtparam=sd_poll_once=on`，以阻止内核轮询空槽位。
 
-Raspberry Pi 3 Model B can boot from USB after `program_usb_boot_mode=1` is set once in `config.txt`. That change is permanent: it is written to one-time programmable memory.
+Raspberry Pi 3 Model B 在 `config.txt` 中设置一次 `program_usb_boot_mode=1` 后即可从 USB 启动。该更改是永久性的：它会被写入一次性可编程存储器。
 
-## Bluetooth
+## 蓝牙
 
-Bluetooth is on by default. If you don't need it, `dtoverlay=disable-bt` in `config.txt` turns it off.
+蓝牙默认开启。如果不需要，可在 `config.txt` 中使用 `dtoverlay=disable-bt` 将其关闭。

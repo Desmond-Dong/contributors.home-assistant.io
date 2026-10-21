@@ -1,39 +1,39 @@
 ---
-title: Coding guidelines
-description: How frontend code is written, from TypeScript and Lit to events, dialogs, styling, and text. What reviewers look for in every pull request.
+title: 编码规范
+description: 前端代码的编写方式，从 TypeScript 和 Lit 到事件、对话框、样式和文本。审阅者在每个 pull request 中关注的内容。
 order: 4
 ---
 
-These are the conventions of the [frontend repository](https://github.com/home-assistant/frontend). Linters enforce some of them. The rest is what reviewers ask for, so following them saves you a round of review.
+这些是[前端仓库](https://github.com/home-assistant/frontend)的约定。其中一部分由 linter 强制执行，其余则是审阅者会要求的内容，因此遵循这些约定可以为你省去一轮审阅。
 
 ## TypeScript
 
-- TypeScript runs in strict mode. Avoid `any`: use the existing Home Assistant types, or write a narrow one.
-- Use `import type` for imports that are only types. ESLint enforces it.
-- Shape types after the source that owns the data, like the WebSocket command in Core, not after how one component happens to use it.
-- Put a shared type in the data module that owns it, under `src/data/`, and import it from there.
-- Don't use `console` in production code. Show the user an error, or use the existing logging.
+- TypeScript 以严格模式运行。避免使用 `any`：使用现有的 Home Assistant 类型，或者编写一个窄化的类型。
+- 对于仅包含类型的导入，使用 `import type`。ESLint 会强制执行这一点。
+- 类型应根据拥有数据的源头来定义，例如 Core 中的 WebSocket 命令，而不是根据某个组件碰巧的使用方式。
+- 将共享类型放在拥有它的数据模块中，位于 `src/data/` 下，并从那里导入。
+- 不要在生产代码中使用 `console`。向用户显示错误，或使用现有的日志记录。
 
-## Lit components
+## Lit 组件
 
-- Elements are named with a prefix: `ha-` for shared Home Assistant components, `hui-` for dashboard ("Lovelace") components, and `dialog-` for dialogs.
-- Use `@property()` for the public API of a component and `@state()` for its internal state.
-- The project uses Lit's TypeScript decorators with `useDefineForClassFields: false`. Match the existing declarations. Don't use the `accessor` keyword.
-- Use `@query()` for elements in your own template, instead of querying the DOM by hand.
-- Compute cheap values in `render()`. Use `willUpdate()` for values that other lifecycle steps need, and `memoizeOne` only when it saves real work.
-- In lifecycle methods, type the changed properties as `PropertyValues<this>`, or plain `PropertyValues` when you read private properties.
+- 元素使用前缀命名：`ha-` 用于共享的 Home Assistant 组件，`hui-` 用于仪表盘（"Lovelace"）组件，`dialog-` 用于对话框。
+- 使用 `@property()` 定义组件的公共 API，使用 `@state()` 定义其内部状态。
+- 项目使用 Lit 的 TypeScript 装饰器，并设置 `useDefineForClassFields: false`。请与现有的声明保持一致。不要使用 `accessor` 关键字。
+- 对于自己模板中的元素，使用 `@query()`，而不是手动查询 DOM。
+- 在 `render()` 中计算开销较小的值。对于其他生命周期步骤需要的值，使用 `willUpdate()`，只有当 `memoizeOne` 能真正节省工作时才使用它。
+- 在生命周期方法中，将变更的属性类型标注为 `PropertyValues<this>`，或者在读取私有属性时使用普通的 `PropertyValues`。
 
-## Data access
+## 数据访问
 
-Leaf components consume the narrowest [Lit context](/frontend/architecture/hass-and-contexts/) that covers what they read, instead of taking the whole `hass` object. A component that reads `hass` rerenders on every state change in the home, even when nothing it shows changed. Containers that own `hass` and pass it on may keep it.
+叶子组件应使用能覆盖其所需数据的最窄的 [Lit context](/frontend/architecture/hass-and-contexts/)，而不是获取整个 `hass` 对象。读取 `hass` 的组件会在家中的每次状态（state）变化时重新渲染，即使它显示的内容没有任何变化。拥有 `hass` 并将其传递下去的容器可以保留它。
 
-Import `consume` from `src/common/decorators/consume`, not from `@lit/context`. ESLint enforces that too.
+从 `src/common/decorators/consume` 导入 `consume`，而不是从 `@lit/context`。ESLint 同样会强制执行这一点。
 
-## Events
+## 事件
 
-- Fire events with `fireEvent()` from `src/common/dom/fire_event.ts`. Events bubble and cross shadow roots by default.
-- Declare every custom event and its detail type by extending the `HASSDomEvents` interface, so `fireEvent()` checks the payload.
-- Type event handlers with the helpers from the same file: `HASSDomEvent<T>` for the `detail`, `HASSDomCurrentTargetEvent<T>` to read the element the listener is on, `HASSDomTargetEvent<T>` for the element that fired it. Use `ValueChangedEvent<T>` from `src/types.ts` for `value-changed`.
+- 使用 `src/common/dom/fire_event.ts` 中的 `fireEvent()` 触发事件。事件默认会冒泡并跨越 shadow root。
+- 通过扩展 `HASSDomEvents` 接口来声明每个自定义事件及其 detail 类型，这样 `fireEvent()` 就能检查载荷。
+- 使用同一文件中的辅助类型为事件处理器标注类型：`HASSDomEvent<T>` 用于 `detail`，`HASSDomCurrentTargetEvent<T>` 用于读取监听器所在的元素，`HASSDomTargetEvent<T>` 用于触发事件的元素。对于 `value-changed`，使用 `src/types.ts` 中的 `ValueChangedEvent<T>`。
 
 ```ts
 fireEvent(this, "item-selected", { id: item.id });
@@ -45,44 +45,44 @@ declare global {
 }
 ```
 
-## Components to use
+## 应使用的组件
 
-Build with the shared components in `src/components/` before you write your own. Many of them, like `ha-button`, `ha-dialog`, `ha-switch`, and `ha-tooltip`, wrap [Web Awesome](https://webawesome.com/) components. Don't add new `mwc-*` Material components: those are being replaced.
+在编写自己的组件之前，先使用 `src/components/` 中的共享组件。其中许多组件，例如 `ha-button`、`ha-dialog`、`ha-switch` 和 `ha-tooltip`，都是对 [Web Awesome](https://webawesome.com/) 组件的封装。不要添加新的 `mwc-*` Material 组件：它们正在被替换。
 
-- **Dialogs**: use `ha-dialog` with the `DialogMixin` from `src/dialogs/dialog-mixin.ts`. Open a dialog by firing `show-dialog` with the tag, an import function, and the parameters. Put actions in `ha-dialog-footer`, in the `primaryAction` and `secondaryAction` slots.
-- **Buttons**: `ha-button` has a `variant` (`brand`, `neutral`, `danger`, `warning`, `success`), an `appearance` (`accent`, `filled`, `outlined`, `plain`), and a `size`. Use `appearance="plain"` for cancel, and `variant="danger"` for destructive actions.
-- **Forms**: `ha-form` renders a form from a schema of [selectors](/glossary/selector/). Use `computeLabel`, `computeHelper`, and `computeError` to give it translated text.
-- **Messages**: `ha-alert` with `alert-type` `error`, `warning`, `info`, or `success`.
-- **Keyboard shortcuts**: `ShortcutManager` from `src/common/keyboard/shortcuts.ts`.
+- **对话框**：使用 `ha-dialog` 以及 `src/dialogs/dialog-mixin.ts` 中的 `DialogMixin`。通过触发 `show-dialog` 事件并传入标签、导入函数和参数来打开对话框。将操作按钮放在 `ha-dialog-footer` 的 `primaryAction` 和 `secondaryAction` 插槽中。
+- **按钮**：`ha-button` 有 `variant`（`brand`、`neutral`、`danger`、`warning`、`success`）、`appearance`（`accent`、`filled`、`outlined`、`plain`）和 `size`。取消操作使用 `appearance="plain"`，破坏性操作使用 `variant="danger"`。
+- **表单**：`ha-form` 根据[选择器（selector）](/glossary/selector/)的模式渲染表单。使用 `computeLabel`、`computeHelper` 和 `computeError` 为其提供翻译后的文本。
+- **消息**：使用 `ha-alert`，`alert-type` 可选 `error`、`warning`、`info` 或 `success`。
+- **键盘快捷键**：`src/common/keyboard/shortcuts.ts` 中的 `ShortcutManager`。
 
-Each component has a page in the [Design area](/design/components/) that explains when to use it and how.
+每个组件在[设计区域](/design/components/)中都有一个页面，说明何时使用它以及如何使用。
 
-## Styling
+## 样式
 
-- Use the theme variables and [design tokens](/frontend/architecture/theming/), never hardcoded colors. Use the `--ha-space-*` tokens for spacing.
-- Scope styles to the component. Don't rely on global styles for the inside of a component.
-- Design for mobile first, then add what wider screens need.
-- Keep layouts right-to-left safe. Prefer logical properties, like `margin-inline-start` over `margin-left`.
-- Make touch targets big enough, and give every control clear hover, focus, active, and disabled states.
-- Keep motion subtle, and use the `--ha-animation-duration-*` tokens. They respect the reduced motion setting.
+- 使用主题变量和[设计令牌（design token）](/frontend/architecture/theming/)，绝不硬编码颜色。间距使用 `--ha-space-*` 令牌。
+- 将样式限定在组件范围内。不要依赖全局样式来处理组件内部。
+- 优先为移动端设计，然后再添加宽屏所需的内容。
+- 保持布局对从右到左（RTL）语言安全。优先使用逻辑属性，例如用 `margin-inline-start` 代替 `margin-left`。
+- 确保触摸目标足够大，并为每个控件提供清晰的悬停、聚焦、激活和禁用状态。
+- 保持动效克制，并使用 `--ha-animation-duration-*` 令牌。它们会遵循减少动效的设置。
 
-## User-facing text
+## 面向用户的文本
 
-- Every string people see goes through the translation system. Add it to `src/translations/en.json`, and use `localize` in the code. [Translations in the frontend](/frontend/architecture/translations/) shows how.
-- Use whole sentences with placeholders. Never glue translated fragments together.
-- Write in American English, in sentence case, in the active voice. Write "Home Assistant" in full.
-- Use "Remove" for something that can be added back, and "Delete" for something that is gone for good. Use "Add" for something that exists, and "Create" for something new.
+- 用户看到的每个字符串都要经过翻译系统。将其添加到 `src/translations/en.json` 中，并在代码中使用 `localize`。[前端的翻译](/frontend/architecture/translations/)介绍了具体方法。
+- 使用带占位符的完整句子。绝不要将翻译后的片段拼接在一起。
+- 使用美式英语、句首大写和主动语态。完整写出 "Home Assistant"。
+- 对于可以重新添加的内容使用 "Remove"，对于永久删除的内容使用 "Delete"。对于已存在的内容使用 "Add"，对于新创建的内容使用 "Create"。
 
-The [UI text](/design/ui-text/) section of the Design area has the complete guidance.
+设计区域的 [UI 文本](/design/ui-text/)部分提供了完整的指南。
 
-## States and cleanup
+## 状态与清理
 
-- Handle loading, error, unavailable, and missing entities. Check that an entity exists before you read from it.
-- Remove event listeners, timers, observers, and subscriptions when the component disconnects.
-- Make every control usable with a keyboard and a screen reader.
+- 处理加载、错误、不可用和缺失实体（entity）的情况。在读取实体之前，先检查该实体是否存在。
+- 在组件断开连接时，移除事件监听器、定时器、观察者和订阅。
+- 确保每个控件都可以通过键盘和屏幕阅读器使用。
 
-## Commits and dependencies
+## 提交与依赖
 
-A pre-commit hook runs ESLint, Prettier, and the Lit analyzer on the files you commit, and fixes what it can. Only edit English text, in `src/translations/en.json`. The other languages are translated in [Lokalise](/glossary/lokalise/) and downloaded at build time, and the hook refuses commits that change those downloaded files.
+pre-commit 钩子会对你提交的文件运行 ESLint、Prettier 和 Lit 分析器，并尽可能自动修复。只编辑英文文本，即 `src/translations/en.json`。其他语言在 [Lokalise](/glossary/lokalise/) 中翻译，并在构建时下载，该钩子会拒绝修改这些已下载文件的提交。
 
-Keep dependency updates in their own pull request.
+将依赖更新放在单独的 pull request 中。

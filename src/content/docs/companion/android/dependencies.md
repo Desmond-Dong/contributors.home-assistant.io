@@ -1,18 +1,18 @@
 ---
-title: Android dependencies
-description: The version catalog, dependency lockfiles, and Renovate in the Android app.
-sidebarLabel: Dependencies
-sidebarGroup: Write code
+title: Android 依赖
+description: Android 应用中的版本目录、依赖锁定文件和 Renovate。
+sidebarLabel: 依赖
+sidebarGroup: 编写代码
 order: 4
 source: https://github.com/home-assistant/android/blob/main/.github/workflows/renovate-lockfiles.yml
 lastVerified: 2026-10-14
 ---
 
-The Android app keeps tight control over its dependencies. Every library is declared in one place, every resolved version is locked, and a bot keeps them up to date.
+Android 应用对其依赖进行严格管控。每个库都在一处声明，每个解析出的版本都被锁定，并且有一个机器人负责保持它们更新。
 
-## The version catalog
+## 版本目录
 
-All dependencies are declared in the [version catalog](https://docs.gradle.org/current/userguide/version_catalogs.html), `gradle/libs.versions.toml`. This is the only way to add a dependency: a dependency declared outside the catalog won't be accepted. With one place for all versions, every module uses the same version of a shared library, and an update happens once for the whole project. A module refers to it through the `libs` accessor:
+所有依赖都声明在[版本目录](https://docs.gradle.org/current/userguide/version_catalogs.html) `gradle/libs.versions.toml` 中。这是添加依赖的唯一方式：在目录之外声明的依赖不会被接受。所有版本集中在一处，每个模块都使用相同版本的共享库，一次更新即可作用于整个项目。模块通过 `libs` 访问器引用它：
 
 ```kotlin
 dependencies {
@@ -20,24 +20,24 @@ dependencies {
 }
 ```
 
-## Lockfiles
+## 锁定文件
 
-The project uses Gradle [dependency locking](https://docs.gradle.org/current/userguide/dependency_locking.html). Each module has a `gradle.lockfile` with the exact version of every direct and transitive dependency, so builds are the same on every machine, and a transitive dependency can't change under you without anyone noticing.
+项目使用 Gradle [依赖锁定](https://docs.gradle.org/current/userguide/dependency_locking.html)。每个模块都有一个 `gradle.lockfile`，其中包含每个直接依赖和传递依赖的确切版本，因此在每台机器上构建结果都相同，传递依赖也不会在无人察觉的情况下悄悄变化。
 
-After you add or change anything in the catalog, update the lockfiles and commit them:
+在目录中添加或更改任何内容后，请更新锁定文件并提交：
 
 ```bash
 ./gradlew alldependencies --write-locks
 ```
 
-CI fails when the catalog changed but the lockfiles didn't.
+当目录发生了变化但锁定文件没有更新时，CI 会失败。
 
 ## Renovate
 
-[Renovate](https://docs.renovatebot.com/) opens pull requests to update dependencies, configured in `renovate.json5`. It waits three days after a release before it proposes it, so early problems get found by others first. Related libraries, like the AndroidX or Kotlin ones, are grouped in one pull request.
+[Renovate](https://docs.renovatebot.com/) 会打开拉取请求来更新依赖，其配置位于 `renovate.json5`。它会在版本发布三天后才提议更新，以便让其他用户先发现早期的问题。相关的库（例如 AndroidX 或 Kotlin 的库）会被归组到同一个拉取请求中。
 
-Renovate itself doesn't touch the lockfiles. The `Auto-update Renovate lockfiles` workflow (`.github/workflows/renovate-lockfiles.yml`) runs on every Renovate branch, updates the lockfiles, and pushes them to the same branch.
+Renovate 本身不会修改锁定文件。`Auto-update Renovate lockfiles` 工作流（`.github/workflows/renovate-lockfiles.yml`）会在每个 Renovate 分支上运行，更新锁定文件，并将其推送到同一分支。
 
-## Stable versions only
+## 仅使用稳定版本
 
-The project avoids alpha, beta, and release candidate versions of libraries. Exceptions are agreed on in a pull request, when a feature is only available in a pre-release. They come with a cost: the API can change with every update, and someone has to deal with that.
+项目避免使用库的 alpha、beta 和候选发布版本。当某个功能仅在预发布版本中可用时，可以在拉取请求中协商例外情况。这会带来代价：API 可能随每次更新而变化，必须有人来处理这些问题。

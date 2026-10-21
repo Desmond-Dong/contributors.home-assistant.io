@@ -1,39 +1,39 @@
 ---
-title: The update system
-description: How Home Assistant OS updates itself with RAUC and two boot slots, how bundles are signed, and how to install your own build.
+title: 更新系统
+description: Home Assistant OS 如何通过 RAUC 和双启动槽位进行自我更新、更新包如何签名，以及如何安装自己构建的版本。
 sidebarGroup: Reference
 order: 2
 ---
 
-Home Assistant OS updates with [RAUC](https://rauc.io/), an image based update system for embedded Linux. An update does not change files on a running system. It writes a complete new kernel and root file system to the slot that is not running, and boots into it. If that does not work, the device goes back to the slot it came from.
+Home Assistant OS 使用 [RAUC](https://rauc.io/) 进行更新，这是一种面向嵌入式 Linux 的基于镜像的更新系统。更新不会改变正在运行的系统上的文件。它将一个完整的新内核和根文件系统写入当前未运行的槽位（slot），然后启动进入该槽位。如果启动失败，设备会回到原来的槽位。
 
-The [RAUC documentation](https://rauc.readthedocs.io/) explains RAUC itself. This page covers how Home Assistant OS uses it.
+[RAUC 文档](https://rauc.readthedocs.io/)介绍 RAUC 本身。本页介绍 Home Assistant OS 如何使用它。
 
-## Update bundles
+## 更新包
 
-Every build produces a disk image for new installations, and a RAUC update bundle, a `.raucb` file, for existing ones. Both are made from the same partition images. A bundle contains:
+每次构建都会为新安装生成一个磁盘镜像，并为现有安装生成一个 RAUC 更新包（update bundle），即一个 `.raucb` 文件。两者都由相同的分区镜像制成。一个更新包包含：
 
-- The boot partition content
-- The kernel image
-- The root file system
-- The secondary program loader (SPL), on boards that have one
+- 启动分区内容
+- 内核镜像
+- 根文件系统
+- 二级程序加载器（SPL），适用于带有该组件的板卡
 
-The manifest template, `buildroot-external/ota/manifest.raucm.gtpl`, defines the content. It is the same for every board. The bundle's `compatible` value is `haos-<board id>`, like `haos-rpi4-64`, so a bundle only installs on the board it was built for.
+清单模板 `buildroot-external/ota/manifest.raucm.gtpl` 定义了更新包的内容。它对所有板卡都相同。更新包的 `compatible` 值为 `haos-<board id>`，例如 `haos-rpi4-64`，因此一个更新包只能安装在它所针对的板卡上。
 
-The boot partition is not part of the A/B scheme: an update writes it in place. The update hook, `buildroot-external/ota/rauc-hook`, keeps the `.txt` files on it, like `cmdline.txt` and `config.txt`, so user changes to those survive updates.
+启动分区不属于 A/B 方案：更新会就地写入该分区。更新钩子 `buildroot-external/ota/rauc-hook` 会保留其上的 `.txt` 文件，例如 `cmdline.txt` 和 `config.txt`，因此用户对这些文件的修改在更新后仍然保留。
 
-## How an update runs
+## 更新的运行方式
 
-RAUC runs as a system service and offers a D-Bus API. In normal use, the Supervisor drives it:
+RAUC 作为系统服务运行，并提供 D-Bus API。在正常使用中，由 Supervisor 驱动它：
 
-1. The Supervisor downloads the bundle of the new version.
-2. It asks RAUC over D-Bus to install it. For RAUC, this is a local installation from a file.
-3. RAUC writes the inactive slot, and tells the bootloader to try that slot next.
-4. The update is now installed, but not active. The Supervisor reports it as `version_pending` and raises a repair issue that a reboot is needed. It does not reboot by itself.
-5. The user, or whatever started the update, reboots the system, and it boots into the new slot.
-6. Once the Supervisor has started, it marks the booted slot as good.
+1. Supervisor 下载新版本的更新包。
+2. 它通过 D-Bus 请求 RAUC 安装该更新包。对 RAUC 而言，这是从文件进行的本地安装。
+3. RAUC 写入非活动槽位，并告知引导加载程序下次尝试该槽位。
+4. 此时更新已安装，但尚未激活。Supervisor 将其报告为 `version_pending`，并产生一个需要重启的修复问题。它不会自行重启。
+5. 用户或发起更新的程序重启系统，系统启动进入新槽位。
+6. Supervisor 启动后，会将已启动的槽位标记为良好（good）。
 
-You can do the same by hand on the host shell. To install a bundle, see [debug the host](/os/operating-system/debugging/) for a shell:
+你也可以在主机 shell 中手动执行相同的操作。要安装更新包，请参阅[调试主机](/os/operating-system/debugging/)获取 shell：
 
 ```shell
 cd /mnt/data
@@ -44,13 +44,13 @@ systemctl reboot
 ```
 
 > [!NOTE]
-> On Raspberry Pi 5, always reboot with `systemctl reboot`. It boots the new slot with the firmware's tryboot mechanism, which needs the reboot parameter that `systemctl reboot` passes. A plain `reboot` starts the old slot again.
+> 在 Raspberry Pi 5 上，请始终使用 `systemctl reboot` 重启。它通过固件的 tryboot 机制启动新槽位，该机制需要 `systemctl reboot` 传递的重启参数。直接使用 `reboot` 会再次启动旧槽位。
 
-## Boot slots
+## 启动槽位
 
-There are two slots, A and B. A new installation only has slot A filled. The first update goes to B, the next one to A again, and so on.
+有两个槽位：A 和 B。新安装只有槽位 A 被填充。第一次更新写入 B，下一次更新又写入 A，依此类推。
 
-`ha os info` shows the slot that is running. On the host shell, `rauc status` shows the full picture:
+`ha os info` 显示当前正在运行的槽位。在主机 shell 中，`rauc status` 显示完整情况：
 
 ```text
 === System Info ===
@@ -69,34 +69,34 @@ o [kernel.1] (/dev/disk/by-partlabel/hassos-kernel1, raw, inactive)
     [rootfs.1] (/dev/disk/by-partlabel/hassos-system1, raw, inactive)
 ```
 
-After an update, the bootloader tries the new slot a limited number of times, three on GRUB. If it never gets marked as good, the bootloader falls back to the other slot. How this works depends on the bootloader:
+更新后，引导加载程序会尝试新槽位有限的次数，在 GRUB 上为三次。如果该槽位从未被标记为良好，引导加载程序会回退到另一个槽位。其工作方式取决于引导加载程序：
 
-- **GRUB** keeps the slot order and attempts in its environment file, `EFI/BOOT/grubenv` on the boot partition. Its boot menu also lets you pick a slot by hand.
-- **U-Boot** keeps them in its environment, on the `hassos-bootstate` partition.
-- **Raspberry Pi 5** uses the firmware's tryboot mechanism, through a custom RAUC backend.
+- **GRUB** 将槽位顺序保存在其环境文件（启动分区上的 `EFI/BOOT/grubenv`）中并进行尝试。其启动菜单还允许你手动选择槽位。
+- **U-Boot** 将它们保存在 `hassos-bootstate` 分区上的环境中。
+- **Raspberry Pi 5** 通过自定义的 RAUC 后端使用固件的 tryboot 机制。
 
-To switch slots yourself, use `ha os boot-slot A` or `ha os boot-slot B`. The chosen slot stays the default until you change it again, or an update does.
+要自行切换槽位，请使用 `ha os boot-slot A` 或 `ha os boot-slot B`。所选槽位将保持为默认槽位，直到你再次更改它，或某次更新更改了它。
 
-## Security
+## 安全性
 
-Update bundles are signed, and RAUC checks the signature against the keyring in `/etc/rauc/keyring.pem` before it installs anything. Home Assistant OS has its own public key infrastructure, with a development and a release certificate authority. All public builds are signed by the release chain.
+更新包是经过签名的，RAUC 在安装任何内容之前会根据 `/etc/rauc/keyring.pem` 中的密钥环检查签名。Home Assistant OS 拥有自己的公钥基础设施，包括一个开发证书颁发机构和一个发布证书颁发机构。所有公开构建都由发布链签名。
 
-Which certificates an image trusts depends on its [deployment type](/os/operating-system/releases/#deployment-types):
+镜像信任哪些证书取决于其[部署类型](/os/operating-system/releases/#deployment-types)：
 
-- **Production and staging** images trust the release certificate authority.
-- **Development** images trust the development and the release certificate authorities.
+- **Production 和 staging** 镜像信任发布证书颁发机构。
+- **Development** 镜像信任开发证书颁发机构和发布证书颁发机构。
 
-On top of that, every image you build yourself trusts your own self-signed certificate, the `cert.pem` in the root of the repository. See [build an image](/os/operating-system/build/#signing). So an image you built accepts bundles from your later builds, and still accepts official releases.
+除此之外，你自己构建的每个镜像都信任你自己的自签名证书，即仓库根目录中的 `cert.pem`。参见[构建镜像](/os/operating-system/build/#signing)。因此，你构建的镜像会接受你后续构建的更新包，同时也接受官方发布版本。
 
-### Install a self-signed build
+### 安装自签名的构建版本
 
-An official installation does not trust your certificate. Installing your bundle there fails:
+官方安装不信任你的证书。在其中安装你的更新包会失败：
 
 ```text
 LastError: signature verification failed: Verify error:self signed certificate
 ```
 
-Home Assistant OS is not locked down, though. With root on the host, you can add your certificate to the keyring for the current boot. Copy `cert.pem` from the root of your repository to `/mnt/data` on the device first:
+不过，Home Assistant OS 并未锁定。拥有主机 root 权限后，你可以将证书添加到密钥环中，仅对当前启动有效。先将仓库根目录中的 `cert.pem` 复制到设备上的 `/mnt/data`：
 
 ```shell
 cp -r /etc/rauc/ /tmp/rauc
@@ -106,4 +106,4 @@ systemctl restart rauc
 rauc install /mnt/data/haos_rpi4-64-18.4.dev0.raucb
 ```
 
-The bind mount is gone after a reboot, but your build has your certificate in its own keyring. From then on, the device accepts your later builds, and official releases too, so you can always update back to a release.
+重启后绑定挂载会消失，但你的构建版本在其自身的密钥环中包含你的证书。从那时起，设备会接受你后续的构建版本，也接受官方发布版本，因此你始终可以更新回某个发布版本。

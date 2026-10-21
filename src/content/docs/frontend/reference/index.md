@@ -1,11 +1,11 @@
 ---
-title: Frontend reference
-description: Commands, the hass object, and the bridge between the frontend and the companion apps. The details you look up.
+title: 前端参考
+description: 命令、hass 对象，以及前端与配套应用之间的桥梁。您需要查阅的详细信息。
 order: 50
-sidebarLabel: Reference
+sidebarLabel: 参考
 ---
 
-- [Commands](/frontend/reference/commands/): every `pnpm` command of the frontend repository, with its port.
-- [The hass object](/frontend/reference/hass-object/): its properties, methods, and formatters.
-- [External authentication](/frontend/reference/external-auth/): how an app that embeds the frontend provides the access token.
-- [External bus](/frontend/reference/external-bus/): the messages between the frontend and the companion apps.
+- [命令](/frontend/reference/commands/)：前端仓库的每个 `pnpm` 命令及其端口。
+- [hass 对象](/frontend/reference/hass-object/)：其属性、方法和格式化工具。
+- [外部身份验证](/frontend/reference/external-auth/)：嵌入前端的应用如何提供访问令牌。
+- [外部总线](/frontend/reference/external-bus/)：前端与配套应用之间的消息。

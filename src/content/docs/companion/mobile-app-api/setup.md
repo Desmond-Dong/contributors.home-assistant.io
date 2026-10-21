@@ -1,47 +1,47 @@
 ---
-title: Connect and register
-description: Find a Home Assistant instance, log the user in with OAuth 2, and register the app with the mobile_app integration.
+title: 连接与注册
+description: 查找 Home Assistant 实例，使用 OAuth 2 登录用户，并通过 mobile_app 集成注册应用。
 order: 1
 ---
 
-Before an app can send anything, it needs to find the instance, log the user in, and register itself. You do this once per server.
+在应用能够发送任何内容之前，它需要找到实例、登录用户并完成自身注册。每个服务器只需执行一次。
 
-## Find the instance
+## 查找实例
 
-Home Assistant announces itself on the local network with zeroconf, as `_home-assistant._tcp.local.`. Browse for that service to offer the user a list of instances. If nothing is found, ask for the URL. See [instance discovery](/core/internals/instance-discovery/) for what the service announces.
+Home Assistant 通过 zeroconf 在本地网络上以 `_home-assistant._tcp.local.` 的形式对外宣告自己。浏览该服务即可为用户提供一个实例列表。如果没有找到任何实例，则请用户输入 URL。有关该服务宣告的内容，请参阅[实例发现](/core/internals/instance-discovery/)。
 
-## Log the user in
+## 登录用户
 
-Home Assistant uses OAuth 2 with the [IndieAuth](https://indieauth.spec.indieweb.org/) extension for clients. There is no client registration: the client ID is the URL of your app's website, and the redirect URI must have the same scheme, host, and port.
+Home Assistant 使用带有 [IndieAuth](https://indieauth.spec.indieweb.org/) 扩展的 OAuth 2 来进行客户端认证。无需客户端注册：客户端 ID 就是你的应用网站的 URL，并且重定向 URI 必须具有相同的 scheme、主机和端口。
 
-A native app needs a redirect URI like `myapp://auth-callback`, which is on a different host. To allow it, add a link tag to the page at your client ID. Home Assistant reads the first 10 kB of that page:
+原生应用需要一个类似 `myapp://auth-callback` 的重定向 URI，它位于不同的主机上。为了允许这种情况，请在客户端 ID 对应的页面中添加一个 link 标签。Home Assistant 会读取该页面的前 10 kB 内容：
 
 ```html
 <link rel="redirect_uri" href="myapp://auth-callback">
 ```
 
-Instead of a link tag, that page can also be an OAuth client ID metadata document: a JSON object with your `client_id` and a `redirect_uris` list.
+除了 link 标签之外，该页面也可以是一个 OAuth 客户端 ID 元数据文档：一个包含你的 `client_id` 和 `redirect_uris` 列表的 JSON 对象。
 
-The flow:
+流程如下：
 
-1. Open `/auth/authorize` in a browser, with `client_id`, `redirect_uri`, and optionally `state` as query parameters.
-2. The user logs in. Home Assistant redirects to your redirect URI with a `code`.
-3. Exchange the code for tokens with a POST to `/auth/token`, form encoded, with `grant_type=authorization_code`, the `code`, and the same `client_id`.
+1. 在浏览器中打开 `/auth/authorize`，并以 `client_id`、`redirect_uri` 以及可选的 `state` 作为查询参数。
+2. 用户登录后，Home Assistant 会携带一个 `code` 重定向到你的重定向 URI。
+3. 通过向 `/auth/token` 发送 POST 请求（表单编码，包含 `grant_type=authorization_code`、该 `code` 以及相同的 `client_id`）来用授权码换取令牌。
 
-You get an access token, valid for 30 minutes, and a refresh token to get new access tokens. See [authentication](/core/internals/auth-api/) for how tokens work.
+你将获得一个有效期为 30 分钟的访问令牌，以及一个用于获取新访问令牌的刷新令牌。有关令牌的工作原理，请参阅[身份验证](/core/internals/auth-api/)。
 
 > [!NOTE]
-> The official apps use fixed client IDs, `https://home-assistant.io/iOS` and `https://home-assistant.io/android`, with the `homeassistant://auth-callback` redirect, and two Wear OS callbacks for Android. Core allows those without fetching the website, so login also works without internet access. Use your own client ID for your own app.
+> 官方应用使用固定的客户端 ID，即 `https://home-assistant.io/iOS` 和 `https://home-assistant.io/android`，并使用 `homeassistant://auth-callback` 重定向，以及 Android 的两个 Wear OS 回调。Core 允许这些客户端无需抓取网站即可使用，因此即使没有互联网访问也能登录。对于你自己的应用，请使用你自己的客户端 ID。
 
-## Make sure mobile_app is loaded
+## 确保 mobile_app 已加载
 
-`mobile_app` is part of `default_config`, so it is loaded on most installations. If a user removed `default_config`, they need to add `mobile_app:` to their `configuration.yaml` and restart.
+`mobile_app` 是 `default_config` 的一部分，因此在大多数安装中都会被加载。如果用户移除了 `default_config`，则需要在他们的 `configuration.yaml` 中添加 `mobile_app:` 并重启。
 
-To check, call `GET /api/config` with the access token and look for `mobile_app` in `components`. If registration returns a 404, the integration is not loaded.
+要进行检查，请携带访问令牌调用 `GET /api/config`，并在 `components` 中查找 `mobile_app`。如果注册返回 404，则说明该集成未加载。
 
-## Register the app
+## 注册应用
 
-Send an authenticated POST to `/api/mobile_app/registrations`:
+向 `/api/mobile_app/registrations` 发送经过身份验证的 POST 请求：
 
 ```json
 {
@@ -61,23 +61,23 @@ Send an authenticated POST to `/api/mobile_app/registrations`:
 }
 ```
 
-| Key | Required | Type | Description |
+| 键 | 是否必需 | 类型 | 描述 |
 | --- | --- | --- | --- |
-| `app_id` | Yes | string | A unique identifier for your app |
-| `app_name` | Yes | string | The name of your app |
-| `app_version` | Yes | string | The version of your app |
-| `device_name` | Yes | string | The name of the device. Used to name the device and its entities |
-| `manufacturer` | Yes | string | The manufacturer of the device |
-| `model` | Yes | string | The model of the device |
-| `os_name` | Yes | string | The name of the operating system |
-| `os_version` | No, but send it | string | The version of the operating system. The device in Home Assistant uses it as its software version. The registration call accepts a request without it, but setting up the registration then fails, and its webhook doesn't work |
-| `device_id` | No, but send it | string | A stable, unique identifier for the device. Without it, Home Assistant generates a random one |
-| `supports_encryption` | No | boolean | Whether the app [encrypts](/companion/mobile-app-api/encryption/) its webhook traffic. Defaults to `false` |
-| `app_data` | No | object | App specific data. Used to enable [notifications](/companion/mobile-app-api/notifications/) |
+| `app_id` | 是 | string | 你的应用的唯一标识符 |
+| `app_name` | 是 | string | 你的应用的名称 |
+| `app_version` | 是 | string | 你的应用的版本 |
+| `device_name` | 是 | string | 设备的名称。用于命名该设备及其实体（entity） |
+| `manufacturer` | 是 | string | 设备的制造商 |
+| `model` | 是 | string | 设备的型号 |
+| `os_name` | 是 | string | 操作系统的名称 |
+| `os_version` | 否，但请发送 | string | 操作系统的版本。Home Assistant 中的设备会将其用作软件版本。注册调用接受不包含该字段的请求，但随后设置注册会失败，并且其 webhook 无法工作 |
+| `device_id` | 否，但请发送 | string | 设备的稳定且唯一的标识符。如果没有提供，Home Assistant 会生成一个随机的 |
+| `supports_encryption` | 否 | boolean | 应用是否[加密](/companion/mobile-app-api/encryption/)其 webhook 流量。默认为 `false` |
+| `app_data` | 否 | object | 应用特定的数据。用于启用[通知](/companion/mobile-app-api/notifications/) |
 
-Together, `app_id` and `device_id` identify the registration. Registering again with the same pair replaces the old registration: you get a new webhook ID and secret, and the old ones stop working. Without a `device_id`, every registration is a new one.
+`app_id` 和 `device_id` 共同标识一个注册。使用相同的一对值再次注册会替换旧的注册：你会获得新的 webhook ID 和密钥，而旧的将停止工作。如果没有提供 `device_id`，则每次注册都会创建一个新的注册。
 
-Home Assistant answers with `201 Created`. Store the response permanently, it is the only time you get it:
+Home Assistant 会以 `201 Created` 作为响应。请永久保存该响应，因为这是你唯一一次获得它的机会：
 
 ```json
 {
@@ -88,13 +88,13 @@ Home Assistant answers with `201 Created`. Store the response permanently, it is
 }
 ```
 
-| Key | Description |
+| 键 | 描述 |
 | --- | --- |
-| `webhook_id` | The ID of the webhook to [send data](/companion/mobile-app-api/sending-data/) to |
-| `secret` | The key for encryption. Only set when you sent `supports_encryption` |
-| `cloudhook_url` | A webhook URL through Home Assistant Link. Only set when the instance has an active subscription and is connected to the cloud, and the user is not local only |
-| `remote_ui_url` | The remote URL of the instance through Home Assistant Link. Same conditions, except the cloud connection |
+| `webhook_id` | 用于[发送数据](/companion/mobile-app-api/sending-data/)的 webhook 的 ID |
+| `secret` | 用于加密的密钥。仅在你发送了 `supports_encryption` 时才会设置 |
+| `cloudhook_url` | 通过 Home Assistant Link 的 webhook URL。仅当实例拥有有效订阅、已连接到云端，且用户不是仅本地访问时才会设置 |
+| `remote_ui_url` | 通过 Home Assistant Link 访问该实例的远程 URL。条件相同，但不要求云端连接 |
 
-Values that don't apply are `null`.
+不适用的值将为 `null`。
 
-After registration, Home Assistant has a new device for your app, with a device tracker for its location. That tracker is added to the person of the user who registered. Sensors appear as you [register them](/companion/mobile-app-api/sensors/).
+注册完成后，Home Assistant 会为你的应用创建一个新设备，并带有用于其位置的设备追踪器。该追踪器会被添加到执行注册的用户的对应人员（person）中。当你[注册传感器](/companion/mobile-app-api/sensors/)时，它们会随之出现。

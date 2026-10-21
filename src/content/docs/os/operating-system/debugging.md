@@ -1,69 +1,69 @@
 ---
-title: Debug the host
-description: Get a root shell on Home Assistant OS over SSH or a console, and find the logs you need.
-sidebarLabel: Debug the host
+title: 调试主机
+description: 通过 SSH 或控制台在 Home Assistant OS 上获取 root shell，并找到所需的日志。
+sidebarLabel: 调试主机
 sidebarGroup: Guides
 order: 5
 ---
 
-To debug the operating system, you need a shell on the host itself, not inside a container. This page shows the ways in, and where to look once you are there.
+要调试操作系统，你需要主机本身的 shell，而不是容器内的 shell。本页介绍进入的途径，以及进入后到哪里查找信息。
 
 > [!IMPORTANT]
-> This is for developers. Users who want a terminal should use the **Terminal & SSH** app instead. That app runs in a container with limited rights. What is on this page gives you full root access to the host, and nobody can support a system that was changed this way.
+> 这面向开发者。想要终端的用户应改用**Terminal & SSH**应用。该应用在权限受限的容器中运行。本页内容会给你对主机的完整 root 访问权限，没有人能为以这种方式修改过的系统提供支持。
 
-## SSH on port 22222
+## 端口 22222 上的 SSH
 
-Home Assistant OS has an SSH server for developers, [Dropbear](https://matt.ucc.asn.au/dropbear/dropbear.html), on port 22222. It is separate from any SSH app, and only runs when root has at least one authorized key. There is no password login.
+Home Assistant OS 在端口 22222 上为开发者提供了一个 SSH 服务器 [Dropbear](https://matt.ucc.asn.au/dropbear/dropbear.html)。它与任何 SSH 应用相互独立，只有当 root 至少有一把授权密钥时才会运行。不支持密码登录。
 
-### Add your key
+### 添加你的密钥
 
-1. If you don't have an SSH key yet, create one with `ssh-keygen -t ed25519`. GitHub's guide to [generating a new SSH key](https://docs.github.com/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) covers every operating system.
-2. Format a USB drive with the label `CONFIG`, see [the CONFIG USB drive](/os/operating-system/configuration/#the-config-usb-drive).
-3. Create a file named `authorized_keys` in the root of the drive, without an extension. Put your *public* key in it, the content of the file ending in `.pub`, one key per line. Use Unix line endings (LF), and plain ASCII.
-4. Plug the drive into the device, and run `ha os import`, or reboot with the drive plugged in.
+1. 如果你还没有 SSH 密钥，请使用 `ssh-keygen -t ed25519` 创建一个。GitHub 的[生成新 SSH 密钥](https://docs.github.com/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)指南涵盖了所有操作系统。
+2. 将一个 U 盘格式化，卷标设为 `CONFIG`，参见[CONFIG U 盘](/os/operating-system/configuration/#the-config-usb-drive)。
+3. 在该盘的根目录下创建一个名为 `authorized_keys` 的文件，不带扩展名。将你的*公钥*放入其中，即以 `.pub` 结尾的文件的内容，每行一把密钥。使用 Unix 换行符（LF）和纯 ASCII。
+4. 将 U 盘插入设备，然后运行 `ha os import`，或者保持 U 盘插入并重启设备。
 
-Since Supervisor 2026.09.0, the Supervisor API can manage these keys too, with the `/os/ssh/authorized_keys` endpoints. See the Supervisor API reference in the [Apps](/apps/) area.
+自 Supervisor 2026.09.0 起，Supervisor API 也可以通过 `/os/ssh/authorized_keys` 端点管理这些密钥。参见[应用（Apps）](/apps/)板块中的 Supervisor API 参考。
 
-### Connect
+### 连接
 
 ```shell
 ssh root@homeassistant.local -p 22222
 ```
 
-Changed the hostname, or no mDNS on your network? Use the IP address of the device instead.
+如果你改过主机名，或者你的网络不支持 mDNS，请改用设备的 IP 地址。
 
-### Turn it off again
+### 再次关闭
 
-Import a `CONFIG` drive *without* an `authorized_keys` file. The import removes all keys and stops the SSH server. Through the API, a `DELETE` on `/os/ssh/authorized_keys` removes all of root's authorized keys.
+导入一个*不含* `authorized_keys` 文件的 `CONFIG` 盘。导入操作会移除所有密钥并停止 SSH 服务器。也可以通过 API 对 `/os/ssh/authorized_keys` 执行 `DELETE`，移除 root 的所有授权密钥。
 
-## The local console
+## 本地控制台
 
-On a screen and keyboard, or a virtual machine console, the device shows the Home Assistant CLI, `ha >`. Type `login` to get a root shell on the host.
+在接有屏幕和键盘的设备上，或在虚拟机控制台中，设备会显示 Home Assistant CLI（`ha >`）。输入 `login` 即可在主机上获得 root shell。
 
-If the CLI does not come up within three minutes, or you press <kbd>Ctrl</kbd>+<kbd>C</kbd> while it waits, you get an emergency shell instead. That is the way in when the Supervisor does not start.
+如果 CLI 在三分钟内没有启动，或者你在等待期间按下 <kbd>Ctrl</kbd>+<kbd>C</kbd>，你会得到一个紧急 shell。当 Supervisor 无法启动时，这就是进入系统的途径。
 
-## Serial console
+## 串行控制台
 
-Many boards also have a serial console. It shows the boot messages, and gives you a login prompt: log in as `root`, without a password.
+许多开发板还提供串行控制台。它会显示启动信息，并给出登录提示：以 `root` 登录，无需密码。
 
-The consoles are set in `cmdline.txt` on the boot partition. The defaults per board:
+控制台在启动分区的 `cmdline.txt` 中设置。各开发板的默认值：
 
-| Board | Serial console |
+| 开发板 | 串行控制台 |
 | --- | --- |
-| Home Assistant Green | `ttyS2`, 1500000 baud |
-| Home Assistant Yellow | `ttyAMA2`, 115200 baud |
-| ODROID-C2, ODROID-C4, ODROID-N2, Khadas VIM3 | `ttyAML0`, 115200 baud |
-| Generic aarch64, virtual machines | `ttyS0` |
+| Home Assistant Green | `ttyS2`，1500000 波特率 |
+| Home Assistant Yellow | `ttyAMA2`，115200 波特率 |
+| ODROID-C2、ODROID-C4、ODROID-N2、Khadas VIM3 | `ttyAML0`，115200 波特率 |
+| 通用 aarch64、虚拟机 | `ttyS0` |
 
-The kernel writes its messages to every console in `cmdline.txt`, but the systemd startup messages only go to the one listed last. On every board with a screen, that is `console=tty0`, so they show on the screen. Home Assistant Yellow has no HDMI port, so it lists its serial console last. To see the startup messages on the serial console of another board, move its `console=` entry to the end of the line. On boards not in this table, add the serial console yourself, see the [board pages](/os/operating-system/boards/).
+内核会将其消息写入 `cmdline.txt` 中的每一个控制台，但 systemd 的启动消息只会输出到列在最后的那一个。在所有带屏幕的开发板上，最后一个是 `console=tty0`，因此这些消息会显示在屏幕上。Home Assistant Yellow 没有 HDMI 端口，所以它把串行控制台列在最后。要在其他开发板的串行控制台上查看启动消息，请把它的 `console=` 条目移到行尾。对于不在本表中的开发板，请自行添加串行控制台，参见[开发板页面](/os/operating-system/boards/)。
 
-## Rescue shell
+## 救援 shell
 
-On boards with GRUB (generic x86-64, generic aarch64, and virtual machines), the boot menu has a rescue shell entry for each slot. It boots the system into systemd's recovery target, with debug output. Useful when the system does not get far enough to start a console.
+在带有 GRUB 的开发板（通用 x86-64、通用 aarch64 和虚拟机）上，启动菜单中每个槽位都有一个救援 shell 条目。它会将系统启动到 systemd 的恢复目标，并输出调试信息。当系统无法启动到足以打开控制台的程度时，这很有用。
 
-## Logs
+## 日志
 
-The journal is stored on the data partition, so it survives reboots. On the host shell:
+日志（journal）存储在数据分区上，因此重启后仍然保留。在主机 shell 中：
 
 ```shell
 # The service that starts the Supervisor
@@ -79,15 +79,15 @@ docker logs -f homeassistant
 journalctl -e
 ```
 
-Without host access, the CLI shows most of this too: `ha supervisor logs`, `ha core logs`, and `ha host logs`. Add `--help` to see the options, like choosing a boot.
+在没有主机访问权限的情况下，CLI 也能显示其中大部分内容：`ha supervisor logs`、`ha core logs` 和 `ha host logs`。添加 `--help` 可查看选项，例如选择某次启动。
 
-## Look inside a container
+## 查看容器内部
 
-Every part of the system is a Docker container. To open a shell in one:
+系统的每个部分都是一个 Docker 容器。要在某个容器中打开 shell：
 
 ```shell
 docker ps
 docker exec -it homeassistant /bin/bash
 ```
 
-The [Supervisor overview](/os/supervisor/#what-the-supervisor-runs) lists the containers and their names.
+[Supervisor 概览](/os/supervisor/#what-the-supervisor-runs)列出了这些容器及其名称。

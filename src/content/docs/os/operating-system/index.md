@@ -1,6 +1,6 @@
 ---
 title: Home Assistant OS
-description: What Home Assistant OS is made of, how it boots, and how its repository is organized.
+description: Home Assistant OS 的组成、启动方式，以及其代码仓库的组织结构。
 order: 3
 sidebarGroups:
   - Guides
@@ -8,51 +8,51 @@ sidebarGroups:
   - Boards
 ---
 
-Home Assistant OS is a Linux system with one job: running Home Assistant. It is not based on a distribution like Debian or Ubuntu. It is built from source with [Buildroot](https://buildroot.org/), one image per board, with only what Home Assistant needs.
+Home Assistant OS 是一个只做一件事的 Linux 系统：运行 Home Assistant。它不基于 Debian 或 Ubuntu 之类的发行版，而是使用 [Buildroot](https://buildroot.org/) 从源码构建，每种板子一个镜像，只包含 Home Assistant 所需的内容。
 
-Buildroot is a build system, not a distribution. It cross-compiles a toolchain, the kernel, a bootloader, and every package, and puts them together into a disk image. That makes it a good fit for small Arm boards, where building on the device itself would take forever.
+Buildroot 是一个构建系统，而不是发行版。它交叉编译工具链、内核、引导加载程序以及每一个软件包，并将它们组装成一个磁盘镜像。这使它非常适合小型 Arm 板卡——在这类设备上直接构建会耗费极长时间。
 
-## What is in it
+## 系统组成
 
-- **Bootloader**: [GRUB](https://www.gnu.org/software/grub/) on UEFI systems (x86-64, generic Arm, and virtual machines), [U-Boot](https://docs.u-boot.org/) on most single board computers, and the firmware's own tryboot mechanism on Raspberry Pi 5.
-- **Kernel**: mainline Linux on most boards, and the Raspberry Pi fork of Linux on Raspberry Pi and Home Assistant Yellow. `Documentation/kernel.md` in the repository lists the current versions.
-- **Root file system**: [EROFS](https://docs.kernel.org/filesystems/erofs.html), compressed and read-only.
-- **Init and services**: systemd, with NetworkManager for networking, systemd-timesyncd for time, and BlueZ for Bluetooth.
-- **Containers**: the Docker engine, which runs the Supervisor and everything it manages.
-- **Updates**: [RAUC](https://rauc.io/), with two system slots. See [the update system](/os/operating-system/update-system/).
-- **Security**: the [AppArmor](https://apparmor.net/) kernel security module, with profiles for the Supervisor and apps.
-- **Memory**: ZRAM for `/var` and `/tmp`, and a swap file on the data partition.
-- **OS Agent**: a small program in the [os-agent](https://github.com/home-assistant/os-agent) repository. The Supervisor uses it over D-Bus for host tasks, like moving the data disk.
+- **引导加载程序**：UEFI 系统（x86-64、通用 Arm 和虚拟机）上使用 [GRUB](https://www.gnu.org/software/grub/)，大多数单板计算机上使用 [U-Boot](https://docs.u-boot.org/)，Raspberry Pi 5 上则使用固件自带的 tryboot 机制。
+- **内核**：大多数板卡使用主线 Linux，Raspberry Pi 和 Home Assistant Yellow 使用 Raspberry Pi 的 Linux 分支。仓库中的 `Documentation/kernel.md` 列出了当前版本。
+- **根文件系统**：[EROFS](https://docs.kernel.org/filesystems/erofs.html)，经过压缩且为只读。
+- **Init 与服务**：systemd，配合 NetworkManager 管理网络、systemd-timesyncd 同步时间、BlueZ 支持 Bluetooth。
+- **容器**：Docker 引擎，用于运行 Supervisor 及其管理的一切。
+- **更新**：[RAUC](https://rauc.io/)，采用双系统槽位。参见[更新系统](/os/operating-system/update-system/)。
+- **安全**：[AppArmor](https://apparmor.net/) 内核安全模块，为 Supervisor 和应用提供配置文件。
+- **内存**：为 `/var` 和 `/tmp` 使用 ZRAM，并在数据分区上提供交换文件。
+- **OS Agent**：[os-agent](https://github.com/home-assistant/os-agent) 仓库中的一个小程序。Supervisor 通过 D-Bus 使用它执行主机任务，例如移动数据磁盘。
 
-## How it boots
+## 启动流程
 
-1. The bootloader picks a slot, A or B, and boots its kernel and root file system.
-2. systemd mounts the overlay and data partitions, and binds the persistent folders into place. See [partitions](/os/operating-system/partitions/).
-3. `haos-config.service` imports a `CONFIG` USB drive, if one is plugged in. See [configure the host](/os/operating-system/configuration/).
-4. Docker starts, and `haos-supervisor.service` starts the Supervisor container, `hassio_supervisor`. If the image is missing or broken, the service downloads a fresh one first.
-5. The Supervisor marks the slot as good with RAUC, and starts its plugins, Home Assistant Core, and the apps.
+1. 引导加载程序选择一个槽位（A 或 B），并引导其内核和根文件系统。
+2. systemd 挂载 overlay 和数据分区，并将持久化文件夹绑定到位。参见[分区](/os/operating-system/partitions/)。
+3. `haos-config.service` 导入 `CONFIG` USB 驱动器（如果插入了的话）。参见[配置主机](/os/operating-system/configuration/)。
+4. Docker 启动，`haos-supervisor.service` 启动 Supervisor 容器 `hassio_supervisor`。如果镜像缺失或损坏，该服务会先下载一个新的镜像。
+5. Supervisor 使用 RAUC 将该槽位标记为良好，然后启动其插件、Home Assistant Core 以及各个应用。
 
-A fresh image contains the Supervisor and its plugins already, but not Home Assistant Core. It ships a small landing page instead. On first start, the Supervisor downloads the latest Core, so every new installation starts on a current version.
+全新镜像中已包含 Supervisor 及其插件，但不包含 Home Assistant Core。它改为提供一个简单的落地页。首次启动时，Supervisor 会下载最新的 Core，因此每个新安装都从当前版本开始。
 
-## The repository
+## 代码仓库
 
-[home-assistant/operating-system](https://github.com/home-assistant/operating-system) uses Buildroot's [br2-external mechanism](https://buildroot.org/downloads/manual/manual.html#outside-br-custom): everything specific to Home Assistant OS lives outside Buildroot, in `buildroot-external/`. Buildroot itself is a Git submodule in `buildroot/`, pointing at the [home-assistant/buildroot](https://github.com/home-assistant/buildroot) fork. That fork carries as few patches on top of upstream as possible.
+[home-assistant/operating-system](https://github.com/home-assistant/operating-system) 使用了 Buildroot 的 [br2-external 机制](https://buildroot.org/downloads/manual/manual.html#outside-br-custom)：所有特定于 Home Assistant OS 的内容都存放在 Buildroot 之外的 `buildroot-external/` 中。Buildroot 本身是 `buildroot/` 中的一个 Git 子模块，指向 [home-assistant/buildroot](https://github.com/home-assistant/buildroot) 分支。该分支在 upstream 之上只保留了尽可能少的补丁。
 
-| Path | What it holds |
+| 路径 | 内容 |
 | --- | --- |
-| `buildroot-external/configs/` | One `<target>_defconfig` per build target |
-| `buildroot-external/board/` | Per board: [metadata](/os/operating-system/board-metadata/), boot files, kernel config, and hooks |
-| `buildroot-external/kernel/` | Kernel config fragments shared by all boards |
-| `buildroot-external/package/` | Extra packages, like `hassio` (preloads the Supervisor) and `os-agent` |
-| `buildroot-external/rootfs-overlay/` | Files copied into every image, like the `haos-*` systemd units |
-| `buildroot-external/genimage/` | The disk layout, see [partitions](/os/operating-system/partitions/) |
-| `buildroot-external/ota/` | The RAUC configuration, update manifest, and certificates |
-| `buildroot-external/meta` | The OS version and deployment type |
-| `scripts/` | Helper scripts, like `enter.sh` for the build container |
-| `tests/` | Automated tests that boot the image in QEMU |
+| `buildroot-external/configs/` | 每个构建目标一个 `<target>_defconfig` |
+| `buildroot-external/board/` | 每种板子的[元数据](/os/operating-system/board-metadata/)、引导文件、内核配置和钩子 |
+| `buildroot-external/kernel/` | 所有板卡共享的内核配置片段 |
+| `buildroot-external/package/` | 额外的软件包，例如 `hassio`（预加载 Supervisor）和 `os-agent` |
+| `buildroot-external/rootfs-overlay/` | 复制到每个镜像中的文件，例如 `haos-*` systemd 单元 |
+| `buildroot-external/genimage/` | 磁盘布局，参见[分区](/os/operating-system/partitions/) |
+| `buildroot-external/ota/` | RAUC 配置、更新清单和证书 |
+| `buildroot-external/meta` | OS 版本和部署类型 |
+| `scripts/` | 辅助脚本，例如用于构建容器的 `enter.sh` |
+| `tests/` | 在 QEMU 中启动镜像的自动化测试 |
 
-## Where to go next
+## 后续步骤
 
-- [Build an image](/os/operating-system/build/) to get a working setup.
-- [Supported boards](/os/operating-system/boards/) lists every build target.
-- [Releases and builds](/os/operating-system/releases/) explains how your change ends up in a release.
+- [构建镜像](/os/operating-system/build/)以获得可用的环境。
+- [支持的板卡](/os/operating-system/boards/)列出了所有构建目标。
+- [发布与构建](/os/operating-system/releases/)解释了你的更改如何进入发布版本。

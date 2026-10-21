@@ -1,41 +1,41 @@
 ---
-title: Mobile app API
-description: How an app connects to Home Assistant through the mobile_app integration. Registration, the webhook, sensors, location, notifications, and the web view.
+title: 移动应用 API
+description: 应用如何通过 mobile_app 集成连接到 Home Assistant。包括注册、webhook、传感器、位置、通知以及 web 视图。
 order: 4
 ---
 
-The official companion apps talk to Home Assistant through the `mobile_app` integration in Core. It is a public API: any app can use it to show up in Home Assistant as a device, report sensors and location, and receive notifications. This section describes it, for people working on the official apps and for anyone building their own.
+官方伴侣应用（companion apps）通过 Core 中的 `mobile_app` 集成与 Home Assistant 通信。它是一个公开的 API：任何应用都可以使用它，在 Home Assistant 中显示为一个设备（device），上报传感器和位置信息，并接收通知。本节内容面向参与官方应用开发的人员，以及任何构建自己应用的人。
 
-## How it fits together
+## 整体运作方式
 
-1. **Find and log in.** The app finds the instance, and the user logs in with OAuth 2. The app gets access and refresh tokens.
-2. **Register.** With those tokens, the app registers itself with `mobile_app`. Home Assistant creates a device for it, and returns a webhook ID, and optionally a secret for encryption and URLs for Home Assistant Link.
-3. **Send data.** From then on, the app sends sensor updates, its location, and other requests to the webhook. Webhook requests need no token: the webhook ID is the credential.
-4. **Receive notifications.** Home Assistant pushes notifications over the WebSocket connection, or through a push service of the app.
-5. **Show the frontend.** The app shows the frontend in a web view, and hands it a token, so the user doesn't log in twice.
+1. **查找并登录。** 应用找到实例，用户通过 OAuth 2 登录。应用获得访问令牌（access token）和刷新令牌（refresh token）。
+2. **注册。** 应用使用这些令牌向 `mobile_app` 注册自身。Home Assistant 会为它创建一个设备，并返回一个 webhook ID，以及可选的用于加密的密钥和用于 Home Assistant Link 的 URL。
+3. **发送数据。** 从此以后，应用将传感器更新、位置信息和其他请求发送到 webhook。Webhook 请求无需令牌：webhook ID 本身就是凭证。
+4. **接收通知。** Home Assistant 通过 WebSocket 连接或应用使用的推送服务推送通知。
+5. **展示前端。** 应用在 web 视图中展示前端，并向其传递一个令牌，这样用户就不需要登录两次。
 
-The [companion apps architecture](/architecture/platform/companion-apps/) has the bigger picture.
+[伴侣应用架构](/architecture/platform/companion-apps/) 提供了更宏观的介绍。
 
-## Pages
+## 页面
 
-- [Connect and register](/companion/mobile-app-api/setup/): discovery, logging in, and the registration call.
-- [Send data](/companion/mobile-app-api/sending-data/): the webhook, its URLs, the request format, and every request type.
-- [Encryption](/companion/mobile-app-api/encryption/): encrypting webhook traffic with libsodium.
-- [Sensors](/companion/mobile-app-api/sensors/): registering and updating sensors, and keeping their enabled state in sync.
-- [Notifications](/companion/mobile-app-api/notifications/): WebSocket push, cloud push, and the contract for a push server.
-- [Web view](/companion/mobile-app-api/webview/): showing the frontend without a second login.
+- [连接与注册](/companion/mobile-app-api/setup/)：发现、登录以及注册调用。
+- [发送数据](/companion/mobile-app-api/sending-data/)：webhook、其 URL、请求格式以及所有请求类型。
+- [加密](/companion/mobile-app-api/encryption/)：使用 libsodium 加密 webhook 流量。
+- [传感器](/companion/mobile-app-api/sensors/)：注册和更新传感器，并保持其启用状态同步。
+- [通知](/companion/mobile-app-api/notifications/)：WebSocket 推送、云端推送，以及推送服务器的契约。
+- [Web 视图](/companion/mobile-app-api/webview/)：无需二次登录即可展示前端。
 
-## In the code
+## 代码位置
 
-The integration lives in [`homeassistant/components/mobile_app/`](https://github.com/home-assistant/core/tree/dev/homeassistant/components/mobile_app) in Core:
+该集成位于 Core 的 [`homeassistant/components/mobile_app/`](https://github.com/home-assistant/core/tree/dev/homeassistant/components/mobile_app)：
 
-| File | What it does |
+| 文件 | 作用 |
 | --- | --- |
-| `http_api.py` | The registration endpoint |
-| `webhook.py` | The webhook and most request types |
-| `helpers.py` | Encryption and responses |
-| `websocket_api.py` | The WebSocket push channel |
-| `notify.py` | Sending notifications |
-| `live_activity/` | Live Activity tokens for iOS, and their two request types |
+| `http_api.py` | 注册端点 |
+| `webhook.py` | Webhook 及大多数请求类型 |
+| `helpers.py` | 加密与响应 |
+| `websocket_api.py` | WebSocket 推送通道 |
+| `notify.py` | 发送通知 |
+| `live_activity/` | iOS 的 Live Activity 令牌及其两种请求类型 |
 
-When the code and this documentation disagree, the code wins. Changes to the integration follow the normal [Core contribution process](/core/).
+当代码与本文档不一致时，以代码为准。对该集成的更改遵循正常的 [Core 贡献流程](/core/)。

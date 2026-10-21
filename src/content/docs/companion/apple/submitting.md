@@ -1,48 +1,48 @@
 ---
-title: Submit an Apple pull request
-description: The checklist, the pull request template, and what to expect during review in the Apple repository.
-sidebarLabel: Submit a pull request
+title: 提交 Apple 拉取请求
+description: Apple 仓库中的检查清单、拉取请求模板，以及审核过程中可以期待的内容。
+sidebarLabel: 提交拉取请求
 order: 6
 ---
 
-Once your change is ready, open a pull request against `main` in [home-assistant/iOS](https://github.com/home-assistant/iOS).
+当你的更改准备就绪后，向 [home-assistant/iOS](https://github.com/home-assistant/iOS) 的 `main` 分支发起一个拉取请求（pull request）。
 
-## Before you open it
+## 在发起之前
 
-- **Run autocorrect and lint**: `bundle exec fastlane autocorrect`, then `bundle exec fastlane lint`.
-- **Run the tests**: `bundle exec fastlane test`. Add or update tests for the behavior you changed. Remember the [patch coverage](/companion/apple/testing/#patch-coverage) gate.
-- **Build what you touched.** Check whether your change affects widgets, the watch, CarPlay, extensions, or the Mac. See [targets](/companion/apple/targets/).
-- **Keep it small.** One idea per pull request. If it grows, split it into follow-ups.
-- **Gate unfinished features** with `Current.isTestFlight`, and open the draft pull request that removes the gate next to it. See [rules for every change](/companion/apple/architecture/#rules-for-every-change).
-- **Read the [AI policy](/start/ai-policy/).** You can use AI tools, but you must understand and be able to explain everything you submit. Pull requests from autonomous agents are closed.
+- **运行 autocorrect 和 lint**：先运行 `bundle exec fastlane autocorrect`，再运行 `bundle exec fastlane lint`。
+- **运行测试**：`bundle exec fastlane test`。为你修改的行为添加或更新测试。记住[补丁覆盖率](/companion/apple/testing/#patch-coverage)门槛。
+- **构建你改动过的部分。** 检查你的更改是否影响小组件、手表、CarPlay、扩展或 Mac。参见[目标](/companion/apple/targets/)。
+- **保持改动小巧。** 每个拉取请求只包含一个想法。如果它变大了，就拆分成后续的拉取请求。
+- **用 `Current.isTestFlight` 限制未完成的功能**，并同时发起移除该限制的草稿拉取请求。参见[每项更改的规则](/companion/apple/architecture/#rules-for-every-change)。
+- **阅读 [AI 政策](/start/ai-policy/)。** 你可以使用 AI 工具，但必须理解并能够解释你提交的所有内容。来自自主代理的拉取请求会被关闭。
 
-## The pull request
+## 拉取请求
 
-Don't delete anything from the template. Fill out:
+不要删除模板中的任何内容。请填写：
 
-- **AI policy**: confirm you read it, and select exactly one option that describes how you used AI.
-- **Summary**: what you changed and why.
-- **Screenshots**: for UI changes outside the frontend, in light and dark mode.
-- **Documentation**: changes that add, change, or remove functionality need a pull request in the [user documentation](https://github.com/home-assistant/companion.home-assistant). Link it.
+- **AI 政策**：确认你已阅读，并准确选择一个描述你如何使用 AI 的选项。
+- **摘要**：你更改了什么以及为什么。
+- **截图**：针对前端之外的 UI 更改，需提供浅色和深色模式下的截图。
+- **文档**：添加、更改或移除功能的更改需要在[用户文档](https://github.com/home-assistant/companion.home-assistant)中提交拉取请求。请附上链接。
 
-A draft pull request is a good way to get early feedback on direction or architecture before everything is polished.
+草稿拉取请求是在一切完善之前，就方向或架构获取早期反馈的好方法。
 
-## Review
+## 审核
 
-Reviewers look at:
+审核者会关注：
 
-- Whether it is correct.
-- Regressions on other targets.
-- Test coverage.
-- Whether it is maintainable.
-- Whether shared code is in the right module.
+- 是否正确。
+- 是否对其他目标造成回归。
+- 测试覆盖率。
+- 是否易于维护。
+- 共享代码是否位于正确的模块中。
 
-CI is part of the review, not a replacement for it. Address comments in focused follow-up commits, run the linters and tests again, and ask for another review when CI is green. Answer questions from maintainers in your own words.
+CI 是审核的一部分，而不是它的替代品。以聚焦的后续提交来处理评论，重新运行 linter 和测试，并在 CI 通过后请求再次审核。用自己的话回答维护者提出的问题。
 
-## Keep your branch up to date
+## 保持你的分支最新
 
-You don't need to update your branch every time `main` moves. Update it when there is a reason: a conflict, a CI failure caused by recent changes, or a fix on `main` you need. Before review, rebasing is fine. Once review has started, pick the update that disturbs the existing discussion least.
+你不需要在 `main` 每次更新时都更新你的分支。只在有理由时更新：出现冲突、最近的更改导致 CI 失败，或者你需要 `main` 上的某个修复。在审核开始之前，rebase 是可以的。审核开始后，选择对现有讨论干扰最小的更新方式。
 
-## Strings
+## 字符串
 
-Translations are managed on [Lokalise](/translate/). If you add or remove strings, keep the generated files consistent. Strings that are no longer used are removed from Lokalise and the app with the **Lokalise: Delete Keys** workflow, see [continuous integration](/companion/apple/ci/#on-your-pull-request).
+翻译在 [Lokalise](/translate/) 上管理。如果你添加或删除字符串，请保持生成的文件一致。不再使用的字符串会通过 **Lokalise: Delete Keys** 工作流从 Lokalise 和应用中移除，参见[持续集成](/companion/apple/ci/#on-your-pull-request)。

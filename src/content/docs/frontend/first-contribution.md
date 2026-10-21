@@ -1,82 +1,82 @@
 ---
-title: Your first frontend contribution
-description: Set up the frontend, run it against a Home Assistant instance, make a small change, and open your first pull request.
+title: 你的第一次前端贡献
+description: 搭建前端环境，将其连接到 Home Assistant 实例运行，做一个小改动，然后提交你的第一个 pull request。
 order: 1
-sidebarLabel: Your first contribution
+sidebarLabel: 你的第一次贡献
 ---
 
-The quickest way into the frontend is a small, visible fix: a misaligned icon, a label that is cut off, a button that does nothing on mobile. You see the result in your browser the moment you save, and a reviewer can judge it from a screenshot.
+进入前端开发最快的方式是做一个小而可见的修复：一个错位的图标、一段被截断的标签、一个在移动端上毫无反应的按钮。保存的瞬间你就能在浏览器中看到结果，审查者也只需一张截图就能做出判断。
 
-## 1. Find something to work on
+## 1. 找一个可以着手的问题
 
-Browse the [`good first issue` label](https://github.com/home-assistant/frontend/labels/good%20first%20issue) in the frontend repository, or the [open bugs](https://github.com/home-assistant/frontend/issues). A bug you ran into yourself is a great first topic, because you already know how to reproduce it.
+浏览前端仓库中的 [`good first issue` 标签](https://github.com/home-assistant/frontend/labels/good%20first%20issue)，或者[未修复的 bug](https://github.com/home-assistant/frontend/issues)。你自己遇到过的 bug 是绝佳的入门题材，因为你已经知道如何复现它。
 
-Leave a comment that you are working on it, so nobody else picks it up at the same time.
+留一条评论说明你正在处理这个问题，以免别人同时认领。
 
 > [!TIP]
-> Want to build a new card instead? That does not need any of the steps below. Start with [Custom cards and more](/frontend/custom-ui/), and publish it in the [Marketplace](/marketplace/): that is where the project recommends a new card starts.
+> 想构建一张新卡片？那不需要下面任何步骤。从[自定义卡片等](/frontend/custom-ui/)开始，然后发布到 [Marketplace](/marketplace/)：项目建议新卡片从这里起步。
 
-## 2. Set up the environment
+## 2. 搭建环境
 
-The easiest setup is Visual Studio Code with the devcontainer of the frontend repository. It installs the right Node.js and pnpm for you.
+最简单的搭建方式是使用 Visual Studio Code 和前端仓库的 devcontainer。它会为你安装合适的 Node.js 和 pnpm。
 
-1. [Fork the frontend repository](https://github.com/home-assistant/frontend/fork) on GitHub.
-2. Clone your fork and open it in Visual Studio Code.
-3. When Visual Studio Code asks, select **Reopen in Container**. The first start takes a few minutes while the dependencies install.
+1. 在 GitHub 上[fork 前端仓库](https://github.com/home-assistant/frontend/fork)。
+2. 克隆你的 fork，并在 Visual Studio Code 中打开。
+3. 当 Visual Studio Code 询问时，选择 **Reopen in Container**。首次启动需要几分钟，因为要安装依赖。
 
-Prefer to work without a container? [Set up the environment](/frontend/development/environment/) covers both.
+不想使用容器？[搭建环境](/frontend/development/environment/)介绍了两种方式。
 
-## 3. Run it
+## 3. 运行起来
 
-You need a Home Assistant instance to talk to. Inside the devcontainer you can run one next to the frontend:
+你需要一个 Home Assistant 实例来连接。在 devcontainer 中，你可以在前端旁边运行一个：
 
-1. Open a terminal and start Home Assistant Core. The first run installs the `dev` branch of Core and creates a configuration with demo entities:
+1. 打开一个终端并启动 Home Assistant Core。首次运行会安装 Core 的 `dev` 分支，并创建一个带有演示实体（entity）的配置：
 
    ```shell
    script/core
    ```
 
-2. Open a second terminal and start the frontend development server:
+2. 打开第二个终端并启动前端开发服务器：
 
    ```shell
    pnpm dev
    ```
 
-3. Wait for `Build done`, then open `http://localhost:8124` on your computer and create a user.
+3. 等待 `Build done`，然后在你的电脑上打开 `http://localhost:8124` 并创建一个用户。
 
-Already have a Home Assistant at home? You can also point the development frontend at that. [Run the frontend](/frontend/development/run/) explains both ways.
+家里已经有 Home Assistant 了？你也可以把开发前端指向它。[运行前端](/frontend/development/run/)介绍了这两种方式。
 
-## 4. Make your change
+## 4. 进行修改
 
-Create a branch, make your change, and save. The development server rebuilds, and a refresh of the browser shows the result.
+创建一个分支，进行修改并保存。开发服务器会重新构建，刷新浏览器即可看到结果。
 
-A few things reviewers look for, even in a small fix:
+即使是小修复，审查者也会关注以下几点：
 
-- All text people see comes from `src/translations/en.json`, never hardcoded in the code.
-- Use the existing `ha-*` components and theme variables, not new colors or one-off controls.
-- Check your change on a narrow screen, and in the dark theme.
+- 用户看到的所有文本都来自 `src/translations/en.json`，绝不能硬编码在代码中。
+- 使用现有的 `ha-*` 组件和主题变量，不要引入新的颜色或一次性的控件。
+- 在窄屏和深色主题下检查你的修改。
 
-The [coding guidelines](/frontend/development/guidelines/) have the details.
+[coding guidelines](/frontend/development/guidelines/) 中有详细说明。
 
-## 5. Check your work
+## 5. 检查你的工作
 
-Run the linters and the unit tests before you push:
+在推送之前运行代码检查工具和单元测试：
 
 ```shell
 pnpm lint
 pnpm test
 ```
 
-A pre-commit hook already formats the files you commit, so most style issues fix themselves.
+pre-commit 钩子会自动格式化你提交的文件，因此大多数样式问题会自动修复。
 
-## 6. Open a pull request
+## 6. 提交 pull request
 
-Push your branch to your fork and open a pull request against the `dev` branch. Fill in the pull request template completely: describe the change from the point of view of the people using it, check exactly one **Type of change**, and add before and after screenshots for anything visual. A check fails the pull request when the template is missing or incomplete.
+将你的分支推送到你的 fork，并针对 `dev` 分支提交一个 pull request。完整填写 pull request 模板：从使用者的角度描述这次修改，准确勾选一个 **Type of change**，并为所有视觉上的改动附上修改前后的截图。如果模板缺失或不完整，检查将无法通过。
 
-Then expect questions. Reviewers may ask you to change things, and that is normal. [Review and release](/frontend/development/review-and-release/) explains what happens next.
+然后就要准备回答问题了。审查者可能会要求你修改一些内容，这是正常的。[审查与发布](/frontend/development/review-and-release/)解释了接下来会发生什么。
 
-## What is next
+## 接下来做什么
 
-- Read the [architecture overview](/frontend/architecture/) to see how the pieces fit together.
-- Look at the [components](/design/components/) before you build something new. Reusing an existing one is almost always better.
-- Help review: test someone else's pull request and leave your findings. It speeds things up for everyone, yours included.
+- 阅读[架构概览](/frontend/architecture/)，了解各个部分如何协同工作。
+- 在构建新东西之前，先看看[组件](/design/components/)。复用现有组件几乎总是更好的选择。
+- 帮忙审查：测试别人的 pull request 并留下你的发现。这能让所有人的进度更快，包括你自己。

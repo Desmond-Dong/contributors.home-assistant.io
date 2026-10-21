@@ -1,24 +1,24 @@
 ---
-title: External authentication
-description: How an app that embeds the frontend, like the companion apps, keeps the login itself and hands the access token to the frontend.
+title: 外部认证
+description: 嵌入前端的 应用（如伴侣应用）如何自行保留登录，并将访问令牌交给前端。
 order: 3
 ---
 
-Normally the frontend handles its own login: it shows the login page, stores the tokens, and refreshes them. An app that embeds the frontend in a web view, like the [companion apps](/companion/), wants to keep the login itself, and give the frontend only an access token when it needs one. That is what external authentication is for.
+通常前端会自行处理登录：它显示登录页面、存储令牌并刷新它们。而在 Web 视图中嵌入前端的应用，比如[伴侣应用](/companion/)，则希望自行保留登录，只在需要时才向前端提供访问令牌（access token）。这就是外部认证的用途。
 
-## Turn it on
+## 开启外部认证
 
-Load the frontend with `?external_auth=1` in the URL. The frontend then expects one of these bridges to be defined on `window`:
+在 URL 中使用 `?external_auth=1` 加载前端。随后前端会期望在 `window` 上定义以下桥接之一：
 
-- `window.externalAppV2`: Android, the recommended bridge. It needs a web view that supports [`WebViewFeature.WEB_MESSAGE_LISTENER`](https://developer.android.com/reference/androidx/webkit/WebViewCompat.WebMessageListener).
-- `window.externalApp`: Android, the fallback for web views without that feature.
-- `window.webkit.messageHandlers`: iOS and macOS.
+- `window.externalAppV2`：Android，推荐的桥接。它需要一个支持 [`WebViewFeature.WEB_MESSAGE_LISTENER`](https://developer.android.com/reference/androidx/webkit/WebViewCompat.WebMessageListener) 的 Web 视图。
+- `window.externalApp`：Android，用于不支持该功能的 Web 视图的回退方案。
+- `window.webkit.messageHandlers`：iOS 和 macOS。
 
-When more than one is there, the frontend uses them in this order. Without any of them, the frontend fails to start.
+当存在多个时，前端会按此顺序使用它们。如果都不存在，前端将无法启动。
 
-## Get an access token
+## 获取访问令牌
 
-The frontend asks for a token when it loads, and again whenever its token has expired. It sends a payload with the name of the callback to answer with, and `force: true` when it needs a new token even if the old one has not expired yet:
+前端在加载时会请求令牌，并在其令牌过期时再次请求。它会发送一个包含回调名称的载荷（payload），并在即使旧令牌尚未过期也需要新令牌时附带 `force: true`：
 
 ```js
 // Android, V2
@@ -41,9 +41,9 @@ window.webkit.messageHandlers.getExternalAuth.postMessage({
 });
 ```
 
-On Android the payload is a JSON string, on iOS and macOS an object.
+在 Android 上载荷是 JSON 字符串，在 iOS 和 macOS 上则是对象。
 
-The app answers by calling the callback with whether it succeeded, and the token with the number of seconds it stays valid:
+应用通过调用回调来应答，传入是否成功，以及令牌及其有效秒数：
 
 ```js
 window.externalAuthSetToken(true, {
@@ -51,13 +51,13 @@ window.externalAuthSetToken(true, {
   expires_in: 1800,
 });
 
-// When the app can't get a token
+// 当应用无法获取令牌时
 window.externalAuthSetToken(false);
 ```
 
-## Revoke the token
+## 撤销令牌
 
-When the user logs out in their profile, the frontend asks the app to log out. The app has to revoke its refresh token with the [auth API](/core/internals/auth-api/) of Core, and log the user out:
+当用户在其个人资料中退出登录时，前端会请求应用执行退出登录。应用必须通过 Core 的[认证 API](/core/internals/auth-api/) 撤销其刷新令牌（refresh token），并让用户退出登录：
 
 ```js
 // Android, V2
@@ -79,17 +79,17 @@ window.webkit.messageHandlers.revokeExternalAuth.postMessage({
 });
 ```
 
-When it is done, the app calls the callback:
+完成后，应用会调用回调：
 
 ```js
 window.externalAuthRevokeToken(true);
 
-// When the app could not log out
+// 当应用无法退出登录时
 window.externalAuthRevokeToken(false);
 ```
 
-## The callback names
+## 回调名称
 
-The callback names, `externalAuthSetToken` and `externalAuthRevokeToken`, never change. The app should check that the callback in a request is the one it expects, so a forged request can't make it call something else.
+回调名称 `externalAuthSetToken` 和 `externalAuthRevokeToken` 永远不会改变。应用应检查请求中的回调是否是它所期望的那个，这样伪造的请求就无法让它调用其他内容。
 
-Everything else the app and the frontend tell each other goes over the [external bus](/frontend/reference/external-bus/).
+应用和前端之间传递的其他所有内容都通过[外部总线](/frontend/reference/external-bus/)进行。

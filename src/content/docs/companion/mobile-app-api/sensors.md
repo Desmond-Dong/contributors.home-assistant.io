@@ -1,14 +1,14 @@
 ---
-title: Sensors
-description: Register sensors and binary sensors from an app, update their states, and keep their enabled state in sync with Home Assistant.
+title: 传感器
+description: 从应用注册传感器和二进制传感器，更新其状态，并与 Home Assistant 保持启用状态同步。
 order: 4
 ---
 
-An app can add its own sensors and binary sensors to its device in Home Assistant: battery level, steps, Wi-Fi network, whatever the device knows. The app manages them entirely. Each one becomes an entity of the app's device.
+应用可以向其在 Home Assistant 中的设备添加自己的传感器和二进制传感器（binary sensor）：电池电量、步数、Wi-Fi 网络，以及设备所知的任何信息。这些传感器完全由应用管理。每个传感器都会成为应用设备的一个实体（entity）。
 
-## Register a sensor
+## 注册传感器
 
-Register each sensor once, before you update it. You register one sensor per request:
+在更新之前，先注册每个传感器。每次请求注册一个传感器：
 
 ```json
 {
@@ -30,27 +30,27 @@ Register each sensor once, before you update it. You register one sensor per req
 }
 ```
 
-| Key | Required | Type | Description |
+| 键 | 必填 | 类型 | 描述 |
 | --- | --- | --- | --- |
-| `type` | Yes | string | `sensor` or `binary_sensor` |
-| `unique_id` | Yes | string | An ID, unique within this registration. You need it for every update |
-| `name` | Yes | string | The name of the sensor. Home Assistant puts the device name in front of it |
-| `state` | No | boolean, number, or string | The current state |
-| `device_class` | No | string | A [sensor](/core/entities/sensor/) or [binary sensor](/core/entities/binary-sensor/) device class |
-| `unit_of_measurement` | No | string | The unit of the state |
-| `state_class` | No | string | The state class. Only for sensors, not binary sensors |
-| `entity_category` | No | string | `config` or `diagnostic` |
-| `icon` | No | string | An icon, like `mdi:battery`. Defaults to `mdi:cellphone` |
-| `attributes` | No | object | Extra state attributes |
-| `disabled` | No | boolean | Whether the entity is disabled in Home Assistant |
+| `type` | 是 | string | `sensor` 或 `binary_sensor` |
+| `unique_id` | 是 | string | 一个在此注册中唯一的 ID。每次更新都需要它 |
+| `name` | 是 | string | 传感器的名称。Home Assistant 会把设备名称放在它前面 |
+| `state` | 否 | boolean、number 或 string | 当前状态 |
+| `device_class` | 否 | string | [传感器](/core/entities/sensor/)或[二进制传感器](/core/entities/binary-sensor/)的设备类型 |
+| `unit_of_measurement` | 否 | string | 状态的单位 |
+| `state_class` | 否 | string | 状态类别。仅适用于传感器，不适用于二进制传感器 |
+| `entity_category` | 否 | string | `config` 或 `diagnostic` |
+| `icon` | 否 | string | 图标，例如 `mdi:battery`。默认为 `mdi:cellphone` |
+| `attributes` | 否 | object | 额外的状态属性 |
+| `disabled` | 否 | boolean | 该实体在 Home Assistant 中是否被禁用 |
 
-A successful registration returns `201` with `{"success": true}`. The entity appears right away.
+注册成功会返回 `201` 和 `{"success": true}`。实体会立即出现。
 
-Registering a sensor that already exists is fine. Home Assistant updates the name, device class, unit, entity category, icon, and enabled state if they changed, and applies the request like an update. So send the current `state`, `icon`, and `attributes` along: a left-out `state` makes the state unknown, and a left-out `icon` or `attributes` goes back to its default.
+注册一个已存在的传感器也没有问题。如果名称、设备类型、单位、实体类别、图标和启用状态发生了变化，Home Assistant 会更新它们，并像更新一样处理该请求。因此，请一并发送当前的 `state`、`icon` 和 `attributes`：省略 `state` 会使状态变为未知，省略 `icon` 或 `attributes` 会使其恢复为默认值。
 
-## Update sensors
+## 更新传感器
 
-Update as many sensors as you like in one request. `data` is a list:
+可以在一次请求中更新任意数量的传感器。`data` 是一个列表：
 
 ```json
 {
@@ -69,20 +69,20 @@ Update as many sensors as you like in one request. `data` is a list:
 }
 ```
 
-| Key | Required | Type | Description |
+| 键 | 必填 | 类型 | 描述 |
 | --- | --- | --- | --- |
-| `type` | Yes | string | `sensor` or `binary_sensor` |
-| `unique_id` | Yes | string | The ID you registered the sensor with |
-| `state` | Yes | boolean, number, string, or `null` | The new state. The string `unavailable` marks the sensor as unavailable |
-| `icon` | No | string | The icon. Falls back to `mdi:cellphone` when left out, so send it with every update if you set one |
-| `attributes` | No | object | The state attributes, replacing the old ones |
+| `type` | 是 | string | `sensor` 或 `binary_sensor` |
+| `unique_id` | 是 | string | 注册传感器时使用的 ID |
+| `state` | 是 | boolean、number、string 或 `null` | 新状态。字符串 `unavailable` 会将传感器标记为不可用 |
+| `icon` | 否 | string | 图标。如果省略，会回退为 `mdi:cellphone`，因此如果设置了图标，请在每次更新时都发送它 |
+| `attributes` | 否 | object | 状态属性，会替换旧的属性 |
 
-The update is checked in two steps:
+更新分两步检查：
 
-1. The whole list is checked first, for a valid `type` and a `unique_id` on every sensor. If one sensor fails that, the whole request is rejected: you get an empty `{}` with a `200`, and none of the sensors are updated.
-2. Then each sensor is checked on its own. A sensor that isn't registered fails with `not_registered`. Only the keys above are allowed. Anything else, like a `name`, or a state of the wrong type, makes that one sensor fail with `invalid_format`. The other sensors are still updated.
+1. 首先检查整个列表，验证每个传感器的 `type` 是否有效以及是否存在 `unique_id`。如果有一个传感器未通过此检查，整个请求都会被拒绝：你会收到一个带有 `200` 的空 `{}`，并且所有传感器都不会被更新。
+2. 然后逐个检查每个传感器。未注册的传感器会以 `not_registered` 失败。只允许使用上表中的键。其他任何内容，例如 `name`，或类型错误的状态，都会使该传感器以 `invalid_format` 失败。其他传感器仍会被更新。
 
-After the second step, the response has a result per `unique_id`:
+第二步之后，响应中会包含每个 `unique_id` 的结果：
 
 ```json
 {
@@ -110,15 +110,15 @@ After the second step, the response has a result per `unique_id`:
 }
 ```
 
-`not_registered` means you need to register the sensor first. `invalid_format` means the update didn't match the schema.
+`not_registered` 表示你需要先注册该传感器。`invalid_format` 表示更新不符合模式（schema）。
 
-## Keep the enabled state in sync
+## 保持启用状态同步
 
-Users can disable entities in Home Assistant. A disabled sensor is not worth collecting on the phone: it costs battery for nothing. So the app and Home Assistant keep the enabled state of each sensor in sync, in both directions:
+用户可以在 Home Assistant 中禁用实体。被禁用的传感器不值得在手机上继续采集：它只会白白消耗电池电量。因此，应用和 Home Assistant 会在两个方向上保持每个传感器的启用状态同步：
 
-- **The user turns a sensor on or off in the app**: send `register_sensor` for it again, with `disabled` set to `true` or `false`.
-- **The app updates a sensor that is disabled in Home Assistant**: the update succeeds, but the result contains `"is_disabled": true`. Take that as a signal to fetch the enabled states from Home Assistant.
-- **The user turns an entity on or off in Home Assistant**: the [`get_config`](/companion/mobile-app-api/sending-data/#get_config) response contains `entities`, which maps each `unique_id` to its enabled state. Apply it in the app.
+- **用户在应用中开启或关闭某个传感器**：再次为它发送 `register_sensor`，并将 `disabled` 设置为 `true` 或 `false`。
+- **应用更新了一个在 Home Assistant 中被禁用的传感器**：更新会成功，但结果中会包含 `"is_disabled": true`。将其视为一个信号，从 Home Assistant 获取启用状态。
+- **用户在 Home Assistant 中开启或关闭某个实体**：[`get_config`](/companion/mobile-app-api/sending-data/#get_config) 响应中包含 `entities`，它将每个 `unique_id` 映射到其启用状态。在应用中应用它。
 
 ```json
 {
@@ -133,4 +133,4 @@ Users can disable entities in Home Assistant. A disabled sensor is not worth col
 }
 ```
 
-Users of the official apps manage their sensors as described in the [sensors documentation](https://companion.home-assistant.io/docs/core/sensors).
+官方应用的用户按照[传感器文档](https://companion.home-assistant.io/docs/core/sensors)中所述管理他们的传感器。

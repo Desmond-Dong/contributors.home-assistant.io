@@ -1,6 +1,6 @@
 ---
-title: Android continuous integration
-description: The GitHub Actions workflows of the Android app. What runs on your pull request, after a merge, and on a schedule.
+title: Android 持续集成
+description: Android 应用的 GitHub Actions 工作流。哪些会在你的拉取请求上运行、合并后运行，以及定时运行。
 sidebarLabel: Continuous integration
 sidebarGroup: Ship
 order: 2
@@ -8,73 +8,73 @@ source: https://github.com/home-assistant/android/tree/main/.github/workflows
 lastVerified: 2026-10-14
 ---
 
-The Android app uses GitHub Actions for everything: checking pull requests, building releases, and shipping them to the stores with [Fastlane](https://fastlane.tools/). Shared steps live as local actions in `.github/actions`.
+Android 应用在所有环节都使用 GitHub Actions：检查拉取请求、构建发布版本，并通过 [Fastlane](https://fastlane.tools/) 将其发布到应用商店。共享的步骤以本地 action 的形式存放在 `.github/actions` 中。
 
-The app uses [calendar versioning](https://calver.org/), like Home Assistant Core: `YYYY.MM.patch`.
+该应用与 Home Assistant Core 一样，使用[日历版本号](https://calver.org/)：`YYYY.MM.patch`。
 
-## The workflows
+## 工作流
 
-| Workflow | Runs | Does |
+| 工作流 | 运行时机 | 作用 |
 | --- | --- | --- |
-| `pr.yml` | On every pull request | Lint, build, test, and attach APKs |
-| `pr-emulator-wtf.yml` | After `pr.yml` finishes | Run the `:app` instrumentation tests on Emulator.wtf |
-| `onPush.yml` | On every push to `main` | Build release versions and publish them to the internal track of the Play Store |
-| `weekly.yml` | Sundays at 04:00 UTC | Tag a new version and run `onPush.yml` with the `beta` flag, which creates a GitHub pre-release and promotes the build to the beta track |
-| `e2e.yml` | Daily at 05:00 UTC | Run the [end-to-end test](/companion/android/e2e-testing/) against a real Home Assistant. When it fails, it starts `e2e-triage`, an agentic workflow that looks into the failure and reports it in an issue |
-| `monthly.yml` | The first day of each month | Create the first version tag of the month, `YYYY.MM.0` |
-| `release.yml` | When a pre-release becomes a release, or manually | Promote the beta to production on the Play Store |
-| `updateScreenshot.yml` | Manually, by a maintainer | Regenerate [screenshot](/companion/android/screenshot-testing/) references |
-| `renovate-lockfiles.yml` | On every push to a `renovate/` branch | Update the [lockfiles](/companion/android/dependencies/) of Renovate pull requests and push them |
+| `pr.yml` | 在每个拉取请求上 | Lint、构建、测试，并附加 APK |
+| `pr-emulator-wtf.yml` | 在 `pr.yml` 完成后 | 在 Emulator.wtf 上运行 `:app` 的插桩测试 |
+| `onPush.yml` | 在每次推送到 `main` 时 | 构建发布版本，并将其发布到 Play Store 的内部测试轨道 |
+| `weekly.yml` | 每周日 04:00 UTC | 标记一个新版本，并带 `beta` 标志运行 `onPush.yml`，这会创建一个 GitHub 预发布版本，并将构建提升到 beta 轨道 |
+| `e2e.yml` | 每天 05:00 UTC | 针对真实的 Home Assistant 运行[端到端测试](/companion/android/e2e-testing/)。当测试失败时，它会启动 `e2e-triage`，这是一个 agentic 工作流，会调查失败原因并在 issue 中报告 |
+| `monthly.yml` | 每月第一天 | 创建当月的第一个版本标签 `YYYY.MM.0` |
+| `release.yml` | 当预发布版本变为正式发布版本时，或手动触发 | 在 Play Store 上将 beta 提升到生产环境 |
+| `updateScreenshot.yml` | 由维护者手动触发 | 重新生成[截图](/companion/android/screenshot-testing/)参考 |
+| `renovate-lockfiles.yml` | 在每次推送到 `renovate/` 分支时 | 更新 Renovate 拉取请求的[锁文件](/companion/android/dependencies/)并推送 |
 
-## On your pull request
+## 在你的拉取请求上
 
-`pr.yml` checks your change:
+`pr.yml` 会检查你的更改：
 
-- KTLint, Detekt, Android Lint, and Yamllint. See [code style and linting](/companion/android/code-style/).
-- That the lockfiles match the version catalog.
-- That the licenses of all dependencies are compatible with the Apache 2.0 license of the project, with `.github/scripts/check_licenses.py`.
-- The unit tests and the screenshot tests.
-- That every app builds, in debug and release.
-- That no existing database schema in `common/schemas` was changed, and that the build doesn't produce schema changes you forgot to commit. To change the database, increase its version instead.
-- If your pull request changes the Lokalise setup in `.github/actions/download-translations`, that the translations still download.
-- It uploads the APKs as an artifact, so anyone can [test your change](/companion/android/get-started/#test-a-pull-request-build).
+- KTLint、Detekt、Android Lint 和 Yamllint。参见[代码风格与 linting](/companion/android/code-style/)。
+- 锁文件与版本目录是否一致。
+- 所有依赖的许可证是否与项目的 Apache 2.0 许可证兼容，使用 `.github/scripts/check_licenses.py` 检查。
+- 单元测试和截图测试。
+- 每个应用都能构建，包括 debug 和 release。
+- `common/schemas` 中已有的数据库 schema 没有被更改，并且构建不会产生你忘记提交的 schema 更改。要修改数据库，请改为增加其版本号。
+- 如果你的拉取请求更改了 `.github/actions/download-translations` 中的 Lokalise 配置，则检查翻译是否仍能下载。
+- 它会将 APK 作为 artifact 上传，这样任何人都可以[测试你的更改](/companion/android/get-started/#test-a-pull-request-build)。
 
-Debug builds on CI use the mock Firebase file in `.github/mock-google-services.json`.
+CI 上的 debug 构建使用 `.github/mock-google-services.json` 中的模拟 Firebase 文件。
 
-When a check fails, fix it and push a new commit: that starts the workflow again. When you push several commits quickly, only the latest one is built. Earlier runs are cancelled.
+当某项检查失败时，请修复它并推送一个新的提交：这会重新启动工作流。当你快速推送多个提交时，只有最新的一个会被构建。更早的运行会被取消。
 
-If you are a new contributor, a maintainer has to approve each CI run on your pull request first. Running CI costs a lot of resources, so don't open a pull request, not even a draft, before your work is ready for someone to look at. Pushing to your fork as often as you like is fine.
+如果你是新贡献者，维护者必须先批准你拉取请求上的每次 CI 运行。运行 CI 会消耗大量资源，所以在你的工作准备好供人查看之前，不要打开拉取请求，即使是草稿也不行。随时推送到你自己的 fork 则没有问题。
 
-### Instrumentation tests
+### 插桩测试
 
-The instrumentation tests of `:app` run on [Emulator.wtf](https://emulator.wtf), against every API level from `androidSdk-min` to `androidSdk-target`, in seconds.
+`:app` 的插桩测试在 [Emulator.wtf](https://emulator.wtf) 上运行，覆盖从 `androidSdk-min` 到 `androidSdk-target` 的每个 API 级别，只需几秒钟。
 
-That takes two workflows. `pr.yml` builds the test APKs and the device list. Then `pr-emulator-wtf.yml`, triggered when `pr.yml` completes, runs them and reports back on the pull request. The split is what makes this work for forks: a workflow started by a fork has no access to secrets, so it can't reach Emulator.wtf. The second workflow runs in the context of the main repository, and only runs the APKs the first one built, never code from the fork.
+这需要两个工作流。`pr.yml` 构建测试 APK 和设备列表。然后，在 `pr.yml` 完成时触发的 `pr-emulator-wtf.yml` 运行它们，并在拉取请求上报告结果。这种拆分正是它能在 fork 上运行的原因：由 fork 启动的工作流无法访问 secrets，因此无法连接到 Emulator.wtf。第二个工作流在主仓库的上下文中运行，并且只运行第一个工作流构建的 APK，绝不会运行来自 fork 的代码。
 
-The instrumentation tests of `:wear`, `:automotive`, `:common`, and `:microwakeword` run on the regular Android emulator on GitHub Actions. Emulator.wtf only offers phone, tablet, and monitor devices, so this is the only option for Wear OS and Automotive. Only one emulator fits on a runner, so every API level and device profile is its own job, and each job is much slower than the whole Emulator.wtf run. That is why these targets cover only a few API levels.
+`:wear`、`:automotive`、`:common` 和 `:microwakeword` 的插桩测试在 GitHub Actions 的常规 Android 模拟器上运行。Emulator.wtf 只提供手机、平板和显示器设备，因此这是 Wear OS 和 Automotive 的唯一选择。一个 runner 上只能容纳一个模拟器，所以每个 API 级别和设备配置都是独立的任务，而且每个任务都比整个 Emulator.wtf 运行慢得多。这就是为什么这些目标只覆盖少数几个 API 级别。
 
-## After a merge
+## 合并之后
 
-Every push to `main` goes through `onPush.yml`. It downloads the latest translations from Lokalise, generates release notes from the merged pull requests, builds the release versions of all apps, attaches the APKs to the workflow run, and publishes to the internal testing track of the Play Store. The signing keys and other files needed for publishing come from repository secrets, and are only added during the run.
+每次推送到 `main` 都会经过 `onPush.yml`。它会从 Lokalise 下载最新翻译，根据已合并的拉取请求生成发布说明，构建所有应用的发布版本，将 APK 附加到工作流运行中，并发布到 Play Store 的内部测试轨道。签名密钥和发布所需的其他文件来自仓库的 secrets，并且只在运行期间添加。
 
-All store deployments go through [Fastlane](https://fastlane.tools/). Its configuration, including the lanes the workflows call, lives in the `fastlane` folder.
+所有商店部署都通过 [Fastlane](https://fastlane.tools/) 进行。它的配置（包括工作流调用的 lane）位于 `fastlane` 文件夹中。
 
-Run with the `beta` flag, which `weekly.yml` does every Sunday, it also creates a GitHub pre-release with the APKs, prepares the Amazon listing, and promotes the build to the beta track.
+带 `beta` 标志运行时（`weekly.yml` 每周日都会这样做），它还会创建一个包含 APK 的 GitHub 预发布版本，准备 Amazon 商品页面，并将构建提升到 beta 轨道。
 
-So every merged pull request reaches internal testers. See [releases](/companion/android/releases/) for the rest of the way to production.
+因此，每个合并的拉取请求都会到达内部测试人员。关于通往生产环境的其余流程，请参见[发布](/companion/android/releases/)。
 
-## Changing a workflow
+## 修改工作流
 
-- Put steps that more than one workflow needs in a local action in `.github/actions`, instead of copying them.
-- Choose triggers carefully. Every run costs resources, so a workflow should only run when its result matters.
-- Never put secrets in a workflow file. Pass them in from the repository secrets at run time, like the existing workflows do.
+- 将多个工作流都需要的步骤放在 `.github/actions` 中的本地 action 里，而不是复制它们。
+- 谨慎选择触发器。每次运行都会消耗资源，因此工作流应该只在其结果有意义时才运行。
+- 永远不要把 secrets 放在工作流文件中。在运行时从仓库的 secrets 中传入，就像现有工作流所做的那样。
 
 ## F-Droid
 
-[F-Droid](https://f-droid.org/packages/io.homeassistant.companion.android.minimal/) builds the `minimal` app itself from each GitHub release, following its [metadata](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/io.homeassistant.companion.android.minimal.yml). Each release has three files for that:
+[F-Droid](https://f-droid.org/packages/io.homeassistant.companion.android.minimal/) 会根据每个 GitHub 发布版本自行构建 `minimal` 应用，遵循其[元数据](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/io.homeassistant.companion.android.minimal.yml)。每个发布版本为此包含三个文件：
 
-- `version_code.txt`: the version code of the build.
-- `strings.zip`: the translations from Lokalise at build time.
-- `locales_config.xml`: the [locale configuration](https://developer.android.com/guide/topics/resources/app-languages#use-localeconfig) generated from those translations.
+- `version_code.txt`：构建的版本号。
+- `strings.zip`：构建时来自 Lokalise 的翻译。
+- `locales_config.xml`：根据这些翻译生成的[区域设置配置](https://developer.android.com/guide/topics/resources/app-languages#use-localeconfig)。
 
-When a release shows up on F-Droid is up to F-Droid.
+发布版本何时出现在 F-Droid 上由 F-Droid 决定。

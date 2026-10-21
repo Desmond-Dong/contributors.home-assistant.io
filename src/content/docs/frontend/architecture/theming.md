@@ -1,33 +1,33 @@
 ---
-title: Theming and design tokens
-description: The CSS variables behind every color, size, and space in the frontend, and how user themes change them.
+title: 主题与设计令牌
+description: 前端中每种颜色、尺寸和间距背后的 CSS 变量，以及用户主题如何改变它们。
 order: 5
 ---
 
-Every color, spacing, radius, and font in the frontend comes from a CSS custom property. That is what makes themes possible: a theme changes the variables, and the whole interface follows. It is also why components never hardcode a color.
+前端中的每种颜色、间距、圆角和字体都来自 CSS 自定义属性（CSS custom property）。这正是主题得以实现的原因：主题改变这些变量，整个界面随之改变。这也是组件从不硬编码颜色的原因。
 
-## Design tokens
+## 设计令牌
 
-The base variables are [design tokens](/glossary/design-token/), all starting with `--ha-`. They are defined in `src/resources/theme/`:
+基础变量是[设计令牌](/glossary/design-token/)，全部以 `--ha-` 开头。它们定义在 `src/resources/theme/` 中：
 
-| File | Tokens |
+| 文件 | 令牌 |
 | --- | --- |
-| `core.globals.ts` | Spacing (`--ha-space-1` to `--ha-space-20`, in steps of 4 pixels), radii (`--ha-border-radius-*`), border widths, and animation durations (`--ha-animation-duration-*`) |
-| `typography.globals.ts` | Font families, sizes, weights, and line heights (`--ha-font-*`) |
-| `color/core.globals.ts` | The color palettes, like `--ha-color-primary-40` |
-| `color/semantic.globals.ts` | Colors by purpose, like `--ha-color-text-primary`, `--ha-color-fill-danger-loud-resting`, or `--ha-color-border-neutral-quiet` |
+| `core.globals.ts` | 间距（`--ha-space-1` 到 `--ha-space-20`，以 4 像素为步长）、圆角（`--ha-border-radius-*`）、边框宽度和动画时长（`--ha-animation-duration-*`） |
+| `typography.globals.ts` | 字体族、字号、字重和行高（`--ha-font-*`） |
+| `color/core.globals.ts` | 调色板，如 `--ha-color-primary-40` |
+| `color/semantic.globals.ts` | 按用途划分的颜色，如 `--ha-color-text-primary`、`--ha-color-fill-danger-loud-resting` 或 `--ha-color-border-neutral-quiet` |
 
-Use the semantic color tokens in components, not the palette. A semantic token says what the color is for, so it can change with the theme and the dark mode without your component knowing.
+在组件中请使用语义颜色令牌，而不是调色板。语义令牌说明了颜色的用途，因此它可以随主题和深色模式变化，而你的组件无需感知。
 
-The [Foundations](/design/foundations/) section of the Design area shows every token, with its value in the light and dark theme: [color](/design/foundations/color/), [typography](/design/foundations/typography/), and [spacing](/design/foundations/spacing/).
+设计（Design）区域的[基础（Foundations）](/design/foundations/)部分展示了每个令牌及其在浅色和深色主题中的值：[颜色](/design/foundations/color/)、[排版](/design/foundations/typography/)和[间距](/design/foundations/spacing/)。
 
-## Theme variables
+## 主题变量
 
-Older variables without the `--ha-` prefix, like `--primary-color`, `--primary-text-color`, and `--card-background-color`, are still everywhere. They are defined in `src/resources/theme/color/color.globals.ts`, mostly on top of the tokens, and they are what most user themes set. Keep them working when you change a component that uses them.
+没有 `--ha-` 前缀的旧变量，如 `--primary-color`、`--primary-text-color` 和 `--card-background-color`，仍然随处可见。它们定义在 `src/resources/theme/color/color.globals.ts` 中，大多基于这些令牌之上，并且是大多数用户主题所设置的变量。当你修改使用它们的组件时，请保持它们正常工作。
 
-The Web Awesome components have their own variables, like `--wa-color-brand-fill-loud`. `src/resources/theme/color/wa.globals.ts` maps those to the Home Assistant tokens, so the `ha-*` wrappers follow the theme too.
+Web Awesome 组件有自己的变量，如 `--wa-color-brand-fill-loud`。`src/resources/theme/color/wa.globals.ts` 将它们映射到 Home Assistant 令牌，因此 `ha-*` 包装组件也能跟随主题。
 
-## Use them in a component
+## 在组件中使用它们
 
 ```ts
 static styles = css`
@@ -42,14 +42,14 @@ static styles = css`
 `;
 ```
 
-## How themes apply
+## 主题如何应用
 
-A [theme](/glossary/theme/) is a set of variables with values. Users define themes in YAML through the `frontend` integration in Core, or install them, and pick one in their profile. A theme can have separate values for light and dark mode, under `modes`.
+[主题](/glossary/theme/)是一组带有值的变量。用户通过 Core 中的 `frontend` 集成以 YAML 定义主题，或者安装主题，并在个人资料中选择一个。主题可以在 `modes` 下为浅色和深色模式设置不同的值。
 
-`applyThemesOnElement()` from `src/common/dom/apply_themes_on_element.ts` sets the variables of a theme on an element. The root element applies the selected theme to the whole app. Cards apply the theme from their own `theme` option to just the card. When a theme has dark mode values, those are applied on top when dark mode is on.
+`src/common/dom/apply_themes_on_element.ts` 中的 `applyThemesOnElement()` 将主题的变量设置到元素上。根元素将所选主题应用到整个应用。卡片将来自其自身 `theme` 选项的主题仅应用到该卡片。当主题包含深色模式的值时，在深色模式开启时这些值会叠加应用。
 
-For the default theme, users can pick their own primary and accent colors in their profile. The frontend then calculates the primary palette and the matching text colors from that one color.
+对于默认主题，用户可以在个人资料中选择自己的主色和强调色。前端随后会根据这一种颜色计算出主色调色板以及匹配的文本颜色。
 
-## Right to left
+## 从右到左
 
-Some languages are written from right to left. The frontend flips the layout for them. Use logical CSS properties, like `margin-inline-start` and `padding-inline-end`, so your component flips along. Check your change with a right-to-left language, or with the right-to-left toggle in the [gallery](/frontend/development/gallery-and-demo/).
+有些语言是从右向左书写的。前端会为它们翻转布局。请使用逻辑 CSS 属性，如 `margin-inline-start` 和 `padding-inline-end`，这样你的组件也会随之翻转。请使用从右到左的语言，或[画廊](/frontend/development/gallery-and-demo/)中的从右到左切换开关来检查你的更改。

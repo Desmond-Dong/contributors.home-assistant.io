@@ -1,39 +1,39 @@
 ---
-title: Linting and tests
-description: The linters, type checks, unit tests, and end-to-end tests of the frontend, and when to write a test.
+title: Lint 和测试
+description: 前端的 linter、类型检查、单元测试和端到端测试，以及何时编写测试。
 order: 5
 ---
 
-CI runs all of these on your pull request. Running them yourself first is faster than waiting for CI to tell you.
+CI 会在你的 pull request 上运行所有这些检查。自己先运行一遍，比等 CI 来告诉你更快。
 
-## Lint and format
+## Lint 和格式化
 
 ```shell
 pnpm lint
 pnpm format
 ```
 
-`pnpm lint` runs ESLint, Prettier, the TypeScript compiler, and the Lit analyzer, which checks your templates against the properties of the elements in them. `pnpm format` fixes what ESLint and Prettier can fix by themselves.
+`pnpm lint` 会运行 ESLint、Prettier、TypeScript 编译器以及 Lit 分析器，后者会根据模板中元素的属性来检查你的模板。`pnpm format` 会修复 ESLint 和 Prettier 能自行修复的问题。
 
-To run only the type check:
+只运行类型检查：
 
 ```shell
 pnpm lint:types
 ```
 
 > [!WARNING]
-> Never pass a file to `pnpm lint:types` or `tsc`. With a file argument, the compiler ignores `tsconfig.json` and can write `.js` files into `src/`. If that happens, delete those generated files before you commit. For quick feedback on one file, use the diagnostics in your editor.
+> 永远不要向 `pnpm lint:types` 或 `tsc` 传递文件参数。传入文件参数时，编译器会忽略 `tsconfig.json`，并可能把 `.js` 文件写入 `src/`。如果发生这种情况，请在提交前删除这些生成的文件。要快速获得单个文件的反馈，请使用编辑器中的诊断功能。
 
-## Unit tests
+## 单元测试
 
-Unit tests run with [Vitest](https://vitest.dev/). They live in `test/`, in a folder structure that mirrors `src/`:
+单元测试使用 [Vitest](https://vitest.dev/) 运行。它们位于 `test/` 中，其文件夹结构与 `src/` 一一对应：
 
 ```shell
 pnpm test
 pnpm test:coverage
 ```
 
-A test file looks like this:
+一个测试文件大致如下：
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -46,50 +46,50 @@ describe("ensureArray", () => {
 });
 ```
 
-### When to write a test
+### 何时编写测试
 
-Write a test for code that computes something, where a mistake could slip through unnoticed: data processing, utilities, config validation, and dashboard strategies.
+对于会进行计算的代码，即错误可能悄无声息地溜过去的地方，应编写测试：数据处理、工具函数、配置校验以及仪表盘（dashboard）策略。
 
-Don't write tests that check how something renders: the text, styles, or slots of a component, or that a panel shows the data it gets. Those break with every design change and protect little. If the visuals change, add screenshots to your pull request instead.
+不要编写检查渲染效果的测试：比如组件的文本、样式或插槽，或者面板是否显示了它收到的数据。这类测试会随着每次设计改动而失效，却几乎保护不了什么。如果视觉效果发生了变化，请在你的 pull request 中附上截图。
 
-Tests never talk to a real Home Assistant. Replace `callWS`, `callApi`, and the connection with fakes. Before you write a new fixture or helper, look at the ones the test suite already has.
+测试永远不会与真实的 Home Assistant 通信。请用假实现替换 `callWS`、`callApi` 和连接。在编写新的 fixture 或辅助函数之前，先看看测试套件中已有的那些。
 
-## End-to-end tests
+## 端到端测试
 
-End-to-end tests run with [Playwright](https://playwright.dev/), in three suites. Each suite has its own development server:
+端到端测试使用 [Playwright](https://playwright.dev/) 运行，分为三个套件。每个套件都有自己的开发服务器：
 
-| Suite | Development server | Port | Test command |
+| 套件 | 开发服务器 | 端口 | 测试命令 |
 | --- | --- | --- | --- |
 | App | `pnpm test:e2e:app:dev` | 8095 | `pnpm test:e2e:app` |
 | Demo | `pnpm dev:demo` | 8090 | `pnpm test:e2e:demo` |
 | Gallery | `pnpm dev:gallery` | 8100 | `pnpm test:e2e:gallery` |
 
-The app suite tests the app against a stripped-down harness made for these tests. The demo and gallery suites use their normal development servers.
+App 套件针对一个为这些测试专门精简的测试环境来测试应用。Demo 和 Gallery 套件则使用它们正常的开发服务器。
 
-Start the development server of a suite in the background, then run the suite. Playwright reuses the server that is already running instead of doing a slow full build, and the server rebuilds when you save, so you can run the tests again without restarting anything:
+在后台启动某个套件的开发服务器，然后运行该套件。Playwright 会复用已经在运行的服务器，而不是进行缓慢的完整构建，而且服务器会在你保存时重新构建，因此无需重启任何东西即可再次运行测试：
 
 ```shell
 pnpm test:e2e:app:dev --background
 pnpm test:e2e:app
 ```
 
-Narrow a run down with `-g` for test names and `--project` for a browser. The projects are `chromium` and `mobile-chrome`:
+可以用 `-g` 按测试名称缩小运行范围，用 `--project` 指定浏览器。可用的 project 为 `chromium` 和 `mobile-chrome`：
 
 ```shell
 pnpm test:e2e:app -g "more-info" --project=chromium
 ```
 
-`pnpm test:e2e` runs all three suites, and `pnpm test:e2e:show-report` opens the combined report.
+`pnpm test:e2e` 会运行全部三个套件，`pnpm test:e2e:show-report` 会打开合并后的报告。
 
-A local run against a development server is not the same as the clean build CI uses. Use it to iterate quickly, and check that the end-to-end jobs on your pull request pass too.
+针对开发服务器的本地运行与 CI 使用的干净构建并不相同。请用它来快速迭代，同时也要确保你 pull request 上的端到端任务通过。
 
-## Benchmarks
+## 基准测试
 
-The data transforms behind charts, like history, statistics, and energy, have benchmarks. Before you optimize one, read the workflow in [`test/benchmarks/README.md`](https://github.com/home-assistant/frontend/blob/dev/test/benchmarks/README.md). An optimization must keep the output identical: never update snapshots or fixtures to make one pass.
+图表背后的数据转换（如历史记录、统计和能源）都有基准测试。在优化其中某项之前，请先阅读 [`test/benchmarks/README.md`](https://github.com/home-assistant/frontend/blob/dev/test/benchmarks/README.md) 中的工作流程。优化必须保证输出完全一致：绝不要为了让测试通过而更新快照或 fixture。
 
-## What to run when
+## 何时运行什么
 
-- **A utility or data change**: the related unit tests, then `pnpm lint:types`.
-- **A component change**: `pnpm lint`, and the unit tests that cover the logic in it.
-- **A change to a flow that has end-to-end tests**: the relevant suite, narrowed down to the affected tests.
-- **A broad refactor**: `pnpm lint` and `pnpm test`.
+- **工具函数或数据变更**：相关的单元测试，然后运行 `pnpm lint:types`。
+- **组件变更**：`pnpm lint`，以及覆盖其中逻辑的单元测试。
+- **有端到端测试覆盖的流程变更**：相关的套件，并缩小到受影响的测试。
+- **大范围重构**：`pnpm lint` 和 `pnpm test`。

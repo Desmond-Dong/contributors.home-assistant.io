@@ -1,59 +1,59 @@
 ---
-title: Apple targets
-description: The app, extensions, Apple Watch, CarPlay, and Mac targets of the Apple project, and what to check when your change touches shared code.
-sidebarLabel: Targets
+title: Apple 目标
+description: Apple 项目中的应用、扩展、Apple Watch、CarPlay 和 Mac 目标，以及当你的改动涉及共享代码时需要检查的内容。
+sidebarLabel: 目标
 order: 3
 ---
 
-The Xcode project builds many products from one codebase. A change in shared code can end up in all of them, so check which ones your change touches.
+Xcode 项目从同一套代码构建出许多产品。共享代码中的改动可能会影响到所有产品，因此请检查你的改动涉及哪些产品。
 
-## The schemes
+## 各个 scheme
 
-| Scheme | Builds |
+| Scheme | 构建内容 |
 | --- | --- |
-| `App-Debug` | The app, for local development. Start here |
-| `App-Release` | The app, as it ships |
-| `Tests-Unit` | The unit tests that CI runs |
-| `Tests-UI` | The UI tests and the end-to-end onboarding test |
-| `WatchApp` | The Apple Watch app |
-| `Extensions-*` | One app extension each, like `Extensions-Widgets` |
+| `App-Debug` | 应用，用于本地开发。从这里开始 |
+| `App-Release` | 应用，发布版本 |
+| `Tests-Unit` | CI 运行的单元测试 |
+| `Tests-UI` | UI 测试和端到端引导测试 |
+| `WatchApp` | Apple Watch 应用 |
+| `Extensions-*` | 每个应用扩展各一个，例如 `Extensions-Widgets` |
 
-## iPhone and iPad
+## iPhone 和 iPad
 
-The main app, in `Sources/App`. Most features start here.
+主应用，位于 `Sources/App`。大多数功能都从这里开始。
 
-## Widgets, controls, and App Intents
+## 小组件、控件和 App Intents
 
-`Sources/Extensions/Widgets` and `Sources/Extensions/AppIntents` power Home Screen and Lock Screen widgets, Control Center controls, and Shortcuts. They run as extensions, outside the app.
+`Sources/Extensions/Widgets` 和 `Sources/Extensions/AppIntents` 支持主屏幕和锁定屏幕小组件、控制中心控件以及快捷指令。它们以扩展的形式运行，在应用之外。
 
-Items that appear in widgets, the watch, CarPlay, and Shortcuts share one model, `MagicItem`. If you add a new kind of item or action, it likely needs to work on all of those.
+出现在小组件、手表、CarPlay 和快捷指令中的条目共享同一个模型 `MagicItem`。如果你添加一种新的条目或操作类型，它很可能需要在所有这些地方都能正常工作。
 
-## Notifications
+## 通知
 
-Several targets handle notifications:
+多个目标负责处理通知：
 
-- The notification service extension, which changes a notification before it shows, for example to download an attachment.
-- The notification content extension, for the expanded view of a notification, like a camera stream.
-- The push provider extension, for local push on a home network.
+- 通知服务扩展（notification service extension），在通知显示之前对其进行修改，例如下载附件。
+- 通知内容扩展（notification content extension），用于通知的展开视图，例如摄像头画面。
+- 推送提供方扩展（push provider extension），用于家庭网络中的本地推送。
 
-Live Activities are part of the app and widgets. When you work on notifications, check all of them. See the [user documentation](https://companion.home-assistant.io/docs/notifications/notifications-basic) for what users can do with them.
+实时活动（Live Activities）是应用和小组件的一部分。在处理通知时，请检查所有这些部分。请参阅[用户文档](https://companion.home-assistant.io/docs/notifications/notifications-basic)了解用户可以用它们做什么。
 
 ## Apple Watch
 
-The watch app is in `Sources/Watch` and `Sources/WatchApp`, and its complications and widgets in `Sources/WatchWidgets`. Changes to actions, notifications, complications, or shared settings often need testing on the watch too. The watch has its own tests, which `bundle exec fastlane test` runs on a watch simulator.
+手表应用位于 `Sources/Watch` 和 `Sources/WatchApp`，其复杂功能（complications）和小组件位于 `Sources/WatchWidgets`。对操作、通知、复杂功能或共享设置的改动通常也需要在手表上进行测试。手表有自己的测试，由 `bundle exec fastlane test` 在手表模拟器上运行。
 
 ## CarPlay
 
-`Sources/CarPlay` has the templates, list items, filters, and actions for supported entities.
+`Sources/CarPlay` 包含受支持实体的模板、列表项、筛选器和操作。
 
-## Share and Matter
+## 分享和 Matter
 
-The share extension handles content shared to Home Assistant from other apps. The Matter extension is part of adding Matter devices. If your change touches incoming content or device setup, check these.
+分享扩展处理从其他应用分享到 Home Assistant 的内容。Matter 扩展是添加 Matter 设备流程的一部分。如果你的改动涉及传入内容或设备设置，请检查这些部分。
 
 ## Mac
 
-The Mac app is built with Mac Catalyst from the same code. `Sources/MacBridge` has the Mac specific parts. Even if you only work on an iOS feature, shared code is compiled for the Mac too, so it must build there.
+Mac 应用使用 Mac Catalyst 从同一套代码构建。`Sources/MacBridge` 包含 Mac 特有的部分。即使你只开发 iOS 功能，共享代码也会为 Mac 编译，因此必须能在那里构建。
 
-## The push server
+## 推送服务器
 
-`Sources/PushServer` is a standalone Swift package for the push relay. It is not part of the Xcode project, and has its own tests. It carries its own copy of the notification parser from `Sources/SharedPush`: when you change one, decide whether the other needs the same change. See [testing](/companion/apple/testing/#the-push-server).
+`Sources/PushServer` 是一个独立的 Swift 包，用于推送中继。它不属于 Xcode 项目，并且有自己的测试。它携带了 `Sources/SharedPush` 中通知解析器的一份副本：当你修改其中一处时，请判断另一处是否也需要相同的改动。请参阅[测试](/companion/apple/testing/#the-push-server)。

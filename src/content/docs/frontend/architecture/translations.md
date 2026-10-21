@@ -1,45 +1,45 @@
 ---
-title: Translations in the frontend
-description: Where frontend text lives, how to use it in code, and how text from Core and integrations gets into the interface.
+title: 前端中的翻译
+description: 前端文本存放的位置、如何在代码中使用它，以及 Core 和集成的文本如何进入界面。
 order: 4
 ---
 
-The frontend is used in dozens of languages, so no text people see is ever written directly in the code. The English source lives in one file, and the community translates it into every other language.
+前端被用于数十种语言，因此人们看到的任何文本都不会直接写在代码中。英文源文本存放在一个文件中，由社区将其翻译成其他所有语言。
 
-## Where text lives
+## 文本存放的位置
 
-- **Frontend text** is in `src/translations/en.json`. It is the only translation file in the repository. When it changes on `dev`, it is uploaded to [Lokalise](/glossary/lokalise/), where translators work on it. The translations come back as nightly builds.
-- **Text from Core and integrations**, like entity names, states, and the steps of a config flow, comes from the `strings.json` of each integration. The frontend loads it from Core at runtime.
+- **前端文本**位于 `src/translations/en.json`。它是仓库中唯一的翻译文件。当它在 `dev` 分支上发生变更时，会被上传到 [Lokalise](/glossary/lokalise/)，翻译人员在那里进行翻译工作。翻译结果会以每夜构建的形式返回。
+- **来自 Core 和集成的文本**，比如实体（entity）名称、状态（state）以及配置流程的各个步骤，来自每个集成的 `strings.json`。前端在运行时从 Core 加载它。
 
-Translators never see your code, only the strings and their keys. [Make your strings translatable](/translate/guides/developers/) explains how to write strings that they can work with.
+翻译人员永远不会看到你的代码，只会看到字符串及其键。[让你的字符串可翻译](/translate/guides/developers/)介绍了如何编写便于他们处理的字符串。
 
-## Use a string
+## 使用字符串
 
-Add the English text to `src/translations/en.json`, under a key that says where it is used. This one is the number of repair issues on the repairs card, under `ui` > `card` > `repairs`:
+将英文文本添加到 `src/translations/en.json` 中，放在一个标明其用途的键下面。下面这个是维修卡片上维修问题的数量，位于 `ui` > `card` > `repairs` 下：
 
 ```json
 "count_issues": "{count} {count, plural, one {issue} other {issues}}"
 ```
 
-Then use it through `localize`, with the full key and the values of the placeholders:
+然后通过 `localize` 使用它，传入完整的键和占位符的值：
 
 ```ts
 this._localize("ui.card.repairs.count_issues", { count: 3 });
 ```
 
-Keys are type checked against `en.json`, so a typo in a key fails the type check.
+键会根据 `en.json` 进行类型检查，因此键中的拼写错误会导致类型检查失败。
 
-Get `localize` from the internationalization context, with `@consumeLocalize()`, or from `hass.localize` in a component that already has `hass`. See [the hass object and contexts](/frontend/architecture/hass-and-contexts/).
+通过 `@consumeLocalize()` 从国际化上下文中获取 `localize`，或者在已经拥有 `hass` 的组件中从 `hass.localize` 获取。参见 [hass 对象与上下文](/frontend/architecture/hass-and-contexts/)。
 
-### Placeholders and plurals
+### 占位符与复数
 
-Strings use the [ICU message format](https://formatjs.github.io/docs/core-concepts/icu-syntax/). Placeholders go in curly braces, like `{count}`. The `plural` form in the example above picks the right word for the number. Each language has its own plural rules, and translators fill in the forms their language needs.
+字符串使用 [ICU 消息格式](https://formatjs.github.io/docs/core-concepts/icu-syntax/)。占位符放在花括号中，比如 `{count}`。上面示例中的 `plural` 形式会根据数字选择正确的词语。每种语言都有自己的复数规则，翻译人员会填写其语言所需的形式。
 
-Always translate a whole sentence, with placeholders for what changes. Never build a sentence from separate translated pieces: word order is different in other languages.
+始终翻译完整的句子，并为变化的部分使用占位符。绝不要用单独翻译的片段拼凑句子：其他语言中的语序是不同的。
 
-### Reuse a string
+### 复用字符串
 
-When the same text already exists, point to it instead of writing it again. The reference uses the path of the other key, with `::` between the parts:
+当相同的文本已经存在时，指向它而不是重新编写。引用使用另一个键的路径，各部分之间用 `::` 分隔：
 
 ```json
 {
@@ -47,23 +47,23 @@ When the same text already exists, point to it instead of writing it again. The 
 }
 ```
 
-Every reused string is one string less to translate, in every language.
+每复用一个字符串，就意味着每种语言都少一个需要翻译的字符串。
 
-## Text from Core
+## 来自 Core 的文本
 
-Text that comes from integrations is loaded on demand, by category. Load the category you need before you use its keys:
+来自集成的文本按类别按需加载。在使用某个类别的键之前，先加载该类别：
 
 ```ts
 const localize = await hass.loadBackendTranslation("title");
 localize(`component.${domain}.title`);
 ```
 
-Backend keys start with `component.<domain>.`, followed by the path in the `strings.json` of that integration.
+后端键以 `component.<domain>.` 开头，后面是该集成的 `strings.json` 中的路径。
 
-Large parts of the frontend text, like the settings or the dashboard editor, are split into fragments that load with their panel. `hass.loadFragmentTranslation()` loads one, for example when a dialog of one panel opens inside another.
+前端文本的很大一部分，比如设置或仪表盘（dashboard）编辑器，被拆分成随其面板一起加载的片段。`hass.loadFragmentTranslation()` 会加载其中一个片段，例如当一个面板的对话框在另一个面板中打开时。
 
-## Run with translations
+## 在翻译环境下运行
 
-During development, the frontend is English only unless you fetch the translations. Add `--fetch-translations` to any development server, like `pnpm dev --fetch-translations`. See [Set up the environment](/frontend/development/environment/#translations).
+在开发过程中，除非你获取翻译，否则前端只有英文。在任何开发服务器上添加 `--fetch-translations`，例如 `pnpm dev --fetch-translations`。参见[设置环境](/frontend/development/environment/#translations)。
 
-To check right-to-left layouts, switch your profile to a right-to-left language like Hebrew or Arabic, or use the right-to-left toggle in the [gallery](/frontend/development/gallery-and-demo/).
+要检查从右到左的布局，请将你的个人资料切换到从右到左的语言，如希伯来语或阿拉伯语，或者使用[画廊](/frontend/development/gallery-and-demo/)中的从右到左切换开关。

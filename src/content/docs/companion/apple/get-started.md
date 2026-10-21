@@ -1,24 +1,24 @@
 ---
-title: Get started with Apple
-description: Install Xcode and the Ruby tooling, set up code signing, and run the Home Assistant app on a simulator or your own device.
-sidebarLabel: Get started
+title: Apple 入门
+description: 安装 Xcode 和 Ruby 工具链，设置代码签名，并在模拟器或你自己的设备上运行 Home Assistant 应用。
+sidebarLabel: 入门
 order: 1
 ---
 
-You need a Mac. This page takes you from a fresh clone to the app running in the simulator.
+你需要一台 Mac。本页面将带你从全新克隆到应用在模拟器中运行。
 
-## Requirements
+## 要求
 
-- **Xcode**: the version the project currently requires is in the [README](https://github.com/home-assistant/iOS#getting-started). The project follows new Xcode releases quickly, so at times that is a beta from [Apple Developer Downloads](https://developer.apple.com/download/).
-- **Ruby**: for Bundler and Fastlane, which run the linters and tests. The version is in `.ruby-version`.
-- **An Apple developer team ID**, for code signing.
+- **Xcode**：项目当前要求的版本见 [README](https://github.com/home-assistant/iOS#getting-started)。该项目会很快跟进新的 Xcode 版本，因此有时需要使用来自 [Apple Developer Downloads](https://developer.apple.com/download/) 的 beta 版本。
+- **Ruby**：用于运行代码检查器和测试的 Bundler 和 Fastlane。版本见 `.ruby-version`。
+- **Apple 开发者团队 ID**，用于代码签名。
 
-Third party libraries are Swift packages. Xcode resolves them on its own.
+第三方库是 Swift 包。Xcode 会自行解析它们。
 
-## 1. Fork, clone, and branch
+## 1. Fork、克隆和创建分支
 
-1. Fork [home-assistant/iOS](https://github.com/home-assistant/iOS) on GitHub.
-2. Clone your fork and create a branch:
+1. 在 GitHub 上 fork [home-assistant/iOS](https://github.com/home-assistant/iOS)。
+2. 克隆你的 fork 并创建一个分支：
 
    ```bash
    git clone https://github.com/<your-github-username>/iOS.git
@@ -26,9 +26,9 @@ Third party libraries are Swift packages. Xcode resolves them on its own.
    git checkout -b fix-widget-refresh
    ```
 
-## 2. Install the Ruby tooling
+## 2. 安装 Ruby 工具链
 
-Pick one way to get Ruby, then install the gems. With [mise](https://mise.jdx.dev/):
+选择一种安装 Ruby 的方式，然后安装 gems。使用 [mise](https://mise.jdx.dev/)：
 
 ```bash
 brew install mise
@@ -36,7 +36,7 @@ mise install
 bundle install
 ```
 
-With [rbenv](https://github.com/rbenv/rbenv):
+使用 [rbenv](https://github.com/rbenv/rbenv)：
 
 ```bash
 brew install rbenv ruby-build
@@ -44,34 +44,34 @@ rbenv install
 bundle install
 ```
 
-The Ruby version is in `.ruby-version`. If you already have a matching Ruby, `bundle install` is enough.
+Ruby 版本在 `.ruby-version` 中。如果你已经有匹配的 Ruby，只需运行 `bundle install` 即可。
 
-## 3. Set up code signing
+## 3. 设置代码签名
 
-The app uses entitlements that need code signing, even in the simulator. Debug builds use automatic provisioning, but you need to tell Xcode which team and bundle IDs to use.
+应用使用了需要代码签名的 entitlements，即使在模拟器中也是如此。Debug 构建使用自动配置，但你需要告诉 Xcode 使用哪个团队和 bundle ID。
 
-Create `Configuration/HomeAssistant.overrides.xcconfig`:
+创建 `Configuration/HomeAssistant.overrides.xcconfig`：
 
 ```text
 DEVELOPMENT_TEAM = YourTeamID
 BUNDLE_ID_PREFIX = some.bundle.prefix
 ```
 
-- `DEVELOPMENT_TEAM` is your team ID, from the [Apple developer portal](https://developer.apple.com/account). It looks like `ABCDEFG123`.
-- `BUNDLE_ID_PREFIX` is a prefix you control, so Xcode can create provisioning profiles for it.
+- `DEVELOPMENT_TEAM` 是你的团队 ID，来自 [Apple 开发者门户](https://developer.apple.com/account)。它形如 `ABCDEFG123`。
+- `BUNDLE_ID_PREFIX` 是一个由你控制的前缀，以便 Xcode 能为它创建配置描述文件。
 
-Git ignores this file. Xcode generates the profiles for your team, and features your team doesn't have, like critical alerts, are turned off.
+Git 会忽略此文件。Xcode 会为你的团队生成描述文件，而你的团队没有的功能（如重要提醒）将被关闭。
 
-## 4. Run the app
+## 4. 运行应用
 
-1. Open `HomeAssistant.xcodeproj` in Xcode.
-2. Select the **App-Debug** scheme.
-3. Select a simulator or your device.
-4. Build and run.
+1. 在 Xcode 中打开 `HomeAssistant.xcodeproj`。
+2. 选择 **App-Debug** scheme。
+3. 选择一个模拟器或你的设备。
+4. 构建并运行。
 
-Connect it to a test instance of Home Assistant if you can: each onboarding registers a new device on the server.
+如果可以，请将它连接到 Home Assistant 的测试实例：每次引导流程都会在服务器上注册一个新设备。
 
-## Handy commands
+## 常用命令
 
 ```bash
 # Check formatting and lint, without changing files
@@ -87,20 +87,20 @@ bundle exec fastlane test
 bundle exec fastlane install_git_hooks
 ```
 
-## Only testing the frontend
+## 仅测试前端
 
-Working on the [frontend](/frontend/) and want to see it in the app? You don't need to build the app:
+正在开发[前端](/frontend/)并想在应用中查看效果？你不需要构建应用：
 
-1. Install Xcode, and open the simulator from **Xcode** > **Open Developer Tool** > **Simulator**.
-2. Download the `ios-simulator` artifact from a recent run of the [CI workflow](https://github.com/home-assistant/iOS/actions/workflows/ci.yml) on `main`.
-3. Drag the `.app` onto the simulator and launch it.
-4. In Safari, turn on the **Develop** menu in the advanced settings. Then use **Develop** > **Simulator** to open Web Inspector on the app's web view.
+1. 安装 Xcode，并从 **Xcode** > **Open Developer Tool** > **Simulator** 打开模拟器。
+2. 从 `main` 分支上最近一次 [CI workflow](https://github.com/home-assistant/iOS/actions/workflows/ci.yml) 运行中下载 `ios-simulator` 构建产物。
+3. 将 `.app` 拖到模拟器上并启动。
+4. 在 Safari 中，在高级设置里开启 **Develop** 菜单。然后使用 **Develop** > **Simulator** 在应用的 web 视图上打开 Web Inspector。
 
-## AI tools
+## AI 工具
 
-The repository has instructions for AI coding tools in `AGENTS.md`, and skills in `.agents/skills/`, like `ha-ios-architecture`, `ha-ios-testing`, and `ha-ios-workflow-ci`. The pull request template asks whether you used AI, and how. [Contribute with AI tools](/start/ai-tools/) lists every skill, and explains what the [AI policy](/start/ai-policy/) asks of you.
+仓库在 `AGENTS.md` 中提供了 AI 编程工具的使用说明，并在 `.agents/skills/` 中提供了技能，例如 `ha-ios-architecture`、`ha-ios-testing` 和 `ha-ios-workflow-ci`。拉取请求模板会询问你是否使用了 AI 以及如何使用。[使用 AI 工具参与贡献](/start/ai-tools/)列出了所有技能，并解释了 [AI 政策](/start/ai-policy/)对你的要求。
 
-## What is next
+## 接下来
 
-- Read the [architecture](/companion/apple/architecture/) and the [targets](/companion/apple/targets/).
-- Check the [code style](/companion/apple/code-style/) before your first pull request.
+- 阅读[架构](/companion/apple/architecture/)和[目标](/companion/apple/targets/)。
+- 在提交第一个拉取请求之前，请查看[代码风格](/companion/apple/code-style/)。

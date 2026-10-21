@@ -1,28 +1,28 @@
 ---
-title: Send data
-description: The mobile_app webhook. Which URL to use, the request format, the responses, and every request type the webhook accepts.
+title: 发送数据
+description: mobile_app webhook。使用哪个 URL、请求格式、响应，以及该 webhook 接受的所有请求类型。
 order: 2
 ---
 
-After [registration](/companion/mobile-app-api/setup/), everything the app sends goes to one webhook. It doesn't need an access token: the webhook ID is the credential. Treat it like a password.
+完成[注册](/companion/mobile-app-api/setup/)后，应用发送的所有内容都指向同一个 webhook。它不需要访问令牌：webhook ID 本身就是凭证。请像对待密码一样对待它。
 
-## Which URL to use
+## 使用哪个 URL
 
-Build the webhook URL from the webhook ID: `<instance_url>/api/webhook/<webhook_id>`. Then try the URLs you have in this order, and move to the next one when a request fails:
+使用 webhook ID 构建 webhook URL：`<instance_url>/api/webhook/<webhook_id>`。然后按以下顺序尝试你拥有的 URL，当请求失败时切换到下一个：
 
-1. The `cloudhook_url`, if registration gave you one.
-2. `<remote_ui_url>/api/webhook/<webhook_id>`, if registration gave you a `remote_ui_url`.
-3. `<instance_url>/api/webhook/<webhook_id>`, with the URL the user set up.
+1. `cloudhook_url`，如果注册时返回了该 URL。
+2. `<remote_ui_url>/api/webhook/<webhook_id>`，如果注册时返回了 `remote_ui_url`。
+3. `<instance_url>/api/webhook/<webhook_id>`，使用用户配置的 URL。
 
-Both Home Assistant Link URLs can come and go, as the user's subscription changes. The [`get_config`](#get_config) response has the current ones.
+两个 Home Assistant Link URL 都可能随用户订阅的变化而出现或消失。[`get_config`](#get_config) 的响应中包含当前的 URL。
 
-### Home and away
+### 家庭与外出
 
-Some routers can't reach a device on the local network through its external address (no NAT loopback, or hairpinning). If the user reaches Home Assistant through a dynamic DNS name, requests from inside the home fail. Let the user tell the app which Wi-Fi network is home, and use the internal URL there.
+某些路由器无法通过外部地址访问本地网络中的设备（不支持 NAT 回环，即 hairpinning）。如果用户通过动态 DNS 域名访问 Home Assistant，来自家庭内部的请求会失败。让用户告诉应用哪个 Wi-Fi 网络是家庭网络，并在该网络下使用内部 URL。
 
-## Sending over the WebSocket API
+## 通过 WebSocket API 发送
 
-When the app already has a [WebSocket](/core/internals/websocket-api/) connection, it can send webhook requests over it, with the `webhook/handle` command:
+当应用已经建立了 [WebSocket](/core/internals/websocket-api/) 连接时，可以通过它使用 `webhook/handle` 命令发送 webhook 请求：
 
 ```json
 {
@@ -37,7 +37,7 @@ When the app already has a [WebSocket](/core/internals/websocket-api/) connectio
 }
 ```
 
-`method` is one of `GET`, `HEAD`, `POST`, or `PUT`. `body` and `query` are optional strings, and `headers` is an optional object with string values. The result contains the `body`, `status`, and `headers` of the response:
+`method` 是 `GET`、`HEAD`、`POST` 或 `PUT` 之一。`body` 和 `query` 是可选的字符串，`headers` 是一个可选的、值为字符串的对象。结果中包含响应的 `body`、`status` 和 `headers`：
 
 ```json
 {
@@ -54,9 +54,9 @@ When the app already has a [WebSocket](/core/internals/websocket-api/) connectio
 }
 ```
 
-## The request
+## 请求
 
-Every request is an HTTP POST (PUT works too) with a JSON body:
+每个请求都是一个带有 JSON 请求体的 HTTP POST（也支持 PUT）：
 
 ```json
 {
@@ -65,22 +65,22 @@ Every request is an HTTP POST (PUT works too) with a JSON body:
 }
 ```
 
-Some types take no `data`. If the registration has encryption enabled, every request must be encrypted, see [encryption](/companion/mobile-app-api/encryption/).
+某些类型不需要 `data`。如果注册时启用了加密，则每个请求都必须加密，参见[加密](/companion/mobile-app-api/encryption/)。
 
-## The response
+## 响应
 
-| Status | Meaning |
+| 状态 | 含义 |
 | --- | --- |
-| `200` | Handled. Also returned, with an empty `{}`, when the payload doesn't match the schema of the type, the encrypted payload can't be decrypted, or the type is unknown. Home Assistant logs the details |
-| `201` | A sensor was registered |
-| `400` | The body is not valid JSON, the request is not encrypted while encryption is enabled, `enable_encryption` was sent while encryption is already on, or `stream_camera` got an unknown camera |
-| `404` | The webhook endpoint is not there, because the `webhook` integration is not loaded |
-| `405` | The request used `GET`. The webhook only accepts `POST` and `PUT` |
-| `410` | The registration was deleted. Tell the user, and register again. Until Home Assistant restarts after the deletion, the webhook answers like an unknown one instead, with an empty `200` |
+| `200` | 已处理。当载荷不符合该类型的 schema、加密载荷无法解密、或类型未知时，也会返回此状态码，并带有空的 `{}`。Home Assistant 会记录详细信息 |
+| `201` | 注册了一个传感器 |
+| `400` | 请求体不是有效的 JSON、在启用加密的情况下请求未加密、在加密已开启时发送了 `enable_encryption`、或 `stream_camera` 收到了未知的摄像头 |
+| `404` | webhook 端点不存在，因为 `webhook` 集成（integration）未加载 |
+| `405` | 请求使用了 `GET`。该 webhook 只接受 `POST` 和 `PUT` |
+| `410` | 注册已被删除。告知用户并重新注册。在删除后 Home Assistant 重启之前，该 webhook 会像未知的 webhook 一样响应，返回空的 `200` |
 
-A request for a webhook ID that Home Assistant doesn't know gets an empty `200`, also when `mobile_app` itself is not loaded. That way, the API doesn't reveal which webhooks exist.
+Home Assistant 未知的 webhook ID 的请求会得到空的 `200`，当 `mobile_app` 本身未加载时也是如此。这样，API 就不会暴露哪些 webhook 存在。
 
-Errors in the body look like this:
+请求体中的错误如下所示：
 
 ```json
 {
@@ -92,13 +92,13 @@ Errors in the body look like this:
 }
 ```
 
-If the registration uses encryption, responses with content are encrypted too. These are not: the empty `{}` response, the response to `enable_encryption`, and the two errors in the format above, `encryption_required` and `encryption_already_enabled`. Errors that a request type returns as its own result are encrypted like any other response. For example, `stream_camera` answers an unknown camera with an encrypted `{"success": false}` and a `400`. So don't go by the status code: check whether the body has `encrypted` set.
+如果注册使用了加密，带有内容的响应也会被加密。以下内容不会被加密：空的 `{}` 响应、对 `enable_encryption` 的响应，以及上述格式中的两种错误：`encryption_required` 和 `encryption_already_enabled`。由请求类型自身作为结果返回的错误会像其他响应一样被加密。例如，`stream_camera` 对未知摄像头会返回加密的 `{"success": false}` 和 `400`。因此不要只看状态码：请检查请求体中是否设置了 `encrypted`。
 
-## Request types
+## 请求类型
 
 ### `update_location`
 
-Updates the device tracker of the app.
+更新应用的设备追踪器。
 
 ```json
 {
@@ -111,27 +111,27 @@ Updates the device tracker of the app.
 }
 ```
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `gps` | list | Latitude and longitude. Requires `gps_accuracy` |
-| `gps_accuracy` | number | Accuracy of the location in meters. Zero or more |
-| `location_name` | string | The name of the zone the device is in |
-| `in_zones` | list | Entity IDs of the zones the device is in |
-| `battery` | integer | Battery level in percent. Zero or more |
-| `speed` | integer | Speed in meters per second. Zero or more |
-| `altitude` | number | Altitude in meters |
-| `course` | integer | Direction of travel in degrees, relative to due north. Zero or more |
-| `vertical_accuracy` | integer | Accuracy of the altitude in meters. Zero or more |
+| `gps` | 列表 | 纬度和经度。需要 `gps_accuracy` |
+| `gps_accuracy` | 数字 | 位置的精度，单位为米。零或更大 |
+| `location_name` | 字符串 | 设备所在的地理位置区域（zone）的名称 |
+| `in_zones` | 列表 | 设备所在的地理位置区域的实体（entity）ID |
+| `battery` | 整数 | 电量百分比。零或更大 |
+| `speed` | 整数 | 速度，单位为米每秒。零或更大 |
+| `altitude` | 数字 | 海拔高度，单位为米 |
+| `course` | 整数 | 行进方向的角度，相对于正北。零或更大 |
+| `vertical_accuracy` | 整数 | 海拔高度的精度，单位为米。零或更大 |
 
-All keys are optional. When you send `in_zones`, Home Assistant ignores `location_name`.
+所有键都是可选的。发送 `in_zones` 时，Home Assistant 会忽略 `location_name`。
 
-### `register_sensor` and `update_sensor_states`
+### `register_sensor` 和 `update_sensor_states`
 
-Register a sensor, and update one or more sensors. See [sensors](/companion/mobile-app-api/sensors/).
+注册传感器，以及更新一个或多个传感器。参见[传感器](/companion/mobile-app-api/sensors/)。
 
 ### `call_service`
 
-Performs an [action](/glossary/action/) in Home Assistant. The type and keys still use the old name, service.
+在 Home Assistant 中执行[动作（action）](/glossary/action/)。类型和键仍使用旧名称 service（服务）。
 
 ```json
 {
@@ -146,17 +146,17 @@ Performs an [action](/glossary/action/) in Home Assistant. The type and keys sti
 }
 ```
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `domain` | string | The domain of the action |
-| `service` | string | The name of the action |
-| `service_data` | object | The data for the action. Optional |
+| `domain` | 字符串 | 动作的域 |
+| `service` | 字符串 | 动作的名称 |
+| `service_data` | 对象 | 动作的数据。可选 |
 
-The action runs as the user who registered the app. If it fails, Home Assistant logs the error, and the response is a `200` without a body.
+该动作以注册应用的用户身份运行。如果失败，Home Assistant 会记录错误，响应是一个没有请求体的 `200`。
 
 ### `fire_event`
 
-Fires an event.
+触发一个事件。
 
 ```json
 {
@@ -170,14 +170,14 @@ Fires an event.
 }
 ```
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `event_type` | string | The type of the event |
-| `event_data` | object | The data of the event. Optional |
+| `event_type` | 字符串 | 事件的类型 |
+| `event_data` | 对象 | 事件的数据。可选 |
 
 ### `render_template`
 
-Renders one or more templates in one request. Each key in `data` is a template you name yourself:
+在一个请求中渲染一个或多个模板。`data` 中的每个键都是你自己命名的模板：
 
 ```json
 {
@@ -193,16 +193,16 @@ Renders one or more templates in one request. Each key in `data` is a template y
 }
 ```
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `template` | string | The template to render |
-| `variables` | object | Extra variables for the template. Optional |
+| `template` | 字符串 | 要渲染的模板 |
+| `variables` | 对象 | 模板的额外变量。可选 |
 
-The response uses the same keys: `{"greeting": "Hello Paulus, you are home."}`. A template that fails returns `{"error": "<message>"}` under its key, the others still render.
+响应使用相同的键：`{"greeting": "Hello Paulus, you are home."}`。渲染失败的模板会在其键下返回 `{"error": "<message>"}`，其他模板仍会正常渲染。
 
 ### `update_registration`
 
-Updates the registration, for example after an app update or when the push token changes.
+更新注册信息，例如在应用更新后或推送令牌变更时。
 
 ```json
 {
@@ -221,20 +221,20 @@ Updates the registration, for example after an app update or when the push token
 }
 ```
 
-| Key | Required | Type | Description |
+| 键 | 必需 | 类型 | 描述 |
 | --- | --- | --- | --- |
-| `app_version` | Yes | string | The version of the app |
-| `device_name` | Yes | string | The name of the device |
-| `manufacturer` | Yes | string | The manufacturer of the device |
-| `model` | Yes | string | The model of the device |
-| `os_version` | No | string | The version of the operating system |
-| `app_data` | No | object | Replaces the app data, for example to enable [notifications](/companion/mobile-app-api/notifications/) |
+| `app_version` | 是 | 字符串 | 应用的版本 |
+| `device_name` | 是 | 字符串 | 设备的名称 |
+| `manufacturer` | 是 | 字符串 | 设备的制造商 |
+| `model` | 是 | 字符串 | 设备的型号 |
+| `os_version` | 否 | 字符串 | 操作系统的版本 |
+| `app_data` | 否 | 对象 | 替换应用数据，例如用于启用[通知](/companion/mobile-app-api/notifications/) |
 
-The response is the updated registration, without the secret values.
+响应是更新后的注册信息，不包含机密值。
 
 ### `get_config`
 
-Returns information to configure the app with.
+返回用于配置应用的信息。
 
 ```json
 {
@@ -242,18 +242,18 @@ Returns information to configure the app with.
 }
 ```
 
-The response has the `latitude`, `longitude`, `elevation`, `unit_system`, `location_name`, `time_zone`, `components`, `version`, and `theme_color` of the instance, plus:
+响应包含实例的 `latitude`、`longitude`、`elevation`、`unit_system`、`location_name`、`time_zone`、`components`、`version` 和 `theme_color`，以及：
 
-| Key | Description |
+| 键 | 描述 |
 | --- | --- |
-| `hass_device_id` | The ID of the app's device in the device registry |
-| `instance_id` | The unique ID of the instance |
-| `cloudhook_url`, `remote_ui_url` | The current Home Assistant Link URLs, when the instance has an active subscription and the user is not local only |
-| `entities` | The enabled state of each entity of the registration, keyed by the unique ID you registered it with, see [keeping sensors in sync](/companion/mobile-app-api/sensors/#keep-the-enabled-state-in-sync) |
+| `hass_device_id` | 应用的设备在设备注册表中的 ID |
+| `instance_id` | 实例的唯一 ID |
+| `cloudhook_url`, `remote_ui_url` | 当前的 Home Assistant Link URL，当实例拥有有效订阅且用户不是仅本地访问时 |
+| `entities` | 注册中每个实体的启用状态，以注册时使用的唯一 ID 为键，参见[保持传感器同步](/companion/mobile-app-api/sensors/#keep-the-enabled-state-in-sync) |
 
 ### `get_zones`
 
-Returns the states of all zones, sorted by entity ID.
+返回所有地理位置区域的状态，按实体 ID 排序。
 
 ```json
 {
@@ -263,11 +263,11 @@ Returns the states of all zones, sorted by entity ID.
 
 ### `enable_encryption`
 
-Turns on encryption for an existing registration. See [encryption](/companion/mobile-app-api/encryption/#enable-it-later).
+为现有注册开启加密。参见[加密](/companion/mobile-app-api/encryption/#enable-it-later)。
 
 ### `stream_camera`
 
-Returns the paths to stream a camera.
+返回用于串流摄像头的路径。
 
 ```json
 {
@@ -285,11 +285,11 @@ Returns the paths to stream a camera.
 }
 ```
 
-`hls_path` is `null` when the camera can't stream. Combine the paths with the URL you use for the instance. An unknown camera returns `{"success": false}` with a `400`. If the registration uses encryption, that body is encrypted too.
+当摄像头无法串流时，`hls_path` 为 `null`。将这些路径与你访问实例所用的 URL 组合使用。未知摄像头会返回 `{"success": false}` 和 `400`。如果注册使用了加密，该请求体也会被加密。
 
 ### `conversation_process`
 
-Sends a sentence to [Assist](/glossary/assist/), and returns the response of the conversation agent.
+向 [Assist](/glossary/assist/) 发送一句话，并返回对话代理的响应。
 
 ```json
 {
@@ -302,11 +302,11 @@ Sends a sentence to [Assist](/glossary/assist/), and returns the response of the
 }
 ```
 
-Only `text` is required. The response has the same format as the [conversation API](/core/internals/conversation-api/).
+只有 `text` 是必需的。响应的格式与[对话 API](/core/internals/conversation-api/) 相同。
 
 ### `scan_tag`
 
-Reports that the device scanned an NFC tag or QR code. Home Assistant fires a tag scanned event, with the app's device as the scanner.
+报告设备扫描了 NFC 标签或二维码。Home Assistant 会触发一个标签扫描事件，以应用的设备作为扫描者。
 
 ```json
 {
@@ -317,6 +317,6 @@ Reports that the device scanned an NFC tag or QR code. Home Assistant fires a ta
 }
 ```
 
-### `live_activity_token` and `live_activity_dismissed`
+### `live_activity_token` 和 `live_activity_dismissed`
 
-Used by the iOS app for Live Activities. See [notifications](/companion/mobile-app-api/notifications/#live-activities).
+由 iOS 应用用于 Live Activities。参见[通知](/companion/mobile-app-api/notifications/#live-activities)。

@@ -1,46 +1,46 @@
 ---
-title: Set up a development environment
-description: Run the Supervisor from source in its development container, run the tests and linters, and try your build on a real system.
-sidebarLabel: Development environment
-sidebarGroup: Guides
+title: 搭建开发环境
+description: 在开发容器中从源码运行 Supervisor，运行测试和代码检查工具，并在真实系统上试用你的构建版本。
+sidebarLabel: 开发环境
+sidebarGroup: 指南
 order: 1
 ---
 
-The Supervisor has a development container that runs a complete system: your Supervisor, Home Assistant Core, the plugins, and apps, all inside one Docker container on your machine. For most changes, that is all you need.
+Supervisor 提供了一个开发容器，可以运行一个完整的系统：你的 Supervisor、Home Assistant Core、插件和应用，全部运行在你机器上的一个 Docker 容器内。对于大多数改动，这就足够了。
 
-## Set up the development container
+## 搭建开发容器
 
-You need [Docker](https://docs.docker.com/get-docker/), [Visual Studio Code](https://code.visualstudio.com/) with the Dev Containers extension, and [Git](https://git-scm.com/). The [Core development environment](/core/development/environment/) guide explains how to install them on each operating system. On Windows, work inside WSL2.
+你需要 [Docker](https://docs.docker.com/get-docker/)、安装了 Dev Containers 扩展的 [Visual Studio Code](https://code.visualstudio.com/)，以及 [Git](https://git-scm.com/)。[Core 开发环境](/core/development/environment/)指南介绍了如何在各个操作系统上安装它们。在 Windows 上，请在 WSL2 中工作。
 
-1. [Fork the Supervisor repository](https://github.com/home-assistant/supervisor/fork), and clone your fork.
-2. Open the folder in Visual Studio Code, and select **Reopen in Container** when it asks.
+1. [Fork Supervisor 仓库](https://github.com/home-assistant/supervisor/fork)，并克隆你的 fork。
+2. 在 Visual Studio Code 中打开该文件夹，并在提示时选择 **Reopen in Container**。
 
-The container runs privileged, with its own Docker engine inside. That is what lets it run a whole Supervisor system. The setup installs the Python dependencies and the pre-commit hooks.
+该容器以特权模式运行，内部带有自己的 Docker 引擎。这正是它能够运行整套 Supervisor 系统的原因。此设置会安装 Python 依赖项和 pre-commit 钩子。
 
-## Run the Supervisor
+## 运行 Supervisor
 
-Open the Command Palette, select **Tasks: Run Task**, then **Run Supervisor**. The task builds a Supervisor image from your working copy, and starts it as `hassio_supervisor` inside the container. The first start downloads Home Assistant Core and the plugins, which takes a while.
+打开命令面板，选择 **Tasks: Run Task**，然后选择 **Run Supervisor**。该任务会从你的工作副本构建一个 Supervisor 镜像，并在容器内以 `hassio_supervisor` 的名称启动它。首次启动会下载 Home Assistant Core 和插件，这需要一些时间。
 
-| Address | What |
+| 地址 | 说明 |
 | --- | --- |
 | `http://localhost:9123` | Home Assistant Core |
-| `http://localhost:7357` | The observer |
+| `http://localhost:7357` | 观察器（observer） |
 
-The **Run Supervisor CLI** task opens the `ha` command line against your Supervisor. Run **Run Supervisor** again after a change: it restarts the Supervisor with a fresh image of your code.
+**Run Supervisor CLI** 任务会针对你的 Supervisor 打开 `ha` 命令行。每次修改后再次运行 **Run Supervisor**：它会用你的代码的新镜像重启 Supervisor。
 
-The development container follows the `dev` channel, so Core and the plugins are the latest development versions. A Supervisor built from source has the version `9999.09.9.dev9999`, and never tries to update itself.
+开发容器遵循 `dev` 频道，因此 Core 和插件都是最新的开发版本。从源码构建的 Supervisor 版本号为 `9999.09.9.dev9999`，并且绝不会尝试自我更新。
 
-## Tests and linters
+## 测试和代码检查
 
-The tests mock Docker, D-Bus, and the network, so they run anywhere, without a running Supervisor. They live in `tests/`, in the same layout as `supervisor/`:
+测试会模拟 Docker、D-Bus 和网络，因此它们可以在任何地方运行，无需运行中的 Supervisor。它们位于 `tests/` 中，布局与 `supervisor/` 相同：
 
 ```shell
 pytest -qsx tests/resolution/
 ```
 
-Write new tests as plain `test_` functions with pytest fixtures. `tests/conftest.py` provides a mocked `CoreSys`, and much more.
+编写新测试时，请使用带有 pytest fixture 的普通 `test_` 函数。`tests/conftest.py` 提供了一个模拟的 `CoreSys`，以及更多其他内容。
 
-Before you commit, run the linters and the type checker:
+在提交之前，请运行代码检查工具和类型检查器：
 
 ```shell
 ruff check --fix supervisor tests
@@ -49,39 +49,39 @@ pylint supervisor tests
 mypy --ignore-missing-imports supervisor/
 ```
 
-Or run all the configured hooks at once with `pre-commit run --all-files`.
+或者使用 `pre-commit run --all-files` 一次性运行所有已配置的钩子。
 
-## Code conventions
+## 代码规范
 
-The repository has its own instructions for contributors, in `.github/copilot-instructions.md`. The most important ones:
+该仓库在 `.github/copilot-instructions.md` 中有自己的贡献者指南。其中最重要的几条：
 
-- Use relative imports inside `supervisor/`.
-- Use constants from `supervisor/const.py`, or the `const.py` of the module, instead of literal values.
-- Reach other parts of the system through `self.sys_*`, see [architecture](/os/supervisor/architecture/).
-- Raise the exceptions from `supervisor/exceptions.py`, and chain them with `from`.
-- Say "app", not "add-on", in new code and comments. Keep `addon` only where an existing API field or class still uses it.
+- 在 `supervisor/` 内部使用相对导入。
+- 使用 `supervisor/const.py` 中的常量，或模块自身的 `const.py`，而不是字面值。
+- 通过 `self.sys_*` 访问系统的其他部分，参见[架构](/os/supervisor/architecture/)。
+- 抛出 `supervisor/exceptions.py` 中的异常，并使用 `from` 进行异常链连接。
+- 在新代码和注释中使用 "app"，而不是 "add-on"。仅在现有 API 字段或类仍在使用 `addon` 的地方保留它。
 
-## Test on a real system
+## 在真实系统上测试
 
-Some things only show on real hardware: a board specific D-Bus API, a disk, a USB device. To run your Supervisor on a Home Assistant OS device:
+有些问题只会在真实硬件上显现：特定开发板的 D-Bus API、磁盘、USB 设备。要在 Home Assistant OS 设备上运行你的 Supervisor：
 
-1. On the device, find the architecture with `ha info`: `amd64` or `aarch64`.
-2. On your computer, build an image for that architecture and push it to a registry you can pull from, like the GitHub container registry:
+1. 在设备上，使用 `ha info` 查看架构：`amd64` 或 `aarch64`。
+2. 在你的电脑上，为该架构构建一个镜像，并将其推送到你可以拉取的镜像仓库，例如 GitHub 容器镜像仓库：
 
    ```shell
    docker build --platform linux/arm64 --push \
      --tag ghcr.io/YOUR_GITHUB_USERNAME/aarch64-hassio-supervisor:dev .
    ```
 
-   Docker calls the architectures `linux/amd64` and `linux/arm64`. The image name uses Home Assistant's names, `amd64` and `aarch64`.
+   Docker 将架构称为 `linux/amd64` 和 `linux/arm64`。镜像名称使用 Home Assistant 的命名，即 `amd64` 和 `aarch64`。
 
-3. On the device, switch to the `dev` channel, so the Supervisor doesn't replace your build with the stable release:
+3. 在设备上，切换到 `dev` 频道，这样 Supervisor 就不会用稳定版替换你的构建版本：
 
    ```shell
    ha supervisor options --channel dev
    ```
 
-4. On the host shell, see [debug the host](/os/operating-system/debugging/), pull your image and tag it as the image the OS starts:
+4. 在宿主机 shell 中（参见[调试宿主机](/os/operating-system/debugging/)），拉取你的镜像并将其标记为 OS 启动时使用的镜像：
 
    ```shell
    docker pull ghcr.io/YOUR_GITHUB_USERNAME/aarch64-hassio-supervisor:dev
@@ -89,30 +89,30 @@ Some things only show on real hardware: a board specific D-Bus API, a disk, a US
      ghcr.io/home-assistant/aarch64-hassio-supervisor:latest
    ```
 
-5. Restart the Supervisor service, and follow its output:
+5. 重启 Supervisor 服务，并跟踪其输出：
 
    ```shell
    systemctl restart haos-supervisor
    journalctl -fu haos-supervisor
    ```
 
-The service sees that the image changed, and creates a new Supervisor container from it.
+该服务会检测到镜像已更改，并基于它创建一个新的 Supervisor 容器。
 
-Images on the GitHub container registry are private by default. Either log in with `docker login ghcr.io` on the device, or make the package public in its settings on GitHub.
+GitHub 容器镜像仓库中的镜像默认是私有的。你可以在设备上使用 `docker login ghcr.io` 登录，或者在 GitHub 上将该软件包在其设置中设为公开。
 
-## Open a pull request
+## 提交拉取请求
 
-Open your pull request against `main` of [home-assistant/supervisor](https://github.com/home-assistant/supervisor), and fill in the template. For large changes, discuss the approach in an issue first.
+针对 [home-assistant/supervisor](https://github.com/home-assistant/supervisor) 的 `main` 分支提交你的拉取请求，并填写模板。对于较大的改动，请先在 issue 中讨论方案。
 
-If you changed the API, the pull request template also asks for:
+如果你修改了 API，拉取请求模板还会要求：
 
-- A pull request to the [cli](https://github.com/home-assistant/cli) repository, if the `ha` command needs it.
-- A pull request to the [Python client library](https://github.com/home-assistant-libs/python-supervisor-client), which Core uses.
-- Updated documentation in the [Supervisor API](/apps/supervisor-api/) reference, in the Apps area.
+- 如果 `ha` 命令需要，向 [cli](https://github.com/home-assistant/cli) 仓库提交拉取请求。
+- 向 Core 所使用的 [Python 客户端库](https://github.com/home-assistant-libs/python-supervisor-client)提交拉取请求。
+- 在 Apps 区域中更新 [Supervisor API](/apps/supervisor-api/) 参考文档。
 
-## How the Supervisor is released
+## Supervisor 的发布方式
 
-1. Pull requests are merged into `main`.
-2. Every merge is built and published to the `dev` channel.
-3. A release publishes a version, like `2026.10.1`, to the `beta` channel.
-4. Once it has proven itself, the [stable.json](https://github.com/home-assistant/version/blob/master/stable.json) in the version repository is updated, and stable systems pick it up.
+1. 拉取请求被合并到 `main` 分支。
+2. 每次合并都会被构建并发布到 `dev` 频道。
+3. 一次发布将一个版本（如 `2026.10.1`）发布到 `beta` 频道。
+4. 一旦它被证明稳定，版本仓库中的 [stable.json](https://github.com/home-assistant/version/blob/master/stable.json) 就会更新，稳定版系统便会采用它。

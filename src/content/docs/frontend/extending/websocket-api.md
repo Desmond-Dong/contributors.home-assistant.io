@@ -1,14 +1,14 @@
 ---
-title: Add a WebSocket command
-description: Make data from your integration available to the frontend with a WebSocket command in Core, and call it from the frontend.
+title: 添加 WebSocket 命令
+description: 在 Core 中通过 WebSocket 命令将集成（integration）的数据提供给前端，并从前端调用它。
 order: 3
 ---
 
-The frontend talks to Core over a WebSocket connection. When your integration has data the frontend needs, and it is not an entity state or an attribute, add a WebSocket command. Commands can answer once, or keep sending updates as a subscription.
+前端通过 WebSocket 连接与 Core 通信。当你的集成拥有前端需要的数据，而这些数据既不是实体（entity）状态也不是属性（attribute）时，可以添加一个 WebSocket 命令。命令可以只应答一次，也可以作为订阅持续发送更新。
 
-## In Core
+## 在 Core 中
 
-A command is a function with a decorator that sets its message type and the schema of its data. The type is prefixed with the domain of your integration.
+命令是一个带有装饰器的函数，装饰器用于设置其消息类型和数据模式（schema）。类型以你的集成的域（domain）作为前缀。
 
 ```python
 from typing import Any
@@ -40,7 +40,7 @@ def ws_get_status(
     connection.send_result(msg["id"], {"status": status})
 ```
 
-Register the command when your integration is set up:
+在集成被设置时注册该命令：
 
 ```python
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
@@ -49,9 +49,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     return True
 ```
 
-Your integration does not need `websocket_api` as a dependency in its manifest. The command is registered either way, and is available as soon as the WebSocket API runs.
+你的集成不需要在 manifest 中将 `websocket_api` 声明为依赖项。无论哪种方式，命令都会被注册，并且只要 WebSocket API 运行即可使用。
 
-A function decorated with `@callback` runs in the [event loop](/glossary/event-loop/), so it must not do any I/O. When your command has to wait, for a device or the network, make it `async` and add `@websocket_api.async_response` below `websocket_command`:
+用 `@callback` 装饰的函数在[事件循环（event loop）](/glossary/event-loop/)中运行，因此它不能执行任何 I/O 操作。当你的命令需要等待设备或网络时，请将其设为 `async`，并在 `websocket_command` 下方添加 `@websocket_api.async_response`：
 
 ```python
 @websocket_api.websocket_command(
@@ -68,11 +68,11 @@ async def ws_refresh(
     connection.send_result(msg["id"])
 ```
 
-Add `@websocket_api.require_admin` to a command that only administrators may use.
+对于仅限管理员使用的命令，请添加 `@websocket_api.require_admin`。
 
-### Subscriptions
+### 订阅
 
-For data that changes, send the first result, then send an event with the same message ID on every change. Store a function that stops the updates in `connection.subscriptions`, and Core calls it when the frontend unsubscribes or disconnects:
+对于会变化的数据，先发送第一个结果，然后在每次变化时发送带有相同消息 ID 的事件。将一个用于停止更新的函数存储在 `connection.subscriptions` 中，当前端取消订阅或断开连接时，Core 会调用它：
 
 ```python
 @websocket_api.websocket_command(
@@ -96,11 +96,11 @@ def ws_subscribe_status(
     connection.send_result(msg["id"])
 ```
 
-The [WebSocket API reference](/core/internals/websocket-api/) covers the WebSocket API of Core in more depth.
+[WebSocket API 参考](/core/internals/websocket-api/)更深入地介绍了 Core 的 WebSocket API。
 
-## In the frontend
+## 在前端中
 
-Add the types and a function for your command to a module in `src/data/`, named after your integration. Components call that function, never the raw message:
+将你的命令的类型和函数添加到 `src/data/` 中以你的集成命名的模块里。组件调用该函数，而不是直接发送原始消息：
 
 ```ts
 export interface ExampleStatus {
@@ -125,6 +125,6 @@ export const subscribeExampleStatus = (
   });
 ```
 
-`hass.callWS()` returns a promise that rejects with the error when Core sends one. `subscribeMessage()` returns a promise of a function that unsubscribes. In a component, return it from `hassSubscribe()` and `SubscribeMixin` cleans it up. [The data layer](/frontend/architecture/data/) explains the patterns.
+`hass.callWS()` 返回一个 promise，当 Core 发送错误时该 promise 会以该错误拒绝。`subscribeMessage()` 返回一个 promise，其结果是一个用于取消订阅的函数。在组件中，从 `hassSubscribe()` 返回它，`SubscribeMixin` 会自动清理它。[数据层](/frontend/architecture/data/)解释了这些模式。
 
-Custom cards and panels can call your command the same way, with `hass.callWS()` or `hass.connection.subscribeMessage()`.
+自定义卡片和面板可以用同样的方式调用你的命令，使用 `hass.callWS()` 或 `hass.connection.subscribeMessage()`。

@@ -1,18 +1,18 @@
 ---
-title: Configure the host
-description: Change host settings on Home Assistant OS with a CONFIG USB drive, or directly in the persistent folders on the host.
-sidebarLabel: Configure the host
+title: 配置主机
+description: 使用 CONFIG USB 驱动器，或直接在主机的持久化文件夹中更改 Home Assistant OS 的主机设置。
+sidebarLabel: 配置主机
 sidebarGroup: Guides
 order: 3
 ---
 
-The root file system of Home Assistant OS is read-only. Settings that need to survive a reboot or an update live on the overlay partition, and are bind mounted into place. You can change them in two ways: with a `CONFIG` USB drive, or directly on the host shell.
+Home Assistant OS 的根文件系统是只读的。需要在重启或更新后保留的设置存放在 overlay 分区上，并以绑定挂载（bind mount）的方式挂载到位。你可以通过两种方式更改它们：使用 `CONFIG` USB 驱动器，或直接在主机 shell 中操作。
 
-Most users never need any of this. The Supervisor covers networking, the hostname, swap, and the data disk through the UI and the `ha` command line. This page is for what it does not cover, and for development and debugging.
+大多数用户从不需要这些。Supervisor 通过 UI 和 `ha` 命令行管理网络、主机名、swap 和数据磁盘。本页面介绍的是它未涵盖的内容，以及用于开发和调试的内容。
 
-## The CONFIG USB drive
+## CONFIG USB 驱动器
 
-Format a USB drive with FAT32, exFAT, ext4, or NTFS, and give it the label `CONFIG`, in capitals. It has to be the label of the file system: Home Assistant OS ignores the name of the partition. Put the files you need in its root:
+将 USB 驱动器格式化为 FAT32、exFAT、ext4 或 NTFS，并将其卷标设置为 `CONFIG`（大写）。它必须是文件系统的卷标：Home Assistant OS 会忽略分区的名称。将你需要的文件放在其根目录中：
 
 ```text
 network/
@@ -24,24 +24,24 @@ timesyncd.conf
 haos_<board>-<version>.raucb
 ```
 
-| Entry | What it does |
+| 条目 | 作用 |
 | --- | --- |
-| `network/` | NetworkManager connection files. Replaces all existing connections. See [configure networking](/os/operating-system/networking/). |
-| `modules/` | Files for `/etc/modules-load.d`, to load kernel modules at boot. Replaces the existing files. |
-| `modprobe/` | Files for `/etc/modprobe.d`, to set kernel module options. Replaces the existing files. |
-| `udev/` | Files for `/etc/udev/rules.d`. Replaces the existing rules. |
-| `authorized_keys` | Public SSH keys for root, and starts SSH on port 22222. See [debug the host](/os/operating-system/debugging/). |
-| `timesyncd.conf` | Your own time server settings. Stored as a drop-in in `/etc/systemd/timesyncd.conf.d/`. |
-| `*.raucb` | An update bundle to install. Only from a USB drive, and only when the system has been up for 5 minutes. |
+| `network/` | NetworkManager 连接文件。会替换所有现有连接。参见[配置网络](/os/operating-system/networking/)。 |
+| `modules/` | 用于 `/etc/modules-load.d` 的文件，在启动时加载内核模块。会替换现有文件。 |
+| `modprobe/` | 用于 `/etc/modprobe.d` 的文件，用于设置内核模块选项。会替换现有文件。 |
+| `udev/` | 用于 `/etc/udev/rules.d` 的文件。会替换现有规则。 |
+| `authorized_keys` | root 的 SSH 公钥，并在端口 22222 上启动 SSH。参见[调试主机](/os/operating-system/debugging/)。 |
+| `timesyncd.conf` | 你自己的时间服务器设置。以 drop-in 形式存储在 `/etc/systemd/timesyncd.conf.d/` 中。 |
+| `*.raucb` | 要安装的更新包。仅能从 USB 驱动器安装，且仅在系统已运行 5 分钟后才会安装。 |
 
-Use Unix line endings (LF) in every text file. Windows line endings (CRLF) break them. Most code editors, like Visual Studio Code, can switch the line endings of a file.
+每个文本文件都使用 Unix 换行符（LF）。Windows 换行符（CRLF）会破坏它们。大多数代码编辑器（如 Visual Studio Code）都可以切换文件的换行符。
 
 > [!WARNING]
-> The import mirrors the drive. A drive without an `authorized_keys` file removes the keys that are on the host, and stops SSH on port 22222. The same goes for the folders: whatever is in `network/` replaces every connection on the host.
+> 导入操作会镜像该驱动器。没有 `authorized_keys` 文件的驱动器会删除主机上的密钥，并停止端口 22222 上的 SSH。文件夹也是如此：`network/` 中的内容会替换主机上的所有连接。
 
-### When the drive is read
+### 驱动器何时被读取
 
-`haos-config.service` reads the drive at every boot. To import it on a running system, run one of these:
+`haos-config.service` 在每次启动时都会读取该驱动器。要在运行中的系统上导入它，请运行以下命令之一：
 
 ```shell
 # From the Home Assistant CLI
@@ -51,56 +51,56 @@ ha os import
 systemctl restart haos-config
 ```
 
-You only need the drive plugged in while it imports. You can remove it afterwards.
+你只需在导入期间插入驱动器，之后即可将其移除。
 
-Because of the 5 minute rule, an update bundle is never installed during boot. Plug in the drive once the system is running, and run `ha os import`.
+由于 5 分钟规则，更新包绝不会在启动期间安装。请在系统运行后插入驱动器，并运行 `ha os import`。
 
-### Without a USB drive
+### 不使用 USB 驱动器
 
-You can also create a `CONFIG` folder in the root of the boot partition, with the same content. That is handy for virtual machines, or before the first boot of a freshly flashed SD card. It is only used when there is no USB drive labeled `CONFIG`, and the folder is deleted after the import. Update bundles are not installed from it.
+你也可以在启动分区的根目录中创建一个 `CONFIG` 文件夹，内容相同。这对于虚拟机，或在全新烧录的 SD 卡首次启动之前非常方便。它只在没有卷标为 `CONFIG` 的 USB 驱动器时使用，并且导入后该文件夹会被删除。更新包不会从中安装。
 
-## Persistent folders on the host
+## 主机上的持久化文件夹
 
-On the host shell, these paths are bind mounts from the overlay partition. What you change there survives reboots and OS updates:
+在主机 shell 中，这些路径是从 overlay 分区绑定挂载的。你在其中所做的更改在重启和操作系统更新后仍然保留：
 
-| Path | What for |
+| 路径 | 用途 |
 | --- | --- |
-| `/etc/NetworkManager/system-connections` | Network connections |
-| `/etc/modules-load.d` | Kernel modules to load at boot |
-| `/etc/modprobe.d` | Kernel module options |
-| `/etc/udev/rules.d` | udev rules |
-| `/etc/sysctl.d` | Kernel parameters |
-| `/etc/systemd/timesyncd.conf.d` | Time server settings |
-| `/etc/hostname`, `/etc/hosts` | The hostname, and static host names |
-| `/etc/default` | Settings for host services, like the swap file |
-| `/etc/usb_modeswitch.d` | USB mode switching for modems |
-| `/root/.ssh` | SSH keys for root |
+| `/etc/NetworkManager/system-connections` | 网络连接 |
+| `/etc/modules-load.d` | 启动时加载的内核模块 |
+| `/etc/modprobe.d` | 内核模块选项 |
+| `/etc/udev/rules.d` | udev 规则 |
+| `/etc/sysctl.d` | 内核参数 |
+| `/etc/systemd/timesyncd.conf.d` | 时间服务器设置 |
+| `/etc/hostname`, `/etc/hosts` | 主机名和静态主机名 |
+| `/etc/default` | 主机服务的设置，例如 swap 文件 |
+| `/etc/usb_modeswitch.d` | 调制解调器的 USB 模式切换 |
+| `/root/.ssh` | root 的 SSH 密钥 |
 
-Everything else under `/etc` comes from the read-only image, and changes there are lost on the next reboot.
+`/etc` 下的其他所有内容都来自只读镜像，在那里所做的更改会在下次重启时丢失。
 
-## Kernel command line
+## 内核命令行
 
-Add kernel parameters to `cmdline.txt` on the boot partition. The bootloader reads it and appends it to the kernel command line. On the host, the boot partition is mounted at `/mnt/boot`. On most boards, it is also the first partition that shows up when you put the SD card or disk in another computer.
+将内核参数添加到启动分区上的 `cmdline.txt`。引导加载程序会读取它并将其附加到内核命令行。在主机上，启动分区挂载在 `/mnt/boot`。在大多数板子上，它也是你将 SD 卡或磁盘插入其他电脑时显示的第一个分区。
 
-The defaults differ per board. On many boards, `cmdline.txt` sets the consoles, see [debug the host](/os/operating-system/debugging/#serial-console).
+默认值因板子而异。在许多板子上，`cmdline.txt` 设置了控制台，参见[调试主机](/os/operating-system/debugging/#serial-console)。
 
-## Time servers
+## 时间服务器
 
-Home Assistant OS uses systemd-timesyncd. It uses the time servers a DHCP server announces, and falls back to `time.cloudflare.com`. To use your own, put them in a `timesyncd.conf` on the `CONFIG` drive:
+Home Assistant OS 使用 systemd-timesyncd。它使用 DHCP 服务器通告的时间服务器，并回退到 `time.cloudflare.com`。要使用你自己的时间服务器，请将它们放在 `CONFIG` 驱动器上的 `timesyncd.conf` 中：
 
 ```ini
 [Time]
 NTP=ntp.example.com
 ```
 
-Or create a file in `/etc/systemd/timesyncd.conf.d/` on the host directly.
+或者直接在主机的 `/etc/systemd/timesyncd.conf.d/` 中创建一个文件。
 
 ## Swap
 
-Home Assistant OS uses a swap file on the data partition. By default, it is a third of the memory, at least 1 GiB and at most 4 GiB. Change it with the CLI:
+Home Assistant OS 在数据分区上使用 swap 文件。默认情况下，它是内存的三分之一，至少 1 GiB，至多 4 GiB。使用 CLI 更改它：
 
 ```shell
 ha os config swap options --swap-size=2G --swappiness=10
 ```
 
-The OS Agent stores the size in `/etc/default/haos-swapfile`, as `SWAPSIZE`. A size of 0 turns the swap file off. The change takes effect after a reboot, and the Supervisor raises a repair issue to say so.
+OS Agent 将大小存储在 `/etc/default/haos-swapfile` 中，作为 `SWAPSIZE`。大小为 0 会关闭 swap 文件。更改在重启后生效，并且 Supervisor 会为此提出一个修复问题。

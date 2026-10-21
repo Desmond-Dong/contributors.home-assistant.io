@@ -1,22 +1,22 @@
 ---
-title: Custom strategies
-description: Generate a whole dashboard, a view, or a section from code, and offer your dashboard in the new dashboard dialog.
+title: 自定义策略
+description: 用代码生成整个仪表盘、视图或分区，并在新建仪表盘对话框中提供你的仪表盘。
 order: 6
 ---
 
-A [strategy](/glossary/strategy/) is code that writes a dashboard configuration. Instead of a list of cards, the dashboard says "use this strategy", and the strategy generates the cards from what is in the home, every time the dashboard loads. The **Overview** dashboard Home Assistant builds for you, the areas dashboard, the map, and the energy dashboard are all strategies.
+[策略（strategy）](/glossary/strategy/)是一段用于生成仪表盘配置的代码。仪表盘不再是一列卡片，而是声明“使用这个策略”，策略会在每次仪表盘加载时根据家中的内容生成卡片。Home Assistant 为你构建的**概览**仪表盘、区域仪表盘、地图和能源仪表盘都是策略。
 
-There are three kinds:
+共有三种类型：
 
-- A **dashboard strategy** generates the whole dashboard, with all its views.
-- A **view strategy** generates one view.
-- A **section strategy** generates one section in a sections view.
+- **仪表盘策略（dashboard strategy）**生成整个仪表盘及其所有视图。
+- **视图策略（view strategy）**生成一个视图。
+- **分区策略（section strategy）**在分区视图中生成一个分区。
 
-They work together. A dashboard strategy often generates a list of views that each use a view strategy, so each view is only built when someone opens it.
+它们协同工作。仪表盘策略通常会生成一个视图列表，每个视图都使用一个视图策略，这样每个视图只有在有人打开时才会被构建。
 
-## A dashboard strategy
+## 仪表盘策略
 
-A strategy is a custom element with a static `generate()` method. It gets the strategy configuration and `hass`, and returns a dashboard configuration:
+策略是一个带有静态 `generate()` 方法的自定义元素（custom element）。它接收策略配置和 `hass`，并返回一个仪表盘配置：
 
 ```js
 class MyDemoDashboardStrategy extends HTMLElement {
@@ -45,7 +45,7 @@ customElements.define(
 );
 ```
 
-Load it as a [resource](/frontend/custom-ui/resources/), and use it as the configuration of a dashboard:
+将其作为[资源（resource）](/frontend/custom-ui/resources/)加载，并将其用作仪表盘的配置：
 
 ```yaml
 strategy:
@@ -53,13 +53,13 @@ strategy:
   title: Generated dashboard
 ```
 
-The tag name decides what kind of strategy it is: `ll-strategy-dashboard-<name>`, `ll-strategy-view-<name>`, or `ll-strategy-section-<name>`. The `<name>` is what follows `custom:` in the configuration. Everything in the `strategy` section, including your own options, is passed to `generate()` as `config`.
+标签名决定了策略的类型：`ll-strategy-dashboard-<name>`、`ll-strategy-view-<name>` 或 `ll-strategy-section-<name>`。`<name>` 就是配置中 `custom:` 后面的部分。`strategy` 部分中的所有内容（包括你自己的选项）都会作为 `config` 传递给 `generate()`。
 
-The [built-in strategies](https://github.com/home-assistant/frontend/tree/dev/src/panels/lovelace/strategies) are good examples. The [map dashboard strategy](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/strategies/map/map-dashboard-strategy.ts) is a small one.
+[内置策略](https://github.com/home-assistant/frontend/tree/dev/src/panels/lovelace/strategies)是很好的示例。[地图仪表盘策略](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/strategies/map/map-dashboard-strategy.ts)是一个比较小的例子。
 
-## A view strategy
+## 视图策略
 
-A view strategy returns the configuration of one view. Use it in a view of any dashboard:
+视图策略返回一个视图的配置。可以在任何仪表盘的视图中使用它：
 
 ```yaml
 views:
@@ -68,7 +68,7 @@ views:
       area: living_room
 ```
 
-The view strategy below shows the entities of one area. The dashboard strategy above it creates a view with that view strategy for every area. `hass.areas`, `hass.devices`, and `hass.entities` hold the registries, so neither has to fetch anything.
+下面的视图策略显示一个区域（area）的实体（entity）。它上面的仪表盘策略为每个区域创建一个使用该视图策略的视图。`hass.areas`、`hass.devices` 和 `hass.entities` 中保存着注册表，因此两者都不需要获取任何数据。
 
 ```js
 class MyAreaDashboardStrategy extends HTMLElement {
@@ -112,13 +112,13 @@ customElements.define(
 customElements.define("ll-strategy-view-my-area", MyAreaViewStrategy);
 ```
 
-Both use the name `my-area`: one as a dashboard strategy, one as a view strategy. That is fine, because the kind is part of the tag name.
+两者都使用名称 `my-area`：一个作为仪表盘策略，一个作为视图策略。这是允许的，因为类型是标签名的一部分。
 
-## When to generate again
+## 何时重新生成
 
-A strategy runs when the dashboard loads. By default, it runs again when the entity, device, area, or floor registry changes, so a new device shows up without a reload. State changes don't trigger it.
+策略在仪表盘加载时运行。默认情况下，当实体、设备、区域或楼层注册表发生变化时，它会再次运行，因此新设备无需重新加载页面即可显示。状态（state）变化不会触发它。
 
-To change that, add a static `registryDependencies` with the registries your strategy depends on: any of `entities`, `devices`, `areas`, `floors`, `labels`, and `panels`. Use an empty list for a strategy that never needs to run again. For full control, add a static `shouldRegenerate(config, oldHass, newHass)` that returns `true` when the strategy should run again.
+要改变这一行为，可以添加一个静态的 `registryDependencies`，列出你的策略所依赖的注册表：可以是 `entities`、`devices`、`areas`、`floors`、`labels` 和 `panels` 中的任意组合。对于永远不需要再次运行的策略，使用空列表。若要完全控制，可以添加一个静态的 `shouldRegenerate(config, oldHass, newHass)`，当策略应该再次运行时返回 `true`。
 
 ```js
 class MyDemoDashboardStrategy extends HTMLElement {
@@ -130,9 +130,9 @@ class MyDemoDashboardStrategy extends HTMLElement {
 }
 ```
 
-## Show up in the new dashboard dialog
+## 在新建仪表盘对话框中显示
 
-Register your dashboard strategy in `window.customStrategies`, and it appears in the **Community dashboards** section of the dialog to add a dashboard:
+在 `window.customStrategies` 中注册你的仪表盘策略，它就会出现在添加仪表盘对话框的**社区仪表盘**部分：
 
 ```js
 window.customStrategies = window.customStrategies || [];
@@ -145,19 +145,19 @@ window.customStrategies.push({
 });
 ```
 
-| Key | Required | Meaning |
+| 键 | 是否必需 | 含义 |
 | --- | --- | --- |
-| `type` | Yes | The name of the strategy, without `custom:`. |
-| `strategyType` | Yes | `"dashboard"`. |
-| `name` | | The name in the dialog. |
-| `description` | | A short description below the name. |
-| `documentationURL` | | A link to your documentation. The frontend does not show it anywhere yet. |
+| `type` | 是 | 策略的名称，不含 `custom:`。 |
+| `strategyType` | 是 | `"dashboard"`。 |
+| `name` | | 对话框中显示的名称。 |
+| `description` | | 名称下方的一段简短描述。 |
+| `documentationURL` | | 指向你的文档的链接。前端目前还不会在任何地方显示它。 |
 
-The resource has to be loaded for the dialog to see it. After adding or updating it, reload the page and open the dialog again.
+必须先加载资源，对话框才能看到它。添加或更新资源后，请重新加载页面并再次打开对话框。
 
-### Suggest a title and icon
+### 建议标题和图标
 
-A dashboard strategy can suggest the title and icon of the new dashboard with a static `getCreateSuggestions(hass)`. Users can still change both before they create it.
+仪表盘策略可以通过静态的 `getCreateSuggestions(hass)` 为新仪表盘建议标题和图标。用户在创建之前仍然可以修改这两者。
 
 ```js
 static getCreateSuggestions(hass) {
@@ -165,14 +165,14 @@ static getCreateSuggestions(hass) {
 }
 ```
 
-## Settings
+## 设置
 
-A strategy can have a visual editor for its options. Return an editor element from the static `getConfigElement()`. It works like a [card editor](/frontend/custom-ui/card-editor/#a-visual-editor-of-your-own): Home Assistant calls `setConfig()` with the strategy configuration and sets `hass`, and the editor fires `config-changed` with the new configuration.
+策略可以为其选项提供一个可视化编辑器。从静态的 `getConfigElement()` 返回一个编辑器元素。它的工作方式类似于[卡片编辑器](/frontend/custom-ui/card-editor/#a-visual-editor-of-your-own)：Home Assistant 会使用策略配置调用 `setConfig()` 并设置 `hass`，编辑器则通过 `config-changed` 事件发出新的配置。
 
-Two more static options:
+还有两个静态选项：
 
-- `configRequired = true`: the strategy can't work without settings. Home Assistant shows the editor before it creates the dashboard.
-- `noEditor = true`: the strategy has no settings to edit.
+- `configRequired = true`：该策略没有设置就无法工作。Home Assistant 会在创建仪表盘之前显示编辑器。
+- `noEditor = true`：该策略没有可编辑的设置。
 
 ```js
 class MyDemoDashboardStrategy extends HTMLElement {
@@ -190,9 +190,9 @@ class MyDemoDashboardStrategy extends HTMLElement {
 }
 ```
 
-## Tips
+## 提示
 
-- Keep `generate()` fast. It runs on every load, and the dashboard waits for it.
-- `hass` already has the areas, devices, and entities, in a short form. For data it doesn't have, like the full entity registry entries, use `hass.callWS()`. Do that once, in the dashboard strategy, and pass the result to your view strategies through their configuration.
-- A strategy can use any card, including your own custom cards.
-- Write tests for strategies. They are pure functions from data to configuration, which makes them easy to test.
+- 保持 `generate()` 的速度。它在每次加载时都会运行，仪表盘会等待它完成。
+- `hass` 中已经以简短形式包含了区域、设备和实体。对于它没有的数据，例如完整的实体注册表条目，请使用 `hass.callWS()`。在仪表盘策略中只调用一次，并通过配置将结果传递给你的视图策略。
+- 策略可以使用任何卡片，包括你自己的自定义卡片。
+- 为策略编写测试。它们是从数据到配置的纯函数，因此很容易测试。

@@ -1,14 +1,14 @@
 ---
-title: Custom panels
-description: Add a full page of your own to Home Assistant, with a link in the sidebar and live access to the state of the home.
+title: 自定义面板
+description: 在 Home Assistant 中添加一个属于你自己的整页内容，并在侧边栏中提供链接，可实时访问家庭状态。
 order: 8
 ---
 
-A [panel](/glossary/panel/) is a full page in Home Assistant, like a dashboard, the map, or the settings. A custom panel is your own page: a custom element that gets the same `hass` object as everything else, and fills the whole screen next to the sidebar. Integrations use them for their own interfaces, and users can add them in YAML.
+[面板（panel）](/glossary/panel/)是 Home Assistant 中的一个整页内容，例如仪表盘、地图或设置。自定义面板是你自己的页面：一个自定义元素，它接收与其他部分相同的 `hass` 对象，并填满侧边栏旁边的整个屏幕。集成（integration）使用它们来展示自己的界面，用户也可以通过 YAML 添加它们。
 
-## An example
+## 一个示例
 
-Create `www/example-panel.js` in your configuration folder:
+在你的配置文件夹中创建 `www/example-panel.js`：
 
 ```js
 class ExamplePanel extends HTMLElement {
@@ -43,7 +43,7 @@ class ExamplePanel extends HTMLElement {
 customElements.define("example-panel", ExamplePanel);
 ```
 
-Then register the panel in `configuration.yaml`, and restart Home Assistant:
+然后在 `configuration.yaml` 中注册该面板，并重启 Home Assistant：
 
 ```yaml
 panel_custom:
@@ -56,39 +56,39 @@ panel_custom:
       hello: world
 ```
 
-The panel opens at `/example`, with a link in the sidebar.
+该面板将在 `/example` 打开，并在侧边栏中显示一个链接。
 
-## Configuration options
+## 配置选项
 
-| Option | Meaning |
+| 选项 | 含义 |
 | --- | --- |
-| `name` | The tag name of your element. Required. |
-| `url_path` | The URL of the panel. Defaults to `name`. Must be unique. |
-| `sidebar_title` | The text in the sidebar. Without it, the panel is not in the sidebar. |
-| `sidebar_icon` | The icon in the sidebar. Defaults to `mdi:bookmark`. |
-| `module_url` | The URL of your JavaScript module. Set this one, `js_url`, or both: without either, the panel is not registered. |
-| `js_url` | The URL of a classic JavaScript file. When you set both, the legacy build of the frontend uses this one, and the modern build `module_url`. |
-| `config` | Anything you want to pass to the panel. It shows up as `panel.config`, next to a `_panel_custom` key that Home Assistant adds with the panel settings. |
-| `require_admin` | Only show the panel to administrators. Defaults to `false`. |
-| `embed_iframe` | Render the panel in an iframe, isolated from the rest of the frontend. Defaults to `false`. |
-| `trust_external_script` | Load a script from another host without asking. Defaults to `false`, and then users are asked to confirm, because the script gets full access to Home Assistant. |
-| `handle_safe_area` | Set to `true` when your panel handles the safe areas of a phone screen, like the notch, itself. Home Assistant then doesn't add its own padding around the panel. Defaults to `false`. |
+| `name` | 你的元素的标签名称。必填。 |
+| `url_path` | 面板的 URL。默认为 `name`。必须唯一。 |
+| `sidebar_title` | 侧边栏中显示的文字。如果没有设置，面板将不会出现在侧边栏中。 |
+| `sidebar_icon` | 侧边栏中的图标。默认为 `mdi:bookmark`。 |
+| `module_url` | 你的 JavaScript 模块的 URL。设置此项、`js_url`，或两者都设置：如果都不设置，面板将不会被注册。 |
+| `js_url` | 传统 JavaScript 文件的 URL。当两者都设置时，前端的旧版构建使用此项，现代构建使用 `module_url`。 |
+| `config` | 你想传递给面板的任何内容。它会以 `panel.config` 的形式出现，旁边还有一个由 Home Assistant 添加的、包含面板设置的 `_panel_custom` 键。 |
+| `require_admin` | 仅向管理员显示该面板。默认为 `false`。 |
+| `embed_iframe` | 在 iframe 中渲染面板，使其与前端的其余部分隔离。默认为 `false`。 |
+| `trust_external_script` | 未经询问就从其他主机加载脚本。默认为 `false`，此时会要求用户确认，因为该脚本将获得对 Home Assistant 的完全访问权限。 |
+| `handle_safe_area` | 当你的面板自行处理手机屏幕的安全区域（如刘海）时，设置为 `true`。这样 Home Assistant 就不会在面板周围添加自己的内边距。默认为 `false`。 |
 
-An integration registers a custom panel from Python with `async_register_panel()` from the `panel_custom` integration. It takes the same options, but a few have other names: `webcomponent_name` for `name`, `frontend_url_path` for `url_path`, and `trust_external` for `trust_external_script`.
+集成可以通过 `panel_custom` 集成中的 `async_register_panel()` 从 Python 注册自定义面板。它接受相同的选项，但其中几个选项的名称不同：`name` 对应 `webcomponent_name`，`url_path` 对应 `frontend_url_path`，`trust_external_script` 对应 `trust_external`。
 
-## What a panel gets
+## 面板会收到什么
 
-Home Assistant sets these properties on your element:
+Home Assistant 会在你的元素上设置以下属性：
 
-| Property | What it is |
+| 属性 | 说明 |
 | --- | --- |
-| `hass` | The full state of Home Assistant. Set again on every change. See the [hass object reference](/frontend/reference/hass-object/). |
-| `narrow` | `true` when the panel should use a layout for narrow screens. |
-| `route` | The current route: `prefix` is the URL of the panel, and `path` the rest of the URL. Use it for pages inside your panel. |
-| `panel` | The panel information. The `config` option is in `panel.config`, together with the `_panel_custom` key. |
+| `hass` | Home Assistant 的完整状态。每次变化时都会重新设置。参见 [hass 对象参考](/frontend/reference/hass-object/)。 |
+| `narrow` | 当面板应使用适合窄屏的布局时为 `true`。 |
+| `route` | 当前路由：`prefix` 是面板的 URL，`path` 是 URL 的其余部分。用它来实现面板内部的页面。 |
+| `panel` | 面板信息。`config` 选项位于 `panel.config` 中，与 `_panel_custom` 键在一起。 |
 
-Your panel is responsible for its whole page, including a header and a way to open the sidebar on a narrow screen.
+你的面板需要负责整个页面，包括页眉以及在窄屏上打开侧边栏的方式。
 
-## Write standard classes
+## 编写标准类
 
-The frontend loads custom panels in both its modern and legacy builds. Define your element with a standard JavaScript class. Elements transpiled to ES5 functions are not supported.
+前端会在其现代构建和旧版构建中加载自定义面板。请使用标准 JavaScript 类来定义你的元素。不支持转译为 ES5 函数的元素。

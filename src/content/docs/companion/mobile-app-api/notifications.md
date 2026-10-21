@@ -1,27 +1,27 @@
 ---
-title: Notifications
-description: How mobile_app delivers notifications to an app, over the WebSocket connection or through a push server, and the contract a push server must follow.
+title: 通知
+description: mobile_app 如何通过 WebSocket 连接或推送服务器向应用发送通知，以及推送服务器必须遵循的约定。
 order: 5
 source: https://github.com/home-assistant/mobile-apps-fcm-push/blob/main/functions/handlers.js
 lastVerified: 2026-10-14
 ---
 
-`mobile_app` has notifications built in. Once an app enables them, Home Assistant gets a notify entity and a `notify.mobile_app_<device_name>` action for it, and users can send notifications from automations.
+`mobile_app` 内置了通知功能。一旦应用启用了通知，Home Assistant 就会为其创建一个 notify 实体和一个 `notify.mobile_app_<device_name>` 动作，用户可以在自动化中发送通知。
 
-There are two ways to deliver a notification:
+发送通知有两种方式：
 
-- **Over the WebSocket connection** (local push), while the app is connected. No server needed, but the app has to keep the connection open.
-- **Through a push server** (cloud push). Home Assistant posts the notification to a URL you run, and your server hands it to Apple, Google, or another push service.
+- **通过 WebSocket 连接**（本地推送），在应用已连接时使用。无需服务器，但应用必须保持连接打开。
+- **通过推送服务器**（云端推送）。Home Assistant 将通知 POST 到你运行的 URL，由你的服务器将其转交给 Apple、Google 或其他推送服务。
 
-An app can support both. When it does, Home Assistant uses the WebSocket channel while one is open, and the push server when none is open, or when the app doesn't confirm a notification in time.
+应用可以同时支持两种方式。如果支持，Home Assistant 会在 WebSocket 连接打开时使用 WebSocket 通道，而在没有连接打开时，或应用未及时确认通知时，使用推送服务器。
 
-How users send notifications to the official apps is in the [notifications documentation](https://companion.home-assistant.io/docs/notifications/notifications-basic).
+关于用户如何向官方应用发送通知，请参阅[通知文档](https://companion.home-assistant.io/docs/notifications/notifications-basic)。
 
-## Over the WebSocket
+## 通过 WebSocket
 
-To enable it, set `push_websocket_channel` to `true` in `app_data`, at [registration](/companion/mobile-app-api/setup/#register-the-app) or with [`update_registration`](/companion/mobile-app-api/sending-data/#update_registration).
+要启用此功能，请在[注册](/companion/mobile-app-api/setup/#register-the-app)时或通过 [`update_registration`](/companion/mobile-app-api/sending-data/#update_registration) 在 `app_data` 中将 `push_websocket_channel` 设置为 `true`。
 
-Then open a channel on an authenticated [WebSocket](/core/internals/websocket-api/) connection:
+然后在已认证的 [WebSocket](/core/internals/websocket-api/) 连接上打开一个通道：
 
 ```json
 {
@@ -32,9 +32,9 @@ Then open a channel on an authenticated [WebSocket](/core/internals/websocket-ap
 }
 ```
 
-The webhook ID must belong to the user of the connection. Opening a new channel for the same webhook closes the old one.
+Webhook ID 必须属于该连接的用户。为同一个 webhook 打开新通道会关闭旧通道。
 
-Notifications arrive as events on that subscription:
+通知以该订阅上的事件形式到达：
 
 ```json
 {
@@ -48,7 +48,7 @@ Notifications arrive as events on that subscription:
 }
 ```
 
-With `support_confirm`, every notification has a `hass_confirm_id`, and you have 10 seconds to confirm it:
+使用 `support_confirm` 时，每条通知都有一个 `hass_confirm_id`，你有 10 秒钟的时间进行确认：
 
 ```json
 {
@@ -59,22 +59,22 @@ With `support_confirm`, every notification has a `hass_confirm_id`, and you have
 }
 ```
 
-If the confirmation doesn't come in time, Home Assistant closes the channel and sends the notification, and any other unconfirmed ones, through the push server instead. Without a push server, an app that is not connected doesn't get the notification, and the action fails with an error that the device is not connected.
+如果未及时收到确认，Home Assistant 会关闭该通道，并将该通知以及其他任何未确认的通知改由推送服务器发送。如果没有推送服务器，未连接的应用将收不到通知，该动作会因设备未连接而报错失败。
 
-## Through a push server
+## 通过推送服务器
 
-To enable it, set both keys in `app_data`:
+要启用此功能，请在 `app_data` 中设置以下两个键：
 
-| Key | Description |
+| 键 | 描述 |
 | --- | --- |
-| `push_token` | The push token of the device, like an APNs token or an FCM registration token |
-| `push_url` | The URL Home Assistant posts notifications to |
+| `push_token` | 设备的推送令牌，例如 APNs 令牌或 FCM 注册令牌 |
+| `push_url` | Home Assistant 将通知 POST 到的 URL |
 
-`mobile_app` doesn't care how the notification reaches the device. It posts it to your server, and the rest is up to you. That keeps you in full control of your push setup. The official apps use the [project's push service](https://github.com/home-assistant/mobile-apps-fcm-push), which sends notifications through Firebase Cloud Messaging to both Android and iOS devices. Its code is a good starting point for your own.
+`mobile_app` 不关心通知如何到达设备。它将通知 POST 到你的服务器，其余工作由你负责。这让你可以完全掌控自己的推送设置。官方应用使用[该项目的推送服务](https://github.com/home-assistant/mobile-apps-fcm-push)，它通过 Firebase Cloud Messaging 向 Android 和 iOS 设备发送通知。其代码是构建你自己的推送服务的一个很好的起点。
 
-### The request
+### 请求
 
-Home Assistant sends a POST with a JSON body, and gives up after 10 seconds:
+Home Assistant 发送一个带有 JSON 主体的 POST 请求，并在 10 秒后放弃：
 
 ```json
 {
@@ -93,26 +93,26 @@ Home Assistant sends a POST with a JSON body, and gives up after 10 seconds:
 }
 ```
 
-`title` and `data` are only there when the user set them. `data` holds everything else the user passed, and is where app specific options go.
+只有当用户设置了 `title` 和 `data` 时它们才会出现。`data` 包含用户传入的所有其他内容，也是应用特定选项所在的位置。
 
-### The response
+### 响应
 
-Respond with `200`, `201`, or `202` when the notification was accepted. Always send a JSON body with the `application/json` content type, even when there is nothing to report, like `{}`. Home Assistant reads every response as JSON, and a response it can't read fails like an error, whatever the status.
+当通知被接受时，请返回 `200`、`201` 或 `202`。始终发送带有 `application/json` 内容类型的 JSON 主体，即使没有任何内容需要报告，例如 `{}`。Home Assistant 将每个响应都当作 JSON 读取，无法读取的响应会像错误一样失败，无论状态码是什么。
 
-On any other status, the notification fails with the error `Error sending notification to <device>`. A `429` gives `Rate limit exceeded sending notification to <device>` instead, and a request that takes longer than 10 seconds gives `Timeout sending notification to <device>`. The notify entity raises these errors, so its action fails. The `notify.mobile_app_<device_name>` action only logs them, as a warning for the rate limit and as an error otherwise, and the action itself succeeds. Your JSON response can explain what went wrong. Home Assistant logs that explanation at debug level:
+对于任何其他状态码，通知将失败并报错 `Error sending notification to <device>`。`429` 会报错 `Rate limit exceeded sending notification to <device>`，而耗时超过 10 秒的请求会报错 `Timeout sending notification to <device>`。notify 实体会抛出这些错误，因此其动作会失败。`notify.mobile_app_<device_name>` 动作只会记录这些错误——速率限制记为警告，其他记为错误——而动作本身会成功。你的 JSON 响应可以说明出了什么问题。Home Assistant 会在调试级别记录该说明：
 
-| Key | Description |
+| 键 | 描述 |
 | --- | --- |
-| `message` | Logged as is, with a note that the message comes from outside Home Assistant |
-| `errorMessage` | Added to a standard message: "Internal server error, please try again later: ..." |
+| `message` | 按原样记录，并附注该消息来自 Home Assistant 之外 |
+| `errorMessage` | 附加到标准消息中："Internal server error, please try again later: ..." |
 
-Be as specific as you can, and tell the user how to fix the problem when you know.
+请尽可能具体，并在你知道解决办法时告诉用户如何解决问题。
 
-### Rate limits
+### 速率限制
 
-Push services cost money, and a broken automation can send thousands of notifications. Use a rate limit. The push service of the official apps allows 500 notifications per device per day by default, and the count resets at midnight UTC.
+推送服务需要花钱，而一个有问题的自动化可能会发送成千上万条通知。请使用速率限制。官方应用的推送服务默认允许每台设备每天 500 条通知，计数在 UTC 午夜重置。
 
-Home Assistant doesn't limit anything itself. Your server does, and tells Home Assistant about it. Add `rateLimits` to your responses:
+Home Assistant 本身不做任何限制。由你的服务器进行限制，并告知 Home Assistant。在响应中添加 `rateLimits`：
 
 ```json
 {
@@ -125,23 +125,23 @@ Home Assistant doesn't limit anything itself. Your server does, and tells Home A
 }
 ```
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `successful` | integer | Notifications sent in this period |
-| `errors` | integer | Notifications that failed in this period |
-| `maximum` | integer | The maximum per period |
-| `resetsAt` | timestamp | When the period ends, in ISO 8601, in UTC |
+| `successful` | integer | 此周期内已发送的通知数 |
+| `errors` | integer | 此周期内失败的通知数 |
+| `maximum` | integer | 每个周期的最大数量 |
+| `resetsAt` | timestamp | 周期结束时间，采用 ISO 8601 格式，UTC 时区 |
 
-Home Assistant logs these numbers at debug level, with the time left until the reset. When a user hits the limit, respond with `429` until the period ends, and reject as early as you can. Home Assistant logs a warning that the limit was reached.
+Home Assistant 会在调试级别记录这些数字，以及距离重置的剩余时间。当用户达到限制时，请在周期结束前返回 `429`，并尽早拒绝请求。Home Assistant 会记录一条已达到限制的警告。
 
-## Live Activities
+## 实时活动（Live Activities）
 
-The iOS app shows Live Activities, like a timer or a delivery on the Lock Screen, that notifications can start, update, and end. Each activity has its own push token, and `mobile_app` keeps track of them. This only applies to notifications that go through the push server, for registrations with `Apple` as `manufacturer`:
+iOS 应用可以显示实时活动（Live Activities），例如锁定屏幕上的计时器或配送信息，通知可以启动、更新和结束这些活动。每个活动都有自己的推送令牌，`mobile_app` 会跟踪它们。这仅适用于通过推送服务器发送的通知，且注册时 `manufacturer` 为 `Apple`：
 
-- At registration, or later with `update_registration`, the app puts a `start_live_activity_token` in `app_data`, used to start a new Live Activity.
-- When a Live Activity starts on the device, the app sends its update token with a `live_activity_token` webhook request: the `tag` of the activity, the `push_token`, and `expires_at` as a Unix timestamp.
-- When the user dismisses it on the device, the app sends `live_activity_dismissed` with the `tag`.
+- 在注册时，或之后通过 `update_registration`，应用会在 `app_data` 中放入一个 `start_live_activity_token`，用于启动新的实时活动。
+- 当设备上启动一个实时活动时，应用会通过 `live_activity_token` webhook 请求发送其更新令牌：包括活动的 `tag`、`push_token`，以及作为 Unix 时间戳的 `expires_at`。
+- 当用户在设备上关闭该活动时，应用会发送带有该 `tag` 的 `live_activity_dismissed`。
 
-When a notification has a `tag` and `live_update: true` in its `data`, Home Assistant adds a `live_activity_token` to the request for the push server, and an `event` of `start`, `update`, or `end` to `data`. A `clear_notification` message with the same tag ends the activity. Expired tokens are removed automatically.
+当通知的 `data` 中包含 `tag` 和 `live_update: true` 时，Home Assistant 会在发送给推送服务器的请求中添加一个 `live_activity_token`，并在 `data` 中添加一个值为 `start`、`update` 或 `end` 的 `event`。带有相同标签的 `clear_notification` 消息会结束该活动。过期的令牌会被自动移除。
 
-For users, this is described in the [Live Activities documentation](https://companion.home-assistant.io/docs/notifications/live-activities).
+面向用户的说明请参阅[实时活动文档](https://companion.home-assistant.io/docs/notifications/live-activities)。
