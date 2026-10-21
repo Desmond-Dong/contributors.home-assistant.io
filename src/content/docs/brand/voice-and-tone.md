@@ -1,79 +1,79 @@
 ---
-title: Voice and tone
-description: How the personality of Home Assistant sounds in documentation, the interface, error messages, community replies, release notes, and social media.
+title: 语气与风格
+description: Home Assistant 的个性在文档、界面、错误消息、社区回复、发布说明和社交媒体中如何呈现。
 order: 4
 ---
 
-The [personality](/brand/personality/) is who Home Assistant is. The voice is how that person sounds when they write. It is the same voice everywhere, whether you write a page of documentation, a button label, or a reply on the [forum](https://community.home-assistant.io/). What changes is the tone: an error message needs a different tone than a release announcement.
+[个性](/brand/personality/)是 Home Assistant 是谁。语气（voice）则是这个“人”在写作时听起来的样子。无论你撰写一页文档、一个按钮标签，还是在[论坛](https://community.home-assistant.io/)上的一条回复，语气都是一致的。变化的是风格（tone）：错误消息需要与发布公告不同的风格。
 
-This page shows how the voice works in each place. The detailed rules, like grammar, capitalization, and formatting, live in the [style guide](/writing/reference/style/) for documentation and in [UI text](/design/ui-text/) for the interface. This page does not repeat them.
+本页介绍语气在每个场景中的运用。详细的规则，如语法、大小写和格式，见文档的[风格指南](/writing/reference/style/)，界面的规则见 [UI 文本](/design/ui-text/)。本页不再重复这些内容。
 
-## Everywhere
+## 通用原则
 
-A few things hold no matter where you write:
+无论在哪里写作，以下几点都适用：
 
-- **Talk to the reader.** Use "you" and "your", not "the user" or "users".
-- **Write for the whole world.** Write in American English, with short sentences and plain words. Many readers do not speak English as their first language.
-- **Be friendly and informational.** Not formal, and not more technical than it needs to be.
-- **Be inclusive.** Keep the writing objective, and free of bias or anything that excludes people.
-- **Write "Home Assistant" in full.** Never "HA" or "HASS". See [Name and logo](/brand/name-and-logo/).
-- **Use the words of the glossary.** Use terms the way the [glossary](/glossary/) defines them, and never a name that was retired, like "service" for an [action](/glossary/action/), "add-on" for an app, or "Lovelace" for a dashboard.
+- **与读者对话。** 使用“你”和“你的”，而不是“用户”或“用户们”。
+- **面向全世界写作。** 使用美式英语，句子简短，用词平实。许多读者的第一语言并不是英语。
+- **友好且信息丰富。** 不要过于正式，也不要比必要的更技术化。
+- **包容。** 保持写作客观，不带偏见，不包含任何排斥他人的内容。
+- **完整书写"Home Assistant"。** 不要使用"HA"或"HASS"。参见[名称与标志](/brand/name-and-logo/)。
+- **使用术语表中的词汇。** 按照[术语表](/glossary/)定义的方式使用术语，不要使用已弃用的名称，例如用"service"指代[动作（action）](/glossary/action/)、用"add-on"指代应用，或用"Lovelace"指代仪表盘（dashboard）。
 
-## Documentation
+## 文档
 
-The documentation on [home-assistant.io](https://www.home-assistant.io/) is often the first thing people read, and it is written for a broad audience. Most readers use Home Assistant through its interface, and many are not developers.
+[home-assistant.io](https://www.home-assistant.io/) 上的文档往往是人们最先阅读的内容，它面向广泛的受众。大多数读者通过界面使用 Home Assistant，其中许多人并不是开发者。
 
-- **Welcoming**: assume the reader primarily uses the UI. Show the way through the interface first, and treat YAML, templates, and code as optional paths for those who need them.
-- **Candid**: don't hide limitations or complexity behind marketing language. Say what something can and cannot do.
-- **Supportive**: make Home Assistant feel approachable. Avoid wording that makes it sound fragile, difficult, or easy to break.
-- **Generous**: give readers what they need, with the basics first and the details later, without burying them.
-- **Independent**: don't label YAML or more complex features as "advanced", unless the product itself uses that word.
+- **热情友好**：假设读者主要使用 UI。先展示通过界面操作的路径，将 YAML、模板和代码作为供有需要的人使用的可选路径。
+- **坦诚直率**：不要用营销语言掩盖局限性或复杂性。如实说明某项功能能做什么、不能做什么。
+- **给予支持**：让 Home Assistant 显得平易近人。避免让它听起来脆弱、困难或容易损坏的措辞。
+- **慷慨大方**：为读者提供他们所需的内容，先讲基础，后讲细节，不要让读者迷失其中。
+- **不设门槛**：不要将 YAML 或更复杂的功能标记为“高级”，除非产品本身使用了这个词。
 
-The same style applies to blog posts on home-assistant.io. See [Writing docs](/writing/) and the [style guide](/writing/reference/style/).
+同样的风格也适用于 home-assistant.io 上的博客文章。参见[撰写文档](/writing/)和[风格指南](/writing/reference/style/)。
 
-## Interface text
+## 界面文本
 
-Labels, buttons, dialogs, and helper text are read in a second, often while someone is in the middle of something.
+标签、按钮、对话框和辅助文本往往在一秒钟内被读完，而且常常是在用户正忙于其他事情的时候。
 
-- Be concise and clear, and use the active voice.
-- Write for technical and non-technical people alike. Avoid jargon where a familiar home automation term works.
-- Address people directly with "you" and "your" when it fits.
-- Pick the word that matches what happens, like "remove" for what can be restored and "delete" for what is gone for good. See [Remove or delete](/design/ui-text/remove-delete/).
+- 简洁清晰，使用主动语态。
+- 同时面向技术型和非技术型读者。在熟悉的家庭自动化术语可用时，避免使用行话。
+- 在合适的情况下，直接用“你”和“你的”称呼用户。
+- 选择与实际发生的情况相符的词，例如可恢复的操作用"remove"（移除），永久删除的操作用"delete"（删除）。参见[移除还是删除](/design/ui-text/remove-delete/)。
 
-The full guidance, with examples, is in [UI text](/design/ui-text/). Every string in the interface is also translated, so see [Make your strings translatable](/translate/guides/developers/) when you add one.
+完整的指南和示例见 [UI 文本](/design/ui-text/)。界面中的每个字符串都会被翻译，因此在添加字符串时请参见[让你的字符串可翻译](/translate/guides/developers/)。
 
-## Error messages
+## 错误消息
 
-An error is the moment the personality matters most: the guide names how errors are explained as one of the small things where being welcoming shows. Someone is stuck, and wants to get going again.
+错误是最能体现个性的时刻：指南将错误说明的方式列为体现热情友好的细节之一。此时有人被卡住了，想要继续前进。
 
-- **Welcoming**: explain what went wrong in plain words that make sense without knowing the code.
-- **Candid**: be honest about what happened. Don't hide a limitation behind a vague message.
-- **Supportive**: say what to do next, when there is something to do.
+- **热情友好**：用平实的语言解释出了什么问题，让不了解代码的人也能明白。
+- **坦诚直率**：如实说明发生了什么。不要用模糊的消息掩盖局限性。
+- **给予支持**：在有下一步可做时，说明该怎么做。
 
-[Messages](/design/ui-text/messages/) covers errors, warnings, repairs, and empty states in detail.
+[消息](/design/ui-text/messages/)详细介绍了错误、警告、修复和空状态。
 
-## Community replies
+## 社区回复
 
-How the community talks to newcomers is the other place the guide calls out by name. A reply on the forum, on [Discord](https://www.home-assistant.io/join-chat/), or in a pull request is Home Assistant talking, even when you write it as yourself.
+社区如何与新手交流是指南中另一个被点名强调的场景。论坛、[Discord](https://www.home-assistant.io/join-chat/) 或拉取请求（pull request）中的回复都代表着 Home Assistant 在说话，即使你是以个人身份撰写的。
 
-- **Welcoming**: meet people at their level, and never talk down to them. Everybody started somewhere.
-- **Supportive**: help people forward without taking over. Point them to the exact page that helps, and explain why.
-- **Candid, but not blunt**: be honest when something is not possible, and kind in how you say it.
+- **热情友好**：在对方的水平上交流，绝不居高临下。每个人都是从新手开始的。
+- **给予支持**：帮助人们前进而不越俎代庖。指出确切能帮到他们的页面，并解释原因。
+- **坦诚但不生硬**：当某事不可行时如实相告，但表达方式要友善。
 
-[Welcome newcomers](/community/guides/welcome-newcomers/) has practical advice, and the [code of conduct](/start/code-of-conduct/) applies in every space.
+[欢迎新手](/community/guides/welcome-newcomers/)提供了实用建议，[行为准则](/start/code-of-conduct/)适用于所有场合。
 
-## Release notes and blog posts
+## 发布说明和博客文章
 
-The release notes explain what is new, what changed, and what people need to do. For many people, it is the only thing they read about a release.
+发布说明解释了有哪些新功能、有什么变化，以及人们需要做什么。对许多人来说，这是他们了解一个版本所阅读的唯一内容。
 
-- **Candid**: be straight about [backward-incompatible changes](/glossary/backward-incompatible-change/) and what people need to do about them. Don't hide them behind the highlights.
-- **Generous**: show what a feature does for someone's home, with screenshots or a short video, and link to the documentation.
-- **Independent**: it is fine to be direct, a little unconventional, and not take yourself too seriously. Home Assistant doesn't need to sound like a corporate tech brand.
+- **坦诚直率**：对[不向后兼容的变更（backward-incompatible change）](/glossary/backward-incompatible-change/)以及人们需要采取的措施直言不讳。不要把它们藏在亮点之后。
+- **慷慨大方**：通过截图或短视频展示某项功能能为用户的家庭带来什么，并链接到文档。
+- **不设门槛**：可以直截了当，可以有点不走寻常路，不必把自己看得太严肃。Home Assistant 不需要听起来像一个企业科技品牌。
 
-See [Release notes and the release party](/releases/guides/release-notes/) for how the release notes come together.
+有关发布说明如何成文，请参见[发布说明与发布派对](/releases/guides/release-notes/)。
 
-## Social media
+## 社交媒体
 
-Only the [official accounts](/community/guides/social-media/#the-official-accounts) speak for Home Assistant. When you share Home Assistant from your own account, you speak as yourself, but the same personality fits: friendly, honest about what works and what doesn't, and kind. The code of conduct applies on social media too. Disagreeing is fine, piling on is not.
+只有[官方账号](/community/guides/social-media/#the-official-accounts)才能代表 Home Assistant 发言。当你用自己的账号分享 Home Assistant 时，你是以个人身份发言，但同样的个性依然适用：友好，如实说明哪些可行、哪些不可行，并且友善。行为准则同样适用于社交媒体。可以有不同意见，但不可以起哄围攻。
 
-See [Help on social media](/community/guides/social-media/).
+参见[在社交媒体上提供帮助](/community/guides/social-media/)。

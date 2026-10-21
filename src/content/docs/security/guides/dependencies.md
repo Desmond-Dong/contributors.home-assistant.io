@@ -1,81 +1,81 @@
 ---
-title: Dependencies and supply chain
-description: Every library Home Assistant installs runs inside it. What Home Assistant asks of a dependency, what it checks automatically, and how its own workflows are protected.
-sidebarLabel: Dependencies and supply chain
+title: 依赖与供应链
+description: Home Assistant 安装的每个库都在其中运行。Home Assistant 对依赖项有什么要求、会自动检查什么，以及它自身的工作流是如何受到保护的。
+sidebarLabel: 依赖与供应链
 order: 5
 ---
 
-Integrations talk to devices and services through libraries, and those libraries come from PyPI. Every [requirement](/glossary/requirement/) is code that ends up in Home Assistant, in the homes of everyone who installs it. If an attacker takes over a library, or slips a malicious package into its dependencies, they are in. That is a supply chain attack, and it is why Home Assistant is strict about where its dependencies come from.
+集成（integration）通过库与设备和服务通信，而这些库来自 PyPI。每个[依赖要求](/glossary/requirement/)都是最终进入 Home Assistant 的代码，进入每一个安装了它的用户的家中。如果攻击者接管了一个库，或者在其依赖中塞入一个恶意包，他们就进来了。这就是供应链攻击，也是 Home Assistant 对依赖来源严格把关的原因。
 
-## What Home Assistant asks of a library
+## Home Assistant 对一个库的要求
 
-The [dependency transparency](/core/quality-scale/dependency-transparency/) rule of the quality scale sets the baseline. Every integration with an external dependency must meet it, from the Bronze tier up:
+质量分级中的[依赖透明度](/core/quality-scale/dependency-transparency/)规则设定了基线。每个带有外部依赖的集成都必须满足它，从 Bronze 级开始：
 
-- The source code is available under an OSI-approved license.
-- The package is available on PyPI.
-- The package on PyPI is built and published from a public CI pipeline.
-- Every version on PyPI matches a tagged release in a public repository.
+- 源代码在 OSI 认可的许可证下可用。
+- 该包在 PyPI 上可用。
+- PyPI 上的包由公开的 CI 流水线构建并发布。
+- PyPI 上的每个版本都对应公开仓库中的一个带标签的发布。
 
-The rule exists so the project can trust the dependencies it ships with every release.
+这条规则的存在，是为了让项目能够信任它随每个版本一起发布的依赖。
 
-## What is checked automatically
+## 自动检查的内容
 
-You do not have to check all of this by hand. Several tools look at every pull request that changes a requirement.
+你不必手动检查所有这些。有几个工具会审查每一个更改依赖要求的拉取请求（pull request）。
 
 ### hassfest
 
-hassfest validates the `requirements` in the manifest of every integration:
+hassfest 会验证每个集成的清单（manifest）中的 `requirements`：
 
-- Core integrations must pin every requirement to an exact version, like `"example-library==1.2.3"`.
-- It walks the full dependency tree, not only the direct dependencies, and flags packages that should not be there: tools for tests, builds, or docs as a runtime dependency, `types-` packages, and some unmaintained packages.
-- It flags packages that install a top-level `test`, `tests`, `doc`, or `docs` folder, or a top-level `.pth` or `.start` file.
+- 核心集成必须将每个依赖要求固定到确切的版本，例如 `"example-library==1.2.3"`。
+- 它会遍历完整的依赖树，而不仅仅是直接依赖，并标记不应存在的包：作为运行时依赖的测试、构建或文档工具、`types-` 包，以及一些无人维护的包。
+- 它会标记安装了顶层 `test`、`tests`、`doc` 或 `docs` 文件夹，或顶层 `.pth` 或 `.start` 文件的包。
 
 ### Check requirements
 
-A pull request that changes the requirement files of Core gets one comment from the **Check requirements** workflow, with a row per changed package:
+更改 Core 依赖要求文件的拉取请求会收到来自 **Check requirements** 工作流的一条评论，每个更改的包占一行：
 
-| Check | What it looks at |
+| 检查项 | 检查内容 |
 | --- | --- |
-| No Advisories | PyPI reports no known vulnerability for the new version. |
-| Not Yanked | The new version was not yanked from PyPI. |
-| Repo Public | The source repository is publicly accessible. |
-| CI Upload | The release on PyPI has an attestation that shows which pipeline published it. |
-| Release Pipeline | The publishing workflow of the library: triggered by a tag, a release, or a protected branch, preferably publishing with OIDC instead of a stored token, and no way to upload around it. |
-| Security | A quick scan of the source of the library for obvious supply chain red flags. |
-| PR Link | A new package links to its source repository. A version bump links to a changelog or a comparison that mentions both versions. |
-| Async Safe | Blocking calls inside `async` functions in the library. |
+| No Advisories | PyPI 报告新版本没有已知漏洞。 |
+| Not Yanked | 新版本没有从 PyPI 上被撤回（yanked）。 |
+| Repo Public | 源仓库可公开访问。 |
+| CI Upload | PyPI 上的发布带有证明（attestation），显示是哪个流水线发布的。 |
+| Release Pipeline | 该库的发布工作流：由标签、发布或受保护的分支触发，最好使用 OIDC 而不是存储的令牌来发布，并且没有绕过它的上传途径。 |
+| Security | 对库源代码的快速扫描，查找明显的供应链危险信号。 |
+| PR Link | 新包链接到其源仓库。版本升级链接到提到两个版本的更新日志或比较。 |
+| Async Safe | 库中 `async` 函数内的阻塞调用。 |
 
-Part of these checks is done by an AI agent, the rest by a script. Take the **Security** row for what it is: a cheap first pass, not a security review. A pass is shown as ☑️, never ✅, so nobody reads it as a seal of approval.
+这些检查的一部分由 AI 代理完成，其余由脚本完成。请正确看待 **Security** 这一行：它只是一次廉价的初筛，而不是安全审查。通过显示为 ☑️，而不是 ✅，这样就不会有人把它当作认可的印章。
 
-### Licenses
+### 许可证
 
-The CI of Core extracts the license of every installed package, and checks that it is OSI approved, with `script/licenses.py`.
+Core 的 CI 会提取每个已安装包的许可证，并使用 `script/licenses.py` 检查其是否获得 OSI 认可。
 
-## When you add or update a dependency
+## 当你添加或更新依赖时
 
-- Link the source repository in your pull request for a new library, or the changelog or a comparison between the two versions for an update. The Check requirements workflow looks for it, and reviewers need it.
-- Change only the version and the regenerated requirement files, plus the code changes the new version needs. Run `python3 -m script.gen_requirements_all` to regenerate the files.
-- If the new version pulls in new dependencies of its own, say so in your pull request.
-- If you maintain the library: publish it from a public CI pipeline, with trusted publishing on PyPI, so the release can be traced back to its source.
+- 对于新库，在拉取请求中链接其源仓库；对于更新，链接更新日志或两个版本之间的比较。Check requirements 工作流会查找它，审查者也需要它。
+- 只更改版本和重新生成的依赖要求文件，以及新版本所需的代码更改。运行 `python3 -m script.gen_requirements_all` 来重新生成这些文件。
+- 如果新版本引入了它自己的新依赖，请在拉取请求中说明。
+- 如果你是该库的维护者：从公开的 CI 流水线发布它，并在 PyPI 上使用可信发布（trusted publishing），以便发布可以追溯到其源代码。
 
-Reviewers go through a [checklist for dependency updates](/core/development/reviewing/#dependency-updates). It is worth reading before you open one.
+审查者会遵循一份[依赖更新检查清单](/core/development/reviewing/#dependency-updates)。在提交之前值得先读一读。
 
-## GitHub workflows
+## GitHub 工作流
 
-The CI of the project itself is part of the supply chain too. The workflows in the [core repository](https://github.com/home-assistant/core) follow a few patterns that you will see in review:
+项目自身的 CI 也是供应链的一部分。[core 仓库](https://github.com/home-assistant/core)中的工作流遵循几种你在审查中会看到的模式：
 
-- **Actions are pinned to a commit SHA**, with the version in a comment, like `actions/checkout@<sha> # v7.0.1`. Renovate keeps the pins up to date.
-- **Permissions start at nothing.** Workflows set `permissions: {}` at the top, and each job lists the permissions it needs, like `contents: read`.
-- **Checkouts do not keep credentials**: `persist-credentials: false` on `actions/checkout`.
-- **zizmor**, a linter for GitHub workflows, runs in pedantic mode in the core repository, as a pre-commit hook and in CI. The [frontend repository](https://github.com/home-assistant/frontend) runs `actionlint` on its workflows.
+- **Action 固定到 commit SHA**，并在注释中注明版本，例如 `actions/checkout@<sha> # v7.0.1`。Renovate 会保持这些固定项是最新的。
+- **权限从零开始。** 工作流在顶部设置 `permissions: {}`，每个作业列出它所需的权限，例如 `contents: read`。
+- **检出（checkout）不保留凭据**：在 `actions/checkout` 上设置 `persist-credentials: false`。
+- **zizmor**，一个 GitHub 工作流的 linter，在 core 仓库中以 pedantic 模式运行，作为 pre-commit 钩子并在 CI 中运行。[frontend 仓库](https://github.com/home-assistant/frontend)对其工作流运行 `actionlint`。
 
-If you change a workflow, follow these patterns.
+如果你修改了工作流，请遵循这些模式。
 
-### What went wrong before
+### 以前出过什么问题
 
-In 2023, the GitHub Security Lab found an [expression injection](https://github.com/home-assistant/core/security/advisories/GHSA-jff5-5j3g-vhqc) in `helpers/version`, a shared action in the [actions repository](https://github.com/home-assistant/actions). It put `${{ github.head_ref }}`, the branch name of a pull request, straight into a `run:` script. GitHub fills in an expression before the shell runs, so a branch name with shell code in it becomes part of the script. According to the advisory, an attacker could use that to leak secrets and change the repository.
+2023 年，GitHub Security Lab 在 [actions 仓库](https://github.com/home-assistant/actions)中的一个共享 action `helpers/version` 里发现了一个[表达式注入](https://github.com/home-assistant/core/security/advisories/GHSA-jff5-5j3g-vhqc)漏洞。它将 `${{ github.head_ref }}`（拉取请求的分支名称）直接放入 `run:` 脚本中。GitHub 会在 shell 运行之前填充表达式，因此包含 shell 代码的分支名称会成为脚本的一部分。根据安全公告，攻击者可以利用这一点泄露机密并更改仓库。
 
-Never put an expression with outside data, like a branch name, a title, or a comment, in a `run:` script. Pass it in as an environment variable, and let the shell treat it as data:
+永远不要将包含外部数据（如分支名称、标题或评论）的表达式放入 `run:` 脚本中。将其作为环境变量传入，让 shell 将其视为数据：
 
 ```yaml
 - name: Show the branch
@@ -84,10 +84,10 @@ Never put an expression with outside data, like a branch name, a title, or a com
   run: echo "Branch: ${HEAD_REF}"
 ```
 
-zizmor flags this kind of template injection.
+zizmor 会标记这种模板注入。
 
-## Related
+## 相关内容
 
-- [Review with security in mind](/security/guides/reviewing/): what to look for in a pull request.
-- [Automated checks](/security/reference/checks/): every check in one table.
-- [Requirements](/core/integrations/manifest/#requirements): the `requirements` key of the manifest.
+- [带着安全意识进行审查](/security/guides/reviewing/)：在拉取请求中要注意什么。
+- [自动检查](/security/reference/checks/)：所有检查汇总在一张表中。
+- [依赖要求](/core/integrations/manifest/#requirements)：清单中的 `requirements` 键。

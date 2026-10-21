@@ -1,43 +1,43 @@
 ---
-title: Secure apps
-description: What the advisories about apps and the Supervisor teach, on top of the security guide of the apps area.
-sidebarLabel: Apps
+title: 保护应用安全
+description: 在应用领域安全指南的基础上，关于应用和 Supervisor 的安全公告带给我们的经验教训。
+sidebarLabel: 应用
 order: 3
 ---
 
-An [app](/glossary/app/) runs in its own container, next to Home Assistant and the [Supervisor](/glossary/supervisor/). The apps area already covers how to keep an app safe: [Secure your app](/apps/guides/security/) explains what to ask for, AppArmor, protection mode, API roles, and logins, and the [security rating](/apps/reference/security-rating/) shows how users see your choices. Start there.
+[应用](/glossary/app/)运行在自己的容器中，与 Home Assistant 和 [Supervisor](/glossary/supervisor/) 并存。应用领域已经介绍了如何保证应用安全：[保护你的应用](/apps/guides/security/)讲解了需要申请哪些权限、AppArmor、保护模式、API 角色和登录，而[安全评级](/apps/reference/security-rating/)则展示了用户如何看待你的选择。请从这里开始。
 
-This page adds the lessons from the [past advisories](/security/reference/advisories/#apps-and-the-supervisor) that are about apps and the Supervisor.
+本页补充了[过往安全公告](/security/reference/advisories/#apps-and-the-supervisor)中与应用和 Supervisor 相关的经验教训。
 
-## Do not trust the network alone
+## 不要仅依赖网络隔离
 
-A common pattern in apps: run on the host network, and serve an endpoint without a login on the internal network of the Supervisor, `hassio`. The idea was that only other containers could reach that address. In 2026, an advisory showed that this [was not true](https://github.com/home-assistant/core/security/advisories/GHSA-gh5m-4m97-c95h). A device on the local network could add a route to the internal address through the host, and reach those endpoints directly. The advisory names a shell in a terminal app, and the WebSocket APIs of two others.
+应用中一个常见的模式：运行在宿主网络上，并在 Supervisor 的内部网络 `hassio` 上提供一个无需登录的端点。当时的想法是只有其他容器才能访问该地址。2026 年，一份安全公告表明这[并非事实](https://github.com/home-assistant/core/security/advisories/GHSA-gh5m-4m97-c95h)。本地网络上的一台设备可以通过宿主机添加一条通往内部地址的路由，从而直接访问这些端点。该公告点名了一个终端应用中的 shell，以及另外两个应用的 WebSocket API。
 
-Supervisor 2026.03.2 fixed this for every installation: it adds firewall rules on the host that drop traffic to the gateway address of that network, unless it comes from that network itself or from the host.
+Supervisor 2026.03.2 为所有安装修复了此问题：它在宿主机上添加了防火墙规则，丢弃发往该网络网关地址的流量，除非流量来自该网络本身或来自宿主机。
 
-The lesson goes beyond that one fix. Where an endpoint listens is not a login.
+这一教训的意义远不止这一次修复。端点监听的位置并不等于登录。
 
-- Put a login on every endpoint that can change something, or that shows something private. Use [Home Assistant users](/apps/guides/security/#use-home-assistant-users) for that, instead of your own.
-- For a web interface, use [ingress](/apps/guides/ingress/), and only accept connections from the Supervisor at `172.30.32.2`. Home Assistant then handles the login.
-- Only use the host network when your app really needs it. It also lowers the [security rating](/apps/reference/security-rating/).
+- 为每个可以更改内容或显示私密内容的端点添加登录。为此请使用 [Home Assistant 用户](/apps/guides/security/#use-home-assistant-users)，而不是自己实现。
+- 对于 Web 界面，请使用 [ingress](/apps/guides/ingress/)，并且只接受来自 Supervisor 在 `172.30.32.2` 的连接。这样登录就由 Home Assistant 处理。
+- 只有当你的应用确实需要时才使用宿主网络。使用宿主网络还会降低[安全评级](/apps/reference/security-rating/)。
 
-## The Supervisor API bypass
+## Supervisor API 绕过漏洞
 
-In 2023, an advisory showed that attackers could bypass authentication and reach the [Supervisor API](https://github.com/home-assistant/core/security/advisories/GHSA-2j8f-h4mr-qr25) through Home Assistant, remotely. That API can install updates, and manage apps and backups. The [announcement](https://www.home-assistant.io/blog/2023/03/08/supervisor-security-disclosure/) says the problem had been there since the Supervisor was introduced in 2017.
+2023 年，一份安全公告表明攻击者可以绕过身份验证，并通过 Home Assistant 远程访问 [Supervisor API](https://github.com/home-assistant/core/security/advisories/GHSA-2j8f-h4mr-qr25)。该 API 可以安装更新、管理应用和备份。[公告](https://www.home-assistant.io/blog/2023/03/08/supervisor-security-disclosure/)指出，这个问题自 2017 年 Supervisor 推出以来就一直存在。
 
-The fixes in Core and the Supervisor show two patterns that apply to any app that forwards requests:
+Core 和 Supervisor 中的修复展示了两种适用于任何转发请求的应用的模式：
 
-- **Forward only what is on a list.** The proxy for the Supervisor API in Core now only forwards paths that match an explicit list, with one list for requests without a login and one for admins. Everything else gets refused.
-- **Decode before you check.** Core refuses a path that changes when it is decoded. The Supervisor decodes paths and query strings, as often as needed, before it checks them for patterns like `../`.
+- **只转发白名单中的内容。** Core 中 Supervisor API 的代理现在只转发与显式列表匹配的路径，其中一份列表用于无需登录的请求，另一份用于管理员。其他所有请求都会被拒绝。
+- **先解码再检查。** Core 会拒绝解码后发生变化的路径。Supervisor 会在检查路径和查询字符串中是否存在 `../` 之类的模式之前，根据需要进行多次解码。
 
-A related advisory from the same year showed a path built from outside data: the `addon` field of the `hassio.addon_stdin` action ended up in the path of a [Supervisor API request](https://github.com/home-assistant/core/security/advisories/GHSA-4r74-h49q-rr3h). Core now checks that field against a strict pattern for a slug. If your app builds a URL or a path from input, check that input the same way.
+同年的一份相关安全公告展示了一个由外部数据构建的路径：`hassio.addon_stdin` 动作的 `addon` 字段最终进入了 [Supervisor API 请求](https://github.com/home-assistant/core/security/advisories/GHSA-4r74-h49q-rr3h)的路径中。Core 现在会根据严格的 slug 模式检查该字段。如果你的应用根据输入构建 URL 或路径，请以同样的方式检查该输入。
 
-## Ask for the smallest role
+## 申请最小的角色
 
-The Supervisor API protects itself, but your app holds a token for it. If your app is ever taken over, the attacker gets what that token allows. Pick the lowest [API role](/apps/guides/security/#api-roles) that works, and only turn on `hassio_api`, `homeassistant_api`, or `auth_api` when you call them.
+Supervisor API 会保护自己，但你的应用持有它的令牌。如果你的应用被攻破，攻击者将获得该令牌所允许的一切。选择能正常工作的最低 [API 角色](/apps/guides/security/#api-roles)，并且只在需要调用时才启用 `hassio_api`、`homeassistant_api` 或 `auth_api`。
 
-## Related
+## 相关内容
 
-- [Secure your app](/apps/guides/security/): the full guide in the apps area.
-- [Security rating](/apps/reference/security-rating/): how each choice changes the rating.
-- [Past advisories](/security/reference/advisories/): every advisory, grouped by kind.
+- [保护你的应用](/apps/guides/security/)：应用领域的完整指南。
+- [安全评级](/apps/reference/security-rating/)：每项选择如何影响评级。
+- [过往安全公告](/security/reference/advisories/)：按类型分组的所有安全公告。

@@ -1,56 +1,56 @@
 ---
-title: How the documentation works
-description: Where the pages live, which branch to use, and how a change goes from pull request to home-assistant.io.
+title: 文档是如何运作的
+description: 页面存放在哪里、应使用哪个分支，以及一次更改如何从拉取请求（pull request）变为 home-assistant.io 上的内容。
 order: 2
-sidebarLabel: How it works
+sidebarLabel: 运作方式
 ---
 
-The documentation and the rest of [home-assistant.io](https://www.home-assistant.io/) live in one GitHub repository: [home-assistant/home-assistant.io](https://github.com/home-assistant/home-assistant.io). The site is built with [Jekyll](https://jekyllrb.com/). Pages are Markdown files, with a few [Liquid helpers](/writing/reference/liquid/) for things like links into the Home Assistant interface.
+文档和 [home-assistant.io](https://www.home-assistant.io/) 的其余部分都存放在同一个 GitHub 仓库中：[home-assistant/home-assistant.io](https://github.com/home-assistant/home-assistant.io)。该网站使用 [Jekyll](https://jekyllrb.com/) 构建。页面是 Markdown 文件，并使用一些 [Liquid 辅助工具](/writing/reference/liquid/) 来实现诸如链接到 Home Assistant 界面等功能。
 
-## Where pages live
+## 页面存放在哪里
 
-Everything is in the `source` folder. The parts you work with most:
+所有内容都在 `source` 文件夹中。你最常打交道的部分：
 
-- `source/_integrations`: one page per integration, named after its domain, like `hue.markdown`.
-- `source/_docs`: the general documentation, like automations, scripts, and the backup guide.
-- `source/_dashboards`: dashboards and cards.
-- `source/_data/glossary.yml`: the glossary behind the term tooltips.
-- `source/_redirects`: where old URLs are sent when a page moves.
-- `source/_includes/asides/docs_sitemap.html`: the sidebar of the general documentation. It is maintained by hand, so a new page in `source/_docs` that needs a place in the sidebar gets a link there.
+- `source/_integrations`：每个集成（integration）一个页面，以其域名命名，例如 `hue.markdown`。
+- `source/_docs`：通用文档，例如自动化、脚本和备份指南。
+- `source/_dashboards`：仪表盘（dashboard）和卡片。
+- `source/_data/glossary.yml`：术语提示背后的术语表。
+- `source/_redirects`：页面移动后旧 URL 的重定向位置。
+- `source/_includes/asides/docs_sitemap.html`：通用文档的侧边栏。它由人工维护，因此 `source/_docs` 中需要在侧边栏占位的新页面会在那里添加一个链接。
 
-## Branches
+## 分支
 
-The repository has two branches you choose between:
+该仓库有两个可供选择的分支：
 
-- **`current`** is the documentation of the release people use today. Target it for fixes and improvements to existing documentation.
-- **`next`** is the documentation for the upcoming release. Target it when you document a new integration or a new feature that is not released yet.
+- **`current`** 是人们当前使用的发行版所对应的文档。对现有文档的修复和改进应以此为目标分支。
+- **`next`** 是即将发布的发行版所对应的文档。当你为尚未发布的新集成或新功能撰写文档时，应以此为目标分支。
 
-Picking the right branch matters: a change on `next` only goes live with the next release. The pull request template reminds you, and so does a bot: when the base branch does not match your pull request, it adds the `needs-rebase` label and leaves a comment that tells you which branch to use.
+选择正确的分支很重要：`next` 上的更改只有在下一个发行版发布后才会生效。拉取请求模板会提醒你，机器人也会提醒：当基础分支与你的拉取请求不匹配时，它会添加 `needs-rebase` 标签并留下一条评论，告诉你应使用哪个分支。
 
-Documenting a new feature from a core pull request? Open one documentation pull request per core pull request, and link them. Then both can be merged together for the same release.
+要为来自核心（core）拉取请求的新功能撰写文档？请为每个核心拉取请求打开一个对应的文档拉取请求，并将它们相互链接。这样两者就可以在同一个发行版中一起合并。
 
-## Parent pull requests
+## 父拉取请求
 
-A documentation pull request that documents a code change has a _parent_: the pull request with that code change, in a repository like core or frontend. Link them both ways: the parent in the **Additional information** section of your documentation pull request, and your documentation pull request in the description of the parent.
+记录代码更改的文档拉取请求有一个_父拉取请求_（parent）：即包含该代码更改的拉取请求，位于 core 或 frontend 等仓库中。请双向链接它们：在你的文档拉取请求的 **Additional information** 部分中链接父拉取请求，并在父拉取请求的描述中链接你的文档拉取请求。
 
-A bot follows those links, and labels your documentation pull request:
+机器人会跟踪这些链接，并为你的文档拉取请求添加标签：
 
-- `has-parent`: your pull request links a parent. The bot then expects it to target `next`. A pull request without a parent is expected to target `current`.
-- `parent-merged`: the parent is merged, so the documentation can follow.
-- `needs-rebase`: the pull request targets the wrong branch. Change the base branch, and rebase if needed.
+- `has-parent`：你的拉取请求链接了一个父拉取请求。此时机器人会期望它以 `next` 为目标分支。没有父拉取请求的拉取请求则应以 `current` 为目标分支。
+- `parent-merged`：父拉取请求已合并，因此文档可以跟进。
+- `needs-rebase`：拉取请求的目标分支错误。请更改基础分支，并在需要时进行变基（rebase）。
 
-You may also see `awaits-parent`, which means the pull request awaits the merge of its parent.
+你还可能看到 `awaits-parent`，这表示该拉取请求正在等待其父拉取请求合并。
 
-The bot keeps both pull requests in step, too. When the parent is closed without being merged, your documentation pull request is closed as well. When the parent is reopened, so is yours.
+机器人还会让两个拉取请求保持同步。当父拉取请求在未合并的情况下被关闭时，你的文档拉取请求也会被关闭。当父拉取请求被重新打开时，你的拉取请求也会随之重新打开。
 
-So a documentation pull request on `next` waits for its parent. That can take a while, and that is fine: pull requests with the `has-parent` label are never marked as stale.
+因此，`next` 上的文档拉取请求会等待其父拉取请求。这可能需要一段时间，这没有问题：带有 `has-parent` 标签的拉取请求永远不会被标记为过期（stale）。
 
-## From pull request to live
+## 从拉取请求到上线
 
-1. You open a pull request.
-2. Automated checks run: remark checks the Markdown, textlint checks spelling and terminology, and the Astro part of the site is built. [Automated checks](/writing/reference/checks/) has the details.
-3. Netlify builds a **Deploy Preview** of the full site with your change.
-4. A maintainer reviews the change.
-5. Once merged into `current`, Netlify publishes the change to home-assistant.io. Changes on `next` go live with the release.
+1. 你打开一个拉取请求。
+2. 自动检查运行：remark 检查 Markdown，textlint 检查拼写和术语，并构建网站的 Astro 部分。详情请参阅[自动检查](/writing/reference/checks/)。
+3. Netlify 会构建包含你的更改的完整网站的 **Deploy Preview**。
+4. 维护者审查该更改。
+5. 一旦合并到 `current`，Netlify 就会将更改发布到 home-assistant.io。`next` 上的更改会随发行版发布而上线。
 
-Pull requests and issues without activity for 60 days are marked as stale, and closed 7 days later unless something happens. A comment or a new commit is enough to keep them open.
+60 天内没有活动的拉取请求和议题（issue）会被标记为过期，并在 7 天后被关闭，除非有新的动静。一条评论或一个新的提交就足以让它们保持打开状态。

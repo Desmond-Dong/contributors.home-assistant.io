@@ -1,34 +1,34 @@
 ---
-title: Untrusted content in the frontend
-description: Entity names, attributes, Markdown, and URLs can come from anywhere. How the frontend escapes, sanitizes, and checks them, and what you need to do.
+title: 前端中的不可信内容
+description: 实体名称、属性、Markdown 和 URL 可能来自任何地方。前端如何对它们进行转义、清理和检查，以及你需要做什么。
 sidebarLabel: Frontend
 order: 2
 ---
 
-The frontend shows data that it did not write. A device name comes from the device. An attribute comes from a cloud service. A Markdown card shows what a user, or a template, put in it. Any of these can contain HTML, and if the frontend renders that HTML as-is, it runs in the browser of everyone who opens the dashboard. That is cross-site scripting (XSS).
+前端展示的数据并非它自己编写的。设备名称来自设备。属性来自云服务。Markdown 卡片显示的是用户或模板放入的内容。这些内容中的任何一个都可能包含 HTML，如果前端按原样渲染该 HTML，它就会在打开仪表盘（dashboard）的每个人的浏览器中运行。这就是跨站脚本攻击（XSS）。
 
-This is not theoretical. XSS is the most common kind of mistake in the [past advisories](/security/reference/advisories/#cross-site-scripting) of Home Assistant. See [what went wrong before](#what-went-wrong-before).
+这并非纸上谈兵。XSS 是 Home Assistant [历史安全公告](/security/reference/advisories/#cross-site-scripting)中最常见的错误类型。请参阅[以前出过什么问题](#what-went-wrong-before)。
 
-The rule is simple: treat every string that reaches the frontend as data, never as markup.
+规则很简单：把每一个到达前端的字符串都当作数据，绝不当作标记（markup）。
 
-## Let Lit do the escaping
+## 让 Lit 来做转义
 
-Lit escapes values that you put in a template, so a name full of HTML shows up as text. That is the safest way to render anything, and it is why the frontend moved its chart tooltips to Lit templates: user-controlled fields like friendly names and device names are escaped automatically, instead of relying on a filter for each string.
+Lit 会转义你放入模板中的值，因此一个充满 HTML 的名称会以文本形式显示。这是渲染任何内容最安全的方式，也是前端将其图表提示框（tooltip）迁移到 Lit 模板的原因：像友好名称和设备名称这样由用户控制的字段会被自动转义，而不必依赖对每个字符串单独进行过滤。
 
 ```ts
 // Escaped by Lit: a name with HTML in it shows as text
 return html`${entityName}: ${value}`;
 ```
 
-Trouble starts when you build HTML as a string, and hand that string to something that renders it.
+当你把 HTML 构建为字符串，并将该字符串交给某个会渲染它的东西时，麻烦就开始了。
 
-- Do not set `innerHTML` with outside data. Set `textContent` instead. The fix for the map card did exactly that.
-- Avoid `unsafeHTML`. Today, the frontend only uses it in `ha-markdown-element`, to render Markdown that was already sanitized.
-- Some libraries, like charts and maps, take an HTML string for a tooltip or a popup. Prefer a Lit template when the library supports one.
+- 不要用外部数据设置 `innerHTML`。改用 `textContent`。地图卡片的修复正是这样做的。
+- 避免 `unsafeHTML`。目前，前端仅在 `ha-markdown-element` 中使用它，用于渲染已经过清理的 Markdown。
+- 一些库，例如图表和地图，接受 HTML 字符串作为提示框或弹窗。当库支持 Lit 模板时，优先使用 Lit 模板。
 
-## When you must build an HTML string
+## 当你必须构建 HTML 字符串时
 
-If there is no way around a string, pass every untrusted part through `filterXSS` from `src/common/util/xss.ts`:
+如果实在无法避免使用字符串，请将每个不可信的部分通过 `src/common/util/xss.ts` 中的 `filterXSS` 进行处理：
 
 ```ts
 import { filterXSS } from "../../common/util/xss";
@@ -36,35 +36,35 @@ import { filterXSS } from "../../common/util/xss";
 return `${filterXSS(path.name ?? "")}<br>${formattedTime}`;
 ```
 
-`filterXSS` has an empty allowlist, so no tag gets through. Use it for plain text that ends up in HTML, not for content that should keep its formatting.
+`filterXSS` 的允许列表（allowlist）为空，因此任何标签都无法通过。请将它用于最终会进入 HTML 的纯文本，而不是用于应保留其格式的内容。
 
 ## Markdown
 
-Render Markdown with the `<ha-markdown>` component. It converts the Markdown to HTML, and then filters the result with an allowlist of tags and attributes. Only what is on the list gets through.
+使用 `<ha-markdown>` 组件渲染 Markdown。它会将 Markdown 转换为 HTML，然后使用标签和属性的允许列表过滤结果。只有列表中的内容才能通过。
 
-`<ha-markdown>` has an `allow-svg` option. The code is clear about it: do not allow SVG on untrusted content, it allows XSS. In the frontend, it is turned on in places like the config flow dialogs and the action editor.
+`<ha-markdown>` 有一个 `allow-svg` 选项。代码对此说得很清楚：不要在不可信内容上允许 SVG，它会导致 XSS。在前端中，它仅在配置流程对话框和操作编辑器等地方启用。
 
-## Links
+## 链接
 
-A URL can be dangerous too: a `javascript:` URL in a link runs code when someone selects it. Every URL that reaches the frontend as data, from an integration manifest, an app, a config flow, or an entity attribute, should go through a check first. The helpers live in `src/common/url/sanitize-http-url.ts`:
+URL 也可能是危险的：链接中的 `javascript:` URL 会在有人点击它时运行代码。每一个作为数据到达前端的 URL，无论是来自集成（integration）清单、应用程序、配置流程还是实体（entity）属性，都应该先经过检查。这些辅助函数位于 `src/common/url/sanitize-http-url.ts` 中：
 
-- `sanitizeHttpUrl(url)` returns the URL only if it is an absolute `http:` or `https:` URL, and `undefined` otherwise.
-- `sanitizeLinkUrl(url)` also accepts `homeassistant://` deep links, and turns them into a path inside the frontend. Swapping the scheme alone is not enough: `homeassistant:///example.com` would become `//example.com`, which points to another site.
+- `sanitizeHttpUrl(url)` 仅当 URL 是绝对的 `http:` 或 `https:` URL 时才返回该 URL，否则返回 `undefined`。
+- `sanitizeLinkUrl(url)` 还接受 `homeassistant://` 深度链接，并将它们转换为前端内部的路径。仅替换协议（scheme）是不够的：`homeassistant:///example.com` 会变成 `//example.com`，这会指向另一个站点。
 
 ```ts
 const releaseUrl = sanitizeHttpUrl(stateObj.attributes.release_url);
 ```
 
-## What went wrong before
+## 以前出过什么问题
 
-- **Names in tooltips.** An entity name in a [graph tooltip of the energy dashboard](https://github.com/home-assistant/core/security/advisories/GHSA-mq77-rv97-285m), an entity name in the [history graph card](https://github.com/home-assistant/core/security/advisories/GHSA-46j8-vpx8-6p72), and a device name in the [map card](https://github.com/home-assistant/core/security/advisories/GHSA-r584-6283-p7xc) all ended up in an HTML string. The name in the energy dashboard could come from the cloud service of an integration, not only from a user.
-- **Markdown without a sanitizer.** The very first advisory, from 2017, was [XSS in Markdown output](https://github.com/home-assistant/frontend/pull/514).
-- **A `javascript:` URL.** A `redirect_uri` that a login client published was not checked for its scheme, and [ran code](https://github.com/home-assistant/core/security/advisories/GHSA-jvxq-x42r-f7mv) in the frontend.
-- **A URL parameter that picked the server.** A login link could make the frontend [connect to a fake WebSocket server](https://github.com/home-assistant/core/security/advisories/GHSA-cr83-q7r2-7f5q), which then sent it whatever it liked.
+- **提示框中的名称。** [能源仪表盘的图表提示框](https://github.com/home-assistant/core/security/advisories/GHSA-mq77-rv97-285m)中的实体名称、[历史图表卡片](https://github.com/home-assistant/core/security/advisories/GHSA-46j8-vpx8-6p72)中的实体名称，以及[地图卡片](https://github.com/home-assistant/core/security/advisories/GHSA-r584-6283-p7xc)中的设备名称，最终都进入了 HTML 字符串。能源仪表盘中的名称可能来自集成的云服务，而不仅仅来自用户。
+- **没有清理器的 Markdown。** 2017 年的第一份安全公告就是 [Markdown 输出中的 XSS](https://github.com/home-assistant/frontend/pull/514)。
+- **一个 `javascript:` URL。** 登录客户端发布的 `redirect_uri` 未检查其协议，并[在前端运行了代码](https://github.com/home-assistant/core/security/advisories/GHSA-jvxq-x42r-f7mv)。
+- **一个选择服务器的 URL 参数。** 一个登录链接可以让前端[连接到伪造的 WebSocket 服务器](https://github.com/home-assistant/core/security/advisories/GHSA-cr83-q7r2-7f5q)，然后该服务器可以向它发送任何它想要的内容。
 
-## Related
+## 相关内容
 
-- [Past advisories](/security/reference/advisories/): every advisory, grouped by kind.
-- [Security helpers](/security/reference/helpers/#frontend): the frontend helpers in a table.
-- [Secure integrations](/security/guides/integrations/): the other side, where the data comes from.
-- [Frontend](/frontend/): how the frontend is built.
+- [历史安全公告](/security/reference/advisories/)：每一份安全公告，按类型分组。
+- [安全辅助函数](/security/reference/helpers/#frontend)：以表格形式呈现的前端辅助函数。
+- [安全的集成](/security/guides/integrations/)：另一面，即数据的来源。
+- [前端](/frontend/)：前端是如何构建的。

@@ -1,39 +1,39 @@
 ---
-title: The Supervisor
-description: The program that runs Home Assistant Core, apps, backups, and updates on Home Assistant OS, each in its own container.
+title: Supervisor（管理程序）
+description: 在 Home Assistant OS 上运行 Home Assistant Core、应用、备份和更新的程序，各自运行在独立的容器中。
 order: 3
 ---
 
-On Home Assistant OS, Home Assistant Core doesn't run by itself. The Supervisor runs it. The Supervisor starts Core, updates it, backs it up, and restores it. It also runs [apps](/apps/how-apps-work/), and a few helpers of its own.
+在 Home Assistant OS 上，Home Assistant Core 并不是独立运行的。是 Supervisor（管理程序）在运行它。Supervisor 启动 Core、更新它、备份它并恢复它。它还运行[应用（apps）](/apps/how-apps-work/)，以及一些自己的辅助程序。
 
-Core, every app, every helper, and the Supervisor itself run as Docker containers.
+Core、每个应用、每个辅助程序以及 Supervisor 本身都以 Docker 容器的形式运行。
 
-## In short
+## 简而言之
 
-- The Supervisor is a Python program, in the [home-assistant/supervisor](https://github.com/home-assistant/supervisor) repository.
-- It runs Core, apps, and plugins as containers. How they are networked is in [what the Supervisor runs](/os/supervisor/#what-the-supervisor-runs).
-- It has a REST API, at `http://supervisor`. Core, apps, and the command line use it.
-- It makes backups, installs updates, and checks the system for problems.
+- Supervisor 是一个 Python 程序，位于 [home-assistant/supervisor](https://github.com/home-assistant/supervisor) 仓库中。
+- 它以容器的形式运行 Core、应用和插件。它们的网络连接方式见 [Supervisor 运行的内容](/os/supervisor/#what-the-supervisor-runs)。
+- 它有一个 REST API，地址为 `http://supervisor`。Core、应用和命令行都使用它。
+- 它负责创建备份、安装更新，并检查系统是否存在问题。
 
-## What runs on Home Assistant OS
+## Home Assistant OS 上运行着什么
 
-Next to Core and the apps, the Supervisor runs a few plugins of its own: for DNS, audio, the `ha` command line, multicast discovery, and a status page that keeps working when everything else is down. [What the Supervisor runs](/os/supervisor/#what-the-supervisor-runs) lists every container, with its name and network.
+除了 Core 和应用之外，Supervisor 还运行一些自己的插件：用于 DNS、音频、`ha` 命令行、多播发现，以及一个在其他一切都宕机时仍能正常工作的状态页面。[Supervisor 运行的内容](/os/supervisor/#what-the-supervisor-runs)列出了每个容器的名称和网络。
 
-## What it does
+## 它做什么
 
-- **The Supervisor API**: Core, apps, and the `ha` command line talk to the Supervisor over a REST API at `http://supervisor`. What a caller may do depends on its role. See the [Supervisor API](/apps/supervisor-api/), and how Core uses it in [the connection with Core](/os/supervisor/core-connection/).
-- **Ingress**: shows the web interface of an app inside Home Assistant, behind its login, without opening a port. See [ingress](/apps/guides/ingress/).
-- **Backups and updates**: the Supervisor backs up Core, apps, and folders, and installs new versions from `version.home-assistant.io`. See [how the Supervisor works](/os/supervisor/architecture/).
-- **Keeping the system healthy**: it checks the system all the time, and what it finds shows up as repair issues. See [the resolution center](/os/supervisor/resolution-center/).
+- **Supervisor API**：Core、应用和 `ha` 命令行通过位于 `http://supervisor` 的 REST API 与 Supervisor 通信。调用者可以执行什么操作取决于其角色。参见 [Supervisor API](/apps/supervisor-api/)，以及 Core 如何使用它见[与 Core 的连接](/os/supervisor/core-connection/)。
+- **Ingress（入口）**：在 Home Assistant 内部、其登录验证之后显示应用的 Web 界面，而无需开放端口。参见 [ingress](/apps/guides/ingress/)。
+- **备份和更新**：Supervisor 备份 Core、应用和文件夹，并从 `version.home-assistant.io` 安装新版本。参见 [Supervisor 的工作方式](/os/supervisor/architecture/)。
+- **保持系统健康**：它持续检查系统，发现的问题会显示为修复事项。参见[问题解决中心](/os/supervisor/resolution-center/)。
 
-## Go deeper
+## 深入了解
 
-- [How the Supervisor works](/os/supervisor/architecture/): how it starts, jobs, and the code layout
-- [Plugins](/os/supervisor/plugins/): the DNS, audio, CLI, multicast, and observer containers
-- [Develop the Supervisor](/os/supervisor/development/): run and test your changes
-- [How apps work](/apps/how-apps-work/): the Supervisor from an app's point of view
+- [Supervisor 的工作方式](/os/supervisor/architecture/)：它如何启动、任务机制以及代码结构
+- [插件](/os/supervisor/plugins/)：DNS、音频、CLI、多播和 observer 容器
+- [开发 Supervisor](/os/supervisor/development/)：运行和测试你的更改
+- [应用的工作方式](/apps/how-apps-work/)：从应用的角度看 Supervisor
 
-## Work on this
+## 参与其中
 
-- Start with [your first contribution to the Supervisor](/os/first-contribution/). It runs a complete system on your own machine.
-- Building an app instead? Head to [your first app](/apps/first-app/) in the Apps area.
+- 从[你对 Supervisor 的第一次贡献](/os/first-contribution/)开始。它会在你自己的机器上运行一个完整的系统。
+- 想构建应用？前往应用区域的[你的第一个应用](/apps/first-app/)。

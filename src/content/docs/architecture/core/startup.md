@@ -1,96 +1,96 @@
 ---
-title: From start to running
-description: What Home Assistant Core does between the moment it starts and the moment your home is ready, and how it shuts down again.
+title: 从启动到运行
+description: Home Assistant Core 从启动那一刻到你的家准备就绪之间做了什么，以及它如何再次关闭。
 order: 2
 ---
 
-When Home Assistant starts, it doesn't load everything at once. It loads in stages, so the most important parts are ready first, and a broken integration can't stop the rest of the house from starting.
+Home Assistant 启动时，并不会一次性加载所有内容。它分阶段加载，因此最重要的部分会先就绪，而一个损坏的集成（integration）也不会阻止家中其余部分的启动。
 
-Knowing these stages helps when you wonder why your integration has to wait for something, or why startup takes as long as it does.
+当你想知道为什么你的集成必须等待某些东西，或者为什么启动需要那么长时间时，了解这些阶段会很有帮助。
 
-## In short
+## 简而言之
 
-1. Python starts, and Home Assistant creates its [event loop](/core/internals/asyncio/).
-2. Logging, the configuration, and the registries load.
-3. Integrations set up in stages: first the basics like logging, the frontend, and the database, then discovery and the cloud, then everything else.
-4. Home Assistant fires `homeassistant_start`, runs startup jobs, and is running. It fires `homeassistant_started`.
+1. Python 启动，Home Assistant 创建其[事件循环（event loop）](/core/internals/asyncio/)。
+2. 日志、配置和注册表（registry）加载。
+3. 集成分阶段设置：先是日志、前端和数据库等基础部分，然后是发现和云，最后是其余所有内容。
+4. Home Assistant 触发 `homeassistant_start`，运行启动任务，并进入运行状态。它触发 `homeassistant_started`。
 
-Shutting down runs the same way in reverse, in stages with time limits, so it always finishes.
+关闭过程以相反的方式运行，同样是分阶段并带有时间限制，因此它总能完成。
 
-## The steps, in detail
+## 详细步骤
 
-### Before anything loads
+### 在任何内容加载之前
 
-The `hass` command runs `homeassistant/__main__.py`. It checks the Python version and the operating system, makes sure the configuration folder exists, and takes a lock file, `.ha_run.lock`, so two copies can't run on the same configuration.
+`hass` 命令运行 `homeassistant/__main__.py`。它检查 Python 版本和操作系统，确保配置文件夹存在，并获取一个锁文件 `.ha_run.lock`，这样两份副本就无法在同一配置上运行。
 
-Then `runner.py` creates the asyncio event loop, with a pool of up to 64 worker threads for blocking work, and hands over to `bootstrap.py`.
+然后 `runner.py` 创建 asyncio 事件循环，带有一个最多 64 个工作线程的线程池用于处理阻塞工作，并交由 `bootstrap.py` 接管。
 
-### Bootstrap
+### 引导（Bootstrap）
 
-`bootstrap.py` sets up the parts everything else needs:
+`bootstrap.py` 设置其他所有部分都需要的组件：
 
-1. **Logging**, to `home-assistant.log` in the configuration folder.
-2. **The configuration**: `configuration.yaml` is read, with its secrets and packages.
-3. **The base**: the registries (areas, devices, entities, floors, labels, categories, and issues), restored states, and config entries load in parallel.
-4. **Core integrations**: `homeassistant` itself and `persistent_notification`.
+1. **日志**，写入配置文件夹中的 `home-assistant.log`。
+2. **配置**：读取 `configuration.yaml`，包括其密钥（secrets）和包（packages）。
+3. **基础部分**：注册表（区域、设备、实体、楼层、标签、类别和问题）、恢复的状态（state）以及配置条目（config entry）并行加载。
+4. **核心集成**：`homeassistant` 本身和 `persistent_notification`。
 
-From here on, Home Assistant also watches for code that blocks the event loop.
+从这里开始，Home Assistant 还会监视阻塞事件循环的代码。
 
-### Integrations, in stages
+### 集成，分阶段加载
 
-Which integrations load is the sum of three things: everything in `configuration.yaml`, every integration with a [config entry](/glossary/config-entry/), and a set of default integrations, like the frontend, automations, scripts, and the helpers. On Home Assistant OS, the `hassio` integration joins in.
+哪些集成会加载，取决于三方面的总和：`configuration.yaml` 中的所有内容、每个带有[配置条目（config entry）](/glossary/config-entry/)的集成，以及一组默认集成，如前端、自动化（automation）、脚本和辅助元素（helper）。在 Home Assistant OS 上，`hassio` 集成也会加入。
 
-They load in three stages:
+它们分三个阶段加载：
 
-| Stage | What loads | Time limit |
+| 阶段 | 加载内容 | 时间限制 |
 | --- | --- | --- |
-| 0 | Logging, the frontend, the recorder, and zeroconf, in that order | Mostly none: a database migration must not be interrupted |
-| 1 | Discovery (Bluetooth, DHCP, SSDP, USB), the cloud, and the Supervisor | 120 seconds |
-| 2 | Everything else | 300 seconds |
+| 0 | 日志、前端、记录器（recorder）和 zeroconf，按此顺序 | 基本没有：数据库迁移不能被中断 |
+| 1 | 发现（Bluetooth、DHCP、SSDP、USB）、云和 Supervisor | 120 秒 |
+| 2 | 其余所有内容 | 300 秒 |
 
-Within a stage, integrations set up in parallel, after the integrations they depend on. When a stage runs out of time, Home Assistant logs which integrations are still busy, and moves on. A slow integration makes startup slow, but doesn't stop it.
+在一个阶段内，集成在它们所依赖的集成之后并行设置。当一个阶段超时后，Home Assistant 会记录哪些集成仍在忙碌，然后继续进行。一个缓慢的集成会让启动变慢，但不会阻止启动。
 
-### Running
+### 运行
 
-When the stages are done, Home Assistant:
+当各阶段完成后，Home Assistant：
 
-1. Changes its state to starting, and fires `homeassistant_start`.
-2. Runs the startup jobs that integrations registered.
-3. Changes its state to running, and fires `homeassistant_started`.
+1. 将其状态更改为 starting，并触发 `homeassistant_start`。
+2. 运行集成注册的启动任务。
+3. 将其状态更改为 running，并触发 `homeassistant_started`。
 
-Integrations that need everything else to be ready, like one that looks at all entities, wait for `homeassistant_started`. The helpers `async_at_start` and `async_at_started` run code at the right moment, also when the integration loads after startup.
+需要其他所有内容都就绪的集成，比如需要查看所有实体的集成，会等待 `homeassistant_started`。辅助函数 `async_at_start` 和 `async_at_started` 会在正确的时刻运行代码，即使集成是在启动之后才加载也是如此。
 
-### Recovery mode
+### 恢复模式
 
-When the configuration can't be read, the core integrations can't set up, or the frontend can't load, Home Assistant starts in recovery mode. Only the frontend, backups, and the cloud load, so the user can still get in and fix things.
+当配置无法读取、核心集成无法设置，或前端无法加载时，Home Assistant 会以恢复模式启动。只有前端、备份和云会加载，这样用户仍然可以进入并修复问题。
 
-## Shutting down
+## 关闭
 
-Shutdown runs in four stages, each with a time limit, so a stuck integration can't keep the house from restarting:
+关闭分四个阶段运行，每个阶段都有时间限制，因此一个卡住的集成无法阻止家重新启动：
 
-| Stage | What happens | Time limit |
+| 阶段 | 发生什么 | 时间限制 |
 | --- | --- | --- |
-| 1 | Shutdown jobs that integrations registered | 20 seconds |
-| 2 | Background tasks are cancelled, `homeassistant_stop` fires, and integrations close their connections | 100 seconds |
-| 3 | `homeassistant_final_write` fires: the last chance to save data, like the recorder does | 60 seconds |
-| 4 | `homeassistant_close` fires, and what is left is cancelled | 30 seconds |
+| 1 | 集成注册的关闭任务 | 20 秒 |
+| 2 | 后台任务被取消，`homeassistant_stop` 触发，集成关闭它们的连接 | 100 秒 |
+| 3 | `homeassistant_final_write` 触发：保存数据的最后机会，就像记录器所做的那样 | 60 秒 |
+| 4 | `homeassistant_close` 触发，剩余的内容被取消 | 30 秒 |
 
-## The states of Home Assistant
+## Home Assistant 的状态
 
-`hass.state` tells where Home Assistant is: `not_running`, `starting`, `running`, `stopping`, `final_write`, or `stopped`. Code can also check `hass.is_running` and `hass.is_stopping`.
+`hass.state` 表示 Home Assistant 所处的状态：`not_running`、`starting`、`running`、`stopping`、`final_write` 或 `stopped`。代码还可以检查 `hass.is_running` 和 `hass.is_stopping`。
 
-## In the code
+## 在代码中
 
-| What | Where |
+| 内容 | 位置 |
 | --- | --- |
-| The command and its options | [`homeassistant/__main__.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/__main__.py) |
-| The event loop and worker threads | [`homeassistant/runner.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/runner.py) |
-| Stages, default integrations, time limits | [`homeassistant/bootstrap.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/bootstrap.py) |
-| Starting and stopping, `CoreState` | [`homeassistant/core.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/core.py) |
-| `async_at_start`, `async_at_started` | [`homeassistant/helpers/start.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/helpers/start.py) |
+| 命令及其选项 | [`homeassistant/__main__.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/__main__.py) |
+| 事件循环和工作线程 | [`homeassistant/runner.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/runner.py) |
+| 阶段、默认集成、时间限制 | [`homeassistant/bootstrap.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/bootstrap.py) |
+| 启动和停止、`CoreState` | [`homeassistant/core.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/core.py) |
+| `async_at_start`、`async_at_started` | [`homeassistant/helpers/start.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/helpers/start.py) |
 
-## Work on this
+## 参与这项工作
 
-- New to Core? Start with [your first contribution to Core](/core/first-contribution/).
-- [Setup failures and exceptions](/core/integrations/setup-failures/): what your integration does when it can't set up yet.
-- [Blocking operations](/core/internals/blocking-operations/): what the event loop watchdog looks for.
+- 刚接触 Core？从[你对 Core 的第一次贡献](/core/first-contribution/)开始。
+- [设置失败和异常](/core/integrations/setup-failures/)：当你的集成暂时无法设置时它会怎么做。
+- [阻塞操作](/core/internals/blocking-operations/)：事件循环看门狗会查找什么。

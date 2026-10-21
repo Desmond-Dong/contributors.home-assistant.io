@@ -1,26 +1,26 @@
 ---
-title: How dashboards work
-description: How dashboards are put together from views, sections, cards, and badges, how strategies generate them, and how custom cards fit in.
+title: 仪表盘是如何工作的
+description: 仪表盘如何由视图、分区、卡片和徽章组成，策略如何生成它们，以及自定义卡片如何融入其中。
 order: 3
-sidebarLabel: Dashboards
+sidebarLabel: 仪表盘
 ---
 
-A [dashboard](/glossary/dashboard/) is a page of [cards](/glossary/card/), and the part of the frontend most people see most. Under the hood, it is a configuration, made of views, sections, cards, and badges, that the frontend turns into elements.
+[仪表盘](/glossary/dashboard/)是一个由[卡片](/glossary/card/)组成的页面，也是大多数人最常看到的前端部分。在底层，它是一个配置，由视图、分区、卡片和徽章组成，前端会将其转换为元素。
 
 > [!NOTE]
-> Dashboards used to be called Lovelace, and the code still uses that name: the panel is `lovelace`, and dashboard elements start with `hui-`. In text, say dashboard.
+> 仪表盘过去被称为 Lovelace，代码中仍然使用这个名称：面板是 `lovelace`，仪表盘元素以 `hui-` 开头。在文字中，请使用“仪表盘”。
 
-## In short
+## 简而言之
 
-- A dashboard has views. A view has sections, and sections have cards, or cards directly, depending on the view type.
-- Each card type is a web component, like `hui-tile-card`, loaded when a dashboard uses it.
-- A dashboard is stored in Home Assistant, or written in YAML.
-- A strategy generates a dashboard, or a view, from the home itself.
-- Custom cards are web components loaded from a JavaScript file.
+- 一个仪表盘包含视图。一个视图包含分区，分区包含卡片，或者根据视图类型直接包含卡片。
+- 每种卡片类型都是一个 Web 组件，例如 `hui-tile-card`，在仪表盘使用它时加载。
+- 仪表盘存储在 Home Assistant 中，或者用 YAML 编写。
+- 策略（strategy）可以根据家庭本身生成仪表盘或视图。
+- 自定义卡片是从 JavaScript 文件加载的 Web 组件。
 
-## From configuration to elements
+## 从配置到元素
 
-A dashboard is a configuration, like this:
+仪表盘是一个配置，如下所示：
 
 ```yaml
 views:
@@ -33,48 +33,48 @@ views:
             entity: light.kitchen
 ```
 
-The frontend reads it, and creates an element for each part: a view, a section, a `hui-tile-card` with its configuration. Card types load when a dashboard first uses them.
+前端读取它，并为每个部分创建一个元素：一个视图、一个分区、一个带有其配置的 `hui-tile-card`。卡片类型在仪表盘首次使用时加载。
 
-## Views
+## 视图
 
-| View type | Lays out |
+| 视图类型 | 布局方式 |
 | --- | --- |
-| `sections` | Sections on a grid, each with its own cards. The default for new dashboards. |
-| `masonry` | Cards in columns, placed by their height |
-| `sidebar` | A wide column of cards, and a narrow one |
-| `panel` | One card, over the whole page |
+| `sections` | 分区排列在网格上，每个分区有自己的卡片。新仪表盘的默认类型。 |
+| `masonry` | 卡片按列排列，根据高度放置 |
+| `sidebar` | 一列宽的卡片和一列窄的卡片 |
+| `panel` | 一张卡片，覆盖整个页面 |
 
-## Cards, badges, and features
+## 卡片、徽章和功能
 
-- **Cards** show and control things. Their configuration says what. Many have a visual editor.
-- **Badges** are small pills at the top of a view.
-- **[Card features](/glossary/card-feature/)** add controls to a card, like a brightness slider.
+- **卡片**显示和控制事物。它们的配置说明了具体内容。许多卡片都有可视化编辑器。
+- **徽章**是视图顶部的小药丸形元素。
+- **[卡片功能](/glossary/card-feature/)**为卡片添加控件，例如亮度滑块。
 
-The cards and their configuration options are in [dashboard cards](/design/dashboards/), with live examples.
+卡片及其配置选项在[仪表盘卡片](/design/dashboards/)中，附有实时示例。
 
-## Where a dashboard is stored
+## 仪表盘存储在哪里
 
-- **In storage**: the default. Users edit it in the UI, and Home Assistant saves it with the WebSocket API.
-- **In YAML**: the user writes it in a file. The UI can't edit it.
+- **存储中**：默认方式。用户在 UI 中编辑它，Home Assistant 通过 WebSocket API 保存它。
+- **YAML 中**：用户在文件中编写它。UI 无法编辑它。
 
-## Strategies and custom elements
+## 策略和自定义元素
 
-A [strategy](/glossary/strategy/) is code that generates a dashboard, a view, or a section, instead of a fixed configuration. The dashboard users see when they first open Home Assistant is one: it builds itself from the areas and devices, and stays up to date when something is added. Users can take control of a generated dashboard, and edit its configuration from there.
+[策略](/glossary/strategy/)是生成仪表盘、视图或分区的代码，而不是固定的配置。用户首次打开 Home Assistant 时看到的仪表盘就是一个策略：它根据区域（area）和设备（device）自动构建，并在添加新内容时保持更新。用户可以接管生成的仪表盘，并从那里编辑其配置。
 
-Cards, badges, views, and strategies can also come from outside the frontend, as web components loaded from a JavaScript file and used with a `custom:` type, like `custom:my-card`. They get the same `hass` object and configuration as the built-in ones. How to build them is in [custom cards and more](/frontend/custom-ui/).
+卡片、徽章、视图和策略也可以来自前端之外，作为从 JavaScript 文件加载的 Web 组件，并使用 `custom:` 类型，例如 `custom:my-card`。它们获得与内置组件相同的 `hass` 对象和配置。如何构建它们请参阅[自定义卡片及更多](/frontend/custom-ui/)。
 
-## In the code
+## 在代码中
 
-| What | Where |
+| 内容 | 位置 |
 | --- | --- |
-| The dashboard panel | `src/panels/lovelace/` |
-| Views, sections, cards, badges, features | `views/`, `sections/`, `cards/`, `badges/`, `card-features/` in the dashboard panel |
-| Strategies | `strategies/` in the dashboard panel |
-| Creating elements from configuration | `create-element/` in the dashboard panel |
-| The editors | `editor/` in the dashboard panel |
+| 仪表盘面板 | `src/panels/lovelace/` |
+| 视图、分区、卡片、徽章、功能 | 仪表盘面板中的 `views/`、`sections/`、`cards/`、`badges/`、`card-features/` |
+| 策略 | 仪表盘面板中的 `strategies/` |
+| 从配置创建元素 | 仪表盘面板中的 `create-element/` |
+| 编辑器 | 仪表盘面板中的 `editor/` |
 
-## Work on this
+## 参与这项工作
 
-- Start with [your first frontend contribution](/frontend/first-contribution/).
-- Build your own card, badge, or strategy: [custom cards and more](/frontend/custom-ui/).
-- The built-in cards and how they should look and behave: [dashboard cards](/design/dashboards/) in the Design area.
+- 从[你的第一个前端贡献](/frontend/first-contribution/)开始。
+- 构建你自己的卡片、徽章或策略：[自定义卡片及更多](/frontend/custom-ui/)。
+- 内置卡片及其应有的外观和行为：设计区域中的[仪表盘卡片](/design/dashboards/)。

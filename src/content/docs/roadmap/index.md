@@ -1,30 +1,30 @@
 ---
-title: Roadmap
-description: How ideas become planned work at the Open Home Foundation, what is being worked on, and where you can help shape what comes next.
+title: 路线图
+description: 在 Open Home Foundation，想法如何变成计划中的工作、目前正在推进的内容，以及你可以在哪里参与塑造未来的方向。
 ---
 
-Most work on Home Assistant needs no plan: a bug fix or an improvement to an integration goes straight to a pull request. Larger work is different. When something spans several repositories, needs design, or touches how people use Home Assistant every day, it is planned on the roadmap of the [Open Home Foundation](/glossary/open-home-foundation/).
+Home Assistant 的大部分工作无需计划：修复一个 bug 或改进一个集成（integration）可以直接提交拉取请求（pull request）。更大的工作则不同。当某项工作跨越多个代码仓库、需要设计，或者会影响人们每天使用 Home Assistant 的方式时，它就会被纳入 [Open Home Foundation](/glossary/open-home-foundation/) 的路线图进行规划。
 
-The roadmap isn't a list of features with dates. It describes the problems the project wants to solve next, and it's an open call for contributions in those areas. Everything on it happens in public repositories on GitHub, so you can follow along, and join in, at every step.
+路线图并不是一份带日期的功能列表。它描述的是项目接下来想要解决的问题，同时也是对这些领域贡献者的公开召集。路线图上的一切都在 GitHub 上的公开仓库中进行，因此你可以在每一步中跟进并参与其中。
 
-## Start here
+## 从这里开始
 
-- [Your first roadmap contribution](/roadmap/first-contribution/): share a feature request, or add your use case to one that exists.
-- [From idea to release](/roadmap/how-it-works/): the whole path, from a goal of the foundation to a feature request, an opportunity, an epic, tasks, and the release that ships it. With one real example traced end to end.
+- [你的第一次路线图贡献](/roadmap/first-contribution/)：分享一个功能请求，或者为已有的功能请求补充你的使用场景。
+- [从想法到发布](/roadmap/how-it-works/)：完整的路径，从基金会的一个目标，到功能请求、机会（opportunity）、史诗（epic）、任务，以及最终发布该功能的版本。并附有一个从头到尾追踪的真实示例。
 
-## What is being worked on
+## 正在进行的工作
 
-- The [roadmap repository](https://github.com/OpenHomeFoundation/roadmap) holds the opportunities: the problems the foundation has chosen to work on.
-- The [project board](https://ohf.to/roadmap) shows them at a glance.
-- [Epics](https://github.com/home-assistant/epics) break an opportunity into phases of work, with tasks in the repositories where the work happens.
-- Roadmap updates are published on the Home Assistant blog, in the [roadmap category](https://www.home-assistant.io/blog/categories/roadmap/).
+- [路线图仓库](https://github.com/OpenHomeFoundation/roadmap) 收录了各个机会（opportunity）：即基金会选择着手解决的问题。
+- [项目看板](https://ohf.to/roadmap) 让你一目了然地查看这些机会。
+- [史诗（Epics）](https://github.com/home-assistant/epics) 将一个机会拆分为多个工作阶段，任务则放在实际开展工作的仓库中。
+- 路线图更新会发布在 Home Assistant 博客的[路线图分类](https://www.home-assistant.io/blog/categories/roadmap/)中。
 
-## The roadmap and the architecture
+## 路线图与架构
 
-The roadmap decides *what* gets built. How Home Assistant is built is guarded by the architecture meeting, which sits next to the roadmap: every change to the architecture needs its approval, whether it comes from the roadmap or from a contributor's own idea. [How architecture decisions are made](/architecture/decisions/) explains that side.
+路线图决定*构建什么*。而 Home Assistant 如何构建则由架构会议守护，它与路线图并行运作：任何对架构的更改都需要获得架构会议的批准，无论该更改来自路线图还是贡献者自己的想法。[架构决策是如何做出的](/architecture/decisions/)介绍了这一方面。
 
-## Who to talk to
+## 联系谁
 
-- **Ideas** go to the [feature requests](https://github.com/home-assistant/feature-requests/discussions), where everyone can vote and discuss.
-- **Comments on an opportunity** go on its issue in the [roadmap repository](https://github.com/OpenHomeFoundation/roadmap).
-- **Questions about how something should be built** go to the [architecture discussions](https://github.com/home-assistant/architecture/discussions), or the **#developers** channel on [Discord](https://www.home-assistant.io/join-chat).
+- **想法**请提交到[功能请求](https://github.com/home-assistant/feature-requests/discussions)，所有人都可以在那里投票和讨论。
+- **对某个机会的评论**请发布在[路线图仓库](https://github.com/OpenHomeFoundation/roadmap)中对应的 issue 上。
+- **关于某项功能应该如何构建的问题**请前往[架构讨论区](https://github.com/home-assistant/architecture/discussions)，或 [Discord](https://www.home-assistant.io/join-chat) 上的 **#developers** 频道。

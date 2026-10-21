@@ -1,39 +1,39 @@
 ---
-title: Host a meetup
-description: Bring smart home fans in your city together. Create the event, get it listed, and get your costs covered.
+title: 举办线下聚会
+description: 让你所在城市的智能家居爱好者聚在一起。创建活动、提交收录，并获得费用报销。
 order: 4
 ---
 
-Home Assistant meetups happen all over the world. They are free, informal get-togethers where people talk about their smart homes, show what they built, and help each other. If there is none in your city, you can start one.
+Home Assistant 线下聚会（meetup）在世界各地都有举办。它们是免费、非正式的聚会，大家聊自己的智能家居，展示自己的作品，并互相帮助。如果你的城市还没有，你可以自己发起一个。
 
-## Find an existing meetup
+## 查找现有的聚会
 
-All Home Assistant meetups are listed on the [Home Assistant Meetups calendar on Luma](https://luma.com/homeassistant). The [community page](https://www.home-assistant.io/community/) of home-assistant.io shows them on a map. Joining a meetup or two before hosting one is a great way to see how others do it.
+所有 Home Assistant 聚会都列在 [Luma 上的 Home Assistant Meetups 日历](https://luma.com/homeassistant)中。home-assistant.io 的[社区页面](https://www.home-assistant.io/community/)会在地图上展示它们。在举办聚会之前先参加一两次，是了解别人如何组织的好方法。
 
-## Create your own
+## 创建你自己的聚会
 
-1. Create an account on [Luma](https://luma.com/), and open the [Home Assistant Meetups](https://luma.com/homeassistant) calendar.
-2. Select **Submit Event**, then **Create New Event**. The button is above the calendar.
-3. Use the invite graphic from the [community page](https://www.home-assistant.io/community/) as the event image.
-4. Fill in the event name, time zone, date, time, location, capacity, and hosts.
-5. Create the event.
-6. Let people know: post it in the meetup thread on [Discord](https://www.home-assistant.io/join-chat/), or in the **Social** section of the [community forum](https://community.home-assistant.io/).
+1. 在 [Luma](https://luma.com/) 上创建一个账户，然后打开 [Home Assistant Meetups](https://luma.com/homeassistant) 日历。
+2. 选择 **Submit Event**，然后选择 **Create New Event**。该按钮位于日历上方。
+3. 使用[社区页面](https://www.home-assistant.io/community/)上的邀请图作为活动图片。
+4. 填写活动名称、时区、日期、时间、地点、人数上限和主持人。
+5. 创建活动。
+6. 让大家知道：发布到 [Discord](https://www.home-assistant.io/join-chat/) 上的聚会讨论帖，或[社区论坛](https://community.home-assistant.io/)的 **Social** 版块。
 
-## Costs
+## 费用
 
-The Open Home Foundation reimburses hosts for certain costs of hosting a meetup. Which costs, and how to claim them, is described in the [community meetups playbook](https://www.openhomefoundation.org/assets/documents/community-meetups-playbook-07-sep-2026.pdf). Read it before you spend anything.
+开放之家基金会（Open Home Foundation）会为举办聚会的某些费用提供报销。哪些费用可以报销以及如何申请，请参阅[社区聚会操作手册](https://www.openhomefoundation.org/assets/documents/community-meetups-playbook-07-sep-2026.pdf)。在花钱之前请先阅读它。
 
-## Community Day
+## 社区日（Community Day）
 
-In 2026, the Open Home Foundation organizes [Community Day](https://www.openhomefoundation.org/community-day/) for the first time, on Saturday, November 7: one day where hosts around the world organize meetups for everyone who uses one of the projects of the foundation, like Home Assistant, ESPHome, and Music Assistant. Community Day events have [their own calendar on Luma](https://luma.com/communityday2026). You can host one the same way as a regular meetup.
+2026 年，开放之家基金会将首次举办[社区日（Community Day）](https://www.openhomefoundation.org/community-day/)，时间为 11 月 7 日星期六：在这一天，世界各地的主持人为所有使用基金会项目（如 Home Assistant、ESPHome 和 Music Assistant）的人组织聚会。社区日活动在 [Luma 上有自己的日历](https://luma.com/communityday2026)。你可以按照与普通聚会相同的方式举办一场。
 
-## Tips for a good meetup
+## 举办好聚会的技巧
 
-- Pick a place that is easy to reach, and where people can hear each other.
-- Welcome people at the door, and introduce newcomers to others. Not everyone is comfortable walking into a room full of strangers.
-- Give people something to talk about: a short demo, a show and tell, or a question to start with.
-- The [code of conduct](https://www.home-assistant.io/code_of_conduct/) applies at meetups too. If something happens, see [Report a problem](/community/guides/reporting/).
+- 选择一个交通便利、人们能彼此听清说话的场所。
+- 在门口迎接来宾，并把新来的人介绍给其他人。不是每个人都能自在地走进一个满是陌生人的房间。
+- 给大家一些可以聊的话题：一个简短的演示、作品展示，或者一个开场问题。
+- [行为准则](https://www.home-assistant.io/code_of_conduct/)同样适用于聚会。如果发生了问题，请参阅[报告问题](/community/guides/reporting/)。
 
-## Questions
+## 疑问
 
-Email the community team at [community@openhomefoundation.org](mailto:community@openhomefoundation.org).
+如有疑问，请发送电子邮件至社区团队：[community@openhomefoundation.org](mailto:community@openhomefoundation.org)。

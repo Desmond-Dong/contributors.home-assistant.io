@@ -1,38 +1,38 @@
 ---
-title: Move, rename, or remove a page
-description: Pages get linked from everywhere. Here is how to change them without breaking those links.
+title: 移动、重命名或删除页面
+description: 文档页面会被各种地方链接引用。这里介绍如何在不破坏这些链接的情况下进行修改。
 order: 4
 ---
 
-Documentation pages are linked from forum posts, blog posts, other websites, and Home Assistant itself. When a URL changes, those links should keep working.
+文档页面会被论坛帖子、博客文章、其他网站以及 Home Assistant 本身链接。当 URL 发生变化时，这些链接应该保持有效。
 
-## Move or rename a page
+## 移动或重命名页面
 
-Add a redirect from the old URL to the new one in `source/_redirects`:
+在 `source/_redirects` 中添加一条从旧 URL 到新 URL 的重定向：
 
 ```text
 /integrations/old_name  /integrations/new_name  301
 ```
 
-The same applies when you move a section to another page: send the old address to where the content lives now.
+当你把某个章节移动到另一个页面时也是如此：将旧地址重定向到内容现在所在的位置。
 
-## Remove an integration page
+## 删除集成页面
 
-When an integration is removed from Home Assistant, or the whole integration is deprecated, its documentation goes too:
+当某个集成（integration）从 Home Assistant 中移除，或整个集成被弃用时，其文档也应一并删除：
 
-1. Delete the page from `source/_integrations`, together with its triggers, conditions, and actions in `source/_triggers`, `source/_conditions`, and `source/_actions`, if it has any.
-2. Remove its icon and logo from the [brands repository](https://github.com/home-assistant/brands).
-3. Remove its entry from the `CODEOWNERS` file.
-4. Add a redirect in `source/_redirects`, in the section for removed integrations. Removed integrations all point to the same page, which explains to visitors what happened:
+1. 从 `source/_integrations` 中删除该页面，如果它包含触发、条件和动作，也一并删除 `source/_triggers`、`source/_conditions` 和 `source/_actions` 中的相应内容。
+2. 从[品牌仓库](https://github.com/home-assistant/brands)中移除其图标和标志。
+3. 从 `CODEOWNERS` 文件中移除其条目。
+4. 在 `source/_redirects` 中为已移除的集成添加一条重定向。所有已移除的集成都指向同一个页面，该页面向访客解释发生了什么：
 
    ```text
    /integrations/old_name  /more-info/removed-integration  301
    ```
 
-## Deprecated features
+## 已弃用的功能
 
-Do not wait until a feature is removed. The rule in the [documentation repository](https://github.com/home-assistant/home-assistant.io) is: "When a feature is deprecated or an integration is removed from Home Assistant, remove its documentation."
+不要等到功能被移除才行动。[文档仓库](https://github.com/home-assistant/home-assistant.io)中的规则是："当某个功能被弃用或某个集成从 Home Assistant 中移除时，删除其文档。"
 
-- If a feature is deprecated, remove its section from the integration page.
-- Do not add a deprecation notice to the documentation.
-- If an entire integration is deprecated, remove its page as described in [Remove an integration page](#remove-an-integration-page).
+- 如果某个功能被弃用，请从集成页面中删除其章节。
+- 不要在文档中添加弃用声明。
+- 如果整个集成被弃用，请按照[删除集成页面](#remove-an-integration-page)中的说明删除其页面。

@@ -1,36 +1,36 @@
 ---
-title: Document an integration
-description: For developers adding a new integration to Home Assistant. What the documentation needs, and how to get it merged together with your code.
+title: 编写集成文档
+description: 面向为 Home Assistant 添加新集成的开发者。文档需要包含哪些内容，以及如何让文档与代码一起合并。
 order: 3
 ---
 
-Every integration in Home Assistant has a page on [home-assistant.io](https://www.home-assistant.io/). When you add an integration, its page is part of the work. Users find the integration through that page, and the integration overview is generated from it.
+Home Assistant 中的每个集成（integration）在 [home-assistant.io](https://www.home-assistant.io/) 上都有一个页面。当你添加一个集成时，它的页面也是工作的一部分。用户通过该页面找到集成，集成概览也是由它生成的。
 
-## Before you start
+## 开始之前
 
-- Target the `next` branch. Your integration is not released yet, so neither is its page.
-- Open one documentation pull request per core pull request, and link them to each other.
-- Add the icon and logo of the integration to the [brands repository](https://github.com/home-assistant/brands), and link that pull request too.
+- 面向 `next` 分支。你的集成尚未发布，因此它的页面也未发布。
+- 每个核心（core）拉取请求对应一个文档拉取请求，并将它们相互链接。
+- 将集成的图标和标志添加到 [brands 仓库](https://github.com/home-assistant/brands)，并同样链接该拉取请求。
 
-## Create the page
+## 创建页面
 
-1. Copy the [integration page template](https://github.com/home-assistant/home-assistant.io/blob/current/source/_integrations/_integration_docs_template.markdown) to `source/_integrations/`.
-2. Name the file after the domain of your integration, with the `.markdown` extension, like `my_device.markdown`.
-3. Fill in the front matter. It drives the integration overview, the quality scale badge, and more. Every key is explained in [Integration front matter](/writing/reference/front-matter/).
-4. Write the page, following the structure of the template. [Integration page structure](/writing/reference/integration-page/) explains what each section is for.
-5. Add the integration and its integration owners to the `CODEOWNERS` file of the documentation repository. If you own the integration, you own its documentation too: you are asked to review changes to the page, and you are pinged on feedback that readers leave on it.
-6. Remove the comments from the template before you mark the pull request as ready for review.
+1. 将[集成页面模板](https://github.com/home-assistant/home-assistant.io/blob/current/source/_integrations/_integration_docs_template.markdown)复制到 `source/_integrations/`。
+2. 以集成的域名（domain）命名文件，并使用 `.markdown` 扩展名，例如 `my_device.markdown`。
+3. 填写 front matter。它驱动集成概览、质量等级徽章等。每个键都在[集成 front matter](/writing/reference/front-matter/) 中有说明。
+4. 按照模板的结构编写页面。[集成页面结构](/writing/reference/integration-page/)解释了每个部分的用途。
+5. 将该集成及其集成负责人添加到文档仓库的 `CODEOWNERS` 文件中。如果你拥有该集成，你也就拥有它的文档：你会被要求审阅对该页面的更改，并且在读者留下反馈时会收到通知。
+6. 在将拉取请求标记为可以审阅之前，请删除模板中的注释。
 
-## What a good integration page covers
+## 优秀的集成页面应涵盖的内容
 
-The template guides you through the sections. Some things reviewers look for:
+模板会引导你完成各个部分。审阅者会关注以下几点：
 
-- **What the integration does**, and what someone can use it for, in the first lines.
-- **Supported devices**, and the ones that are known not to work. Mention firmware versions you tested with when that matters.
-- **How to get credentials**, like an API key or access token, step by step.
-- **No custom integrations or custom cards** in the steps or examples. Everything should work with what Home Assistant ships.
-- **Known limitations and troubleshooting**, so users do not have to find out the hard way.
+- **集成的作用**，以及用户可以用它做什么，写在开头几行。
+- **支持的设备**，以及已知无法工作的设备。在重要的情况下，请提及你测试时所用的固件版本。
+- **如何获取凭据**，例如 API 密钥或访问令牌，逐步说明。
+- 步骤或示例中**不使用自定义集成或自定义卡片**。一切都应能通过 Home Assistant 自带的功能实现。
+- **已知的限制和故障排除**，让用户不必通过踩坑才发现。
 
-## When features go away
+## 当功能被移除时
 
-Remove the documentation of a feature as soon as it is deprecated, not when it is removed: remove its section from the integration page, and do not add a deprecation notice. When a whole integration is deprecated or removed, see [Move, rename, or remove a page](/writing/guides/move-or-remove/).
+在功能被弃用（deprecated）时就应立即移除其文档，而不是等到它被删除时：从集成页面中删除其对应的部分，并且不要添加弃用通知。当整个集成被弃用或删除时，请参阅[移动、重命名或删除页面](/writing/guides/move-or-remove/)。

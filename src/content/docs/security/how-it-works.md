@@ -1,41 +1,41 @@
 ---
-title: How Home Assistant handles trust
-description: Who Home Assistant trusts, where it can be attacked, and what the system already does to protect the homes it runs in.
-sidebarLabel: How it works
+title: Home Assistant 如何处理信任
+description: Home Assistant 信任谁、它可能在哪里受到攻击，以及系统在运行你的代码之前已经做了哪些保护。
+sidebarLabel: 工作原理
 order: 2
 ---
 
-Home Assistant controls locks, alarms, cameras, and heating, in people's homes. A security problem in Home Assistant is a problem in someone's front door. This page explains the model underneath: who Home Assistant trusts, where it can be attacked, and which protections are already in place before your code runs. The [guides](/security/guides/) turn that into practice for the code you write.
+Home Assistant 控制着人们家中的门锁、警报器、摄像头和供暖设备。Home Assistant 的安全问题，就是某人家前门的问题。本页解释其背后的模型：Home Assistant 信任谁、它可能在哪里受到攻击，以及在你的代码运行之前已经有哪些保护措施。[指南](/security/guides/)会把这些落实到你所编写的代码上。
 
-## Who Home Assistant trusts
+## Home Assistant 信任谁
 
-| Who | Trusted with |
+| 谁 | 被信任的内容 |
 | --- | --- |
-| **Administrators** | Everything. They can install custom integrations and apps, which run code, and read every setting. |
-| **Users** | Using the home: seeing states, performing actions. Not changing settings. |
-| **Read-only users** | Seeing states. |
-| **Anyone else** | Nothing. Except a webhook ID, which is a permission on its own. See [webhooks](/architecture/connections/). |
+| **管理员** | 一切。他们可以安装自定义集成（integration）和应用，这些会运行代码，并且可以读取所有设置。 |
+| **用户** | 使用这个家：查看状态（state）、执行操作。不能更改设置。 |
+| **只读用户** | 查看状态。 |
+| **其他任何人** | 什么都不行。除了 webhook ID，它本身就是一种权限。参见 [webhooks](/architecture/connections/)。 |
 
-These roles shape what the interface and the APIs offer, but they are not a security boundary. The [security policy](https://www.home-assistant.io/security/) says Home Assistant assumes every logged-in user is trusted and does not enforce user privileges, so a logged-in user who gains more rights doesn't count as a vulnerability.
+这些角色决定了界面和 API 所提供的内容，但它们并不是安全边界。[安全策略](https://www.home-assistant.io/security/)指出，Home Assistant 假定每个已登录的用户都是可信的，并且不强制执行用户权限，因此已登录用户获得更多权限不算作漏洞。
 
-Code that runs inside Home Assistant is trusted fully. A [custom integration](/glossary/custom-integration/) is Python in the same process as Core, and can do everything Core can. An [app](/apps/how-apps-work/) runs in its own container, but can ask for broad access. Installing either is an admin's choice, and Home Assistant warns about custom integrations for that reason.
+在 Home Assistant 内部运行的代码是完全可信的。[自定义集成](/glossary/custom-integration/)是与 Core 运行在同一进程中的 Python，可以做 Core 能做的一切。[应用](/apps/how-apps-work/)运行在自己的容器中，但可以请求广泛的访问权限。安装其中任何一种都是管理员的选择，Home Assistant 正因如此会对自定义集成发出警告。
 
-The line that matters most in code is between admins and everyone else. See [authentication](/core/internals/auth/) and [permissions](/core/internals/permissions/).
+代码中最重要的一条界线是管理员与其他所有人之间的界线。参见[身份验证](/core/internals/auth/)和[权限](/core/internals/permissions/)。
 
-## Where Home Assistant can be attacked
+## Home Assistant 可能在哪里受到攻击
 
-- **Its web server.** Many homes make Home Assistant reachable from the internet. Every endpoint that doesn't require a login, and every endpoint that does, is a door.
-- **Data from devices and services.** An integration reads data from the network, from a cloud service, or from a device. That data can be wrong, or crafted on purpose.
-- **Its dependencies.** Every [requirement](/glossary/requirement/) is code that runs in Core. A compromised library compromises Home Assistant.
-- **Users' own setups**, like a reverse proxy that forwards the wrong headers. Home Assistant can't fix those, but it can refuse to trust what it shouldn't.
+- **它的 Web 服务器。** 许多家庭让 Home Assistant 可以从互联网访问。每一个不需要登录的端点，以及每一个需要登录的端点，都是一扇门。
+- **来自设备和服务的数据。** 集成会从网络、云服务或设备读取数据。这些数据可能是错误的，也可能是被故意伪造的。
+- **它的依赖项。** 每一个[依赖项（requirement）](/glossary/requirement/)都是在 Core 中运行的代码。一个被攻陷的库会攻陷 Home Assistant。
+- **用户自己的配置**，例如转发了错误请求头的反向代理。Home Assistant 无法修复这些问题，但它可以拒绝信任本不该信任的内容。
 
-## What Home Assistant already does
+## Home Assistant 已经做了什么
 
-- Every request needs a valid token, except webhooks and a few endpoints that are public on purpose, like the login pages.
-- Failed logins are reported to the user, and repeated failed logins from one address can lead to a ban, when the user turned that on.
-- Requests with path tricks or suspicious bytes are refused before they reach any integration.
-- Behind a reverse proxy, forwarded addresses are only trusted from proxies the user configured.
-- The shared web session, from `async_get_clientsession`, checks SSL certificates, and refuses redirects from the internet to the local machine.
-- Features that read or write a file at a path the user gives, like taking a camera snapshot or attaching a file to a notification, check that path against the folders the user allowed (`allowlist_external_dirs`). This is a check those features call, not a sandbox: an integration runs with the same file access as Core.
+- 每个请求都需要有效的令牌，除了 webhook 和少数有意公开的端点，例如登录页面。
+- 登录失败会报告给用户，并且当用户开启了该功能时，来自同一地址的重复登录失败可能导致封禁。
+- 带有路径欺骗或可疑字节的请求会在到达任何集成之前被拒绝。
+- 在反向代理之后，只有用户配置过的代理所转发的地址才会被信任。
+- 共享的 Web 会话（来自 `async_get_clientsession`）会检查 SSL 证书，并拒绝从互联网重定向到本地机器。
+- 在用户给定的路径上读取或写入文件的功能，例如拍摄摄像头快照或在通知中附加文件，会根据用户允许的文件夹（`allowlist_external_dirs`）检查该路径。这是这些功能所调用的检查，而不是沙箱：集成运行时的文件访问权限与 Core 相同。
 
-These protections are built into Home Assistant. They don't cover what your own code does with the data it gets, or with the access it has. That part is up to you, and the [Security](/security/) area shows how, per kind of contribution.
+这些保护措施内置于 Home Assistant 中。它们并不涵盖你自己的代码对所获得的数据或所拥有的访问权限所做的处理。这部分取决于你，[安全](/security/)区域会按贡献类型展示具体做法。

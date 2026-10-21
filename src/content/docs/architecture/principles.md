@@ -1,77 +1,77 @@
 ---
-title: Architecture principles
-description: The ideas behind how Home Assistant is built. Once you know them, many rules in code review stop being surprising.
+title: 架构原则
+description: Home Assistant 构建方式背后的理念。了解它们之后，代码评审中的许多规则就不再令人意外。
 order: 3
-sidebarLabel: Principles
+sidebarLabel: 原则
 ---
 
-Home Assistant has grown for more than ten years, with thousands of contributors. What keeps it together is a small set of ideas that come back everywhere: in the code, in reviews, and in the decisions written down in the [architecture repository](/architecture/decisions/).
+Home Assistant 已经发展了十多年，拥有数千名贡献者。让它凝聚在一起的是一小组随处可见的理念：体现在代码中、评审中，以及记录在[架构仓库](/architecture/decisions/)中的决策里。
 
-You don't need to memorize them. But when a reviewer asks you to change something and you wonder why, the answer is almost always one of these.
+你不需要把它们背下来。但当评审者要求你修改某些东西而你不知道为什么时，答案几乎总是其中之一。
 
-This page is about what the values mean for the code and how it is built. [Our principles](/start/principles/) covers the values of the whole project and how we work together. [Design principles](/design/principles/) covers what they mean for the interface.
+本页讲的是这些价值观对代码及其构建方式意味着什么。[我们的原则](/start/principles/)介绍整个项目的价值观以及我们如何协作。[设计原则](/design/principles/)介绍它们对界面的意义。
 
-## Your home, your data
+## 你的家，你的数据
 
-Home Assistant runs in your home, and works without the internet wherever it can. Data about your home stays there, unless you choose to send it somewhere. This is also what the [Open Home Foundation](/glossary/open-home-foundation/) stands for: privacy, choice, and sustainability.
+Home Assistant 在你的家中运行，并且只要可能就可以在没有互联网的情况下工作。关于你家的数据会留在那里，除非你选择将其发送到别处。这也是 [Open Home Foundation](/glossary/open-home-foundation/) 所代表的：隐私、选择和可持续性。
 
-What this means when you build:
+这对你的构建意味着：
 
-- Prefer talking to a device on the local network over going through the cloud of its maker. The [IoT class](/glossary/iot-class/) of an integration tells users which one they get.
-- Send nothing to anyone without the user knowing and choosing to. Analytics are opt-in.
-- Don't depend on a service of the project itself for the basics. Home Assistant Link is an option, never a requirement.
+- 优先通过本地网络与设备通信，而不是通过制造商的云。[集成的 IoT class](/glossary/iot-class/) 告诉用户他们会得到哪一种。
+- 在用户不知情且未选择的情况下，不向任何人发送任何东西。分析功能是可选加入的。
+- 基础功能不依赖项目自身的服务。Home Assistant Link 是一个选项，绝不是必需品。
 
-## One process, one event loop
+## 一个进程，一个事件循环
 
-Home Assistant Core is a single Python process. Almost everything runs on one [event loop](/core/internals/asyncio/): every integration, every automation, every API request. That keeps it light enough to run on a small computer, and fast, but only when everyone plays fair.
+Home Assistant Core 是单个 Python 进程。几乎所有东西都运行在一个[事件循环](/core/internals/asyncio/)（event loop）上：每个集成、每个自动化、每个 API 请求。这使它足够轻量，可以在小型计算机上运行，而且速度快——但前提是每个人都遵守规则。
 
-What this means when you build:
+这对你的构建意味着：
 
-- Never block the event loop. Waiting on the network or a disk without `await` freezes the whole house, not just your integration.
-- Code that can only block, like a library without async support, runs in a worker thread.
+- 绝不阻塞事件循环。在没有 `await` 的情况下等待网络或磁盘会冻结整个家，而不仅仅是你的集成。
+- 只能阻塞的代码，比如不支持 async 的库，应在工作线程中运行。
 
-## Device logic lives in libraries
+## 设备逻辑放在库中
 
-An integration translates between Home Assistant and a device or service. The code that knows how to talk to that device, its protocol and its API, lives in a separate Python library on PyPI. The integration uses that library as a [requirement](/glossary/requirement/).
+集成在 Home Assistant 与设备或服务之间进行转换。知道如何与该设备通信的代码，即其协议和 API，放在 PyPI 上一个独立的 Python 库中。集成将该库作为[依赖](/glossary/requirement/)（requirement）使用。
 
-This keeps Home Assistant Core about Home Assistant. The library can be tested, released, and used by other projects on its own, and the integration stays small enough to review.
+这让 Home Assistant Core 专注于 Home Assistant 本身。该库可以独立地测试、发布并被其他项目使用，而集成也保持得足够小，便于评审。
 
-## Set up in the UI
+## 在 UI 中设置
 
-Users add [integrations](/glossary/integration/) to their home in the UI, not by editing YAML. Integrations that connect to a device or service are set up with a [config flow](/glossary/config-flow/). That was decided in [ADR-0010](https://github.com/home-assistant/architecture/blob/master/adr/0010-integration-configuration.md).
+用户在 UI 中向他们的家添加[集成](/glossary/integration/)，而不是通过编辑 YAML。连接到设备或服务的集成通过[配置流程](/glossary/config-flow/)（config flow）进行设置。这是在 [ADR-0010](https://github.com/home-assistant/architecture/blob/master/adr/0010-integration-configuration.md) 中决定的。
 
-YAML still exists, for things like automations, templates, and some integrations that don't connect to anything. But for a device, the UI is the way in.
+YAML 仍然存在，用于自动化、模板以及一些不连接任何东西的集成。但对于设备来说，UI 是入口。
 
-## Everything becomes entities and actions
+## 一切都变成实体和操作
 
-A light from Philips Hue and a light from IKEA look and behave the same in Home Assistant. Integrations translate whatever a device does into [entities](/glossary/entity/) with a state, and actions to control them.
+Philips Hue 的灯和 IKEA 的灯在 Home Assistant 中的外观和行为是一样的。集成将设备的任何功能转换为带有状态的[实体](/glossary/entity/)（entity），以及控制它们的操作。
 
-This shared model is what makes the rest possible. Dashboards, automations, voice, and the history all work with any integration, because they only see entities. When you build an integration, your job is to fit the device into that model, not to create a new one.
+正是这个共享模型让其余一切成为可能。仪表盘、自动化、语音和历史记录都能与任何集成协同工作，因为它们只看到实体。当你构建集成时，你的任务是把设备适配到这个模型中，而不是创建一个新模型。
 
-## The user's choices win
+## 用户的选择优先
 
-Users rename entities, put devices in areas, and hide what they don't need. Those changes live in the [registries](/architecture/core/registries/), not in the integration, and they survive restarts and updates.
+用户重命名实体、把设备放入区域（area）、隐藏他们不需要的东西。这些更改保存在[注册表](/architecture/core/registries/)中，而不是集成中，并且它们能在重启和更新后保留。
 
-That is why entities need a [unique ID](/glossary/unique-id/), and why an integration never decides things the user can change, like an entity ID.
+这就是为什么实体需要一个[唯一 ID](/glossary/unique-id/)，也是为什么集成绝不决定用户可以更改的东西，比如实体 ID。
 
-## Change with care
+## 谨慎变更
 
-Millions of homes run Home Assistant, and people rely on it for their lights, their heating, and their alarm. A change that breaks their setup breaks their home.
+数百万个家庭运行着 Home Assistant，人们依靠它来控制灯光、供暖和警报。一个破坏他们配置的变更就是破坏了他们的家。
 
-- Something old is not removed at once. It is first deprecated, with a warning and a date. See [deprecation](/glossary/deprecation/).
-- Backward-incompatible changes are rare, explained, and listed in the release notes.
-- The [integration quality scale](/glossary/quality-scale/) sets the bar for what good looks like.
+- 旧的东西不会立即移除。它首先被弃用（deprecation），并附带警告和日期。参见[弃用](/glossary/deprecation/)。
+- 向后不兼容的变更很少见，会有说明，并列入发布说明中。
+- [集成质量标准](/glossary/quality-scale/)设定了“好”的标准。
 
-## Support less, support it well
+## 支持得少，支持得好
 
-The project limits what it supports, so it can do that well. Some examples from the architecture decisions:
+项目限制其支持的范围，以便能把这些支持做好。以下是一些来自架构决策的例子：
 
-- **Installation methods**: Home Assistant OS and Home Assistant Container. Installing Core yourself, or the Supervisor on your own operating system, is no longer supported.
-- **Python**: one minor version of Python at a time, with the goal of supporting the newest one ([ADR-0020](https://github.com/home-assistant/architecture/blob/master/adr/0020-minimum-supported-python-version.md)).
-- **Databases**: SQLite, PostgreSQL versions that haven't reached their end of life, and LTS versions of MariaDB and MySQL that haven't either ([ADR-0018](https://github.com/home-assistant/architecture/blob/master/adr/0018-supported-databases.md)).
-- **No new integrations** that scrape websites ([ADR-0004](https://github.com/home-assistant/architecture/blob/master/adr/0004-webscraping.md)), or talk to GPIO pins directly ([ADR-0019](https://github.com/home-assistant/architecture/blob/master/adr/0019-GPIO.md)). They break too easily, or can't be supported for everyone. They can still live on as custom integrations.
+- **安装方式**：Home Assistant OS 和 Home Assistant Container。自行安装 Core，或在自己的操作系统上安装 Supervisor，已不再受支持。
+- **Python**：一次只支持一个 Python 次要版本，目标是支持最新版本（[ADR-0020](https://github.com/home-assistant/architecture/blob/master/adr/0020-minimum-supported-python-version.md)）。
+- **数据库**：SQLite、尚未到达生命周期终点的 PostgreSQL 版本，以及同样尚未到达生命周期终点的 MariaDB 和 MySQL 的 LTS 版本（[ADR-0018](https://github.com/home-assistant/architecture/blob/master/adr/0018-supported-databases.md)）。
+- **不再新增**抓取网站（[ADR-0004](https://github.com/home-assistant/architecture/blob/master/adr/0004-webscraping.md)）或直接与 GPIO 引脚通信（[ADR-0019](https://github.com/home-assistant/architecture/blob/master/adr/0019-GPIO.md)）的集成。它们太容易损坏，或者无法为所有人提供支持。它们仍然可以作为自定义集成存在。
 
-## Work on this
+## 参与其中
 
-- See these principles applied to integrations, rule by rule, in the [integration quality scale](/core/quality-scale/).
-- Not sure where to start contributing? [Your first contribution](/start/first-contribution/) helps you pick an area.
+- 在[集成质量标准](/core/quality-scale/)中逐条查看这些原则如何应用于集成。
+- 不确定从哪里开始贡献？[你的第一次贡献](/start/first-contribution/)帮助你选择一个领域。

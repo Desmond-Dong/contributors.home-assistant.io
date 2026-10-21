@@ -1,49 +1,49 @@
 ---
-title: How voice works
-description: "How a spoken sentence becomes an action: wake word, speech-to-text, a conversation agent, and text-to-speech, and where each runs."
+title: 语音是如何工作的
+description: "一句话如何变成一个动作：唤醒词、语音转文本、对话代理和文本转语音，以及每一步在哪里运行。"
 order: 8
-sidebarLabel: Voice
+sidebarLabel: 语音
 ---
 
-[Assist](/glossary/assist/) is the voice assistant of Home Assistant. You say "turn on the kitchen lights", and the lights turn on. Behind that sentence is a chain of steps, and each step can run somewhere else: on the device you speak to, on your Home Assistant, or in the cloud.
+[Assist](/glossary/assist/) 是 Home Assistant 的语音助手。你说“打开厨房的灯”，灯就亮了。这句话背后是一连串步骤，每一步都可以在不同的地方运行：在你说话的设备上、在你的 Home Assistant 上，或在云端。
 
-## In short
+## 简而言之
 
-- An [Assist pipeline](/glossary/assist-pipeline/) runs four steps: wake word, speech-to-text, the conversation agent, and text-to-speech.
-- Each step is a separate engine, and users pick one per step: local, from an integration, or from Home Assistant Link.
-- The conversation agent turns the text into an action. The built-in one matches sentences to [intents](/glossary/intent/). AI agents use a large language model.
-- Voice satellites, like Home Assistant Voice Preview Edition, are the microphones and speakers around the house.
+- [Assist 流水线（pipeline）](/glossary/assist-pipeline/)运行四个步骤：唤醒词、语音转文本、对话代理和文本转语音。
+- 每个步骤都是一个独立的引擎，用户为每个步骤选择一个引擎：本地的、来自集成的，或来自 Home Assistant Link 的。
+- 对话代理将文本转换为动作。内置的对话代理将句子匹配到[意图（intent）](/glossary/intent/)。AI 代理则使用大语言模型。
+- 语音卫星设备（voice satellite），如 Home Assistant Voice Preview Edition，是分布在家中各处的麦克风和扬声器。
 
-## The pipeline
+## 流水线
 
-| Step | Turns | Into | Engines |
+| 步骤 | 将 | 转换为 | 引擎 |
 | --- | --- | --- | --- |
-| Wake word | Sound | "Someone said the wake word" | On the satellite, or in Home Assistant |
-| Speech-to-text | Sound | Text | Local, like Whisper or Speech-to-Phrase, or in the cloud |
-| Conversation agent | Text | An action and an answer | The built-in agent, or an AI agent |
-| Text-to-speech | The answer | Sound | Local, like Piper, or in the cloud |
+| 唤醒词 | 声音 | “有人说出了唤醒词” | 在卫星设备上，或在 Home Assistant 中 |
+| 语音转文本 | 声音 | 文本 | 本地，如 Whisper 或 Speech-to-Phrase，或在云端 |
+| 对话代理 | 文本 | 一个动作和一个回答 | 内置代理，或 AI 代理 |
+| 文本转语音 | 回答 | 声音 | 本地，如 Piper，或在云端 |
 
-Users set up pipelines in **Settings** > **Voice assistants**, and each satellite uses one. Typing in the Assist dialog runs the same pipeline, from the conversation agent on.
+用户在**设置** > **语音助手**中配置流水线，每个卫星设备使用一个。在 Assist 对话框中输入文字也会运行相同的流水线，从对话代理这一步开始。
 
-## Conversation agents
+## 对话代理
 
-The **built-in agent** works fully locally. It matches the sentence against templates, with the hassil library, using the sentences per language from the [intents repository](https://github.com/OHF-Voice/intents) of the [Open Home Foundation](/glossary/open-home-foundation/). A match gives an intent, like `HassTurnOn` with the area kitchen and the domain light, and Home Assistant handles it.
+**内置代理**完全在本地运行。它使用 hassil 库，根据[Open Home Foundation](/glossary/open-home-foundation/) 的[intents 仓库](https://github.com/OHF-Voice/intents)中按语言提供的句子，将句子与模板进行匹配。匹配成功会得到一个意图，例如 `HassTurnOn`，附带区域为厨房、域为 light，然后由 Home Assistant 处理。
 
-**AI agents** come from integrations that connect to a large language model. Home Assistant gives the model tools, through its LLM API, to see and control the entities the user exposed to Assist. Users can let the built-in agent try first, and only go to the AI when it doesn't understand.
+**AI 代理**来自连接到大语言模型的集成。Home Assistant 通过其 LLM API 为模型提供工具，使其能够查看和控制用户暴露给 Assist 的实体（entity）。用户可以让内置代理先尝试，只有当它无法理解时才转给 AI。
 
-## Satellites
+## 卫星设备
 
-A satellite is a device with a microphone and a speaker. It listens for the wake word, streams the audio to Home Assistant, and plays the answer. ESPHome devices, like Home Assistant Voice Preview Edition, and devices that speak the Wyoming protocol can be satellites. Each satellite is an `assist_satellite` entity.
+卫星设备是一种带有麦克风和扬声器的设备。它监听唤醒词，将音频流式传输到 Home Assistant，并播放回答。ESPHome 设备（如 Home Assistant Voice Preview Edition）和支持 Wyoming 协议的设备都可以作为卫星设备。每个卫星设备都是一个 `assist_satellite` 实体。
 
-## Go deeper
+## 深入了解
 
-- [Assist pipelines](/core/internals/assist-pipelines/): run a pipeline, its events, and how audio is sent
-- [Intents](/core/internals/intents/) and the [built-in intents](/core/internals/built-in-intents/): how a sentence becomes an action
-- [The conversation API](/core/internals/conversation-api/) and the [LLM API](/core/internals/llm-api/): for agents and AI integrations
-- The entities behind each step: [wake word](/core/entities/wake-word/), [speech-to-text](/core/entities/stt/), [conversation](/core/entities/conversation/), [text-to-speech](/core/entities/tts/), and [Assist satellite](/core/entities/assist-satellite/)
-- [Voice translations](/translate/voice/): the sentences Assist understands, per language
+- [Assist 流水线](/core/internals/assist-pipelines/)：运行流水线、其事件，以及音频如何发送
+- [意图](/core/internals/intents/)和[内置意图](/core/internals/built-in-intents/)：一句话如何变成一个动作
+- [对话 API](/core/internals/conversation-api/) 和 [LLM API](/core/internals/llm-api/)：面向代理和 AI 集成
+- 每个步骤背后的实体：[唤醒词](/core/entities/wake-word/)、[语音转文本](/core/entities/stt/)、[对话](/core/entities/conversation/)、[文本转语音](/core/entities/tts/)和 [Assist 卫星设备](/core/entities/assist-satellite/)
+- [语音翻译](/translate/voice/)：Assist 按语言所能理解的句子
 
-## Work on this
+## 参与其中
 
-- Speak a language Assist doesn't understand well yet? [Voice translations](/translate/voice/) is the place to start, no programming needed.
-- Building a speech engine, an AI agent, or a satellite? Start with [your first contribution to Core](/core/first-contribution/), then the pages under Go deeper.
+- 会说一种 Assist 还不能很好理解的语言？[语音翻译](/translate/voice/)是你的起点，无需编程。
+- 正在开发语音引擎、AI 代理或卫星设备？从[你对 Core 的第一次贡献](/core/first-contribution/)开始，然后阅读“深入了解”下的页面。

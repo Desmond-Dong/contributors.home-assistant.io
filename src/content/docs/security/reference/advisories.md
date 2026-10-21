@@ -1,90 +1,90 @@
 ---
-title: Past advisories
-description: Every published security advisory of Home Assistant, grouped by kind, with what went wrong and the lesson for contributors.
+title: 过往安全公告
+description: Home Assistant 已发布的所有安全公告，按类型分组，说明出了什么问题以及对贡献者的教训。
 order: 3
 ---
 
-Home Assistant publishes an advisory for every valid vulnerability that meets the [criteria of the security policy](/security/report-a-vulnerability/#public-disclosure-and-cve-assignment). This page groups them by kind, says in one sentence what went wrong, and names the lesson. Each advisory links to the full details on GitHub, and each lesson links to the guide that covers it.
+Home Assistant 会为每一个符合[安全政策标准](/security/report-a-vulnerability/#public-disclosure-and-cve-assignment)的有效漏洞发布安全公告。本页面按类型对它们进行分组，用一句话说明出了什么问题，并指出相应的教训。每条公告都链接到 GitHub 上的完整详情，每条教训都链接到涵盖该内容的指南。
 
-The list itself, with severity, CVE, discoverer, and the version with the fix, lives on the [security page](https://www.home-assistant.io/security/#past-advisories). That list is the official one. This page only helps you learn from it.
+包含严重程度、CVE、发现者和修复版本的列表本身位于[安全页面](https://www.home-assistant.io/security/#past-advisories)。那份列表是官方版本。本页面只是帮助你从中学习。
 
-The same few mistakes keep coming back. Read the group that matches the code you work on.
+同样的一些错误不断重复出现。请阅读与你所负责代码相匹配的分组。
 
-## Cross-site scripting
+## 跨站脚本
 
-Data that reached the frontend was rendered as HTML, so a crafted name or message could run code in the browser of whoever looked at it.
+到达前端的数据被当作 HTML 渲染，因此一个精心构造的名称或消息可以在查看者的浏览器中运行代码。
 
-| Date | What went wrong | Lesson |
+| 日期 | 出了什么问题 | 教训 |
 | --- | --- | --- |
-| 2026‑03‑27 | A device name with HTML in it ran as code in the tooltip of the [map card](https://github.com/home-assistant/core/security/advisories/GHSA-r584-6283-p7xc). | Names are data, never markup. Let Lit render them, or set `textContent`. See [frontend](/security/guides/frontend/#let-lit-do-the-escaping). |
-| 2026‑03‑27 | An entity name ran as code in the tooltip of the [history graph card](https://github.com/home-assistant/core/security/advisories/GHSA-46j8-vpx8-6p72). | The same mistake in another card: check every place that builds an HTML string. See [frontend](/security/guides/frontend/#when-you-must-build-an-html-string). |
-| 2025‑10‑14 | An entity name ran as code in a [graph tooltip](https://github.com/home-assistant/core/security/advisories/GHSA-mq77-rv97-285m) of the energy dashboard. The name could come from the cloud service of the integration, not only from a user. | Any name can come from outside, including the default name an integration sets. See [frontend](/security/guides/frontend/). |
-| 2017‑10‑11 | The frontend did not sanitize [Markdown output](https://github.com/home-assistant/frontend/pull/514), like in persistent notifications. | Render Markdown through a sanitizer. Today that is `<ha-markdown>`. See [frontend](/security/guides/frontend/#markdown). |
+| 2026‑03‑27 | 一个包含 HTML 的设备名称在[地图卡片](https://github.com/home-assistant/core/security/advisories/GHSA-r584-6283-p7xc)的工具提示中作为代码运行。 | 名称是数据，绝不是标记。让 Lit 来渲染它们，或者设置 `textContent`。参见[前端](/security/guides/frontend/#let-lit-do-the-escaping)。 |
+| 2026‑03‑27 | 一个实体（entity）名称在[历史图表卡片](https://github.com/home-assistant/core/security/advisories/GHSA-46j8-vpx8-6p72)的工具提示中作为代码运行。 | 另一个卡片中的同样错误：检查每一个构建 HTML 字符串的地方。参见[前端](/security/guides/frontend/#when-you-must-build-an-html-string)。 |
+| 2025‑10‑14 | 一个实体名称在能源仪表盘的[图表工具提示](https://github.com/home-assistant/core/security/advisories/GHSA-mq77-rv97-285m)中作为代码运行。该名称可能来自集成的云服务，而不仅仅来自用户。 | 任何名称都可能来自外部，包括集成设置的默认名称。参见[前端](/security/guides/frontend/)。 |
+| 2017‑10‑11 | 前端没有对[Markdown 输出](https://github.com/home-assistant/frontend/pull/514)进行净化，例如在持久通知中。 | 通过净化器渲染 Markdown。如今那就是 `<ha-markdown>`。参见[前端](/security/guides/frontend/#markdown)。 |
 
-## Login and the frontend
+## 登录与前端
 
-Four findings from the [2023 audit by Cure53](https://www.home-assistant.io/blog/2023/10/19/security-audits-of-home-assistant/), all fixed in Home Assistant Core 2023.9.
+来自 [Cure53 的 2023 年审计](https://www.home-assistant.io/blog/2023/10/19/security-audits-of-home-assistant/)的四项发现，全部在 Home Assistant Core 2023.9 中修复。
 
-| Date | What went wrong | Lesson |
+| 日期 | 出了什么问题 | 教训 |
 | --- | --- | --- |
-| 2023‑10‑19 | A `redirect_uri` published by a login client was not checked for its scheme, so a [`javascript:` URL](https://github.com/home-assistant/core/security/advisories/GHSA-jvxq-x42r-f7mv) could run code in the frontend. | Every URL from outside gets its scheme checked before it is used as a link or a redirect. See [frontend](/security/guides/frontend/#links). |
-| 2023‑10‑19 | A login link could send the authorization code to [another site](https://github.com/home-assistant/core/security/advisories/GHSA-qhhj-7hrc-gqj5) that the attacker controlled. | Redirect targets need a strict match with the client they belong to. |
-| 2023‑10‑19 | A parameter in a login link decided which server the frontend opened its WebSocket to, so a link could [connect it to a fake server](https://github.com/home-assistant/core/security/advisories/GHSA-cr83-q7r2-7f5q). | Never let a URL parameter pick the server the frontend trusts. |
-| 2023‑10‑19 | Home Assistant did not set the `X-Frame-Options` header, so other sites could load it in a frame for [clickjacking](https://github.com/home-assistant/core/security/advisories/GHSA-935v-rmg9-44mw). | Core now sends `X-Frame-Options: SAMEORIGIN` by default. Do not work around it. |
+| 2023‑10‑19 | 登录客户端发布的 `redirect_uri` 没有检查其协议方案，因此一个 [`javascript:` URL](https://github.com/home-assistant/core/security/advisories/GHSA-jvxq-x42r-f7mv) 可以在前端运行代码。 | 每个来自外部的 URL 在被用作链接或重定向之前都要检查其协议方案。参见[前端](/security/guides/frontend/#links)。 |
+| 2023‑10‑19 | 一个登录链接可能将授权码发送到攻击者控制的[另一个站点](https://github.com/home-assistant/core/security/advisories/GHSA-qhhj-7hrc-gqj5)。 | 重定向目标需要与其所属客户端严格匹配。 |
+| 2023‑10‑19 | 登录链接中的一个参数决定前端将其 WebSocket 连接到哪个服务器，因此一个链接可以[将其连接到伪造的服务器](https://github.com/home-assistant/core/security/advisories/GHSA-cr83-q7r2-7f5q)。 | 绝不要让 URL 参数选择前端信任的服务器。 |
+| 2023‑10‑19 | Home Assistant 没有设置 `X-Frame-Options` 头，因此其他站点可以将其加载到框架中进行[点击劫持](https://github.com/home-assistant/core/security/advisories/GHSA-935v-rmg9-44mw)。 | Core 现在默认发送 `X-Frame-Options: SAMEORIGIN`。不要绕过它。 |
 
-## Endpoints without a login
+## 无需登录的端点
 
-An endpoint that answered without checking who was asking. Being on the local network is not a login.
+一个不检查请求者身份就响应的端点。处于本地网络上并不等于已登录。
 
-| Date | What went wrong | Lesson |
+| 日期 | 出了什么问题 | 教训 |
 | --- | --- | --- |
-| 2026‑06‑18 | An HTTP view of the legacy [Konnected integration](https://github.com/home-assistant/core/security/advisories/GHSA-x84v-g949-293w) had `requires_auth = False` and checked a token on `POST` and `PUT`, but not on `GET`. Anyone on the network could read the state of the alarm panel. The integration was removed. | With `requires_auth = False`, every method of the view checks the request itself. See [integrations](/security/guides/integrations/#http-views). |
-| 2023‑12‑14 | The login page showed [all user accounts](https://github.com/home-assistant/core/security/advisories/GHSA-jqpc-rc7g-vf83) to anyone on the local network who opened it. | Do not hand out information about users before login, not even on the local network. |
-| 2023‑10‑19 | Webhooks marked as local only were [reachable from the internet](https://github.com/home-assistant/core/security/advisories/GHSA-wx3j-3v2j-rf45) through the remote connection of Home Assistant Cloud, now Home Assistant Link, which made requests look local. | Where a request comes from is not the same as who sent it. Use `local_only` from the webhook helper, which handles this case. See [integrations](/security/guides/integrations/#webhooks). |
+| 2026‑06‑18 | 旧版 [Konnected 集成](https://github.com/home-assistant/core/security/advisories/GHSA-x84v-g949-293w)的一个 HTTP 视图设置了 `requires_auth = False`，并在 `POST` 和 `PUT` 上检查令牌，但在 `GET` 上没有。网络上的任何人都可以读取报警面板的状态。该集成已被移除。 | 使用 `requires_auth = False` 时，视图的每个方法都要自行检查请求。参见[集成](/security/guides/integrations/#http-views)。 |
+| 2023‑12‑14 | 登录页面向本地网络上打开它的任何人显示[所有用户账户](https://github.com/home-assistant/core/security/advisories/GHSA-jqpc-rc7g-vf83)。 | 在登录之前不要泄露关于用户的信息，即使在本地网络上也不行。 |
+| 2023‑10‑19 | 标记为仅限本地的 Webhook 可以通过 Home Assistant Cloud（现为 Home Assistant Link）的远程连接[从互联网访问](https://github.com/home-assistant/core/security/advisories/GHSA-wx3j-3v2j-rf45)，该连接使请求看起来像是本地的。 | 请求来自哪里与谁发送它并不是一回事。使用 webhook 辅助元素（helper）中的 `local_only`，它会处理这种情况。参见[集成](/security/guides/integrations/#webhooks)。 |
 
-## Server-side request forgery
+## 服务器端请求伪造
 
-Data from a caller ended up in a request that Home Assistant itself sent, with its own credentials.
+来自调用者的数据最终进入了 Home Assistant 自己使用自身凭据发送的请求中。
 
-| Date | What went wrong | Lesson |
+| 日期 | 出了什么问题 | 教训 |
 | --- | --- | --- |
-| 2023‑10‑19 | The `addon` field of the `hassio.addon_stdin` action was put into the path of a Supervisor API request, so a caller could reach [other Supervisor endpoints](https://github.com/home-assistant/core/security/advisories/GHSA-4r74-h49q-rr3h). | Validate every value that goes into a URL or a path, with a strict pattern. Core now checks that field against a slug pattern. See [integrations](/security/guides/integrations/#treat-what-comes-in-as-untrusted). |
+| 2023‑10‑19 | `hassio.addon_stdin` 动作的 `addon` 字段被放入 Supervisor API 请求的路径中，因此调用者可以访问[其他 Supervisor 端点](https://github.com/home-assistant/core/security/advisories/GHSA-4r74-h49q-rr3h)。 | 使用严格的模式验证每一个进入 URL 或路径的值。Core 现在会根据 slug 模式检查该字段。参见[集成](/security/guides/integrations/#treat-what-comes-in-as-untrusted)。 |
 
-## Certificate checks
+## 证书检查
 
-| Date | What went wrong | Lesson |
+| 日期 | 出了什么问题 | 教训 |
 | --- | --- | --- |
-| 2025‑02‑18 | When the `verify_ssl` option of aiohttp was replaced by `ssl`, some integrations and libraries [passed the old value straight on](https://github.com/home-assistant/core/security/advisories/GHSA-m3pm-rpgg-5wj6). According to the advisory, that turned certificate checks off. | Use the shared web session of Home Assistant, and pass the choice of the user as `verify_ssl`. See [integrations](/security/guides/integrations/#keep-certificate-checks-on). |
+| 2025‑02‑18 | 当 aiohttp 的 `verify_ssl` 选项被 `ssl` 取代时，一些集成和库[将旧值直接传递下去](https://github.com/home-assistant/core/security/advisories/GHSA-m3pm-rpgg-5wj6)。根据公告，这关闭了证书检查。 | 使用 Home Assistant 的共享 Web 会话，并将用户的选择作为 `verify_ssl` 传递。参见[集成](/security/guides/integrations/#keep-certificate-checks-on)。 |
 
-## Apps and the Supervisor
+## 应用与 Supervisor
 
-| Date | What went wrong | Lesson |
+| 日期 | 出了什么问题 | 教训 |
 | --- | --- | --- |
-| 2026‑03‑27 | Apps on the host network served [endpoints without a login](https://github.com/home-assistant/core/security/advisories/GHSA-gh5m-4m97-c95h) on the internal network of the Supervisor, assuming nothing else could reach it. Devices on the local network could. | Binding to an internal address is not a login. See [apps](/security/guides/apps/#do-not-trust-the-network-alone). |
-| 2023‑03‑08 | Attackers could bypass authentication and reach the [Supervisor API](https://github.com/home-assistant/core/security/advisories/GHSA-2j8f-h4mr-qr25) through Home Assistant. | A proxy only forwards what is on an explicit list. See [apps](/security/guides/apps/#the-supervisor-api-bypass). |
+| 2026‑03‑27 | 使用主机网络的应用在 Supervisor 的内部网络上提供[无需登录的端点](https://github.com/home-assistant/core/security/advisories/GHSA-gh5m-4m97-c95h)，并假设没有其他东西能访问它。本地网络上的设备却可以。 | 绑定到内部地址并不等于已登录。参见[应用](/security/guides/apps/#do-not-trust-the-network-alone)。 |
+| 2023‑03‑08 | 攻击者可以绕过身份验证，并通过 Home Assistant 访问 [Supervisor API](https://github.com/home-assistant/core/security/advisories/GHSA-2j8f-h4mr-qr25)。 | 代理只转发显式列表中的内容。参见[应用](/security/guides/apps/#the-supervisor-api-bypass)。 |
 
-## Companion apps
+## 伴侣应用
 
-The [companion apps](/companion/) hold a token for the server of the user. Anything that can make the app act on its own uses that token.
+[伴侣应用](/companion/)持有用户服务器的令牌。任何能让应用自行执行操作的东西都会使用该令牌。
 
-| Date | What went wrong | Lesson |
+| 日期 | 出了什么问题 | 教训 |
 | --- | --- | --- |
-| 2026‑07‑31 | Other apps could open a tag link in the Android app, which sent the [tag scan to the server](https://github.com/home-assistant/core/security/advisories/GHSA-2xqv-hwrf-983f) without asking the user. | An action that comes from outside the app needs the user's approval. See [companion apps](/security/guides/companion-apps/#ask-before-acting-on-a-link). |
-| 2026‑07‑31 | The same for the [iOS app](https://github.com/home-assistant/core/security/advisories/GHSA-j23v-9672-677j), through a universal link. | The same lesson, on both platforms. See [companion apps](/security/guides/companion-apps/#ask-before-acting-on-a-link). |
-| 2026‑07‑26 | An invite link could start onboarding of the Android app against [any server](https://github.com/home-assistant/core/security/advisories/GHSA-68f4-97mf-f68w), without showing its address. A fake login page could then collect the password. | Show the user where a link takes them before they trust it. See [companion apps](/security/guides/companion-apps/#show-which-server-you-connect-to). |
-| 2026‑06‑25 | The iOS app [ignored the list of home Wi-Fi networks](https://github.com/home-assistant/core/security/advisories/GHSA-cm5v-547m-qh5h) for the internal URL, so it could send its token over plain HTTP on any network. | Only use an internal `http:` URL on a network the user marked as home. See [companion apps](/security/guides/companion-apps/#keep-the-internal-url-at-home). |
-| 2026‑06‑17 | An [exported receiver](https://github.com/home-assistant/core/security/advisories/GHSA-77r5-pw5w-mgj3) of the Android app accepted location updates from any app, and sent them to the server as the real location. | Do not export components. When something must be reachable, accept only the one action it needs, and drop the data that comes with it. See [companion apps](/security/guides/companion-apps/#keep-components-private). |
-| 2026‑05‑11 | The JavaScript bridge of both apps answered frames from [other origins](https://github.com/home-assistant/core/security/advisories/GHSA-7jp2-p2fw-mgvf), like a Webpage card, and put a callback name from the message into code it ran. A page in a frame could get the access token. | Only the main frame of the server talks to the bridge, and nothing from a message becomes code. See [companion apps](/security/guides/companion-apps/#guard-the-javascript-bridge). |
-| 2023‑10‑19 | The Android app could be made to load an [arbitrary URL](https://github.com/home-assistant/core/security/advisories/GHSA-jvpm-q3hq-86rg) in its WebView. | The WebView only loads the server of the user. See [companion apps](/security/guides/companion-apps/#load-only-the-server-in-the-webview). |
-| 2023‑10‑19 | A link or QR code could make the iOS and macOS app [call actions](https://github.com/home-assistant/core/security/advisories/GHSA-h2jp-7grc-9xpp) on the server without asking. | An action that comes from outside the app needs the user's approval. See [companion apps](/security/guides/companion-apps/#ask-before-acting-on-a-link). |
+| 2026‑07‑31 | 其他应用可以在 Android 应用中打开标签链接，该应用会在不询问用户的情况下将[标签扫描发送到服务器](https://github.com/home-assistant/core/security/advisories/GHSA-2xqv-hwrf-983f)。 | 来自应用外部的操作需要用户的批准。参见[伴侣应用](/security/guides/companion-apps/#ask-before-acting-on-a-link)。 |
+| 2026‑07‑31 | [iOS 应用](https://github.com/home-assistant/core/security/advisories/GHSA-j23v-9672-677j)也是如此，通过通用链接实现。 | 同样的教训，在两个平台上都适用。参见[伴侣应用](/security/guides/companion-apps/#ask-before-acting-on-a-link)。 |
+| 2026‑07‑26 | 一个邀请链接可以让 Android 应用针对[任意服务器](https://github.com/home-assistant/core/security/advisories/GHSA-68f4-97mf-f68w)开始引导流程，而不显示其地址。随后一个伪造的登录页面可以收集密码。 | 在用户信任一个链接之前，向他们展示该链接会将他们带到哪里。参见[伴侣应用](/security/guides/companion-apps/#show-which-server-you-connect-to)。 |
+| 2026‑06‑25 | iOS 应用对内部 URL [忽略了家庭 Wi-Fi 网络列表](https://github.com/home-assistant/core/security/advisories/GHSA-cm5v-547m-qh5h)，因此它可能在任何网络上通过纯 HTTP 发送其令牌。 | 只在用户标记为家庭的网络上使用内部 `http:` URL。参见[伴侣应用](/security/guides/companion-apps/#keep-the-internal-url-at-home)。 |
+| 2026‑06‑17 | Android 应用的一个[导出的接收器](https://github.com/home-assistant/core/security/advisories/GHSA-77r5-pw5w-mgj3)接受来自任何应用的位置更新，并将其作为真实位置发送到服务器。 | 不要导出组件。当某个东西必须可访问时，只接受它所需的那个操作，并丢弃随之而来的数据。参见[伴侣应用](/security/guides/companion-apps/#keep-components-private)。 |
+| 2026‑05‑11 | 两个应用的 JavaScript 桥会响应来自[其他来源](https://github.com/home-assistant/core/security/advisories/GHSA-7jp2-p2fw-mgvf)的帧，例如网页卡片，并将消息中的回调名称放入其运行的代码中。框架中的页面可以获取访问令牌。 | 只有服务器的主框架与桥通信，消息中的任何内容都不会变成代码。参见[伴侣应用](/security/guides/companion-apps/#guard-the-javascript-bridge)。 |
+| 2023‑10‑19 | Android 应用可能被诱导在其 WebView 中加载[任意 URL](https://github.com/home-assistant/core/security/advisories/GHSA-jvpm-q3hq-86rg)。 | WebView 只加载用户的服务器。参见[伴侣应用](/security/guides/companion-apps/#load-only-the-server-in-the-webview)。 |
+| 2023‑10‑19 | 一个链接或二维码可以让 iOS 和 macOS 应用在不询问的情况下[调用服务器上的动作](https://github.com/home-assistant/core/security/advisories/GHSA-h2jp-7grc-9xpp)。 | 来自应用外部的操作需要用户的批准。参见[伴侣应用](/security/guides/companion-apps/#ask-before-acting-on-a-link)。 |
 
-## Workflows
+## 工作流
 
-| Date | What went wrong | Lesson |
+| 日期 | 出了什么问题 | 教训 |
 | --- | --- | --- |
-| 2023‑10‑19 | A shared GitHub Action of the project put the branch name of a pull request straight into a shell script, an [expression injection](https://github.com/home-assistant/core/security/advisories/GHSA-jff5-5j3g-vhqc). | Never put `${{ }}` expressions with outside data in a `run:` step. See [dependencies and supply chain](/security/guides/dependencies/#what-went-wrong-before). |
+| 2023‑10‑19 | 项目的一个共享 GitHub Action 将拉取请求的分支名称直接放入 shell 脚本中，这是一次[表达式注入](https://github.com/home-assistant/core/security/advisories/GHSA-jff5-5j3g-vhqc)。 | 绝不要将包含外部数据的 `${{ }}` 表达式放入 `run:` 步骤中。参见[依赖与供应链](/security/guides/dependencies/#what-went-wrong-before)。 |
 
-## Related
+## 相关内容
 
-- [Report a vulnerability](/security/report-a-vulnerability/): how to report, and what qualifies.
-- [Review with security in mind](/security/guides/reviewing/): where to look in a pull request.
+- [报告漏洞](/security/report-a-vulnerability/)：如何报告，以及什么符合条件。
+- [以安全意识进行审查](/security/guides/reviewing/)：在拉取请求中应该查看哪些地方。

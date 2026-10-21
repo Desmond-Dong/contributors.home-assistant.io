@@ -1,60 +1,60 @@
 ---
-title: History and statistics
-description: How the recorder writes every state change to a database, and how history, the logbook, and long-term statistics read it back.
+title: 历史与统计
+description: 记录器（recorder）如何将每次状态变更写入数据库，以及历史、日志簿和长期统计如何读取这些数据。
 order: 11
 ---
 
-Everything that happens in Home Assistant can be looked back on: when the door opened, how warm it was yesterday, how much energy the house used last month. The [recorder](/glossary/recorder/) makes that possible. It writes states and events to a database, and other integrations read them back.
+Home Assistant 中发生的一切都可以回溯查看：门是什么时候打开的、昨天有多暖和、上个月家里用了多少电。[记录器（recorder）](/glossary/recorder/)让这一切成为可能。它将状态和事件写入数据库，其他集成再从中读取。
 
-## In short
+## 简而言之
 
-- The recorder runs in its own thread, so writing to the database never holds up the [event loop](/core/internals/asyncio/).
-- It stores every state change and event, and keeps them for 10 days by default.
-- For sensors with a [state class](/glossary/state-class/), it also keeps statistics: five-minute summaries for as long as the history, and hourly summaries for good.
-- History graphs, the logbook, and the energy dashboard all read from the recorder's database.
+- 记录器运行在自己的线程中，因此写入数据库不会阻塞[事件循环（event loop）](/core/internals/asyncio/)。
+- 它存储每一次状态变更和事件，默认保留 10 天。
+- 对于具有[状态类（state class）](/glossary/state-class/)的传感器，它还会保存统计数据：五分钟汇总与历史数据保留同样长的时间，小时汇总则永久保留。
+- 历史图表、日志簿和能源仪表盘都从记录器的数据库中读取数据。
 
-## The recorder
+## 记录器
 
-The recorder listens to every event on the event bus, and writes it to the database in batches, every 5 seconds. Its database is SQLite by default, a file called `home-assistant_v2.db` in the configuration folder. MariaDB, MySQL, and PostgreSQL are supported too, see [ADR-0018](https://github.com/home-assistant/architecture/blob/master/adr/0018-supported-databases.md).
+记录器监听事件总线上的每一个事件，并每 5 秒批量写入数据库。它的数据库默认为 SQLite，即配置文件夹中名为 `home-assistant_v2.db` 的文件。同时也支持 MariaDB、MySQL 和 PostgreSQL，参见 [ADR-0018](https://github.com/home-assistant/architecture/blob/master/adr/0018-supported-databases.md)。
 
-States and their attributes are stored apart, and identical attributes are stored once. That keeps the database small, even though the same light reports the same attributes many times a day.
+状态及其属性分开存储，相同的属性只存储一次。这样即使同一盏灯一天内多次上报相同的属性，数据库也能保持较小。
 
-Every night, the recorder removes what is older than `purge_keep_days`, 10 days by default.
+每天晚上，记录器会删除早于 `purge_keep_days` 的数据，默认为 10 天。
 
-## Statistics
+## 统计
 
-Ten days of history is not enough to compare this winter with the last one, and keeping every state change forever would fill the disk. Statistics solve that. For each sensor with a state class, the recorder compiles:
+10 天的历史数据不足以比较今年冬天和去年冬天，而永久保留每一次状态变更又会填满磁盘。统计解决了这个问题。对于每个具有状态类的传感器，记录器会汇总：
 
-- **Short-term statistics**, every five minutes: the mean, minimum, and maximum, or the sum for meters. They are cleaned up with the history.
-- **Long-term statistics**, every hour, kept forever.
+- **短期统计**，每五分钟一次：平均值、最小值和最大值，对于计量表则是总和。它们随历史数据一起清理。
+- **长期统计**，每小时一次，永久保留。
 
-A sensor without a state class gets no statistics at all. That is why the state class matters so much for sensors, and why the energy dashboard only works with sensors that have one.
+没有状态类的传感器不会生成任何统计。这就是状态类对传感器如此重要，也是能源仪表盘只支持具有状态类的传感器的原因。
 
-## Who reads it
+## 谁在读取它
 
-| Integration | What it shows |
+| 集成 | 显示内容 |
 | --- | --- |
-| `history` | States over time, for graphs |
-| `logbook` | What happened, in words: "Front door opened" |
-| `energy` | Energy use and production, from long-term statistics |
+| `history` | 随时间变化的状态，用于图表 |
+| `logbook` | 用文字描述发生的事情：“前门已打开” |
+| `energy` | 能源使用和生产情况，来自长期统计 |
 
-## What not to record
+## 不应记录的内容
 
-Not everything belongs in the database. Attributes that change all the time, or are large, like a list of all supported effects, make the database grow fast. An entity can leave attributes out with `_unrecorded_attributes`, and entity types do the same for attributes that never change.
+并非所有内容都适合存入数据库。频繁变化或体积较大的属性（例如所有支持的效果的列表）会让数据库快速增长。实体（entity）可以通过 `_unrecorded_attributes` 排除某些属性，各类实体类型也会对从不变化的属性做同样处理。
 
-Users can exclude whole entities in their configuration.
+用户可以在其配置中排除整个实体。
 
-## In the code
+## 代码位置
 
-| What | Where |
+| 内容 | 位置 |
 | --- | --- |
-| The recorder | [`homeassistant/components/recorder/`](https://github.com/home-assistant/core/tree/dev/homeassistant/components/recorder) |
-| The database tables | `db_schema.py` in the recorder |
-| Compiling statistics | `statistics.py` in the recorder |
-| History and logbook | [`homeassistant/components/history/`](https://github.com/home-assistant/core/tree/dev/homeassistant/components/history), [`homeassistant/components/logbook/`](https://github.com/home-assistant/core/tree/dev/homeassistant/components/logbook) |
+| 记录器 | [`homeassistant/components/recorder/`](https://github.com/home-assistant/core/tree/dev/homeassistant/components/recorder) |
+| 数据库表 | 记录器中的 `db_schema.py` |
+| 统计汇总 | 记录器中的 `statistics.py` |
+| 历史与日志簿 | [`homeassistant/components/history/`](https://github.com/home-assistant/core/tree/dev/homeassistant/components/history)、[`homeassistant/components/logbook/`](https://github.com/home-assistant/core/tree/dev/homeassistant/components/logbook) |
 
-## Work on this
+## 参与开发
 
-- New to Core? Start with [your first contribution to Core](/core/first-contribution/).
-- [Sensor entity](/core/entities/sensor/): the state class, which decides whether a sensor gets statistics.
-- Want to look at the data of your own home? [Explore your own data](/data/guides/explore-your-data/) in the Data area.
+- 刚接触 Core？从[你的第一个 Core 贡献](/core/first-contribution/)开始。
+- [传感器实体（sensor entity）](/core/entities/sensor/)：状态类决定了传感器是否能生成统计。
+- 想查看自己家庭的数据？请在数据区域[探索你自己的数据](/data/guides/explore-your-data/)。

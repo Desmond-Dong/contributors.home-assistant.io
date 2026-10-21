@@ -1,19 +1,19 @@
 ---
-title: Secure integrations
-description: Credentials, certificates, redaction, admin-only access, webhooks, and file paths. The patterns and helpers that keep an integration safe.
-sidebarLabel: Integrations
+title: 安全的集成
+description: 凭据、证书、脱敏、仅管理员访问、webhook 和文件路径。让集成保持安全的模式和辅助工具。
+sidebarLabel: 集成
 order: 1
 ---
 
-An [integration](/glossary/integration/) runs inside Home Assistant Core, in the same process, with access to everything. It talks to devices and services on the network, it stores the credentials of the user, and it can add new ways into Home Assistant, like actions, WebSocket commands, and webhooks. Each of those is a place where a mistake hurts.
+[集成](/glossary/integration/)运行在 Home Assistant Core 内部，处于同一进程中，可以访问一切。它与网络上的设备和服务通信，存储用户的凭据，并且可以添加进入 Home Assistant 的新途径，比如动作、WebSocket 命令和 webhook。其中每一项都是可能因失误而造成伤害的地方。
 
-The good news: Home Assistant has a helper for almost every one of them. This guide shows which one to use, and why. For the bigger picture of who Home Assistant trusts, read [how Home Assistant handles trust](/security/how-it-works/) first.
+好消息是：Home Assistant 几乎为其中每一项都提供了辅助工具。本指南介绍应该使用哪一个，以及为什么。要了解 Home Assistant 信任对象的更大背景，请先阅读 [Home Assistant 如何处理信任](/security/how-it-works/)。
 
-## Talk to the network safely
+## 安全地与网络通信
 
-### Use the shared web session
+### 使用共享的 web 会话
 
-Get your HTTP session from Home Assistant, and pass it to your library:
+从 Home Assistant 获取你的 HTTP 会话，并将其传递给你的库：
 
 ```python
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -22,13 +22,13 @@ session = async_get_clientsession(hass)
 client = ExampleClient(entry.data[CONF_HOST], session=session)
 ```
 
-For HTTPX, use `get_async_client(hass)` from `homeassistant.helpers.httpx_client`. Both check SSL certificates by default (`verify_ssl=True`). The aiohttp session also refuses a redirect from an address on the network to the local machine itself (a loopback address), which protects against server-side request forgery.
+对于 HTTPX，请使用 `homeassistant.helpers.httpx_client` 中的 `get_async_client(hass)`。两者默认都会检查 SSL 证书（`verify_ssl=True`）。aiohttp 会话还会拒绝从网络上的地址重定向到本机（环回地址）的请求，这可以防范服务器端请求伪造。
 
-Passing the session in is also a rule of the quality scale: [inject-websession](/core/quality-scale/inject-websession/).
+传入会话也是质量等级的规则之一：[inject-websession](/core/quality-scale/inject-websession/)。
 
-### Keep certificate checks on
+### 保持证书检查开启
 
-Never turn off certificate checks by default. Some devices only have a self-signed certificate, and then users need a way out. Make it an option in the [config flow](/glossary/config-flow/), with checks on by default, like several integrations in Core do:
+默认情况下绝不要关闭证书检查。有些设备只有自签名证书，这时用户需要一条出路。可以把它作为[配置流程](/glossary/config-flow/)中的一个选项，默认开启检查，就像 Core 中的几个集成所做的那样：
 
 ```python
 from homeassistant.const import CONF_VERIFY_SSL
@@ -41,25 +41,25 @@ STEP_USER_DATA_SCHEMA = probatio.Schema(
 )
 ```
 
-Then pass the choice of the user on to the session:
+然后把用户的选择传递给会话：
 
 ```python
 session = async_get_clientsession(hass, entry.data[CONF_VERIFY_SSL])
 ```
 
-Certificate checks matter. An advisory from 2025 was about [SSL validation of outgoing requests](https://github.com/home-assistant/core/security/advisories/GHSA-m3pm-rpgg-5wj6) in Core and the libraries it uses.
+证书检查很重要。2025 年的一份安全公告涉及 Core 及其使用的库中[对外请求的 SSL 验证](https://github.com/home-assistant/core/security/advisories/GHSA-m3pm-rpgg-5wj6)问题。
 
-## Keep secrets secret
+## 保守秘密
 
-### Store credentials in the config entry
+### 将凭据存储在配置条目中
 
-Credentials and connection details belong in the `data` of the [config entry](/glossary/config-entry/), not in its `options`. Options are for settings the user changes later, in the [options flow](/glossary/options-flow/).
+凭据和连接细节应放在[配置条目](/glossary/config-entry/)的 `data` 中，而不是它的 `options` 中。options 用于用户稍后在[选项流程](/glossary/options-flow/)中更改的设置。
 
-When credentials stop working, ask the user for new ones with a [reauthentication flow](/glossary/reauthentication/), without setting up the integration again.
+当凭据失效时，通过[重新认证流程](/glossary/reauthentication/)向用户询问新的凭据，而无需重新设置集成。
 
-### Redact diagnostics
+### 对诊断信息进行脱敏
 
-Users post [diagnostics](/glossary/diagnostics/) in public issues. Pass everything private through `async_redact_data`, which replaces the values of the keys you list with `**REDACTED**`, also in nested dictionaries and lists:
+用户会在公开的 issue 中发布[诊断信息](/glossary/diagnostics/)。将所有私密内容通过 `async_redact_data` 处理，它会把你列出的键的值替换为 `**REDACTED**`，包括嵌套的字典和列表：
 
 ```python
 from homeassistant.components.diagnostics import async_redact_data
@@ -69,11 +69,11 @@ TO_REDACT = {CONF_API_KEY, CONF_PASSWORD, "serial_number"}
 return {"entry_data": async_redact_data(entry.data, TO_REDACT)}
 ```
 
-Think beyond passwords: tokens, coordinates, addresses, names, email addresses, and serial numbers. See [diagnostics](/core/integrations/diagnostics/) for the full picture, including tests.
+不要只想到密码：还有令牌、坐标、地址、姓名、电子邮件地址和序列号。完整信息（包括测试）请参阅[诊断](/core/integrations/diagnostics/)。
 
-### Keep secrets out of logs
+### 避免在日志中泄露秘密
 
-Users attach debug logs to issues too, when they report a problem. When a log line needs to identify a key or an ID, mask most of it with `partial_redact` from `homeassistant.helpers.redact`. It keeps the first 4 and the last 4 characters, and replaces short values completely:
+用户在报告问题时也会把调试日志附在 issue 上。当某条日志需要标识某个键或 ID 时，使用 `homeassistant.helpers.redact` 中的 `partial_redact` 对其大部分内容进行遮蔽。它会保留前 4 个和后 4 个字符，并完全替换较短的值：
 
 ```python
 from homeassistant.helpers.redact import partial_redact
@@ -81,26 +81,26 @@ from homeassistant.helpers.redact import partial_redact
 _LOGGER.debug("Using API key %s", partial_redact(api_key))
 ```
 
-The same module has its own `async_redact_data`. It also accepts a mapping from a key to a function, so you can mask a value partly instead of removing it.
+同一个模块中还有它自己的 `async_redact_data`。它还接受从键到函数的映射，因此你可以部分遮蔽某个值，而不是将其完全移除。
 
-## Treat what comes in as untrusted
+## 将传入的数据视为不可信
 
-Data from a device, a cloud service, or a user can be wrong, or crafted on purpose.
+来自设备、云服务或用户的数据可能是错误的，也可能是被故意构造的。
 
-- Validate the input of users with schemas. See [validating input](/core/development/input-validation/). Home Assistant checks the data of an action against its schema before your handler runs, so you do not need to check those fields again.
-- Data from a device or a service does not go through those schemas. Check that values are what you expect before you use them.
-- When a value goes into a URL or a file path, check it against a strict pattern first, like a slug. Otherwise a `../` or a `?` in it can point the request somewhere else.
-- Never pass outside data to `eval()`, `exec()`, or a shell. Ruff, the linter of Core, flags `exec` (`S102`), `eval` (`S307`), and `subprocess` with `shell=True` (`S602`), among other risky calls.
+- 使用 schema 验证用户的输入。参见[输入验证](/core/development/input-validation/)。Home Assistant 会在你的处理函数运行之前根据 schema 检查动作的数据，因此你无需再次检查这些字段。
+- 来自设备或服务的数据不会经过这些 schema。在使用这些值之前，先检查它们是否符合预期。
+- 当某个值会进入 URL 或文件路径时，先用严格的模式（比如 slug）检查它。否则其中的 `../` 或 `?` 可能会把请求指向别处。
+- 绝不要把外部数据传给 `eval()`、`exec()` 或 shell。Core 的代码检查工具 Ruff 会标记 `exec`（`S102`）、`eval`（`S307`）以及 `shell=True` 的 `subprocess`（`S602`）等有风险的调用。
 
-What comes in also ends up in the interface: a device name or an entity name reaches dashboards and cards. The frontend has to treat those as untrusted. See [untrusted content in the frontend](/security/guides/frontend/).
+传入的数据最终也会出现在界面上：设备名称或实体（entity）名称会到达仪表盘和卡片。前端必须将这些内容视为不可信。参见[前端中的不可信内容](/security/guides/frontend/)。
 
-## Guard the ways in
+## 守护进入的途径
 
-Every action, WebSocket command, HTTP view, and webhook you add is a new door into Home Assistant. Decide who may use it.
+你添加的每一个动作、WebSocket 命令、HTTP 视图和 webhook 都是进入 Home Assistant 的一扇新门。要决定谁可以使用它。
 
-### Admin-only actions
+### 仅管理员可用的动作
 
-An action that changes configuration, or has other security implications, should require an admin user. Register it with `async_register_admin_service`, which checks this for you:
+更改配置或具有其他安全影响的动作应要求管理员用户。使用 `async_register_admin_service` 注册它，它会替你完成这项检查：
 
 ```python
 from homeassistant.helpers.service import async_register_admin_service
@@ -110,11 +110,11 @@ async_register_admin_service(
 )
 ```
 
-An action that acts on entities needs a permission check too. See [permissions](/core/internals/permissions/).
+作用于实体的动作也需要权限检查。参见[权限](/core/internals/permissions/)。
 
-### Admin-only WebSocket commands
+### 仅管理员可用的 WebSocket 命令
 
-Put the `require_admin` decorator on top:
+在顶部加上 `require_admin` 装饰器：
 
 ```python
 @websocket_api.require_admin
@@ -128,9 +128,9 @@ async def handle_info(
     """Return information about the example."""
 ```
 
-### HTTP views
+### HTTP 视图
 
-A `HomeAssistantView` requires a logged-in user by default (`requires_auth = True`). Only set `requires_auth = False` when there is no other way, and then check the request yourself, in every method of the view: `get` as much as `post` and `put`. For a view that only admins may use, decorate the handler with `require_admin` from `homeassistant.components.http`:
+`HomeAssistantView` 默认要求已登录的用户（`requires_auth = True`）。只有在别无他法时才设置 `requires_auth = False`，然后由你自己检查请求，并且要在视图的每个方法中都进行检查：`get` 与 `post` 和 `put` 一样需要。对于仅管理员可用的视图，请使用 `homeassistant.components.http` 中的 `require_admin` 装饰处理函数：
 
 ```python
 from homeassistant.components.http import HomeAssistantView, require_admin
@@ -147,11 +147,11 @@ class ExampleUploadView(HomeAssistantView):
         """Handle the upload."""
 ```
 
-### Webhooks
+### Webhook
 
-A webhook does not need a login: anyone who knows the webhook ID can call it. That makes the ID a secret. Generate it with `webhook.async_generate_id()`, which returns 64 random hexadecimal characters.
+webhook 不需要登录：任何知道 webhook ID 的人都可以调用它。这使得该 ID 成为一个秘密。使用 `webhook.async_generate_id()` 生成它，它会返回 64 个随机的十六进制字符。
 
-When the device or service that calls your webhook is on the local network, register it as local only:
+当调用你的 webhook 的设备或服务位于本地网络时，将其注册为仅限本地：
 
 ```python
 webhook.async_register(
@@ -159,13 +159,13 @@ webhook.async_register(
 )
 ```
 
-Home Assistant then ignores requests that come from outside the local network, or through Home Assistant Link. It logs a warning and answers with `200 OK`, so the caller learns nothing. Webhooks accept `POST` and `PUT` by default. Use `allowed_methods` if you need something else.
+这样，Home Assistant 会忽略来自本地网络之外、或通过 Home Assistant Link 传入的请求。它会记录一条警告并以 `200 OK` 应答，因此调用者不会得到任何信息。Webhook 默认接受 `POST` 和 `PUT`。如果需要其他方法，请使用 `allowed_methods`。
 
-An advisory from 2023 was about [local-only webhooks that were reachable from outside](https://github.com/home-assistant/core/security/advisories/GHSA-wx3j-3v2j-rf45), through the remote connection of Home Assistant Link.
+2023 年的一份安全公告涉及[可从外部访问的仅限本地的 webhook](https://github.com/home-assistant/core/security/advisories/GHSA-wx3j-3v2j-rf45)，攻击途径是 Home Assistant Link（当时称为 Home Assistant Cloud）的远程连接。
 
-## Check file paths
+## 检查文件路径
 
-When a user gives your integration a path to read or write, like a folder to save a snapshot in, check it against the allowlist the user configured with `hass.config.is_allowed_path()`. It resolves the path first, so `..` tricks do not get through. It does blocking I/O, so run it in the executor:
+当用户给你的集成提供一个要读写的路径时，比如用于保存快照的文件夹，请使用 `hass.config.is_allowed_path()` 对照用户配置的允许列表进行检查。它会先解析路径，因此 `..` 之类的伎俩无法得逞。它会执行阻塞式 I/O，因此要在执行器（executor）中运行：
 
 ```python
 allowed = await hass.async_add_executor_job(
@@ -179,20 +179,20 @@ if not allowed:
     )
 ```
 
-For URLs, `hass.config.is_allowed_external_url()` does the same against the allowed external URLs.
+对于 URL，`hass.config.is_allowed_external_url()` 会对允许的外部 URL 做同样的检查。
 
-## What went wrong before
+## 过去出过什么问题
 
-These [past advisories](/security/reference/advisories/) were about integrations and Core. Each one maps to a section of this guide.
+这些[过去的安全公告](/security/reference/advisories/)涉及集成和 Core。每一份都对应本指南的一个章节。
 
-- **An HTTP view without a login that only checked some methods.** The legacy Konnected integration checked a token on `POST` and `PUT`, but [not on `GET`](https://github.com/home-assistant/core/security/advisories/GHSA-x84v-g949-293w). See [HTTP views](#http-views).
-- **Information before login.** The login page showed [all user accounts](https://github.com/home-assistant/core/security/advisories/GHSA-jqpc-rc7g-vf83) to anyone on the local network.
-- **Local is not the same as trusted.** Local-only webhooks were [reachable from the internet](https://github.com/home-assistant/core/security/advisories/GHSA-wx3j-3v2j-rf45) through the remote connection of Home Assistant Cloud, now Home Assistant Link. See [webhooks](#webhooks).
-- **Outside data in a request path.** A field of an action ended up in the path of a [Supervisor API request](https://github.com/home-assistant/core/security/advisories/GHSA-4r74-h49q-rr3h). See [treat what comes in as untrusted](#treat-what-comes-in-as-untrusted).
-- **Certificate checks that were off without anyone noticing.** A parameter of aiohttp was [replaced the wrong way](https://github.com/home-assistant/core/security/advisories/GHSA-m3pm-rpgg-5wj6). See [keep certificate checks on](#keep-certificate-checks-on).
+- **一个无需登录、且只检查了部分方法的 HTTP 视图。** 旧版 Konnected 集成在 `POST` 和 `PUT` 上检查了令牌，但[在 `GET` 上没有](https://github.com/home-assistant/core/security/advisories/GHSA-x84v-g949-293w)。参见 [HTTP 视图](#http-views)。
+- **登录前泄露信息。** 登录页面向本地网络上的任何人展示了[所有用户账户](https://github.com/home-assistant/core/security/advisories/GHSA-jqpc-rc7g-vf83)。
+- **本地不等于可信。** 仅限本地的 webhook 曾通过 Home Assistant Cloud（现为 Home Assistant Link）的远程连接[从互联网上被访问到](https://github.com/home-assistant/core/security/advisories/GHSA-wx3j-3v2j-rf45)。参见 [webhook](#webhooks)。
+- **请求路径中的外部数据。** 某个动作的字段最终进入了 [Supervisor API 请求](https://github.com/home-assistant/core/security/advisories/GHSA-4r74-h49q-rr3h)的路径中。参见[将传入的数据视为不可信](#treat-what-comes-in-as-untrusted)。
+- **证书检查被关闭而无人察觉。** aiohttp 的一个参数被[以错误的方式替换](https://github.com/home-assistant/core/security/advisories/GHSA-m3pm-rpgg-5wj6)。参见[保持证书检查开启](#keep-certificate-checks-on)。
 
-## Related
+## 相关内容
 
-- [Security helpers](/security/reference/helpers/): all helpers on one page.
-- [Dependencies and supply chain](/security/guides/dependencies/): what Home Assistant asks of the library your integration uses.
-- [Authentication](/core/internals/auth/) and [permissions](/core/internals/permissions/): users, groups, and permission checks.
+- [安全辅助工具](/security/reference/helpers/)：所有辅助工具汇总在一页上。
+- [依赖与供应链](/security/guides/dependencies/)：Home Assistant 对你的集成所使用的库有哪些要求。
+- [身份验证](/core/internals/auth/)与[权限](/core/internals/permissions/)：用户、群组和权限检查。

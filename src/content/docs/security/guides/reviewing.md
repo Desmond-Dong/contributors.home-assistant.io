@@ -1,84 +1,84 @@
 ---
-title: Review with security in mind
-description: What to look for in a pull request so security problems do not reach people's homes, and what to do when you find one.
-sidebarLabel: Reviewing
+title: 以安全为重进行审查
+description: 在拉取请求（pull request）中应关注什么，以避免安全问题进入用户的家中，以及发现问题后该怎么做。
+sidebarLabel: 审查
 order: 6
 ---
 
-Reviewers are the last line before code ships. You do not need to be a security expert to catch most problems: they tend to show up in the same few places. This page lists those places, so you know where to look.
+审查者是代码发布前的最后一道防线。你不需要是安全专家就能发现大多数问题：它们往往出现在同样几个地方。本页列出了这些地方，让你知道该往哪里看。
 
-It adds a security lens to the regular review guides. For the full process, see [reviewing pull requests](/core/development/reviewing/) for Core.
+本页为常规审查指南增加了安全视角。完整流程请参阅 Core 的[拉取请求审查](/core/development/reviewing/)。
 
-## If you find a vulnerability
+## 如果你发现漏洞
 
-Some things you spot in review are not a missing check in new code, but a hole in code that has already shipped. Do not discuss that in the pull request, where everyone can read it. [Report it privately](/security/report-a-vulnerability/) instead.
+你在审查中发现的一些问题并不是新代码中缺少检查，而是已经发布的代码中存在的漏洞。不要在所有人都能看到的拉取请求中讨论它，而应[私下报告](/security/report-a-vulnerability/)。
 
-## Learn from what went wrong before
+## 从过去的错误中学习
 
-The [past advisories](/security/reference/advisories/) of Home Assistant are the best training material there is. They keep coming back to the same themes:
+Home Assistant 的[历史安全公告](/security/reference/advisories/)是最好的培训材料。它们反复出现同样的主题：
 
-- **Names rendered as HTML.** Stored XSS through an entity name in a graph tooltip and in the history graph card, and through a device name in the map card.
-- **Unsafe URLs.** A full takeover through a `javascript:` URL in the login callback, and a partial server-side request forgery in Core.
-- **Endpoints without a login.** The alarm panel state of an integration, and the user accounts of Home Assistant, readable by anyone on the local network. Unauthenticated endpoints of apps, reachable on the local network through host network mode.
-- **Certificate checks.** SSL validation of outgoing requests that was not correct, in Core and the libraries it uses.
-- **Companion apps acting on their own.** Links and other apps that made the app send tag scans, location, or actions to the server without asking, and web pages in a frame that reached the JavaScript bridge.
-- **The project's own tooling.** An expression injection in a GitHub Action.
+- **名称被渲染为 HTML。** 通过图表提示框（tooltip）和历史图表卡片中的实体（entity）名称，以及地图卡片中的设备（device）名称造成的存储型 XSS。
+- **不安全的 URL。** 通过登录回调中的 `javascript:` URL 实现的完全接管，以及 Core 中的部分服务端请求伪造。
+- **无需登录的端点。** 某个集成的警报面板状态，以及 Home Assistant 的用户账户，可被本地网络上的任何人读取。应用（app）的未认证端点通过 host 网络模式在本地网络上可达。
+- **证书检查。** Core 及其使用的库中，对外请求的 SSL 验证不正确。
+- **伴侣应用（companion app）擅自行动。** 链接和其他应用使应用在未经询问的情况下向服务器发送标签扫描、位置或操作，以及框架中的网页访问到了 JavaScript 桥。
+- **项目自身的工具。** GitHub Action 中的表达式注入。
 
-The [reference page](/security/reference/advisories/) groups every advisory by kind, with the lesson and a link to the details on GitHub. Reading a few of them changes how you read code.
+[参考页面](/security/reference/advisories/)按类型对每条公告进行分组，并附上经验教训和 GitHub 上详情的链接。阅读其中几篇会改变你阅读代码的方式。
 
-## What to look for
+## 需要关注什么
 
-### Ways in
+### 入口
 
-- A new HTTP view: does it need `requires_auth = False`? If so, does every method check the request itself, `get` included?
-- A new action, WebSocket command, or view that changes configuration: is it admin-only? See [guard the ways in](/security/guides/integrations/#guard-the-ways-in).
-- A new webhook: should it be `local_only`? Is its ID generated with `webhook.async_generate_id()`?
-- A path from a user: is it checked with `hass.config.is_allowed_path()`?
+- 新的 HTTP 视图：是否需要 `requires_auth = False`？如果是，每个方法（包括 `get`）是否都自行检查请求？
+- 修改配置的新操作（action）、WebSocket 命令或视图：是否仅限管理员？参见[守护入口](/security/guides/integrations/#guard-the-ways-in)。
+- 新的 webhook：是否应为 `local_only`？其 ID 是否使用 `webhook.async_generate_id()` 生成？
+- 来自用户的路径：是否使用 `hass.config.is_allowed_path()` 进行检查？
 
-### Data
+### 数据
 
-- Credentials go in the `data` of the config entry, and nowhere else.
-- Diagnostics redact everything private. Check the snapshot in the tests: you see exactly what users would share.
-- Log lines do not contain passwords, tokens, or full keys.
-- Data from devices or services is not passed to `eval()`, `exec()`, or a shell.
+- 凭据应放在配置条目（config entry）的 `data` 中，而不是其他任何地方。
+- 诊断信息应隐去所有隐私内容。检查测试中的快照：你看到的就是用户会分享的内容。
+- 日志行不包含密码、令牌或完整密钥。
+- 来自设备或服务的数据不会被传入 `eval()`、`exec()` 或 shell。
 
-Do not ask for extra checks on fields that the schema of an action already validates. Home Assistant checks those before the handler runs. Ask for checks where data skips the schema, or is turned into something less safe.
+不要对操作（action）的 schema 已经校验的字段要求额外检查。Home Assistant 会在处理程序运行之前检查这些字段。应要求数据跳过 schema 或被转换为不太安全的形式时进行检查。
 
-### Network
+### 网络
 
-- The integration uses the shared web session of Home Assistant.
-- Certificate checks are on by default. If there is an option to turn them off, it is the user's choice, and off is not the default.
+- 集成使用 Home Assistant 的共享 Web 会话。
+- 证书检查默认开启。如果有关闭它们的选项，那应是用户的选择，且关闭不是默认值。
 
-### Frontend
+### 前端
 
-- Names, attributes, and other data reach the page through Lit templates, not `innerHTML` or HTML strings.
-- If a library needs an HTML string, untrusted parts go through `filterXSS`.
-- URLs from data go through `sanitizeHttpUrl` or `sanitizeLinkUrl`.
-- `<ha-markdown>` with `allow-svg` only renders trusted content.
+- 名称、属性和其他数据通过 Lit 模板到达页面，而不是 `innerHTML` 或 HTML 字符串。
+- 如果某个库需要 HTML 字符串，不可信的部分应通过 `filterXSS` 处理。
+- 来自数据的 URL 应通过 `sanitizeHttpUrl` 或 `sanitizeLinkUrl` 处理。
+- 带有 `allow-svg` 的 `<ha-markdown>` 只渲染受信任的内容。
 
-### Dependencies
+### 依赖
 
-- A new library meets the [dependency transparency](/core/quality-scale/dependency-transparency/) rule.
-- For an update, read the upstream diff, and look at the comment of the Check requirements workflow. See [dependencies and supply chain](/security/guides/dependencies/).
+- 新的库符合[依赖透明度](/core/quality-scale/dependency-transparency/)规则。
+- 对于更新，阅读上游 diff，并查看 Check requirements 工作流的评论。参见[依赖与供应链](/security/guides/dependencies/)。
 
-### Apps
+### 应用
 
-- Every endpoint of an app that changes something has a login, or only accepts the Supervisor through ingress. Listening on an internal address is not a login. See [secure apps](/security/guides/apps/).
+- 应用中每个会更改内容的端点都有登录验证，或只接受通过 ingress 访问的 Supervisor。监听内部地址不等于登录。参见[保护应用安全](/security/guides/apps/)。
 
-### Companion apps
+### 伴侣应用
 
-- A new link, intent, or shortcut that changes something on the server asks the user first.
-- A new Android component is not exported, unless another app must reach it.
-- Messages to the JavaScript bridge only come from the main frame of the server, and no value from a message becomes code. See [secure companion apps](/security/guides/companion-apps/).
+- 会更改服务器内容的新链接、intent 或快捷方式应先询问用户。
+- 新的 Android 组件不被导出（exported），除非其他应用必须访问它。
+- 发送到 JavaScript 桥的消息只来自服务器的主框架，且消息中的任何值都不会变成代码。参见[保护伴侣应用安全](/security/guides/companion-apps/)。
 
-### Workflows
+### 工作流
 
-- New actions are pinned to a commit SHA.
-- No `${{ }}` expression with outside data, like a branch name or a title, inside a `run:` script. See [what went wrong before](/security/guides/dependencies/#what-went-wrong-before).
-- Permissions are as small as the job allows, and checkouts use `persist-credentials: false`.
+- 新的操作固定到 commit SHA。
+- 在 `run:` 脚本中不使用包含外部数据（如分支名称或标题）的 `${{ }}` 表达式。参见[过去的错误](/security/guides/dependencies/#what-went-wrong-before)。
+- 权限尽可能小，仅满足任务所需，检出（checkout）使用 `persist-credentials: false`。
 
-## When you are not sure
+## 当你不确定时
 
-Ask. Say what worries you, and why. A question is always better than a guess. If the author is unsure too, bring it to the **#developers** channel on the [Home Assistant Discord](https://www.home-assistant.io/join-chat/), as long as it is about new code and not a vulnerability in released code.
+提问。说出你担心什么，以及为什么。提问永远好过猜测。如果作者也不确定，可以到 [Home Assistant Discord](https://www.home-assistant.io/join-chat/) 的 **#developers** 频道咨询，前提是这是关于新代码的问题，而不是已发布代码中的漏洞。
 
-If you write the code yourself and something about its security worries you, say so in your pull request. That helps your reviewer look in the right place.
+如果你自己编写代码，并且对其安全性有疑虑，请在你的拉取请求中说明。这有助于审查者关注正确的地方。

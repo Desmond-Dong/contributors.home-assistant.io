@@ -1,55 +1,55 @@
 ---
-title: Your first brand contribution
-description: Pick one page or one piece of interface text, read it against the personality of Home Assistant, and improve it.
+title: 你的第一次品牌贡献
+description: 选择一个页面或一段界面文本，对照 Home Assistant 的个性来阅读它，并加以改进。
 order: 1
-sidebarLabel: Your first contribution
+sidebarLabel: 你的第一次贡献
 ---
 
-The brand is not something you contribute to on its own. It shows up in everything else: a page of documentation, a dialog, an error message. So the best first contribution is small and concrete: take one piece of text, read it with the personality in mind, and make it better.
+品牌本身并不是你直接贡献的对象。它体现在其他一切事物中：一页文档、一个对话框、一条错误消息。因此，最好的第一次贡献是微小而具体的：选取一段文本，带着品牌个性去阅读它，然后让它变得更好。
 
-No design skills or coding needed, just a GitHub account. For the documentation, you can make the change yourself, in your browser. For interface text, you can point out what's wrong and let a developer change it, or make the change yourself if you're comfortable in a code repository.
+不需要设计技能或编程知识，只需要一个 GitHub 账号。对于文档，你可以在浏览器中亲自完成修改。对于界面文本，你可以指出问题所在并让开发者去修改，或者如果你熟悉代码仓库，也可以亲自修改。
 
-## 1. Read the personality
+## 1. 阅读品牌个性
 
-Read [Personality](/brand/personality/) once. Pay attention to the lists of what each trait is not. They help you spot a trait pushed too far: candid turned blunt, supportive turned condescending, welcoming turned sycophantic.
+通读一遍[个性](/brand/personality/)。注意每个特质“不是什么”的列表。它们能帮你发现某个特质被推得太过了：坦率变成了生硬，支持变成了居高临下，热情变成了谄媚。
 
-## 2. Pick something to read
+## 2. 选择要阅读的内容
 
-Start with something you know well, so you can tell whether it is right:
+从你非常熟悉的内容开始，这样你才能判断它是否正确：
 
-- **A page of the documentation**, on [home-assistant.io](https://www.home-assistant.io/), about something you set up yourself.
-- **A piece of interface text**, like a dialog or an error message you ran into.
+- **一页文档**，位于 [home-assistant.io](https://www.home-assistant.io/) 上，关于你自己设置过的内容。
+- **一段界面文本**，比如你遇到过的对话框或错误消息。
 
-Keep it to one page or one dialog. A small change is easier to review.
+保持在一个页面或一个对话框的范围内。小的修改更容易被审阅。
 
-## 3. Read it against the traits
+## 3. 对照特质来阅读
 
-Ask yourself a few questions while you read:
+阅读时问自己几个问题：
 
-- **Welcoming**: does it meet the reader at their level, or does it talk down to them? Does it assume knowledge they might not have?
-- **Candid**: does it say what it means? Does it hide a limitation, or pretend something is simpler than it is?
-- **Supportive**: when something goes wrong, does it say what to do next?
-- **Generous**: does it give the reader what they need, without burying it?
-- **Independent**: does it sound like Home Assistant, or like a corporate tech brand?
+- **热情**：它是否以读者能理解的水平与他们交流，还是居高临下？它是否假设了读者可能不具备的知识？
+- **坦率**：它是否表达了真正的意思？它是否隐瞒了某个限制，或者把某件事说得比实际更简单？
+- **支持**：当出现问题时，它是否说明了下一步该怎么做？
+- **慷慨**：它是否把读者需要的内容提供给他们，而不是把它埋没起来？
+- **独立**：它听起来像 Home Assistant，还是像一个企业科技品牌？
 
-Also check the basics: "Home Assistant" written in full, "select" instead of "click", and terms used the way the [glossary](/glossary/) defines them. [Voice and tone](/brand/voice-and-tone/) shows what the traits look like in each kind of text.
+同时检查基本规范："Home Assistant" 是否完整书写，是否用 "select" 而不是 "click"，术语是否按照[术语表](/glossary/)的定义使用。[语气和语调](/brand/voice-and-tone/)展示了这些特质在不同类型文本中的表现。
 
-## 4. Make the change
+## 4. 进行修改
 
-Where you make the change depends on what you picked:
+在哪里修改取决于你选择的内容：
 
-- **Documentation**: every page on home-assistant.io has an **Edit** link. [Your first docs fix](/writing/first-contribution/) walks you through it, straight from your browser.
-- **Interface text, without code**: open an [issue in the frontend repository](https://github.com/home-assistant/frontend/issues) that names the screen, quotes the current text, and suggests your version. Or bring it to the **#designers** channel on the [Home Assistant Discord](https://www.home-assistant.io/join-chat-design) first, if you're not sure about the right words. Read [UI text](/design/ui-text/) before you suggest a new wording.
-- **Interface text, as a pull request**: the English text of the interface lives in `src/translations/en.json` of the [frontend repository](https://github.com/home-assistant/frontend), and the text of an integration in its `strings.json` in the [core repository](https://github.com/home-assistant/core). Those are code repositories: a pull request there runs the automated checks, and needs a signed [Contributor License Agreement](/start/licensing/), which a bot asks for the first time.
+- **文档**：home-assistant.io 上的每个页面都有一个 **Edit** 链接。[你的第一次文档修复](/writing/first-contribution/)会引导你直接在浏览器中完成操作。
+- **界面文本，不写代码**：在[前端仓库](https://github.com/home-assistant/frontend/issues)中提交一个 issue，说明所在的界面、引用当前的文本，并建议你的版本。或者，如果你不确定合适的措辞，可以先把它带到 [Home Assistant Discord](https://www.home-assistant.io/join-chat-design) 的 **#designers** 频道。在建议新措辞之前，请先阅读 [UI 文本](/design/ui-text/)。
+- **界面文本，以 pull request 形式**：界面的英文文本位于[前端仓库](https://github.com/home-assistant/frontend)的 `src/translations/en.json` 中，而集成的文本位于[核心仓库](https://github.com/home-assistant/core)中该集成的 `strings.json` 里。这些是代码仓库：在那里提交 pull request 会运行自动化检查，并且需要签署[贡献者许可协议](/start/licensing/)（Contributor License Agreement），机器人会在你第一次提交时要求签署。
 
-Don't change the English text in a translation tool. Translators work from the English source, so fix it there, and the translations follow.
+不要在翻译工具中修改英文文本。翻译人员以英文源文本为依据，所以请在英文源文本中修复，翻译会随之更新。
 
-In your issue or pull request, explain what felt off and why your version is better. Pointing to the trait helps: "the old text hid that this only works locally, so I made it candid about that" is easy to review.
+在你的 issue 或 pull request 中，解释哪里感觉不对，以及为什么你的版本更好。指出相关的特质会很有帮助：“原文隐瞒了这只能在本地使用的事实，所以我让它对此保持坦率”，这样的说明很容易审阅。
 
-New to GitHub? See [Use GitHub, without being a developer](/start/github/).
+刚接触 GitHub？请参阅[使用 GitHub，无需成为开发者](/start/github/)。
 
-## What is next
+## 接下来做什么
 
-- Read [Voice and tone](/brand/voice-and-tone/) for how the personality sounds in other places.
-- Like improving words? The [Writing docs](/writing/) area and [UI text](/design/ui-text/) have plenty more to do.
-- Speak another language? Bring the same voice to it in [Translations](/translate/).
+- 阅读[语气和语调](/brand/voice-and-tone/)，了解品牌个性在其他地方的表现。
+- 喜欢改进文字？[写作文档](/writing/)区域和 [UI 文本](/design/ui-text/)还有很多事情可做。
+- 会说其他语言？在[翻译](/translate/)中把同样的语气带到那种语言中。

@@ -1,47 +1,47 @@
 ---
-title: Brand
-description: Who Home Assistant is, how it sounds, and how to use its name and logo. For everyone who writes, designs, translates, or talks on behalf of the project.
+title: 品牌
+description: Home Assistant 是谁、它听起来是什么样，以及如何使用它的名称和标志。面向每一位为项目写作、设计、翻译或代言的人。
 ---
 
-The Home Assistant brand is more than a blue house with an antenna. It is a personality: how Home Assistant treats people, how it sounds when it explains something, and what it refuses to be. You meet it in a button label, an error message, a page of documentation, a release post, and a reply on the [forum](https://community.home-assistant.io/).
+Home Assistant 品牌不仅仅是一个带天线的蓝色房子。它是一种个性：Home Assistant 如何对待他人、它在解释事情时听起来是什么样，以及它拒绝成为什么。你会在按钮标签、错误信息、一页文档、一篇发布文章，以及[论坛](https://community.home-assistant.io/)上的一条回复中遇见它。
 
-That is why the brand has its own area. It belongs to everyone who contributes, not just designers:
+正因如此，品牌拥有自己的一片领域。它属于每一位贡献者，而不仅仅是设计师：
 
-- **Documentation writers**, who explain Home Assistant to everyone who uses it
-- **Developers and designers**, who write the text in the interface
-- **Translators**, who carry the same voice into their own language
-- **Moderators and community members**, whose replies are often someone's first contact with the project
-- **Blog and release notes authors**, who tell people what is new
+- **文档作者**，向每一位使用 Home Assistant 的人解释它
+- **开发者和设计师**，编写界面中的文字
+- **翻译者**，把同样的声音带入自己的语言
+- **版主和社区成员**，他们的回复往往是许多人与项目的第一次接触
+- **博客和发布说明作者**，告诉人们有什么新内容
 
-It all starts with what Home Assistant stands for: the Open Home, and its three values of privacy, choice, and sustainability. The personality and the voice follow from those values.
+这一切都始于 Home Assistant 所代表的东西：开放之家（Open Home），以及它的三大价值观——隐私、选择和可持续。个性和声音都源自这些价值观。
 
-You don't need to learn rules by heart. Read the story and the personality once, and you will recognize it, and notice when something doesn't fit.
+你不需要把规则背下来。把故事和个性读一遍，你就会认出它，并注意到什么时候某些东西不合适。
 
-## Start here
+## 从这里开始
 
-- [Your first brand contribution](/brand/first-contribution/): review one page or one piece of interface text against the personality, and improve it.
-- [Our story and values](/brand/our-story/): the Open Home, its three values, and where Home Assistant comes from.
-- [Personality](/brand/personality/): the five traits that describe who Home Assistant is, and what each of them is not.
+- [你的第一次品牌贡献](/brand/first-contribution/)：对照个性审查一页文档或一段界面文字，并加以改进。
+- [我们的故事和价值观](/brand/our-story/)：开放之家、它的三大价值观，以及 Home Assistant 的由来。
+- [个性](/brand/personality/)：描述 Home Assistant 是谁的五个特质，以及每个特质不是什么。
 
-## Guides and reference
+## 指南和参考
 
-- [Voice and tone](/brand/voice-and-tone/): how the personality sounds in documentation, the interface, error messages, community replies, release notes, and social media.
-- [Name and logo](/brand/name-and-logo/): how to write the name, how to use the logo, and how both relate to the Open Home Foundation.
+- [语气和语调](/brand/voice-and-tone/)：个性在文档、界面、错误信息、社区回复、发布说明和社交媒体中听起来是什么样。
+- [名称和标志](/brand/name-and-logo/)：如何书写名称、如何使用标志，以及两者与开放之家基金会（Open Home Foundation）的关系。
 
-## Related areas
+## 相关领域
 
-The brand describes how Home Assistant sounds. The detailed rules for each kind of text live with the people who write it:
+品牌描述的是 Home Assistant 听起来是什么样。各类文字的详细规则由撰写它们的人负责：
 
-- [Style guide](/writing/reference/style/): the language and formatting rules for the documentation.
-- [UI text](/design/ui-text/): how the interface talks, with the words to use and avoid.
-- [Translation rules](/translate/reference/rules/): what stays the same in every language.
-- [Welcome newcomers](/community/guides/welcome-newcomers/): how to reply to someone who just arrived.
+- [风格指南](/writing/reference/style/)：文档的语言和格式规则。
+- [界面文字](/design/ui-text/)：界面如何说话，包括应使用和避免的词语。
+- [翻译规则](/translate/reference/rules/)：在每种语言中保持不变的内容。
+- [欢迎新人](/community/guides/welcome-newcomers/)：如何回复刚刚到来的人。
 
-A different kind of brand: integrations have brands too, the logos and names of the companies whose devices Home Assistant connects to. Those live in the [integration brands](/core/integrations/brands/) reference of the Core area.
+另一种品牌：集成（integration）也有品牌，即 Home Assistant 所连接设备的公司的标志和名称。它们位于核心（Core）领域的[集成品牌](/core/integrations/brands/)参考中。
 
-## Who to talk to
+## 联系谁
 
-- The personality and logo guidelines live in this area. Suggest a change in the [UX design discussions](https://github.com/OpenHomeFoundation/ux-design/discussions), or with a pull request to [this site](https://github.com/home-assistant/contributors.home-assistant.io).
-- Questions about design, or the way the interface talks? The **#designers** channel on the [Home Assistant Discord](https://www.home-assistant.io/join-chat-design) is where designers meet.
-- Want to use the logo commercially? Email the Open Home Foundation at [partner@openhomefoundation.org](mailto:partner@openhomefoundation.org).
-- Questions about social media, or an account that pretends to be official? Email the community team at [community@openhomefoundation.org](mailto:community@openhomefoundation.org).
+- 个性指南和标志指南位于本领域。你可以在 [UX 设计讨论区](https://github.com/OpenHomeFoundation/ux-design/discussions)中建议修改，或向[本网站](https://github.com/home-assistant/contributors.home-assistant.io)提交 pull request。
+- 有关于设计或界面说话方式的问题？[Home Assistant Discord](https://www.home-assistant.io/join-chat-design) 上的 **#designers** 频道是设计师们交流的地方。
+- 想在商业上使用标志？请发送电子邮件至开放之家基金会的 [partner@openhomefoundation.org](mailto:partner@openhomefoundation.org)。
+- 有关于社交媒体的问题，或发现冒充官方的账号？请发送电子邮件至社区团队的 [community@openhomefoundation.org](mailto:community@openhomefoundation.org)。

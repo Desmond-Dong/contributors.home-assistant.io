@@ -1,33 +1,33 @@
 ---
-title: The frontend
-description: Where the web interface fits in the whole of Home Assistant, and where to find its details.
+title: 前端
+description: Web 界面在整个 Home Assistant 中的位置，以及在哪里可以找到它的详细信息。
 order: 30
 ---
 
-The [frontend](/glossary/frontend/) is everything users see: dashboards, settings, the automation editor, and every dialog. It is a web application, built with Lit and TypeScript, in the [home-assistant/frontend](https://github.com/home-assistant/frontend) repository. Core serves its files, it runs in the browser, and the [companion apps](/architecture/platform/companion-apps/) show it too.
+[前端](/glossary/frontend/)（frontend）是用户看到的一切：仪表盘、设置、自动化编辑器，以及每一个对话框。它是一个 Web 应用程序，使用 Lit 和 TypeScript 构建，位于 [home-assistant/frontend](https://github.com/home-assistant/frontend) 仓库中。Core 提供其文件，它在浏览器中运行，[伴侣应用](/architecture/platform/companion-apps/)（companion apps）也会显示它。
 
-## Its place in the whole
+## 它在整体中的位置
 
-- **It holds no state of its own.** Everything it shows comes from Core, over the [WebSocket API](/core/internals/websocket-api/), and every change is pushed to it. Close the browser, and nothing is lost.
-- **It never talks to devices.** Selecting a light performs an action in Core, and Core's integration talks to the light. The frontend only sees entities.
-- **Text comes from two places.** The frontend's own text comes from its translation files. Text of integrations, like entity names and setup steps, comes from Core, from each integration's `strings.json`.
-- **It loads in parts.** Pages, called panels, and dashboard cards load only when they are needed, so the first page is fast.
+- **它自身不保存任何状态。** 它显示的一切都来自 Core，通过 [WebSocket API](/core/internals/websocket-api/) 传输，并且每次更改都会推送给它。关闭浏览器，什么都不会丢失。
+- **它从不直接与设备通信。** 选择一盏灯会在 Core 中执行一个操作，由 Core 的集成与该灯通信。前端只看到实体（entity）。
+- **文本来自两个地方。** 前端自身的文本来自它的翻译文件。集成的文本，比如实体名称和设置步骤，来自 Core，来自每个集成的 `strings.json`。
+- **它分部分加载。** 称为面板（panel）的页面和仪表盘卡片只在需要时才加载，因此第一页速度很快。
 
-## The details
+## 详细信息
 
-The [Frontend](/frontend/) area explains how it is built:
+[前端](/frontend/)（Frontend）区域解释了它是如何构建的：
 
-- [Architecture](/frontend/architecture/): the parts of the app, and where things live in the repository.
-- [The hass object and contexts](/frontend/architecture/hass-and-contexts/): how components get the data they need.
-- [The data layer](/frontend/architecture/data/): how the frontend talks to Core.
-- [Routing and panels](/frontend/architecture/routing-and-panels/): pages, and how they load.
+- [架构](/frontend/architecture/)：应用程序的各个部分，以及代码在仓库中的位置。
+- [hass 对象与上下文](/frontend/architecture/hass-and-contexts/)：组件如何获取所需的数据。
+- [数据层](/frontend/architecture/data/)：前端如何与 Core 通信。
+- [路由与面板](/frontend/architecture/routing-and-panels/)：页面，以及它们如何加载。
 
-And in this area: [dashboards](/architecture/frontend/dashboards/), how views, cards, and strategies fit together.
+以及本区域中的：[仪表盘](/architecture/frontend/dashboards/)，视图、卡片和策略（strategy）如何协同工作。
 
-The components and their design are documented in the [Design](/design/components/) area.
+组件及其设计记录在[设计](/design/components/)（Design）区域中。
 
-## Work on this
+## 参与这方面的工作
 
-- New to the frontend? Start with [your first frontend contribution](/frontend/first-contribution/).
-- [Architecture](/frontend/architecture/) in the Frontend area: how the app is built.
-- Working on how it looks? The [Design](/design/first-contribution/) area is where that starts.
+- 前端新手？从[你的第一个前端贡献](/frontend/first-contribution/)开始。
+- 前端区域中的[架构](/frontend/architecture/)：应用程序是如何构建的。
+- 想改进它的外观？[设计](/design/first-contribution/)区域是起点。

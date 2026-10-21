@@ -1,73 +1,73 @@
 ---
-title: Inside Home Assistant Core
-description: A tour of the Python application at the heart of Home Assistant, with the way to the details of every part.
+title: 深入了解 Home Assistant Core
+description: 一场关于 Home Assistant 核心所在 Python 应用的导览，并指引通往每个部分细节的路径。
 order: 10
-sidebarLabel: Inside Core
+sidebarLabel: 深入了解 Core
 ---
 
-[Home Assistant Core](/glossary/core/) is a single Python application. Every installation runs it, whatever runs around it. It holds the state of the home, runs the integrations, and answers the frontend, the apps, and voice assistants.
+[Home Assistant Core](/glossary/core/) 是一个单一的 Python 应用程序。无论周围运行着什么，每种安装方式都会运行它。它保存着家庭的状态，运行各个集成（integration），并响应前端、应用程序和语音助手。
 
-This page is the tour: what the parts are, and how they work together. The details of each part live in the [Core and integrations](/core/) area, linked below.
+本页就是这场导览：各个部分是什么，以及它们如何协同工作。每个部分的细节位于 [Core 与集成](/core/) 区域，链接见下文。
 
-## The parts
+## 各个部分
 
-| Part | In one sentence | The details |
+| 部分 | 一句话概括 | 详细内容 |
 | --- | --- | --- |
-| The event loop | Runs everything, one piece at a time, on one thread | [Async in Home Assistant](/core/internals/asyncio/), [blocking operations](/core/internals/blocking-operations/) |
-| The `hass` object | The one object that everything else hangs off | [The hass object](/core/internals/hass/) |
-| The state machine | Holds the current state of every entity | [States](/core/internals/states/) |
-| The event bus | Tells everyone what just happened | [Events](/core/internals/events/) |
-| The action registry | Knows everything Home Assistant can do | [Actions](/core/internals/actions/) |
-| The registries | Remember entities, devices, and areas, and what users changed | [Registries and storage](/architecture/core/registries/) |
-| Integrations | Connect it all to the outside world | [Building integrations](/core/integrations/) |
-| Entities | Where integrations meet the rest of Home Assistant | [Entities](/core/entities/) |
-| The recorder | Keeps the history | [History and statistics](/architecture/core/history/) |
+| 事件循环 | 在单一线程上逐个运行所有任务 | [Home Assistant 中的异步](/core/internals/asyncio/)、[阻塞操作](/core/internals/blocking-operations/) |
+| `hass` 对象 | 所有其他东西都挂载其上的唯一对象 | [hass 对象](/core/internals/hass/) |
+| 状态机 | 保存每个实体（entity）的当前状态 | [状态](/core/internals/states/) |
+| 事件总线 | 告诉所有人刚刚发生了什么 | [事件](/core/internals/events/) |
+| 动作注册表 | 知道 Home Assistant 能做的一切 | [动作](/core/internals/actions/) |
+| 各类注册表 | 记住实体、设备和区域（area），以及用户所做的更改 | [注册表与存储](/architecture/core/registries/) |
+| 集成 | 将这一切连接到外部世界 | [构建集成](/core/integrations/) |
+| 实体 | 集成与 Home Assistant 其余部分交汇之处 | [实体](/core/entities/) |
+| 记录器 | 保存历史记录 | [历史与统计](/architecture/core/history/) |
 
-## How they work together
+## 它们如何协同工作
 
-Take a lamp that turns on by its own switch:
+以一盏通过自身开关点亮的灯为例：
 
-1. The integration for the lamp hears about it, from the network.
-2. The lamp's [entity](/glossary/entity/) writes its new state to the state machine.
-3. The state machine fires a `state_changed` event on the event bus.
-4. Everyone who listens reacts: the frontend shows the lamp as on, the recorder writes it to the history, and an automation that waits for it performs an action.
-5. That action goes back through the action registry to an integration, which tells another device what to do.
+1. 灯的集成从网络得知这一变化。
+2. 灯的[实体](/glossary/entity/)将其新状态写入状态机。
+3. 状态机在事件总线上触发一个 `state_changed` 事件。
+4. 所有监听者做出反应：前端显示灯已打开，记录器将其写入历史，等待此事件的自动化（automation）执行一个动作。
+5. 该动作经由动作注册表返回到某个集成，由它告诉另一台设备该做什么。
 
-None of these parts know about each other. They meet in the state machine and on the event bus. That is why a new integration works with every dashboard, automation, and voice assistant from day one.
+这些部分彼此互不相识。它们在状态机和事件总线上相遇。这就是为什么新集成从第一天起就能与每个仪表盘（dashboard）、自动化和语音助手协同工作。
 
-## Kinds of integrations
+## 集成的类型
 
-Integrations do different jobs, and most do one of these:
+集成承担不同的工作，大多数属于以下几类之一：
 
-- **Define a kind of device**: an entity integration like `light` decides what a light is in Home Assistant, which data it has and in what format, and which actions control it. A new one starts as a proposal in the [architecture discussions](https://github.com/home-assistant/architecture/discussions), with the data it holds, how it is controlled, and examples from several brands.
-- **Connect devices and services**: an integration like `hue` talks to Philips Hue, and makes its lights available as `light` entities. These integrations generally don't use the state of entities from other integrations. The exception is entities with a location, like those of `zone` and `device_tracker`.
-- **Provide virtual or computed data**: `input_boolean` is a switch that only exists in Home Assistant. `template` and `utility_meter` compute their entities from other data in Home Assistant.
-- **Automate**: `automation` runs the automations of users, and a more specific one, like `flux`, adjusts lights to the position of the sun.
+- **定义一种设备类型**：像 `light` 这样的实体集成决定了在 Home Assistant 中什么是灯、它拥有哪些数据及何种格式，以及哪些动作可以控制它。新的设备类型以提案形式在[架构讨论](https://github.com/home-assistant/architecture/discussions)中启动，包含其保存的数据、控制方式，以及来自多个品牌的示例。
+- **连接设备与服务**：像 `hue` 这样的集成与 Philips Hue 通信，并将其灯具作为 `light` 实体提供。这类集成通常不使用来自其他集成的实体状态。例外是带有位置的实体，例如 `zone` 和 `device_tracker` 的实体。
+- **提供虚拟或计算的数据**：`input_boolean` 是一个只存在于 Home Assistant 中的开关。`template` 和 `utility_meter` 根据 Home Assistant 中的其他数据计算其实体。
+- **自动化**：`automation` 运行用户的自动化，而更具体的集成（如 `flux`）会根据太阳的位置调整灯光。
 
-## The lifecycle of Home Assistant itself
+## Home Assistant 自身的生命周期
 
-- [From start to running](/architecture/core/startup/): how Home Assistant starts in stages, so a broken integration can't stop the house, and how it shuts down.
-- [Getting data](/architecture/core/data-updates/): how integrations learn about changes, by push or by polling, and what a coordinator does.
-- [Registries and storage](/architecture/core/registries/): what Home Assistant remembers between restarts.
-- [History and statistics](/architecture/core/history/): how the past is kept, and for how long.
+- [从启动到运行](/architecture/core/startup/)：Home Assistant 如何分阶段启动，使一个损坏的集成无法让整个家停摆，以及它如何关闭。
+- [获取数据](/architecture/core/data-updates/)：集成如何通过推送或轮询得知变化，以及协调器（coordinator）的作用。
+- [注册表与存储](/architecture/core/registries/)：Home Assistant 在重启之间记住什么。
+- [历史与统计](/architecture/core/history/)：过去的数据如何保存，保存多久。
 
-## The repository
+## 代码仓库
 
-Home Assistant Core lives in the [home-assistant/core](https://github.com/home-assistant/core) repository:
+Home Assistant Core 位于 [home-assistant/core](https://github.com/home-assistant/core) 仓库中：
 
-| Folder | Holds |
+| 文件夹 | 内容 |
 | --- | --- |
-| `homeassistant/` | The core itself: `core.py`, `bootstrap.py`, `config_entries.py`, `loader.py` |
-| `homeassistant/components/` | Every built-in integration, one folder each |
-| `homeassistant/helpers/` | Shared building blocks: entities, registries, the coordinator, storage |
-| `homeassistant/util/` | Small utilities without Home Assistant in them: dates, units, colors |
-| `tests/` | The tests, in the same layout |
-| `script/` | Tools, like hassfest, which checks every integration |
+| `homeassistant/` | 核心本身：`core.py`、`bootstrap.py`、`config_entries.py`、`loader.py` |
+| `homeassistant/components/` | 每个内置集成，各占一个文件夹 |
+| `homeassistant/helpers/` | 共享的构建模块：实体、注册表、协调器、存储 |
+| `homeassistant/util/` | 不包含 Home Assistant 的小型工具：日期、单位、颜色 |
+| `tests/` | 测试，采用相同的目录结构 |
+| `script/` | 工具，例如检查每个集成的 hassfest |
 
-It is Python 3.14 or newer, typed, and checked with tools like Ruff, mypy, and pylint on every pull request. Schemas, for configuration and actions, are written with [probatio](https://pypi.org/project/probatio/).
+它要求 Python 3.14 或更新版本，带有类型标注，并在每次拉取请求（pull request）时使用 Ruff、mypy 和 pylint 等工具进行检查。用于配置和动作的模式（schema）使用 [probatio](https://pypi.org/project/probatio/) 编写。
 
-## Work on this
+## 参与其中
 
-- New to Core? Start with [your first contribution to Core](/core/first-contribution/).
-- [Building integrations](/core/integrations/): connect a device or service.
-- [How core works](/core/internals/): the details of each part on this page.
+- 刚接触 Core？从[你对 Core 的第一次贡献](/core/first-contribution/)开始。
+- [构建集成](/core/integrations/)：连接设备或服务。
+- [Core 的工作原理](/core/internals/)：本页各部分的详细内容。

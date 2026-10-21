@@ -1,13 +1,13 @@
 ---
-title: Writing guides
-description: How to write and change the documentation, task by task. From structuring a page to moving one.
+title: 编写指南
+description: 如何逐项任务地编写和修改文档。从构建页面结构到移动页面。
 order: 10
-sidebarLabel: Guides
+sidebarLabel: 指南
 ---
 
-Each guide covers one task. For a small fix, you don't need any of them: [your first docs fix](/writing/first-contribution/) is enough.
+每篇指南涵盖一个任务。对于小的修改，你不需要其中任何一篇：[你的第一次文档修改](/writing/first-contribution/) 就足够了。
 
-- [Structure a page](/writing/guides/structure/): organize a page around what the reader wants to know or do.
-- [Preview the site locally](/writing/guides/local-preview/): run home-assistant.io on your own machine, to see bigger changes before you share them.
-- [Document an integration](/writing/guides/integration/): what the documentation of a new integration needs, and how to get it merged with your code.
-- [Move, rename, or remove a page](/writing/guides/move-or-remove/): change pages without breaking the links to them.
+- [构建页面结构](/writing/guides/structure/)：围绕读者想要了解或做的事情来组织页面。
+- [在本地预览网站](/writing/guides/local-preview/)：在你自己的机器上运行 home-assistant.io，以便在分享之前查看较大的改动。
+- [编写集成（integration）文档](/writing/guides/integration/)：新集成的文档需要包含哪些内容，以及如何让它与你的代码一起被合并。
+- [移动、重命名或删除页面](/writing/guides/move-or-remove/)：在不破坏指向它们的链接的情况下修改页面。

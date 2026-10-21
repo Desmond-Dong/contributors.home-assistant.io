@@ -1,46 +1,46 @@
 ---
-title: How the pieces talk
-description: The APIs between Home Assistant Core and everything around it, and how everyone who connects proves who they are.
+title: 各部分如何通信
+description: Home Assistant Core 与其周围一切之间的 API，以及每个连接者如何证明自己的身份。
 order: 20
 ---
 
-Home Assistant Core is never alone. The frontend, the companion apps, voice satellites, the Supervisor, and Home Assistant Link all talk to it. They do that over a handful of APIs, all served by Core's own web server, on port 8123 by default.
+Home Assistant Core 从不孤单。前端、伴侣应用（companion apps）、语音卫星设备、Supervisor 以及 Home Assistant Link 都会与它通信。它们通过少数几个 API 来实现，这些 API 全部由 Core 自带的 Web 服务器提供服务，默认端口为 8123。
 
-## The connections at a glance
+## 连接一览
 
-| Who | Talks to Core over | To do what |
+| 谁 | 通过什么与 Core 通信 | 做什么 |
 | --- | --- | --- |
-| The frontend, in a browser or an app | The [WebSocket API](/core/internals/websocket-api/) | Everything: states, actions, settings, live updates |
-| Companion apps | The WebSocket API, and a webhook | Show the frontend, and send sensor data and location |
-| Scripts and other software | The [REST API](/core/internals/rest-api/), or the WebSocket API | Read states, perform actions |
-| Devices and services on the internet | Webhooks | Push data to an integration |
-| The Supervisor | Its own API, and Core's APIs | Manage Core, apps, and backups, see [the Supervisor](/architecture/platform/supervisor/) |
+| 浏览器或应用中的前端 | [WebSocket API](/core/internals/websocket-api/) | 一切：状态、操作、设置、实时更新 |
+| 伴侣应用 | WebSocket API，以及一个 webhook | 展示前端，并发送传感器数据和位置信息 |
+| 脚本和其他软件 | [REST API](/core/internals/rest-api/)，或 WebSocket API | 读取状态、执行操作 |
+| 互联网上的设备和服务 | Webhooks | 向集成（integration）推送数据 |
+| Supervisor | 它自己的 API，以及 Core 的 API | 管理 Core、应用和备份，参见 [the Supervisor](/architecture/platform/supervisor/) |
 
-## The WebSocket API
+## WebSocket API
 
-The WebSocket API is the main way in. Unlike a REST API, the connection stays open, so Home Assistant can push every change the moment it happens: a light that turns on shows as on, right away, on every screen. The frontend uses it for almost everything, through the [home-assistant-js-websocket](https://github.com/home-assistant/home-assistant-js-websocket) library. Integrations can add their own commands.
+WebSocket API 是主要的入口。与 REST API 不同，连接会保持打开，因此 Home Assistant 可以在变化发生的瞬间推送每一次变化：一盏灯打开后，所有屏幕上都会立即显示为开。前端几乎所有的功能都通过 [home-assistant-js-websocket](https://github.com/home-assistant/home-assistant-js-websocket) 库使用它。集成也可以添加自己的命令。
 
-The REST API covers the basics, like reading states and performing actions, for software that wants something simple.
+REST API 覆盖了基本功能，比如读取状态和执行操作，适合想要简单方式的软件。
 
-## Logging in
+## 登录
 
-Every connection, except a webhook, starts with proving who you are. Users log in with an OAuth 2 flow, and get tokens: a refresh token that stays, and access tokens that last 30 minutes. Scripts use long-lived access tokens, which users make in their profile. See [how authentication works](/core/internals/auth/) and [permissions](/core/internals/permissions/).
+除了 webhook 之外，每个连接都从证明你的身份开始。用户通过 OAuth 2 流程登录，并获得令牌（token）：一个长期保留的刷新令牌（refresh token），以及有效期 30 分钟的访问令牌（access token）。脚本使用长期访问令牌（long-lived access token），由用户在其个人资料中创建。参见[身份验证的工作原理](/core/internals/auth/)和[权限](/core/internals/permissions/)。
 
-The line that matters most is between administrators and everyone else: changing settings, adding integrations, and anything that reveals something sensitive is admin-only. See [how Home Assistant handles trust](/security/how-it-works/).
+最重要的界限在于管理员与其他所有人之间：更改设置、添加集成，以及任何会泄露敏感信息的操作，都仅限管理员。参见 [Home Assistant 如何处理信任](/security/how-it-works/)。
 
 ## Webhooks
 
-A webhook is the one way in without logging in: a URL, `/api/webhook/<webhook_id>`, that anyone can send data to. That is safe because the ID is a random 64-character value: knowing it is the permission. Unknown IDs get the same answer as known ones, so nobody can find out whether one exists, and an integration can make a webhook only accept requests from the home network.
+Webhook 是唯一无需登录的入口：一个 URL，`/api/webhook/<webhook_id>`，任何人都可以向它发送数据。这是安全的，因为该 ID 是一个随机的 64 字符值：知道它就等于拥有权限。未知 ID 会得到与已知 ID 相同的响应，因此没有人能探测某个 ID 是否存在，而且集成可以让 webhook 只接受来自家庭网络的请求。
 
-Webhooks exist for things that can't log in, like a service that sends updates, or a phone that sends its location in the background. With Home Assistant Link, a webhook also gets a public URL through the cloud, so it works away from home without opening Home Assistant to the internet.
+Webhook 为那些无法登录的东西而存在，比如发送更新的服务，或者在后台发送位置信息的手机。借助 Home Assistant Link，webhook 还可以通过云获得一个公共 URL，因此在外出时也能使用，而无需将 Home Assistant 暴露到互联网上。
 
-## Behind a proxy
+## 位于代理之后
 
-Core can serve HTTPS itself, but many people put a reverse proxy in front, or use Home Assistant Link. Behind a proxy, Core only trusts forwarded addresses from proxies the user configured, so nobody can pretend to be on the home network.
+Core 可以自己提供 HTTPS，但很多人会在前面放置反向代理，或者使用 Home Assistant Link。在代理之后，Core 只信任来自用户所配置代理的转发地址，因此没有人能伪装成位于家庭网络中。
 
-## Work on this
+## 参与开发
 
-- New to Core? Start with [your first contribution to Core](/core/first-contribution/). The APIs are part of Core.
-- [WebSocket API](/core/internals/websocket-api/) and [REST API](/core/internals/rest-api/): every message and endpoint.
-- [Add a WebSocket command](/frontend/extending/websocket-api/): for when the frontend needs something new from Core.
-- [How authentication works](/core/internals/auth/): tokens, users, and permissions.
+- 刚接触 Core？从[你对 Core 的第一次贡献](/core/first-contribution/)开始。这些 API 是 Core 的一部分。
+- [WebSocket API](/core/internals/websocket-api/) 和 [REST API](/core/internals/rest-api/)：每一条消息和每一个端点。
+- [添加 WebSocket 命令](/frontend/extending/websocket-api/)：当前端需要从 Core 获取新功能时。
+- [身份验证的工作原理](/core/internals/auth/)：令牌、用户和权限。

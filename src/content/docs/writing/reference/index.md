@@ -1,16 +1,16 @@
 ---
-title: Writing reference
-description: The details you look up while writing. Style, images, Liquid, YAML, the automated checks, and integration pages.
+title: 写作参考
+description: 写作时需要查阅的细节。风格、图片、Liquid、YAML、自动化检查以及集成页面。
 order: 20
-sidebarLabel: Reference
+sidebarLabel: 参考
 ---
 
-The pages in this section are for looking things up. For how to do a task, start with the [guides](/writing/guides/).
+本节中的页面用于查阅信息。如需了解如何完成某项任务，请从[指南](/writing/guides/)开始。
 
-- [Documentation style guide](/writing/reference/style/): the language, tone, and Markdown rules for every page.
-- [Images and videos](/writing/reference/images/): add screenshots, diagrams, and videos, and describe them for every reader.
-- [Liquid helpers](/writing/reference/liquid/): every Liquid tag home-assistant.io adds on top of Markdown.
-- [YAML style](/writing/reference/yaml/): how YAML examples should look.
-- [Automated documentation checks](/writing/reference/checks/): what the checks on your pull request look for, and how to run them yourself.
-- [Integration front matter](/writing/reference/front-matter/): every key at the top of an integration page.
-- [Integration page structure](/writing/reference/integration-page/): the sections of an integration page, and the blocks that fill them.
+- [文档风格指南](/writing/reference/style/)：适用于每个页面的语言、语气和 Markdown 规则。
+- [图片和视频](/writing/reference/images/)：添加截图、图表和视频，并为所有读者描述它们。
+- [Liquid 辅助工具](/writing/reference/liquid/)：home-assistant.io 在 Markdown 基础上添加的所有 Liquid 标签。
+- [YAML 风格](/writing/reference/yaml/)：YAML 示例应呈现的样子。
+- [文档自动化检查](/writing/reference/checks/)：拉取请求（pull request）上的检查会查找什么，以及如何自行运行这些检查。
+- [集成前置元数据（front matter）](/writing/reference/front-matter/)：集成页面顶部的所有键。
+- [集成页面结构](/writing/reference/integration-page/)：集成页面的各个章节，以及填充这些章节的内容块。

@@ -1,14 +1,14 @@
 ---
-title: Help on social media
-description: How you can help Home Assistant reach more people on social media, and who to contact.
+title: 在社交媒体上提供帮助
+description: 你可以如何帮助 Home Assistant 在社交媒体上触达更多人，以及该联系谁。
 order: 5
 ---
 
-Most people hear about Home Assistant from someone else: a friend, a video, a post on Reddit. Sharing what you do with Home Assistant is one of the most effective ways to help the project grow.
+大多数人是从别人那里听说 Home Assistant 的：朋友、视频、Reddit 上的帖子。分享你用 Home Assistant 做的事情，是帮助这个项目成长最有效的方式之一。
 
-## The official accounts
+## 官方账号
 
-These are the official accounts of Home Assistant:
+以下是 Home Assistant 的官方账号：
 
 - [YouTube](https://youtube.com/@home_assistant)
 - [Bluesky](https://bsky.app/profile/home-assistant.io)
@@ -18,24 +18,24 @@ These are the official accounts of Home Assistant:
 - [Instagram](https://www.instagram.com/homeassistant/)
 - [LinkedIn](https://www.linkedin.com/company/home-assistant)
 
-Only those accounts speak for Home Assistant. If you run a fan account, a group, or a channel, make that clear in its name or description, so nobody mistakes it for an official one.
+只有这些账号代表 Home Assistant 发言。如果你运营粉丝账号、群组或频道，请在名称或简介中明确说明，以免有人误以为是官方账号。
 
-## How you can help
+## 你可以如何帮助
 
-- **Share what you build.** A dashboard you are proud of, an automation that saves you time, a device you got working locally. Real homes convince people more than any announcement.
-- **Share the news.** Repost release announcements and blog posts. Every release has a release party live stream on YouTube, which is a great thing to share. See [Release notes and the release party](/releases/guides/release-notes/).
-- **Answer questions where people ask them.** Not everyone finds the [forum](https://community.home-assistant.io/). A helpful reply under a post on social media helps too.
-- **Suggest a community highlight.** Saw something great someone made? [Suggest it as a community highlight](https://www.home-assistant.io/suggest-community-highlight).
-- **Stay kind.** The [code of conduct](https://www.home-assistant.io/code_of_conduct/) applies on social media too, when you talk about or for the community. Disagreeing with someone is fine. Piling on is not.
+- **分享你的成果。** 一个让你自豪的仪表盘（dashboard）、一个为你节省时间的自动化（automation）、一个成功实现本地控制的设备。真实的家庭案例比任何公告都更有说服力。
+- **分享新闻。** 转发版本发布公告和博客文章。每个版本发布都有 YouTube 上的发布派对直播，非常值得分享。参见[发布说明与发布派对](/releases/guides/release-notes/)。
+- **在人们提问的地方回答问题。** 并不是每个人都能找到[论坛](https://community.home-assistant.io/)。在社交媒体帖子下的一条有帮助的回复同样有用。
+- **推荐社区精选。** 看到别人做出的好东西？[推荐它作为社区精选](https://www.home-assistant.io/suggest-community-highlight)。
+- **保持友善。** 当你代表或谈论社区时，[行为准则](https://www.home-assistant.io/code_of_conduct/)同样适用于社交媒体。与人意见不合没有问题，但跟风围攻不可以。
 
-## Make content
+## 制作内容
 
-If you make videos, tutorials, or reviews about Home Assistant, look at the [Creator Network](/community/reference/programs/#creator-network). It connects content creators with the team.
+如果你制作关于 Home Assistant 的视频、教程或评测，请了解一下 [Creator Network](/community/reference/programs/#creator-network)。它将内容创作者与团队联系起来。
 
-## Using the name and logo
+## 使用名称和标志
 
-Want to use the Home Assistant name or logo? [Name and logo](/brand/name-and-logo/) explains how to write the name and use the logo. For product packaging and marketing, there are separate rules in the [badge and brand guidelines](https://works-with.home-assistant.io/resources/badge-and-brand-guidelines/) of Works with Home Assistant.
+想使用 Home Assistant 的名称或标志？[名称与标志](/brand/name-and-logo/)说明了如何书写名称以及使用标志。对于产品包装和营销，Works with Home Assistant 的[徽章与品牌指南](https://works-with.home-assistant.io/resources/badge-and-brand-guidelines/)中有单独的规定。
 
-## Who to contact
+## 联系谁
 
-For questions about social media, or if you see an account that pretends to be official, email the community team at [community@openhomefoundation.org](mailto:community@openhomefoundation.org).
+有关社交媒体的问题，或者如果你发现冒充官方的账号，请发送电子邮件至社区团队：[community@openhomefoundation.org](mailto:community@openhomefoundation.org)。

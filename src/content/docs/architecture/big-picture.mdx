@@ -1,68 +1,68 @@
 ---
-title: The big picture
-description: All the pieces of Home Assistant on one page, what each one does, and how they talk to each other.
+title: 全局概览
+description: 在一页中展示 Home Assistant 的所有组成部分、各自的作用，以及它们之间如何通信。
 order: 2
 ---
 
 import ArchitectureMap from "../../../components/docs/ArchitectureMap.astro";
 
-Home Assistant is not one program. It is a handful of pieces that work together: an application in Python at the center, a web interface, apps for phones, and, on most installations, an operating system that runs it all. This page shows each piece and how they connect, so the rest of this area has a place to hang on.
+Home Assistant 并不是一个单一的程序。它是由多个协同工作的部分组成的：位于核心的 Python 应用程序、一个网页界面、手机上的应用，以及在大多数安装中运行这一切的操作系统。本页展示每个组成部分及其连接方式，让本区域的其他内容有一个依托之处。
 
 <ArchitectureMap />
 
-## The center: Home Assistant Core
+## 核心：Home Assistant Core
 
-[Home Assistant Core](/architecture/core/) is a Python application, and every installation runs it. It knows the state of every device in the home, runs automations, and keeps the history. Integrations connect it to devices and services.
+[Home Assistant Core](/architecture/core/) 是一个 Python 应用程序，每种安装方式都会运行它。它了解家中每个设备的状态，运行自动化（automation），并保存历史记录。集成（integration）将它连接到设备和服务。
 
-The most important idea: everything becomes [entities](/glossary/entity/). An integration turns a Philips Hue lamp into a light entity, a thermostat into a climate entity and a few sensors. From then on, the rest of Home Assistant only works with entities, whatever brand they come from.
+最重要的理念是：一切皆实体（entity）。一个集成将飞利浦 Hue 灯泡变成一个 light 实体，将温控器变成一个 climate 实体和几个传感器。从那时起，Home Assistant 的其余部分只与实体打交道，无论它们来自哪个品牌。
 
-## Where people use it
+## 人们在哪里使用它
 
-- **The [frontend](/frontend/)** is the web interface: dashboards, settings, the automation editor. It runs in the browser, and Core serves its files. [Its place in the whole](/architecture/frontend/) explains how it relates to Core.
-- **The [companion apps](/companion/)** show the same frontend on phones, tablets, and Macs, and add sensors, notifications, and widgets from the device. See [how they connect](/architecture/platform/companion-apps/).
-- **[Voice](/architecture/platform/voice/)** turns a spoken sentence into an action, from a satellite in the kitchen, or the phone.
-- **Other software**, like scripts, Amazon Alexa, and Google Assistant, talks to Home Assistant through its APIs or through Home Assistant Link.
+- **[前端（frontend）](/frontend/)** 是网页界面：仪表盘（dashboard）、设置、自动化编辑器。它在浏览器中运行，其文件由 Core 提供。[它在整体中的位置](/architecture/frontend/)解释了它与 Core 的关系。
+- **[伴侣应用（companion apps）](/companion/)** 在手机、平板电脑和 Mac 上显示相同的前端，并从设备添加传感器、通知和小组件。请参阅[它们如何连接](/architecture/platform/companion-apps/)。
+- **[语音（Voice）](/architecture/platform/voice/)** 将一句话转化为一个操作，可以来自厨房里的卫星设备，也可以来自手机。
+- **其他软件**，如脚本、Amazon Alexa 和 Google Assistant，通过 Home Assistant 的 API 或 Home Assistant Link 与其通信。
 
-They all talk to Core over the same [APIs](/architecture/connections/), and log in the same way.
+它们都通过相同的 [API](/architecture/connections/) 与 Core 通信，并以相同的方式登录。
 
-## What it connects to
+## 它连接什么
 
-Integrations talk to the outside world: devices on the local network, radios like Zigbee, Z-Wave, Thread, and Bluetooth, and services on the internet. The code that knows how to talk to a specific device lives in a Python library, which the integration uses. More on that in the [principles](/architecture/principles/).
+集成与外部世界通信：本地网络上的设备、Zigbee、Z-Wave、Thread 和 Bluetooth 等无线电，以及互联网上的服务。知道如何与特定设备通信的代码位于一个 Python 库中，集成会使用该库。更多信息请参阅[原则](/architecture/principles/)。
 
-Some protocols run as a separate program, next to Core: Z-Wave JS for Z-Wave, an MQTT broker, and a Matter server for Matter. The integration talks to that program.
+一些协议作为独立程序在 Core 旁边运行：用于 Z-Wave 的 Z-Wave JS、一个 MQTT broker，以及用于 Matter 的 Matter 服务器。集成与该程序通信。
 
-## What runs it
+## 什么在运行它
 
-On [Home Assistant OS](/os/operating-system/), the recommended installation, the [Supervisor](/architecture/platform/supervisor/) runs Home Assistant Core in a container, next to [apps](/apps/how-apps-work/), like an MQTT broker or Z-Wave JS. It makes backups, and installs updates of everything, including the operating system.
+在推荐的安装方式 [Home Assistant OS](/os/operating-system/) 上，[Supervisor](/architecture/platform/supervisor/) 在容器中运行 Home Assistant Core，旁边是[应用（apps）](/apps/how-apps-work/)，例如 MQTT broker 或 Z-Wave JS。它会进行备份，并安装包括操作系统在内的一切更新。
 
-With [Home Assistant Container](/os/installation-types/), the user runs Core in a container themselves, without the Supervisor and apps.
+使用 [Home Assistant Container](/os/installation-types/) 时，用户自己在容器中运行 Core，没有 Supervisor 和应用。
 
-## Outside the home
+## 家门之外
 
-[Home Assistant Link](/architecture/platform/cloud/), from Nabu Casa, is optional. It makes Home Assistant reachable from anywhere through an encrypted tunnel, connects it to Alexa and Google Assistant, and offers speech services for voice.
+来自 Nabu Casa 的 [Home Assistant Link](/architecture/platform/cloud/) 是可选的。它通过加密隧道让 Home Assistant 可以从任何地方访问，将其连接到 Alexa 和 Google Assistant，并为语音提供语音服务。
 
-## One flow, end to end
+## 一个流程，从头到尾
 
-You turn on a light from a dashboard:
+你从仪表盘打开一盏灯：
 
-1. You select the light's card. The frontend sends `call_service` for `light.turn_on` over the [WebSocket API](/core/internals/websocket-api/).
-2. Core checks you may do that, and performs the [action](/core/internals/actions/): it calls `async_turn_on` on the light entity.
-3. The entity, part of an integration, tells the lamp to turn on, through its library.
-4. The lamp reports it is on. The entity writes its new state to the [state machine](/core/internals/states/).
-5. The state machine fires `state_changed`. The frontend gets it, and shows the light as on, on every screen. The recorder writes it to the history, and any automation waiting for it runs.
+1. 你选择了灯的卡片。前端通过 [WebSocket API](/core/internals/websocket-api/) 为 `light.turn_on` 发送 `call_service`。
+2. Core 检查你是否可以这样做，然后执行[操作（action）](/core/internals/actions/)：它在 light 实体上调用 `async_turn_on`。
+3. 该实体（属于某个集成的一部分）通过其库告诉灯打开。
+4. 灯报告它已打开。实体将其新状态写入[状态机（state machine）](/core/internals/states/)。
+5. 状态机触发 `state_changed`。前端收到它，并在每个屏幕上将灯显示为已打开。记录器将其写入历史记录，任何等待它的自动化都会运行。
 
-The same path works for an automation, a voice command, or an app: only step 1 is different.
+同样的路径也适用于自动化、语音命令或应用：只有第 1 步不同。
 
-## Ready to contribute?
+## 准备好贡献了吗？
 
-Every piece on this page has an area on this site, with a first contribution to get you going:
+本页上的每个部分在本站都有一个对应的区域，并有一个入门贡献供你开始：
 
-- **Home Assistant Core and integrations**: [your first contribution to Core](/core/first-contribution/).
-- **The frontend**: [your first frontend contribution](/frontend/first-contribution/).
-- **The companion apps**: [your first companion app contribution](/companion/first-contribution/).
-- **Voice**: [voice translations](/translate/voice/), for the sentences Assist understands in your language.
-- **The Supervisor and Home Assistant OS**: [your first contribution to the Supervisor](/os/first-contribution/).
-- **Apps**: [your first contribution](/apps/first-contribution/) in the Apps area.
-- **Home Assistant Link**: the `cloud` integration is part of Core.
+- **Home Assistant Core 和集成**：[你对 Core 的第一个贡献](/core/first-contribution/)。
+- **前端**：[你对前端的第一个贡献](/frontend/first-contribution/)。
+- **伴侣应用**：[你对伴侣应用的第一个贡献](/companion/first-contribution/)。
+- **语音**：[语音翻译](/translate/voice/)，用于 Assist 在你的语言中理解的句子。
+- **Supervisor 和 Home Assistant OS**：[你对 Supervisor 的第一个贡献](/os/first-contribution/)。
+- **应用**：在应用区域中的[你的第一个贡献](/apps/first-contribution/)。
+- **Home Assistant Link**：`cloud` 集成是 Core 的一部分。
 
-The [Architecture overview](/architecture/#ready-to-contribute) has the full map, including design, documentation, and translations.
+[架构概览](/architecture/#ready-to-contribute)包含完整的地图，包括设计、文档和翻译。

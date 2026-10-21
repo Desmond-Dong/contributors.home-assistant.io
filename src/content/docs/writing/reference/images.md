@@ -1,35 +1,35 @@
 ---
-title: Images and videos
-description: How to add screenshots, diagrams, and YouTube videos to a page on home-assistant.io, and how to describe them for every reader.
+title: 图片和视频
+description: 如何在 home-assistant.io 的页面上添加截图、图表和 YouTube 视频，以及如何为每位读者描述它们。
 order: 2
 ---
 
-A good screenshot can save a paragraph of explanation. A video can show something words cannot. This page covers where images go, how to add them to a page, and how to embed a video.
+一张好的截图可以省去一段解释。一个视频可以展示文字无法表达的内容。本页介绍图片存放的位置、如何将图片添加到页面，以及如何嵌入视频。
 
-## Where images live
+## 图片存放的位置
 
-Store every image in the documentation repository, under [`source/images`](https://github.com/home-assistant/home-assistant.io/tree/current/source/images). Pick the subfolder that matches the page:
+将每张图片都存放在文档仓库中，位于 [`source/images`](https://github.com/home-assistant/home-assistant.io/tree/current/source/images) 下。选择与页面匹配的子文件夹：
 
-- `source/images/integrations/<domain>/` for an integration, like `source/images/integrations/matter/`.
-- `source/images/docs/<topic>/` for the general documentation.
-- `source/images/dashboards/` for dashboards and cards.
+- `source/images/integrations/<domain>/` 用于集成（integration），例如 `source/images/integrations/matter/`。
+- `source/images/docs/<topic>/` 用于一般文档。
+- `source/images/dashboards/` 用于仪表盘（dashboard）和卡片。
 
-Do not link to images hosted somewhere else, like your own GitHub repository or an image hosting service. External images disappear, change, or slow the page down.
+不要链接到托管在其他地方的图片，例如你自己的 GitHub 仓库或图床服务。外部图片会消失、变更，或拖慢页面加载速度。
 
-On the page, refer to the image by its published path. That is the path without `source`, so `source/images/integrations/matter/matter_device-info.png` becomes `/images/integrations/matter/matter_device-info.png`.
+在页面上，通过图片的发布路径来引用它。也就是去掉 `source` 之后的路径，因此 `source/images/integrations/matter/matter_device-info.png` 会变成 `/images/integrations/matter/matter_device-info.png`。
 
 > [!NOTE]
-> The **Edit** button on GitHub does not let you upload images. To add an image, work on a fork, either on your own machine or by uploading the file to your fork on GitHub first. See [Preview the site locally](/writing/guides/local-preview/).
+> GitHub 上的 **Edit** 按钮不支持上传图片。要添加图片，请在 fork 上操作，可以在你自己的电脑上进行，或者先将文件上传到你在 GitHub 上的 fork。参见[在本地预览网站](/writing/guides/local-preview/)。
 
-## Add an image
+## 添加图片
 
-Use Markdown for images, wherever you can:
+尽可能使用 Markdown 来添加图片：
 
 ```markdown
 ![Screenshot of the tile card with a brightness slider](/images/dashboards/features/screenshot-tile-feature-grid.png)
 ```
 
-An image can also illustrate a step. Indent it so it belongs to the list item:
+图片也可以用来展示某个步骤。将其缩进，使其属于该列表项：
 
 ```markdown
 1. To adjust the brightness, move the slider:
@@ -37,9 +37,9 @@ An image can also illustrate a step. Indent it so it belongs to the list item:
 2. Select **Save**.
 ```
 
-## Add a caption
+## 添加图注
 
-Markdown has no caption syntax. To show a caption below the image, wrap it in a paragraph with the `img` class, and put the caption text after the image:
+Markdown 没有图注语法。要在图片下方显示图注，请将其包裹在带有 `img` 类的段落中，并把图注文字放在图片之后：
 
 ```html
 <p class='img'>
@@ -51,11 +51,11 @@ Markdown has no caption syntax. To show a caption below the image, wrap it in a 
 </p>
 ```
 
-The image and caption then get a framed, centered layout, with the caption in italics.
+这样，图片和图注会获得带边框、居中的布局，图注以斜体显示。
 
-## Dark mode and invertDark
+## 深色模式和 invertDark
 
-Add the `invertDark` class to an image whose colors should be inverted when the page is shown in dark mode. This is meant for simple diagrams and drawings with dark lines on a transparent or white background. Do not use it on screenshots or photos: inverting those makes them look wrong.
+对于在深色模式下显示时应反转颜色的图片，请添加 `invertDark` 类。这适用于在透明或白色背景上使用深色线条的简单图表和绘图。不要在截图或照片上使用它：反转会使它们看起来不正常。
 
 ```html
 <p class='img'>
@@ -69,19 +69,19 @@ Add the `invertDark` class to an image whose colors should be inverted when the 
 ```
 
 > [!NOTE]
-> [home-assistant.io](https://www.home-assistant.io/) does not have a dark mode right now, and its stylesheets do not define `invertDark` yet, so the class has no visible effect there today. A few pages use it already.
+> [home-assistant.io](https://www.home-assistant.io/) 目前没有深色模式，其样式表也尚未定义 `invertDark`，因此该类目前在网站上没有可见效果。已有少数页面在使用它。
 
-## The lightbox
+## 灯箱效果
 
-On home-assistant.io, readers can select an image in a documentation page or blog post to open it full size in a lightbox. It also works with the keyboard. You do not have to do anything for this: an image gets the lightbox automatically, unless:
+在 home-assistant.io 上，读者可以在文档页面或博客文章中选择一张图片，在灯箱（lightbox）中以全尺寸打开它。它也支持键盘操作。你无需为此做任何事情：图片会自动获得灯箱效果，除非：
 
-- It is small. Images shown smaller than 160 by 100 pixels, and that are also smaller than 300 pixels in their original size, are skipped. This keeps inline icons out.
-- It is a link or sits inside a link or button.
-- It is an SVG file.
-- It looks like a logo. Brand logos are skipped, based on their class, a path containing words like `logo` or `brand`, or alt text that mentions a logo.
-- It is opted out.
+- 图片很小。显示尺寸小于 160×100 像素、且原始尺寸也小于 300 像素的图片会被跳过。这是为了排除内联图标。
+- 它是一个链接，或位于链接或按钮之内。
+- 它是 SVG 文件。
+- 它看起来像徽标。品牌徽标会被跳过，依据是其类名、包含 `logo` 或 `brand` 等字样的路径，或提到徽标的替代文本。
+- 它被选择退出。
 
-To opt an image out of the lightbox, add the `data-no-lightbox` attribute or the `no-lightbox` class. You can put either one on the image itself, or on an element around it to opt out a whole group of images:
+要让某张图片不使用灯箱，请添加 `data-no-lightbox` 属性或 `no-lightbox` 类。你可以将其中任意一个放在图片本身上，或放在其周围的元素上，以让整组图片退出灯箱：
 
 ```html
 <img
@@ -99,26 +99,26 @@ To opt an image out of the lightbox, add the `data-no-lightbox` attribute or the
 >
 ```
 
-## Write good alt text
+## 编写良好的替代文本
 
-Every image needs alt text. Screen readers read it out loud, and it shows when the image fails to load. Alt text is also what the lightbox announces when it opens the image.
+每张图片都需要替代文本（alt text）。屏幕阅读器会将其朗读出来，并且在图片加载失败时会显示它。替代文本也是灯箱打开图片时播报的内容。
 
-- **Describe what the image shows,** and why it is there. "Screenshot of the integration settings, with the polling interval set to 30 seconds" helps. "Screenshot" does not.
-- **Keep it short.** One sentence is usually enough.
-- **Do not start with "Image of".** Screen readers already announce that it is an image. "Screenshot of" or "Diagram of" is fine, because it tells the reader what kind of image it is.
-- **Do not repeat the caption word for word.** If the caption already says it all, the alt text can describe the visual details instead.
-- **Do not put information only in the image.** Anything the reader needs to complete a step belongs in the text too.
+- **描述图片展示的内容**，以及它为什么在那里。“集成设置页面的截图，轮询间隔设置为 30 秒”是有帮助的。只写“截图”则没有帮助。
+- **保持简短。**通常一句话就足够了。
+- **不要以“图片”开头。**屏幕阅读器已经会播报这是一张图片。“……的截图”或“……的图表”是可以的，因为它告诉读者图片的类型。
+- **不要逐字重复图注。**如果图注已经说明了一切，替代文本可以改为描述视觉细节。
+- **不要把信息只放在图片里。**读者完成某个步骤所需的任何内容也应写在正文中。
 
-## Keep screenshots useful
+## 保持截图的实用性
 
-- Show the part of the screen that matters. Crop away the rest.
-- Use the default [theme](/glossary/theme/) and language of Home Assistant, so the screenshot looks like what the reader sees.
-- Remove or blur personal information, like names, addresses, tokens, and IP addresses.
-- Replace screenshots that no longer match the interface. An outdated screenshot confuses more than no screenshot at all.
+- 只展示屏幕上重要的部分。裁剪掉其余部分。
+- 使用 Home Assistant 的默认[主题](/glossary/theme/)和语言，使截图看起来与读者所见一致。
+- 移除或模糊个人信息，例如姓名、地址、令牌和 IP 地址。
+- 替换不再与界面相符的截图。过时的截图比没有截图更让人困惑。
 
-## Embed a YouTube video
+## 嵌入 YouTube 视频
 
-Use the `lite-youtube` element to embed a YouTube video. It shows a lightweight preview first, and only loads the actual YouTube player when the reader starts the video. That keeps the page fast.
+使用 `lite-youtube` 元素来嵌入 YouTube 视频。它首先显示一个轻量级的预览，只有当读者开始播放视频时才加载实际的 YouTube 播放器。这能保持页面的速度。
 
 ```html
 <lite-youtube
@@ -127,11 +127,11 @@ Use the `lite-youtube` element to embed a YouTube video. It shows a lightweight 
 ></lite-youtube>
 ```
 
-- `videoid` is the part of the YouTube URL that comes after `watch?v=`. For `https://www.youtube.com/watch?v=ZgoaoTpIhm8`, that is `ZgoaoTpIhm8`.
-- `videotitle` is the title of the video. Screen readers use it, so always add it.
-- `videoStartAt` starts playback at a specific moment, in seconds from the start. Use it when only part of a long video is relevant.
+- `videoid` 是 YouTube URL 中 `watch?v=` 之后的部分。对于 `https://www.youtube.com/watch?v=ZgoaoTpIhm8`，即 `ZgoaoTpIhm8`。
+- `videotitle` 是视频的标题。屏幕阅读器会使用它，因此请务必添加。
+- `videoStartAt` 从特定时刻开始播放，以从开头算起的秒数为单位。当长视频中只有部分内容相关时可以使用它。
 
-For example, to start the video above at 1 hour, 5 minutes, and 7 seconds:
+例如，要让上面的视频从 1 小时 5 分 7 秒处开始播放：
 
 ```html
 <lite-youtube
@@ -141,7 +141,7 @@ For example, to start the video above at 1 hour, 5 minutes, and 7 seconds:
 ></lite-youtube>
 ```
 
-To add a caption below a video, wrap it in a paragraph with the `img` class, the same way as an [image caption](#add-a-caption):
+要在视频下方添加图注，请将其包裹在带有 `img` 类的段落中，方式与[图片图注](#add-a-caption)相同：
 
 ```html
 <p class='img'>
@@ -154,4 +154,4 @@ To add a caption below a video, wrap it in a paragraph with the `img` class, the
 </p>
 ```
 
-A video never replaces written steps. Not everyone can watch a video, and text is easier to scan and translate.
+视频永远不能替代书面步骤。不是每个人都能观看视频，而且文字更易于浏览和翻译。

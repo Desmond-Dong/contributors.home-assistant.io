@@ -1,73 +1,73 @@
 ---
-title: Personality
-description: The five traits that describe who Home Assistant is, what each of them means, and what each of them is not.
+title: 品牌个性
+description: 描述 Home Assistant 是什么的五个特质，每个特质的含义，以及每个特质不是什么。
 order: 3
 ---
 
-These five traits describe who Home Assistant is, not how it speaks. The tone, like the warmth, the informality, and the playfulness, should follow from them naturally. [Voice and tone](/brand/voice-and-tone/) shows what that looks like in practice.
+这五个特质描述的是 Home Assistant 是什么，而不是它如何说话。语气，包括其中的温暖、随性和趣味，应当自然地由此而来。[语音与语气](/brand/voice-and-tone/)展示了这在实践中是什么样子。
 
-## How the traits fit together
+## 这些特质如何相互配合
 
-The first four traits are about relationships. They describe how Home Assistant behaves toward the people who use it:
+前四个特质关乎关系。它们描述了 Home Assistant 如何对待使用它的人：
 
-- **Welcoming** is how we receive them.
-- **Candid** is how we talk to them.
-- **Supportive** is how we help them.
-- **Generous** is what we give them.
+- **热情好客**是我们如何迎接他们。
+- **坦诚直率**是我们如何与他们交谈。
+- **支持帮助**是我们如何帮助他们。
+- **慷慨大方**是我们给予他们什么。
 
-If some of them feel similar, that is because they are the same character, showing up in different moments.
+如果其中一些感觉相似，那是因为它们是同一个角色，在不同的时刻展现出来。
 
-**Independent** is different. It is the foundation: who Home Assistant is at its core. Because Home Assistant is independent, the other four traits are genuine instead of performed. A corporate brand can try to be welcoming, candid, supportive, and generous, but without independence, those traits are always managed and moderated.
+**独立自主**则不同。它是根基：Home Assistant 的核心所在。正因为 Home Assistant 是独立的，其他四个特质才是真诚的，而不是表演出来的。一个企业品牌可以努力做到热情好客、坦诚直率、支持帮助和慷慨大方，但如果没有独立性，这些特质就总是被刻意管理和约束的。
 
-Every trait comes with words for what it is, and words for what it is not. The second list matters just as much.
+每个特质都配有描述它是什么的词语，以及描述它不是什么的词语。第二份清单同样重要。
 
-## Welcoming
+## 热情好客
 
-Home Assistant feels like a knowledgeable friend, not a product. We meet you at your own level, never talk down to you, and make you feel valued, whatever your technical skills.
+Home Assistant 感觉就像一位博学的朋友，而不是一个产品。我们在你所处的水平上与你相遇，从不居高临下地对你说话，并让你感到被重视，无论你的技术水平如何。
 
-That is not a performance. It shows in the small things: how an error is explained, how the documentation is written, and how the community talks to newcomers.
+这不是一种表演。它体现在细微之处：错误是如何被解释的，文档是如何编写的，以及社区是如何与新来者交流的。
 
-- **Is**: warm and open, kind, friendly, approachable, accommodating
-- **Is not**: people pleasing, appeasing, sycophantic, ingratiating
+- **是**：温暖开放、友善、友好、平易近人、乐于包容
+- **不是**：讨好、迎合、阿谀奉承、曲意逢迎
 
-## Candid
+## 坦诚直率
 
-Home Assistant says what it means. We don't hide complexity behind false simplicity, fall back on marketing fluff, or pretend limitations don't exist.
+Home Assistant 说的就是它想表达的。我们不会用虚假的简单来掩盖复杂性，不会退回到营销套话，也不会假装限制不存在。
 
-We respect people enough to be straight with them: about what Home Assistant can do, what it can't, and why it works the way it does. That is what builds real trust.
+我们足够尊重他人，愿意直言相告：Home Assistant 能做什么、不能做什么，以及它为什么以现在的方式运作。这才是建立真正信任的关键。
 
-- **Is**: direct, honest, transparent, unpretentious
-- **Is not**: unfriendly, rude, blunt, unempathetic
+- **是**：直接、诚实、透明、不装腔作势
+- **不是**：不友好、粗鲁、生硬、缺乏同理心
 
-## Supportive
+## 支持帮助
 
-Home Assistant has your back. Whether you are just starting out or deep into a complex setup, we steer you forward without taking over.
+Home Assistant 是你的后盾。无论你是刚刚起步，还是深入复杂的配置中，我们都会引导你前进，而不会越俎代庖。
 
-The support is genuine: practical, patient, and there when it is needed most. Home Assistant wants everyone to succeed in building a smart home with privacy, choice, and sustainability at its heart.
+这种支持是真诚的：实用、耐心，并在最需要的时候出现。Home Assistant 希望每个人都能成功构建一个以隐私、选择和可持续性为核心的智能家居。
 
-- **Is**: helpful, guiding, encouraging, empathetic, genuine
-- **Is not**: directive, hollow, condescending, overbearing
+- **是**：有帮助、引导、鼓励、有同理心、真诚
+- **不是**：发号施令、空洞、居高临下、专横
 
-## Generous
+## 慷慨大方
 
-Home Assistant gives you everything you need today, and as your setup grows. No strings attached: no artificial limits, no features locked behind tiers, and no deceptive patterns designed to tie you to a closed platform. We trust people with control, access, and transparency.
+Home Assistant 为你提供今天所需的一切，并随着你的配置增长而持续提供。没有任何附加条件：没有人为限制，没有锁定在付费层级之后的功能，也没有旨在将你束缚在封闭平台上的欺骗性设计。我们信任人们，给予他们控制权、访问权和透明度。
 
-The generosity goes both ways. The time, knowledge, and care the community gives freely is what keeps Home Assistant thriving and truly open.
+这种慷慨是双向的。社区自由奉献的时间、知识和关怀，正是让 Home Assistant 蓬勃发展并保持真正开放的原因。
 
-- **Is**: empowering, trusting, giving, sharing
-- **Is not**: overwhelming, indiscriminate, patronizing, controlling
+- **是**：赋能、信任、给予、分享
+- **不是**：令人应接不暇、不加区分、摆出恩赐姿态、控制欲强
 
-## Independent
+## 独立自主
 
-Home Assistant doesn't feel the need to behave like an established tech brand, or to follow corporate rules. With no shareholders or venture capitalists to answer to, we can say what we think, do things our own way, and not take ourselves too seriously.
+Home Assistant 不觉得自己需要表现得像一个成熟的科技品牌，也不需要遵循企业规则。由于没有需要迎合的股东或风险投资家，我们可以畅所欲言，按自己的方式做事，也不必把自己看得太严肃。
 
-That freedom comes from confidence: knowing our own values, and knowing the community shares them.
+这种自由源于自信：了解自己的价值观，并知道社区与之共享。
 
-- **Is**: principled, liberated, confident, imperfect
-- **Is not**: conceited, obstinate, erratic, insular
+- **是**：有原则、自由、自信、不完美
+- **不是**：自负、固执、反复无常、封闭排外
 
-## Where the guide lives
+## 指南的所在之处
 
-This page is the brand personality guide of Home Assistant. It replaces the version on design.home-assistant.io. The writing instructions of [home-assistant.io](https://github.com/home-assistant/home-assistant.io) and of this site summarize it.
+本页面是 Home Assistant 的品牌个性指南。它取代了 design.home-assistant.io 上的版本。[home-assistant.io](https://github.com/home-assistant/home-assistant.io) 和本网站的写作说明对其进行了概括。
 
-To suggest a change, start a discussion in the [UX design discussions](https://github.com/OpenHomeFoundation/ux-design/discussions), or open a pull request to [this site](https://github.com/home-assistant/contributors.home-assistant.io).
+要提出修改建议，请在 [UX design discussions](https://github.com/OpenHomeFoundation/ux-design/discussions) 中发起讨论，或向[本网站](https://github.com/home-assistant/contributors.home-assistant.io)提交 pull request。

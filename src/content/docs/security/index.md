@@ -1,53 +1,53 @@
 ---
-title: Security
-description: Report a vulnerability, and build software that protects the homes it runs in.
+title: 安全
+description: 报告漏洞，并构建能够保护其所运行家庭的软件。
 ---
 
-Home Assistant runs the locks, alarms, cameras, and heating of the people who use it. A security bug in Home Assistant is a bug in someone's front door. That is why security is not a separate team's problem here: it shows up in every integration, every card, every app, and every dependency bump.
+Home Assistant 运行着用户家中的门锁、警报器、摄像头和供暖设备。Home Assistant 中的一个安全漏洞，就是某人家前门上的一个漏洞。因此，在这里安全不是某个独立团队的问题：它出现在每一个集成（integration）、每一张卡片、每一个应用，以及每一次依赖升级中。
 
-This area is for everyone who contributes. You will find how to report a vulnerability, what to watch for in the code you write or review, and which checks already have your back.
+本区域面向所有贡献者。你将了解如何报告漏洞、在编写或审查代码时应注意什么，以及哪些检查机制已经在为你保驾护航。
 
 > [!IMPORTANT]
-> Found a vulnerability? Do not open a public issue, pull request, or chat message about it. Report it privately through a [GitHub security advisory](https://github.com/home-assistant/core/security/advisories/new). See [Report a vulnerability](/security/report-a-vulnerability/) for what to include and what happens next.
+> 发现了漏洞？请不要就此公开提交 issue、pull request 或聊天消息。请通过 [GitHub 安全公告](https://github.com/home-assistant/core/security/advisories/new)私下报告。有关应包含的内容以及后续流程，请参阅[报告漏洞](/security/report-a-vulnerability/)。
 
-## Who this is for
+## 本区域面向谁
 
-- **Security researchers and users** who found something: start with [Report a vulnerability](/security/report-a-vulnerability/).
-- **Integration developers**: the code you write runs inside Core, with access to everything. The [integration guide](/security/guides/integrations/) covers credentials, certificates, redaction, admin-only access, webhooks, and file paths.
-- **Frontend developers**: names, attributes, and Markdown that reach the interface can come from anywhere. See [untrusted content in the frontend](/security/guides/frontend/).
-- **App developers**: your app runs in its own container, next to the rest of the system. See [Secure your app](/apps/guides/security/) and the [security rating](/apps/reference/security-rating/), and the lessons from past advisories in [secure apps](/security/guides/apps/).
-- **Companion app developers**: the app holds the login of the user, so anything that can make it act on its own is a risk. See [secure companion apps](/security/guides/companion-apps/).
-- **Reviewers**: you are the last pair of eyes before code reaches people's homes. See [Review with security in mind](/security/guides/reviewing/).
+- **安全研究人员和用户**：如果你发现了问题，请从[报告漏洞](/security/report-a-vulnerability/)开始。
+- **集成开发者**：你编写的代码运行在 Core 内部，可以访问一切。[集成指南](/security/guides/integrations/)涵盖了凭据、证书、脱敏、仅管理员访问、webhook 和文件路径。
+- **前端开发者**：到达界面的名称、属性和 Markdown 可能来自任何地方。请参阅[前端中的不可信内容](/security/guides/frontend/)。
+- **应用开发者**：你的应用运行在自己的容器中，与系统的其他部分相邻。请参阅[保护你的应用](/apps/guides/security/)和[安全评级](/apps/reference/security-rating/)，以及[保护应用](/security/guides/apps/)中来自过往公告的经验教训。
+- **伴侣应用（Companion app）开发者**：伴侣应用保存着用户的登录信息，因此任何能让它自行执行操作的因素都是风险。请参阅[保护伴侣应用](/security/guides/companion-apps/)。
+- **审查者**：你是代码进入用户家中的最后一道防线。请参阅[带着安全意识进行审查](/security/guides/reviewing/)。
 
-## Start here
+## 从这里开始
 
-- [Your first contribution](/security/first-contribution/): check the diagnostics of an integration you use for data that should not be in there.
-- [How Home Assistant handles trust](/security/how-it-works/): who Home Assistant trusts, where it can be attacked, and what the system already does for you.
-- [Report a vulnerability](/security/report-a-vulnerability/): how to report, what qualifies, and what to expect.
+- [你的第一次贡献](/security/first-contribution/)：检查你正在使用的某个集成的诊断数据，找出其中不应存在的数据。
+- [Home Assistant 如何处理信任](/security/how-it-works/)：Home Assistant 信任谁、它可能在哪里受到攻击，以及系统已经为你做了什么。
+- [报告漏洞](/security/report-a-vulnerability/)：如何报告、什么情况符合条件，以及可以期待什么。
 
-## Guides
+## 指南
 
-- [Secure integrations](/security/guides/integrations/): the patterns and helpers that keep an integration safe.
-- [Untrusted content in the frontend](/security/guides/frontend/): escaping, sanitizing, and safe links.
-- [Secure apps](/security/guides/apps/): what the advisories about apps and the Supervisor teach.
-- [Secure companion apps](/security/guides/companion-apps/): links, exported components, the WebView, and the JavaScript bridge.
-- [Dependencies and supply chain](/security/guides/dependencies/): what Home Assistant asks of a library, and how it checks.
-- [Review with security in mind](/security/guides/reviewing/): what to look for in a pull request.
+- [保护集成安全](/security/guides/integrations/)：让集成保持安全的模式和辅助元素（helper）。
+- [前端中的不可信内容](/security/guides/frontend/)：转义、净化和安全链接。
+- [保护应用安全](/security/guides/apps/)：关于应用和 Supervisor 的公告带给我们的启示。
+- [保护伴侣应用安全](/security/guides/companion-apps/)：链接、导出的组件、WebView 和 JavaScript 桥接。
+- [依赖与供应链](/security/guides/dependencies/)：Home Assistant 对一个库有哪些要求，以及它如何进行检查。
+- [带着安全意识进行审查](/security/guides/reviewing/)：在 pull request 中应该注意什么。
 
-## Reference
+## 参考
 
-- [Security helpers](/security/reference/helpers/): every helper on one page, for Core and the frontend.
-- [Automated security checks](/security/reference/checks/): the tools that check code, dependencies, and workflows.
-- [Past advisories](/security/reference/advisories/): every published advisory, grouped by kind, with what went wrong and the lesson.
+- [安全辅助元素](/security/reference/helpers/)：Core 和前端的每个辅助元素（helper）汇总在一页上。
+- [自动化安全检查](/security/reference/checks/)：检查代码、依赖和工作流程的工具。
+- [过往公告](/security/reference/advisories/)：所有已发布的公告，按类型分组，包含问题所在和经验教训。
 
-## Related
+## 相关内容
 
-- [Authentication](/core/internals/auth/) and [permissions](/core/internals/permissions/): users, tokens, and how to check what someone may do.
-- [Diagnostics](/core/integrations/diagnostics/): let users share data, without the secrets.
-- [Securing your Home Assistant](https://www.home-assistant.io/docs/configuration/securing/): the user side, from passwords to remote access.
+- [身份验证](/core/internals/auth/)和[权限](/core/internals/permissions/)：用户、令牌，以及如何检查某人可以执行哪些操作。
+- [诊断](/core/integrations/diagnostics/)：让用户分享数据，而不泄露机密。
+- [保护你的 Home Assistant](https://www.home-assistant.io/docs/configuration/securing/)：用户侧的内容，从密码到远程访问。
 
-## Who to talk to
+## 联系谁
 
-- **A vulnerability**: report it through a [GitHub security advisory](https://github.com/home-assistant/core/security/advisories/new), never in public. The [security.txt](https://www.home-assistant.io/.well-known/security.txt) of the project lists `security@home-assistant.io` as its contact.
-- **Writing about the security of Home Assistant**: the [security policy](https://www.home-assistant.io/security/) asks you to get in touch at [hello@home-assistant.io](mailto:hello@home-assistant.io) first, so all claims can be checked.
-- **A question about writing secure code** that is not a vulnerability: ask in the **#developers** channel on the [Home Assistant Discord](https://www.home-assistant.io/join-chat/), or in your pull request. Can't see the channel? Under **Channels & Roles**, choose **I want to contribute dev skills to Home Assistant**.
+- **漏洞**：请通过 [GitHub 安全公告](https://github.com/home-assistant/core/security/advisories/new)报告，切勿公开。项目的 [security.txt](https://www.home-assistant.io/.well-known/security.txt) 列出了 `security@home-assistant.io` 作为联系方式。
+- **撰写关于 Home Assistant 安全性的文章**：[安全政策](https://www.home-assistant.io/security/)要求你先通过 [hello@home-assistant.io](mailto:hello@home-assistant.io) 联系我们，以便核实所有声明。
+- **关于编写安全代码的疑问**（非漏洞）：请在 [Home Assistant Discord](https://www.home-assistant.io/join-chat/) 的 **#developers** 频道中提问，或在你的 pull request 中提问。看不到该频道？在 **Channels & Roles** 下，选择 **I want to contribute dev skills to Home Assistant**。

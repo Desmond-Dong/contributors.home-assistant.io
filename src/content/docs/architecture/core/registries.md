@@ -1,65 +1,65 @@
 ---
-title: Registries and storage
-description: Where Home Assistant keeps what it knows about entities, devices, and areas, how users' changes are kept apart from what integrations report, and how data is stored.
+title: 注册表与存储
+description: Home Assistant 将其对实体、设备和区域的了解保存在哪里，用户的更改如何与集成报告的内容分开保存，以及数据是如何存储的。
 order: 10
 ---
 
-The [state machine](/core/internals/states/) knows what is true right now, and forgets it at a restart. The [registries](/glossary/registry/) remember the rest: which entities and devices exist, where they are, what they are called, and what users changed about them.
+[状态机（state machine）](/core/internals/states/)知道当前真实的情况，并在重启后将其遗忘。[注册表（registry）](/glossary/registry/)则记住其余的内容：哪些实体和设备存在、它们在哪里、叫什么名字，以及用户对它们做了哪些更改。
 
-This page is the overview. How an integration works with each registry is in the Core and integrations area, linked below.
+本页是概览。集成如何与每个注册表协作，请参见下方链接的 Core 与集成部分。
 
-## In short
+## 简而言之
 
-- There is a registry for entities, devices, areas, floors, labels, and categories, and one for issues shown under Repairs.
-- An integration fills them, through the unique IDs of its entities and the device info it gives.
-- Users change them in the UI: a name, an area, an icon. Those changes are kept next to what the integration reports, and they win.
-- Registries, config entries, and most other data live in JSON files in the `.storage` folder.
+- 有一个注册表用于实体、设备、区域（area）、楼层、标签和分类，还有一个用于“修复”（Repairs）下显示的问题。
+- 集成通过其实体的唯一 ID 和提供的设备信息来填充这些注册表。
+- 用户在 UI 中更改它们：名称、区域、图标。这些更改与集成报告的内容分开保存，并且以用户的更改为准。
+- 注册表、配置条目以及大多数其他数据都以 JSON 文件的形式存放在 `.storage` 文件夹中。
 
-## Two sources, one result
+## 两个来源，一个结果
 
-Take an entity. The integration says it is called "Temperature" and is a temperature sensor. The user renames it to "Outside" and puts it in the garden area. Both are kept, in different fields:
+以一个实体为例。集成说它叫 "Temperature"，是一个温度传感器。用户将其重命名为 "Outside"，并放到花园区域。两者都会被保存，存放在不同的字段中：
 
-| Field from the integration | Field from the user |
+| 来自集成的字段 | 来自用户的字段 |
 | --- | --- |
 | `original_name` | `name` |
 | `original_icon` | `icon` |
 | `original_device_class` | `device_class` |
 
-When the entity writes its state, the user's value wins when it is set. The integration can update its own fields at any time, without overwriting the user's choice. That is the principle that [the user's choices win](/architecture/principles/#the-users-choices-win).
+当实体写入其状态时，如果用户设置了值，则以用户的值为准。集成可以随时更新自己的字段，而不会覆盖用户的选择。这就是[用户的选择优先](/architecture/principles/#the-users-choices-win)这一原则。
 
-## The registries
+## 各类注册表
 
-| Registry | What it holds | The details |
+| 注册表 | 保存的内容 | 详细信息 |
 | --- | --- | --- |
-| Entities | Every entity with a [unique ID](/glossary/unique-id/), and what the user changed about it | [The entity registry](/core/entities/registry/), for entity authors, and [Entity registry](/core/integrations/entity-registry/), to look up and migrate entries |
-| Devices | Every device, from the device info of an integration's entities | [Device registry](/core/integrations/device-registry/) |
-| Areas and floors | How the user describes their home | [Area registry](/core/integrations/area-registry/) |
-| Labels and categories | How the user groups things, and sorts automations and scripts | The code, linked below |
-| Issues | What the user needs to act on, shown under **Settings** > **Repairs** | [Repairs](/core/integrations/repairs/) |
+| 实体 | 每个具有[唯一 ID](/glossary/unique-id/) 的实体，以及用户对它的更改 | [实体注册表](/core/entities/registry/)（面向实体作者），以及[实体注册表](/core/integrations/entity-registry/)（用于查找和迁移条目） |
+| 设备 | 每个设备，来自集成实体的设备信息 | [设备注册表](/core/integrations/device-registry/) |
+| 区域和楼层 | 用户如何描述自己的家 | [区域注册表](/core/integrations/area-registry/) |
+| 标签和分类 | 用户如何对事物分组，以及如何整理自动化和脚本 | 代码，见下方链接 |
+| 问题 | 用户需要处理的事项，显示在 **设置** > **修复** 下 | [修复](/core/integrations/repairs/) |
 
-Entities without a unique ID still work, but users can't change anything about them in the UI.
+没有唯一 ID 的实体仍然可以工作，但用户无法在 UI 中对它们进行任何更改。
 
-The registries follow the hierarchy of config entry, device, and entity. Disable a config entry, and its devices and entities are disabled too. Disable a device, and its entities follow. Remove a device or a config entry, and the entities that belong to it are removed from the registry.
+注册表遵循配置条目、设备和实体的层级关系。禁用一个配置条目，其设备和实体也会被禁用。禁用一个设备，其实体也会随之禁用。移除一个设备或配置条目，属于它的实体也会从注册表中移除。
 
-An enabled entity in the registry that no integration provides right now, like when its integration failed to set up, still shows up in the state machine: as `unavailable`, with the attribute `restored: true`.
+注册表中处于启用状态、但当前没有集成提供的实体（例如其集成设置失败时），仍会显示在状态机中：状态为 `unavailable`，并带有属性 `restored: true`。
 
-## Storage
+## 存储
 
-Home Assistant stores its own data in JSON files in `.storage`, in the configuration folder: the registries, config entries, users, dashboards, and more. Integrations can do the same with `Store`, which versions the data, migrates it when the version changes, combines writes close together into one, and by default refuses to read data with a newer major version than it knows, like after a downgrade.
+Home Assistant 将自己的数据以 JSON 文件的形式存储在配置文件夹的 `.storage` 中：注册表、配置条目、用户、仪表盘等等。集成也可以使用 `Store` 做同样的事情，它会对数据进行版本控制，在版本变化时迁移数据，将时间上接近的多次写入合并为一次，并且默认拒绝读取主版本号高于其已知版本的数据，例如在降级之后。
 
-Files in `.storage` are internal. They change between versions, and users shouldn't edit them by hand. `configuration.yaml` is the other place configuration lives. It is written by users, and Home Assistant only reads it.
+`.storage` 中的文件是内部文件。它们会随版本变化而改变，用户不应手动编辑它们。`configuration.yaml` 是配置的另一个存放之处。它由用户编写，Home Assistant 只读取它。
 
-## In the code
+## 代码中的位置
 
-| What | Where |
+| 内容 | 位置 |
 | --- | --- |
-| Entity registry | [`homeassistant/helpers/entity_registry.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/helpers/entity_registry.py) |
-| Device registry, `DeviceInfo` | [`homeassistant/helpers/device_registry.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/helpers/device_registry.py) |
-| Area, floor, label, and category registries | `area_registry.py`, `floor_registry.py`, `label_registry.py`, `category_registry.py` in [`homeassistant/helpers/`](https://github.com/home-assistant/core/tree/dev/homeassistant/helpers) |
-| Issue registry | [`homeassistant/helpers/issue_registry.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/helpers/issue_registry.py) |
+| 实体注册表 | [`homeassistant/helpers/entity_registry.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/helpers/entity_registry.py) |
+| 设备注册表、`DeviceInfo` | [`homeassistant/helpers/device_registry.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/helpers/device_registry.py) |
+| 区域、楼层、标签和分类注册表 | [`homeassistant/helpers/`](https://github.com/home-assistant/core/tree/dev/homeassistant/helpers) 中的 `area_registry.py`、`floor_registry.py`、`label_registry.py`、`category_registry.py` |
+| 问题注册表 | [`homeassistant/helpers/issue_registry.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/helpers/issue_registry.py) |
 | `Store` | [`homeassistant/helpers/storage.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/helpers/storage.py) |
 
-## Work on this
+## 参与贡献
 
-- New to Core? Start with [your first contribution to Core](/core/first-contribution/).
-- Give your entities a unique ID and a device: the [entity unique ID](/core/quality-scale/entity-unique-id/) and [devices](/core/quality-scale/devices/) rules of the quality scale.
+- 刚接触 Core？从[你对 Core 的第一次贡献](/core/first-contribution/)开始。
+- 为你的实体提供唯一 ID 和设备：参见质量标准中的[实体唯一 ID](/core/quality-scale/entity-unique-id/) 和[设备](/core/quality-scale/devices/)规则。

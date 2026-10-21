@@ -1,30 +1,30 @@
 ---
-title: Structure a page
-description: Organize documentation around what the reader wants to know or do, with concepts, tasks, references, tutorials, and troubleshooting.
+title: 页面结构
+description: 围绕读者想了解或想做的事情来组织文档，包括概念、任务、参考、教程和故障排除。
 order: 1
 ---
 
-Every reader arrives with a question. What is this? How do I set it up? What does this setting do? Why is it not working? Good documentation is organized around those questions, not around how a feature is built.
+每位读者都是带着问题而来的。这是什么？我该如何设置？这个设置有什么作用？为什么它不工作？好的文档应该围绕这些问题来组织，而不是围绕功能是如何构建的。
 
-That approach is called topic-based authoring. A topic answers one main question. It can be a whole page, or a single section on a page. You do not need a separate page for every topic.
+这种方法称为基于主题的写作（topic-based authoring）。一个主题回答一个主要问题。它可以是一整页，也可以是页面中的单个章节。你不需要为每个主题单独建一个页面。
 
-Integration, trigger, condition, and action pages have a fixed structure of their own, so they all read the same way. For those, start with [Document an integration](/writing/guides/integration/) and the [Integration page](/writing/reference/integration-page/) reference. The guidance on this page then applies within each section.
+集成（integration）、触发器（trigger）、条件（condition）和动作（action）页面有各自固定的结构，因此它们的阅读方式都是一致的。对于这些页面，请从[编写集成文档](/writing/guides/integration/)和[集成页面](/writing/reference/integration-page/)参考开始。本页的指导则适用于其中的每个章节。
 
-## Start with the overview
+## 从概述开始
 
-Open every page with a short introduction: what the page is about, and who it is for. Then work from basic to more complex. The information most readers need comes first, the details fewer readers need come later. Break longer pages into sections with clear headings, so readers can jump to the part they came for.
+每页都以简短的介绍开头：这一页讲什么，面向谁。然后从基础到复杂逐步展开。大多数读者需要的信息放在前面，少数读者需要的细节放在后面。将较长的页面拆分为带有清晰标题的章节，以便读者能直接跳转到他们需要的部分。
 
-## Put the UI first
+## 界面优先
 
-When something can be done in the Home Assistant interface, the UI is the standard way, and you describe it first. That goes for every kind of topic: tasks, references, tutorials, and troubleshooting.
+当某件事可以在 Home Assistant 界面中完成时，界面（UI）就是标准方式，你应该首先描述它。这适用于所有类型的主题：任务、参考、教程和故障排除。
 
-YAML and command line alternatives are welcome where they are supported and useful. Put them after the UI instructions, under their own heading, and explain when someone would need them. Do not suggest that editing files is a normal part of the setup when the UI can do the job.
+在受支持且有用的地方，欢迎提供 YAML 和命令行替代方案。将它们放在界面说明之后，放在各自的标题下，并说明什么情况下需要用到它们。当界面可以完成工作时，不要暗示编辑文件是设置过程的常规部分。
 
-## One purpose per section
+## 每个章节一个目的
 
-The most common problem in documentation is a section that tries to do everything at once: explain the concept, walk through the steps, and list every option. The reader then has to dig for the part they need.
+文档中最常见的问题是，一个章节试图同时做所有事情：解释概念、逐步演示操作、并列出所有选项。这样读者就得费力去挖掘他们需要的部分。
 
-Give each purpose its own heading. A page about areas, for example, can hold three topics:
+为每个目的设置各自的标题。例如，一个关于区域（area）的页面可以包含三个主题：
 
 ```markdown
 ## Areas
@@ -37,45 +37,45 @@ Give each purpose its own heading. A page about areas, for example, can hold thr
 <!-- Reference: every setting, and what it means. -->
 ```
 
-Keep each topic focused on one subject or goal:
+让每个主题聚焦于一个主题或目标：
 
-- A concept explains one idea.
-- A task covers one goal.
-- A reference describes one set of related facts or options.
-- A troubleshooting topic handles one problem.
-- A tutorial can combine several tasks, as long as they serve one learning goal.
+- 概念解释一个想法。
+- 任务完成一个目标。
+- 参考描述一组相关的事实或选项。
+- 故障排除主题处理一个问题。
+- 教程可以组合多个任务，只要它们服务于同一个学习目标。
 
-When you notice you are describing a second task, give it its own topic. If creating an area requires creating a floor first, the floor steps get their own section, on the same page or on another one. Link to it from the area steps. Steps that directly contribute to the outcome of the task stay together.
+当你发现自己在描述第二个任务时，就为它单独设立一个主题。如果创建区域需要先创建楼层，那么楼层的步骤就应有自己的章节，可以在同一页上，也可以在另一页上。从区域步骤中链接过去。直接促成任务结果的步骤应放在一起。
 
-Not every sentence of context needs its own section. A short introduction, a prerequisite, or one line explaining why a step matters belongs right next to that step. Longer background and complete option lists are what you move out.
+并非每一句上下文说明都需要单独的章节。简短的介绍、前提条件，或解释某个步骤为何重要的一句话，就应该紧挨着该步骤放置。较长的背景说明和完整的选项列表才是应该移出去的内容。
 
-A parent heading can group several topics under subheadings. A troubleshooting section can group a details block per problem. Just keep the text under each heading about what that heading promises.
+一个父级标题可以通过子标题将多个主题归为一组。故障排除章节可以为每个问题设置一个详情折叠块。只需确保每个标题下的内容与该标题所承诺的一致。
 
-## Choose a topic type
+## 选择主题类型
 
-Choose the type by what the reader needs:
+根据读者的需求来选择类型：
 
-- [Concept](#concept): understand what something is, why it matters, or how it works.
-- [Task](#task): complete a specific goal.
-- [Reference](#reference): look up a fact, setting, value, or behavior.
-- [Tutorial](#tutorial): learn by following a guided exercise that ends with something that works.
-- [Troubleshooting](#troubleshooting): recognize a problem and fix it.
+- [概念](#concept)：理解某事物是什么、为什么重要，或它如何工作。
+- [任务](#task)：完成一个具体目标。
+- [参考](#reference)：查找某个事实、设置、取值或行为。
+- [教程](#tutorial)：通过跟随一个最终能得到可用结果的引导式练习来学习。
+- [故障排除](#troubleshooting)：识别问题并解决它。
 
-The subject does not decide the type. Areas can be the subject of a concept, a task, and a reference, as in the example above. UI and YAML are not types either: they are two ways to do a task, or to describe configuration.
+主题内容并不决定类型。区域可以同时是概念、任务和参考的主题，如上面的示例所示。界面和 YAML 也不是类型：它们是完成任务或描述配置的两种方式。
 
-## Concept
+## 概念
 
-A concept explains what something is, and helps the reader understand it. Use it for definitions, how things relate to each other, design choices, and reasons to use a feature.
+概念解释某事物是什么，并帮助读者理解它。用于定义、事物之间的相互关系、设计选择，以及使用某项功能的理由。
 
-### Headings for concepts
+### 概念的标题
 
-- Use a noun or a descriptive phrase: "Areas", "Parts of an automation", or "Wake word processing".
-- A question works when it says what the reader wants to know more clearly: "What is data polling?"
-- Avoid "Introduction" or "Overview" when you can name the subject instead.
+- 使用名词或描述性短语："Areas"、"Parts of an automation" 或 "Wake word processing"。
+- 当问题能更清楚地表达读者想了解的内容时，可以使用问句："What is data polling?"
+- 避免使用 "Introduction" 或 "Overview"，除非你能直接说出主题的名称。
 
-### Content for concepts
+### 概念的内容
 
-Start with a plain explanation. Add a concrete example, and explain relationships or trade-offs that matter. Define unfamiliar terms, or link to their definition, for example with a [glossary tooltip](/writing/reference/liquid/#glossary-tooltips).
+从平实的解释开始。添加一个具体的例子，并解释重要的关系或权衡。定义不熟悉的术语，或链接到其定义，例如使用[术语表提示](/writing/reference/liquid/#glossary-tooltips)。
 
 ```markdown
 ## Areas
@@ -83,26 +83,26 @@ Start with a plain explanation. Add a concrete example, and explain relationship
 An area groups devices and entities that belong to a room or another part of your home. For example, a living room area lets you target all the lights in that room with one action.
 ```
 
-Keep setup instructions out of a concept, and link to the task instead. A concept that turns into a list of options or a long series of UI steps is no longer a concept: put the options in a reference topic, and link to it.
+不要在概念中包含设置说明，而是链接到相应的任务。一个变成选项列表或一长串界面步骤的概念就不再是概念了：把选项放到参考主题中，并链接过去。
 
-## Task
+## 任务
 
-A task helps the reader reach a specific goal. The reader wants to get something done, not work through a lesson.
+任务帮助读者达成一个具体目标。读者想把事情做完，而不是上一堂课。
 
-### Headings for tasks
+### 任务的标题
 
-- Name the action and its object: "Creating an area", not "Task".
-- An `-ing` phrase, like "Creating an area" or "Updating Home Assistant", matches what most existing pages use.
-- An imperative works well for the stages of a longer procedure: "Write the image to your SD card".
-- Keep sibling headings parallel. If one starts with an `-ing` verb, they all do.
-- Avoid vague headings like "Usage", "Configuration", or "Working with areas" when the task has a more specific outcome.
+- 写出动作及其对象："Creating an area"，而不是 "Task"。
+- 使用 `-ing` 短语，如 "Creating an area" 或 "Updating Home Assistant"，这与大多数现有页面的用法一致。
+- 对于较长流程的各个阶段，使用祈使句效果很好："Write the image to your SD card"。
+- 保持同级标题的平行结构。如果一个以 `-ing` 动词开头，那么它们都应该如此。
+- 当任务有更具体的结果时，避免使用 "Usage"、"Configuration" 或 "Working with areas" 这类模糊的标题。
 
-### Content for tasks
+### 任务的内容
 
-1. If the heading does not make it clear, say in one sentence when or why you would do this.
-2. List the prerequisites directly before the steps, under a `Prerequisites:` lead-in, like hardware, permissions, or setup that must be done first. Use a separate `## Prerequisites` section only when the requirements apply to the whole page. No prerequisites worth mentioning? Leave the list out.
-3. Write the steps as a numbered list. Start each step with the instruction. Put explanations or the expected result below it.
-4. End with the outcome and, when useful, a way to check that it worked.
+1. 如果标题没有说明清楚，用一句话说明何时或为什么要做这件事。
+2. 在步骤之前直接列出前提条件，以 `Prerequisites:` 引导，例如硬件、权限或必须先完成的设置。只有当要求适用于整页时，才使用单独的 `## Prerequisites` 章节。没有值得一提的前提条件？那就省略列表。
+3. 将步骤写成编号列表。每个步骤以操作指令开头。把解释或预期结果放在其下方。
+4. 以结果结尾，并在有用时提供验证是否成功的方法。
 
 ```markdown
 ## Creating an area
@@ -113,24 +113,24 @@ A task helps the reader reach a specific goal. The reader wants to get something
    - Result: The new area appears in the list.
 ```
 
-Keep the steps focused on the goal. Long explanations, descriptions of every field, and other procedures belong elsewhere. Link to the concept or reference instead.
+让步骤聚焦于目标。冗长的解释、对每个字段的描述以及其他流程应放在别处。改为链接到概念或参考。
 
-## Reference
+## 参考
 
-A reference holds facts the reader looks up, without following a procedure. Use it for settings, supported values, syntax, response data, and other defined behavior.
+参考包含读者查阅的事实，无需遵循某个流程。用于设置、支持的取值、语法、响应数据以及其他已定义的行为。
 
-### Headings for references
+### 参考的标题
 
-- Name the information: "Area settings", "Blueprint inputs", or "Response data".
-- Avoid catch-all headings like "Important information" or "Good to know" when the content has a more specific subject.
+- 写出信息的名称："Area settings"、"Blueprint inputs" 或 "Response data"。
+- 当内容有更具体的主题时，避免使用 "Important information" 或 "Good to know" 这类大而全的标题。
 
-### Content for references
+### 参考的内容
 
-- **Use the same structure for every entry.** For settings, give the name, what it does, the accepted values, and the default, where those apply.
-- **Make required and optional clear.**
-- **Use the names the reader sees.** UI labels for UI settings, exact keys for YAML options.
-- **Keep constraints next to the setting they apply to,** not in a separate list further down.
-- **Make it easy to scan.** Use a list, or the configuration blocks described in [Integration page](/writing/reference/integration-page/). Avoid tables, see the [style guide](/writing/reference/style/#tables).
+- **每个条目使用相同的结构。** 对于设置，在适用的情况下给出名称、作用、可接受的取值和默认值。
+- **清楚标明必填和可选。**
+- **使用读者看到的名称。** 界面设置用界面标签，YAML 选项用确切的键名。
+- **将约束条件放在其适用的设置旁边，** 而不是放在下面单独的列表中。
+- **便于快速浏览。** 使用列表，或[集成页面](/writing/reference/integration-page/)中描述的配置块。避免使用表格，参见[风格指南](/writing/reference/style/#tables)。
 
 ```markdown
 ## Area settings
@@ -139,23 +139,23 @@ A reference holds facts the reader looks up, without following a procedure. Use 
 - **Alias**: Another name a voice assistant can use for the area.
 ```
 
-A short example can show a valid value or the right syntax. Do not let it grow into a tutorial, and do not hide setup steps inside field descriptions.
+简短的示例可以展示有效的取值或正确的语法。不要让它演变成教程，也不要把设置步骤藏在字段描述中。
 
-## Tutorial
+## 教程
 
-A tutorial teaches a skill through a guided example. At the end, the reader has something that works, which they can keep or adapt.
+教程通过一个引导式的示例来教授一项技能。结束时，读者会得到一个可用的成果，可以保留或修改它。
 
-The difference with a task is purpose, not difficulty. A task helps readers do their own work. A tutorial gives them an exercise to learn from. A simple procedure is not automatically a tutorial, and a tutorial can teach something complex.
+教程与任务的区别在于目的，而不是难度。任务帮助读者完成他们自己的工作。教程给读者提供一个可以学习的练习。一个简单的流程并不自动就是教程，而教程也可以教授复杂的内容。
 
-### Headings for tutorials
+### 教程的标题
 
-- Start the title with "Tutorial:", followed by the action and the outcome: "Tutorial: Create your first automation".
-- Name each stage after what the reader does in it, with consistent wording.
-- Number the stages when their order matters.
+- 标题以 "Tutorial:" 开头，后接动作和结果："Tutorial: Create your first automation"。
+- 按读者在每个阶段所做的事情来命名各阶段，并保持措辞一致。
+- 当阶段的顺序很重要时，为阶段编号。
 
-### Content for tutorials
+### 教程的内容
 
-State what the reader will build and learn, and what they need before they start. Then guide them through one chosen path, in stages small enough to follow. Show the expected result along the way, and end with a final check.
+说明读者将构建什么、学到什么，以及开始之前需要什么。然后引导他们沿着一条选定的路径前进，每个阶段都足够小、便于跟随。在过程中展示预期结果，并以最终检查收尾。
 
 ```markdown
 ## What you will build
@@ -174,31 +174,31 @@ State what the reader will build and learn, and what they need before they start
 ## Next steps
 ```
 
-- Keep explanations close to the step they help with.
-- Link to concepts and references instead of interrupting the exercise with them.
-- Do not show every alternative or optional feature along the way. Put extensions after the main exercise, for example under "Next steps".
-- A collection of code examples is not a tutorial. A tutorial guides the reader through a learning experience.
+- 让解释紧挨着它所辅助的步骤。
+- 链接到概念和参考，而不是在练习中插入它们。
+- 不要在过程中展示每个替代方案或可选功能。将扩展内容放在主练习之后，例如放在 "Next steps" 之下。
+- 一堆代码示例不是教程。教程引导读者经历一个学习过程。
 
-## Troubleshooting
+## 故障排除
 
-A troubleshooting topic helps the reader recognize a problem and recover from it. It can be a section on a feature page, or a page of its own that covers related problems.
+故障排除主题帮助读者识别问题并从中恢复。它可以是功能页面中的一个章节，也可以是覆盖相关问题的独立页面。
 
-### Headings for troubleshooting
+### 故障排除的标题
 
-- Put each problem in its own [collapsible details block](/writing/reference/liquid/#collapsible-details).
-- Use the symptom or the exact error message as the title of the block, like `Can't access Home Assistant in my browser` or `Stuck at "Preparing Home Assistant"`.
-- For a page with several problems, use "Troubleshooting" followed by the subject: "Troubleshooting Assist".
-- Avoid titles that only make sense once you know the cause. The reader searches for what they see, not for what is wrong.
+- 将每个问题放在各自的[可折叠详情块](/writing/reference/liquid/#collapsible-details)中。
+- 使用症状或确切的错误消息作为块的标题，例如 `Can't access Home Assistant in my browser` 或 `Stuck at "Preparing Home Assistant"`。
+- 对于包含多个问题的页面，使用 "Troubleshooting" 后接主题："Troubleshooting Assist"。
+- 避免使用只有在知道原因后才有意义的标题。读者搜索的是他们看到的现象，而不是问题所在。
 
-### Content for troubleshooting
+### 故障排除的内容
 
-Inside each block, use the same three parts:
+在每个块内，使用相同的三个部分：
 
-1. **Symptom:** what the reader sees, in their words. Include the exact error message, if there is one.
-2. **Description:** what is going on, when that helps. Do not present a possible cause as certain.
-3. **Resolution:** what to do about it. Put simple checks before more involved ones, explain what an action does before the reader takes it, and tell them how to confirm the problem is gone.
+1. **症状：** 读者看到的现象，用他们的话描述。如有错误消息，请包含确切的错误消息。
+2. **描述：** 在有帮助时说明发生了什么。不要把可能的原因当作确定的原因来陈述。
+3. **解决方法：** 该怎么做。把简单的检查放在复杂的检查之前，在读者执行某个操作之前解释它的作用，并告诉他们如何确认问题已解决。
 
-Leave out a part when it adds nothing, like a description for a very short topic. This is how it looks on a page:
+当某个部分没有提供任何价值时可以省略，例如对于非常简短的主题可以省略描述。它在页面上的样子如下：
 
 ```liquid
 ## Troubleshooting
@@ -224,6 +224,6 @@ The entities become available again within a minute.
 {% enddetails %}
 ```
 
-If the checks do not solve the problem, link to the right place for help, and say what information to include, like logs or diagnostics. A link to the community forum on its own is not troubleshooting.
+如果这些检查没有解决问题，请链接到合适的求助渠道，并说明应提供哪些信息，例如日志或诊断信息。仅提供一个社区论坛链接并不算故障排除。
 
-Keep normal setup steps in task topics. When a missed setup step could explain the problem, link to that task instead of repeating it.
+把常规的设置步骤保留在任务主题中。当遗漏某个设置步骤可能是问题的原因时，链接到那个任务，而不是重复它。

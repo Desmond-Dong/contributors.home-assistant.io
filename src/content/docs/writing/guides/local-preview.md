@@ -1,41 +1,41 @@
 ---
-title: Preview the site locally
-description: Run home-assistant.io on your own machine, so you can see bigger changes before you share them.
+title: 在本地预览网站
+description: 在自己的电脑上运行 home-assistant.io，以便在分享之前查看较大的改动。
 order: 2
 ---
 
-For small fixes, the Deploy Preview on your pull request is enough. For bigger changes, like a new page or a restructured section, it is faster to see your work locally while you write.
+对于小的修复，拉取请求（pull request）上的 Deploy Preview 就足够了。对于较大的改动，比如新页面或重构的章节，在编写时就能在本地看到成果会更快。
 
-## With a devcontainer
+## 使用 devcontainer
 
-The easiest way is Visual Studio Code with a devcontainer. It sets up everything for you, without installing Ruby on your machine.
+最简单的方法是使用带 devcontainer 的 Visual Studio Code。它会为你设置好一切，无需在电脑上安装 Ruby。
 
-1. Fork the [home-assistant.io repository](https://github.com/home-assistant/home-assistant.io) and open it in Visual Studio Code.
-2. When asked, reopen the folder in the container.
-3. Open the command palette and run **Tasks: Run Task** > **Preview**.
-4. Open `http://localhost:4000` in your browser.
+1. Fork [home-assistant.io 仓库](https://github.com/home-assistant/home-assistant.io)并在 Visual Studio Code 中打开它。
+2. 收到提示时，在容器中重新打开该文件夹。
+3. 打开命令面板并运行 **Tasks: Run Task** > **Preview**。
+4. 在浏览器中打开 `http://localhost:4000`。
 
-## Without a devcontainer
+## 不使用 devcontainer
 
-You need Ruby and Node.js. The versions the project uses are in the [`.ruby-version`](https://github.com/home-assistant/home-assistant.io/blob/current/.ruby-version) and [`.nvmrc`](https://github.com/home-assistant/home-assistant.io/blob/current/.nvmrc) files of the repository. Node.js is needed because generating the site also builds its Astro part.
+你需要 Ruby 和 Node.js。项目使用的版本记录在仓库的 [`.ruby-version`](https://github.com/home-assistant/home-assistant.io/blob/current/.ruby-version) 和 [`.nvmrc`](https://github.com/home-assistant/home-assistant.io/blob/current/.nvmrc) 文件中。需要 Node.js 是因为生成网站时也会构建其 Astro 部分。
 
-1. Install Ruby, Bundler, and Node.js for your system. The Ruby package of your Linux distribution can be older than the version in `.ruby-version`. If `bundle` fails with it, install Ruby with mise instead. For Ruby and Bundler:
+1. 为你的系统安装 Ruby、Bundler 和 Node.js。你的 Linux 发行版自带的 Ruby 包可能比 `.ruby-version` 中的版本旧。如果 `bundle` 因此失败，请改用 mise 安装 Ruby。Ruby 和 Bundler 的安装方法：
 
-   - Fedora:
+   - Fedora：
 
      ```shell
      sudo dnf -y install \
        gcc-c++ ruby ruby-devel rubygem-bundler rubygem-json rubygem-rake
      ```
 
-   - Debian or Ubuntu:
+   - Debian 或 Ubuntu：
 
      ```shell
      sudo apt-get install \
        ruby ruby-dev ruby-bundler ruby-json g++ zlib1g-dev
      ```
 
-   - macOS, if the Ruby that comes with it does not work, with Homebrew:
+   - macOS，如果系统自带的 Ruby 无法使用，可使用 Homebrew：
 
      ```shell
      RUBY_FORMULA="ruby@$(cut -d . -f 1,2 .ruby-version)"
@@ -43,48 +43,48 @@ You need Ruby and Node.js. The versions the project uses are in the [`.ruby-vers
      export PATH="$(brew --prefix "$RUBY_FORMULA")/bin:$PATH"
      ```
 
-   - With [mise](https://mise.jdx.dev/): the repository tells mise to read the Ruby version from `.ruby-version`. Run `mise trust`, `mise install ruby`, and `gem install bundler`. mise downloads a precompiled Ruby where one exists for your system, and builds it from source otherwise. That build needs a compiler and development libraries.
+   - 使用 [mise](https://mise.jdx.dev/)：仓库会让 mise 从 `.ruby-version` 读取 Ruby 版本。运行 `mise trust`、`mise install ruby` 和 `gem install bundler`。如果你的系统有预编译的 Ruby，mise 会直接下载，否则会从源码构建。该构建需要编译器和开发库。
 
-2. In your clone of the repository, install the dependencies:
+2. 在你克隆的仓库中，安装依赖：
 
    ```shell
    bundle
    npm install
    ```
 
-3. Generate the site once. The first time takes a minute:
+3. 生成一次网站。第一次需要一分钟：
 
    ```shell
    bundle exec rake generate
    ```
 
-4. Start the preview:
+4. 启动预览：
 
    ```shell
    bundle exec rake preview
    ```
 
-5. Open `http://127.0.0.1:4000`. Changes to files are picked up automatically, refresh your browser to see them.
+5. 打开 `http://127.0.0.1:4000`。对文件的更改会被自动检测到，刷新浏览器即可看到。
 
-Integration pages are in `source/_integrations`, the general documentation in `source/_docs`. [How the documentation works](/writing/how-it-works/#where-pages-live) lists the other folders.
+集成（integration）页面位于 `source/_integrations`，通用文档位于 `source/_docs`。[文档的工作方式](/writing/how-it-works/#where-pages-live)列出了其他文件夹。
 
-### On another machine
+### 在另一台机器上
 
-The preview only listens on `127.0.0.1`, so you cannot reach it from another computer. Working on a server without a screen? Pass the IP address it should listen on:
+预览只监听 `127.0.0.1`，因此无法从其他电脑访问。在没有显示器的服务器上工作？传入它应监听的 IP 地址：
 
 ```shell
 bundle exec rake "preview[192.168.0.123]"
 ```
 
-Or leave it as it is, and forward the port over SSH from your own computer:
+或者保持原样，从你自己的电脑通过 SSH 转发端口：
 
 ```shell
 ssh -L 4000:localhost:4000 user@ip-of-the-server
 ```
 
-## Run the checks
+## 运行检查
 
-The same checks that run on your pull request can run on your machine. They need Node.js:
+在拉取请求上运行的相同检查也可以在你的电脑上运行。它们需要 Node.js：
 
 ```shell
 npm install
@@ -92,4 +92,4 @@ npm run markdown:lint
 npm run textlint
 ```
 
-`markdown:lint` checks the Markdown structure. `textlint` checks spelling and terminology. [Automated checks](/writing/reference/checks/) explains what they look for, and how to handle a false alarm.
+`markdown:lint` 检查 Markdown 结构。`textlint` 检查拼写和术语。[自动化检查](/writing/reference/checks/)说明了它们检查的内容，以及如何处理误报。

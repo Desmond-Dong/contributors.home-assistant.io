@@ -1,12 +1,12 @@
 ---
-title: Security reference
-description: The details you look up. Security helpers, the automated checks, and every past advisory.
+title: 安全参考
+description: 供您查阅的详细信息。安全辅助工具、自动化检查，以及所有过往的安全公告。
 order: 20
-sidebarLabel: Reference
+sidebarLabel: 参考
 ---
 
-The pages in this section are for looking things up. For how to use them, start with the [guides](/security/guides/).
+本节中的页面用于查阅信息。有关如何使用它们，请从[指南](/security/guides/)开始。
 
-- [Security helpers](/security/reference/helpers/): every helper of Core and the frontend for certificates, redaction, admin access, webhooks, paths, and untrusted content.
-- [Automated security checks](/security/reference/checks/): the tools that check code, dependencies, and workflows, and where they run.
-- [Past advisories](/security/reference/advisories/): every published advisory, grouped by kind, with what went wrong and the lesson.
+- [安全辅助工具](/security/reference/helpers/)：Core 和前端用于证书、脱敏、管理员访问、webhook、路径和不可信内容的所有辅助工具（helper）。
+- [自动化安全检查](/security/reference/checks/)：用于检查代码、依赖项和工作流的工具，以及它们的运行位置。
+- [过往安全公告](/security/reference/advisories/)：所有已发布的安全公告（advisory），按类型分组，包含问题所在及经验教训。

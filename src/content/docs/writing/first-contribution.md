@@ -1,67 +1,67 @@
 ---
-title: Your first docs fix
-description: Fix something small in the documentation, straight from your browser. No setup needed.
+title: 你的第一次文档修复
+description: 直接在浏览器中修复文档中的小问题。无需任何环境配置。
 order: 1
-sidebarLabel: Your first contribution
+sidebarLabel: 你的第一次贡献
 ---
 
-The fastest way to start is to fix something you noticed yourself. Did a page confuse you? Was a step outdated, or a screenshot from an older version? That is your first contribution.
+最快的入门方式就是修复你自己注意到的问题。某个页面让你感到困惑？某个步骤已过时，或者截图来自旧版本？这就是你的第一次贡献。
 
-No idea yet? Readers report problems through the feedback link on every page. Those reports are [open issues on GitHub](https://github.com/home-assistant/home-assistant.io/issues), and many of them are small fixes waiting for someone to pick them up.
+还没有想法？读者会通过每个页面上的反馈链接报告问题。这些报告是 [GitHub 上的公开议题（issue）](https://github.com/home-assistant/home-assistant.io/issues)，其中很多都是等待有人认领的小修复。
 
-You need a free [GitHub](https://github.com/) account. New to GitHub? [Use GitHub, without being a developer](/start/github/) explains the words you see on the way, like fork, commit, and pull request.
+你需要一个免费的 [GitHub](https://github.com/) 账号。刚接触 GitHub？[无需成为开发者也能使用 GitHub](/start/github/) 解释了你会遇到的术语，比如 fork、commit 和 pull request。
 
-Not up for editing yourself? That is fine too. Select **Provide feedback** under **Help us improve our documentation** at the bottom of the page on [home-assistant.io](https://www.home-assistant.io/) and describe what is wrong. It becomes an issue that someone else can pick up. You need a GitHub account for that as well.
+不想自己动手编辑？那也没问题。在 [home-assistant.io](https://www.home-assistant.io/) 页面底部的 **帮助我们改进文档** 下选择 **提供反馈**，并描述问题所在。它会变成一个议题，供其他人认领处理。这同样需要一个 GitHub 账号。
 
-## 1. Open the page
+## 1. 打开页面
 
-1. Go to the page on [home-assistant.io](https://www.home-assistant.io/) that you want to fix.
-2. Scroll to **Help us improve our documentation** at the bottom, and select **Edit**.
-3. GitHub shows the source of the page. Select the pencil icon, **Edit this file**, at the top right of the file.
-4. The first time, GitHub offers to create your own copy of the repository, called a [fork](/start/github/#fork). Accept it. You don't have to do anything else with it.
+1. 前往 [home-assistant.io](https://www.home-assistant.io/) 上你想要修复的页面。
+2. 滚动到底部的 **帮助我们改进文档**，选择 **编辑**。
+3. GitHub 会显示页面的源码。选择文件右上角的铅笔图标 **编辑此文件**。
+4. 第一次操作时，GitHub 会提议创建你自己的仓库副本，称为 [fork](/start/github/#fork)。接受即可。之后你无需对它做任何其他操作。
 
-## 2. Make your change
+## 2. 进行修改
 
-Pages are written in Markdown. Most of it is plain text, so you can edit it like any other text. Look at how the rest of the page does things, like links and lists, and do the same.
+页面使用 Markdown 编写。大部分内容都是纯文本，所以你可以像编辑其他文本一样进行编辑。参考页面其余部分的处理方式，比如链接和列表，并照着做。
 
-Keep your change focused: one fix per pull request is easier to review than ten. Planning something bigger, like a new section or a new page? Read the [style guide](/writing/reference/style/) and [how a page is structured](/writing/guides/structure/) first.
+保持修改聚焦：每个 pull request 只包含一个修复，比十个修复更容易审查。计划进行更大的改动，比如新增一个章节或一个新页面？请先阅读[风格指南](/writing/reference/style/)和[页面的结构](/writing/guides/structure/)。
 
 > [!TIP]
-> Small things reviewers often point out: write **Settings** > **Devices & services** in bold when you refer to the interface, and write "Home Assistant" in full.
+> 审查者经常指出的小问题：提到界面时，请用粗体书写 **Settings** > **Devices & services**，并且完整书写 "Home Assistant"。
 
-## 3. Propose the change
+## 3. 提交修改
 
-1. Select **Commit changes...**.
-2. In the window that opens, write a short description of what you changed, like "Fix the name of the backup menu".
-3. Select **Propose changes**.
+1. 选择 **Commit changes...**。
+2. 在弹出的窗口中，简要描述你所做的修改，比如“修复备份菜单的名称”。
+3. 选择 **Propose changes**。
 
-GitHub saves your change in your fork, and shows you what you changed. Spotted a mistake in your own edit at this point? No problem: open the pull request anyway, and fix it afterward. Step 6 explains how.
+GitHub 会将你的修改保存到你的 fork 中，并向你展示修改内容。这时发现自己在编辑中犯了错？没关系：照样打开 pull request，之后再修复即可。第 6 步会说明如何操作。
 
-## 4. Open the pull request
+## 4. 打开 pull request
 
-1. Select **Create pull request**.
-2. Check the base branch at the top. Fixing existing documentation? It must say `current`: the documentation of the release people are running right now. If it says something else, change it in that menu.
-3. Fill in the template. Don't remove any of its text: it helps the reviewers. Under **Type of change**, check the box that fits, usually **Spelling, grammar or other readability improvements** or **Adjusted missing or incorrect information in the current documentation**. Under **Checklist**, check the boxes that apply.
-4. Select **Create pull request**.
+1. 选择 **Create pull request**。
+2. 检查顶部的基准分支（base branch）。是修复现有文档吗？它必须显示为 `current`：即人们当前正在运行的版本的文档。如果显示的是其他内容，请在该菜单中更改。
+3. 填写模板。不要删除其中的任何文本：这对审查者有帮助。在 **Type of change** 下，勾选符合情况的选项，通常是 **Spelling, grammar or other readability improvements** 或 **Adjusted missing or incorrect information in the current documentation**。在 **Checklist** 下，勾选适用的选项。
+4. 选择 **Create pull request**。
 
-That's it. Your pull request is public now, and the right people are notified by themselves. You don't need to ask anyone for a review.
+就是这样。你的 pull request 现在已经公开，相关的人会自动收到通知。你不需要主动请求任何人进行审查。
 
-## 5. Check the preview
+## 5. 检查预览
 
-A few minutes after you open the pull request, a bot comments with a link to a **Deploy Preview**. That is the full site with your change in it. Open it and check that your page looks the way you intended.
+在你打开 pull request 几分钟后，一个机器人会评论并附上一个 **Deploy Preview** 的链接。那是包含你的修改的完整网站。打开它，检查你的页面是否如你所愿地显示。
 
-## 6. Review and merge
+## 6. 审查与合并
 
-A maintainer reviews your change. GitHub sends you a notification when something happens, by email or on github.com, depending on your settings.
+维护者会审查你的修改。当有动静时，GitHub 会根据你的设置，通过电子邮件或 github.com 向你发送通知。
 
-- **A suggestion?** Accept it straight from the pull request with **Commit suggestion**.
-- **Want to change something yourself?** Edit the file again in your fork, on the branch of your pull request, and the pull request updates by itself. [Use GitHub](/start/github/#7-respond-to-the-review) shows where to find it.
-- **A question you don't understand?** Ask. Reviewers would much rather explain than see you guess.
+- **有建议？** 直接在 pull request 中使用 **Commit suggestion** 接受它。
+- **想自己修改一些内容？** 在你的 fork 中、你 pull request 所在的分支上再次编辑该文件，pull request 会自动更新。[使用 GitHub](/start/github/#7-respond-to-the-review) 介绍了在哪里可以找到它。
+- **有不明白的问题？** 尽管问。审查者更愿意解释，而不是看你猜测。
 
-Once your pull request is merged, Netlify publishes your fix to home-assistant.io.
+一旦你的 pull request 被合并，Netlify 就会将你的修复发布到 home-assistant.io。
 
-## What is next
+## 接下来做什么
 
-- Fix a few more things. Most regular docs contributors started with typos.
-- Prefer a walkthrough with screenshots of every screen? The community guide [Editing the documentation and creating a pull request on GitHub](https://community.home-assistant.io/t/editing-the-documentation-and-creating-a-pull-request-on-github/9573) on the forum shows them.
-- Ready for bigger changes? [Preview the site locally](/writing/guides/local-preview/).
+- 再修复一些其他问题。大多数文档的常驻贡献者都是从修正错别字开始的。
+- 更喜欢带每一步截图的详细教程？论坛上的社区指南 [Editing the documentation and creating a pull request on GitHub](https://community.home-assistant.io/t/editing-the-documentation-and-creating-a-pull-request-on-github/9573) 展示了这些内容。
+- 准备好进行更大的改动了吗？[在本地预览网站](/writing/guides/local-preview/)。

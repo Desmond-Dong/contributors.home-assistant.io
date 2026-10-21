@@ -1,52 +1,52 @@
 ---
-title: Improve this contributor site
-sidebarLabel: This contributor site
-description: Fix or add a page on contributors.home-assistant.io, preview it on your own machine, and keep links and redirects working.
+title: 改进本贡献者网站
+sidebarLabel: 本贡献者网站
+description: 修复或添加 contributors.home-assistant.io 上的页面，在您自己的机器上预览，并保持链接和重定向正常工作。
 ---
 
-Everything else in this area is about the user documentation on [home-assistant.io](https://www.home-assistant.io/). This page is about the site you are reading right now. It is open source too, and it gets better the same way: someone spots something wrong or missing, and fixes it.
+本区域的其他内容都是关于 [home-assistant.io](https://www.home-assistant.io/) 上的用户文档的。本页面介绍的是您现在正在阅读的这个网站。它同样是开源的，并且以同样的方式变得更好：有人发现错误或缺失的内容，然后修复它。
 
-The source lives in the [contributors.home-assistant.io repository](https://github.com/home-assistant/contributors.home-assistant.io). Its README is the guide for maintainers, with every script and how the moving parts fit together. This page covers what you need for a page.
+源代码位于 [contributors.home-assistant.io 仓库](https://github.com/home-assistant/contributors.home-assistant.io)。它的 README 是维护者指南，包含每个脚本以及各组成部分如何协同工作。本页面介绍编辑一个页面所需了解的内容。
 
-## Fix something small
+## 修复小问题
 
-Every page has an **Edit this page** link at the bottom. It opens the page on GitHub, where you can change it in your browser and open a pull request. For a typo, a broken sentence, or an outdated fact, that is all it takes.
+每个页面底部都有一个 **Edit this page**（编辑此页面）链接。它会在 GitHub 上打开该页面，您可以在浏览器中修改它并发起拉取请求（pull request）。对于拼写错误、病句或过时的信息，这就足够了。
 
-The pages are Markdown, in `src/content/docs/`. The writing rules are in [`.github/copilot-instructions.md`](https://github.com/home-assistant/contributors.home-assistant.io/blob/main/.github/copilot-instructions.md) in the repository: the language, the Markdown and YAML style, and how the site is structured.
+页面是 Markdown 格式，位于 `src/content/docs/`。写作规则在仓库的 [`.github/copilot-instructions.md`](https://github.com/home-assistant/contributors.home-assistant.io/blob/main/.github/copilot-instructions.md) 中：语言、Markdown 和 YAML 风格，以及网站的结构。
 
-## Work with an AI tool
+## 使用 AI 工具
 
-The writing rules double as the instructions for AI tools: `AGENTS.md` and `CLAUDE.md` link to them. The workflows live as skills in `.github/skills/` (also reachable as `.claude/skills/`), like `write-page` to add or change a page, `fact-check` to check pages against the source repositories, and `review` to review a change. Copilot code review also follows the checklists in `.github/instructions/`, one for pages and one for site code.
+写作规则同时也是 AI 工具的指令：`AGENTS.md` 和 `CLAUDE.md` 链接到它们。工作流以技能（skill）的形式存放在 `.github/skills/`（也可以通过 `.claude/skills/` 访问），例如用于添加或修改页面的 `write-page`、用于对照源仓库核查页面的 `fact-check`，以及用于审查变更的 `review`。Copilot 代码审查也遵循 `.github/instructions/` 中的检查清单，一份针对页面，一份针对网站代码。
 
-The rule that matters most in all of them: never invent anything. Every statement on this site needs a source someone can read. [Contribute with AI tools](/start/ai-tools/#what-to-check-yourself-every-time) lists the checks that catch the mistakes reviews found most often.
+其中最重要的规则是：绝不编造任何内容。本网站上的每一条陈述都需要有可供阅读的来源。[使用 AI 工具贡献](/start/ai-tools/#what-to-check-yourself-every-time)列出了能够发现审查中最常见错误的检查项。
 
-## Preview the site locally
+## 在本地预览网站
 
-For anything bigger than a small fix, run the site on your own machine.
+对于比小修复更大的改动，请在您自己的机器上运行网站。
 
-The easiest way is the dev container: everything the site needs comes ready-made, on Windows, macOS, and Linux alike. Open the repository in [VS Code](https://code.visualstudio.com/docs/devcontainers/containers) with Docker and the **Dev Containers** extension installed, and select **Reopen in Container**. Or start a [GitHub Codespace](https://docs.github.com/en/codespaces) on the repository, which runs in your browser and needs nothing on your machine. Either way, the dependencies are installed when the container is created, and you only run `pnpm dev`. To run the same checks as a pull request gets, select **Terminal** > **Run Task** in VS Code, then **Pull request checks**.
+最简单的方法是使用开发容器（dev container）：网站所需的一切都是现成的，在 Windows、macOS 和 Linux 上都一样。在安装了 Docker 和 **Dev Containers** 扩展的 [VS Code](https://code.visualstudio.com/docs/devcontainers/containers) 中打开该仓库，然后选择 **Reopen in Container**。或者在仓库上启动 [GitHub Codespace](https://docs.github.com/en/codespaces)，它在浏览器中运行，您的机器上无需安装任何东西。无论哪种方式，依赖项都会在容器创建时安装好，您只需运行 `pnpm dev`。要运行与拉取请求相同的检查，请在 VS Code 中选择 **Terminal** > **Run Task**，然后选择 **Pull request checks**。
 
-Without the dev container, you need Node.js 24 (the version is in `.node-version`) and pnpm. Then install and start the site:
+如果不使用开发容器，您需要 Node.js 24（版本号在 `.node-version` 中）和 pnpm。然后安装并启动网站：
 
 ```shell
 pnpm install
 pnpm dev
 ```
 
-The site is now at `http://localhost:4321`, and reloads when you save a page. Search only works on a build:
+网站现在位于 `http://localhost:4321`，保存页面时会自动重新加载。搜索功能只在构建后可用：
 
 ```shell
 pnpm build
 pnpm preview
 ```
 
-Before you open a pull request, run `pnpm check`. It checks the code and the front matter of every page.
+在发起拉取请求之前，请运行 `pnpm check`。它会检查代码和每个页面的 front matter。
 
-## Add a page
+## 添加页面
 
-The site is split in areas, like Core and integrations, or Design. Each area is a folder in `src/content/docs/`, and every page goes in the folder of the area it belongs to. A subfolder becomes a group in the sidebar. Pages go at most one subfolder deep.
+网站分为多个区域，例如 Core 和集成（integration），或 Design。每个区域是 `src/content/docs/` 中的一个文件夹，每个页面都放在其所属区域的文件夹中。子文件夹会成为侧边栏中的一个分组。页面最多只能放在一级子文件夹中。
 
-Every page starts with front matter:
+每个页面都以 front matter 开头：
 
 ```yaml
 ---
@@ -56,42 +56,42 @@ order: 3
 ---
 ```
 
-- `title` is the heading of the page. Use sentence case.
-- `description` shows below the title, in search results, and in link previews.
-- `order` places the page in the sidebar, lowest first. Pages without one go last, sorted by title.
-- `sidebarLabel` is a shorter label for the sidebar, when the title is long.
-- `sidebarGroup` puts the page in a named group in the sidebar, without changing its URL. The `index.md` of the folder can set the order of those groups with `sidebarGroups`.
+- `title` 是页面的标题。使用句首大写（sentence case）。
+- `description` 显示在标题下方、搜索结果中以及链接预览中。
+- `order` 决定页面在侧边栏中的位置，数值小的在前。没有 `order` 的页面排在最后，按标题排序。
+- `sidebarLabel` 是侧边栏中较短的标签，用于标题过长的情况。
+- `sidebarGroup` 将页面放入侧边栏中的一个命名分组，而不改变其 URL。文件夹的 `index.md` 可以通过 `sidebarGroups` 设置这些分组的顺序。
 
-The `index.md` of a folder is its overview page. Every area has the same shape: an overview, a first contribution, guides, reference, and who to talk to. Look at a neighboring page before you add one, and follow what it does.
+文件夹的 `index.md` 是它的概览页面。每个区域的结构都相同：概览、首次贡献、指南、参考，以及联系谁。在添加页面之前，先看看相邻的页面，并遵循它的做法。
 
-## Glossary terms
+## 术语表条目
 
-Words with a specific meaning in Home Assistant, like [config entry](/glossary/config-entry/), have a page in the [glossary](/glossary/). Use those terms, and when a term is missing, add it there instead of explaining it on your page.
+在 Home Assistant 中有特定含义的词语，例如 [config entry](/glossary/config-entry/)，在[术语表](/glossary/)中都有一个页面。请使用这些术语；当某个术语缺失时，请在术语表中添加它，而不是在您的页面上解释。
 
-A term can link by itself: the words in the `autolink` list of its page become a link the first time a page uses them. Only add words there that mean the term wherever they appear. While `pnpm dev` runs, a change to an `autolink` list restarts the server, so every page picks up the new words.
+术语可以自动链接：其页面 `autolink` 列表中的词语，在页面首次使用时会变成链接。只在那里添加无论出现在哪里都表示该术语的词语。在 `pnpm dev` 运行期间，对 `autolink` 列表的更改会重启服务器，因此每个页面都会获取新词语。
 
-## Live demos
+## 实时演示
 
-The [Design area](/design/) shows real components of the Home Assistant frontend, live on the page, with a `<Demo>` block in an MDX page. Copy a demo from an existing component page to start. The components themselves are built from the frontend source and committed, so you do not need the frontend to work on a page. Adding a component that is not built yet is a job for a maintainer: the README explains how.
+[Design 区域](/design/)在页面上实时展示 Home Assistant 前端的真实组件，使用 MDX 页面中的 `<Demo>` 块。可以从现有的组件页面复制一个演示来开始。组件本身是从前端源码构建并提交的，因此您无需前端即可编辑页面。添加尚未构建的组件是维护者的工作：README 中有说明。
 
-## Check your links
+## 检查您的链接
 
-Link to other pages with their full path and a trailing slash, like `/design/foundations/color/`. To check every link of the site, build it and run the link check:
+链接到其他页面时使用完整路径和末尾斜杠，例如 `/design/foundations/color/`。要检查网站的所有链接，请构建网站并运行链接检查：
 
 ```shell
 pnpm build
 pnpm links
 ```
 
-It lists every link to a page or a heading that does not exist, with the pages it is on. The same check runs on every pull request.
+它会列出所有指向不存在页面或标题的链接，以及这些链接所在的页面。同样的检查会在每个拉取请求上运行。
 
-## Move or rename a page
+## 移动或重命名页面
 
-Moving or renaming a page changes its URL, and links to the old URL from other sites, bookmarks, and search engines would break. So:
+移动或重命名页面会改变其 URL，其他网站、书签和搜索引擎中指向旧 URL 的链接将会失效。因此：
 
-1. Move the page, and update the links to it on this site. `pnpm links` finds the ones you missed.
-2. Mention every moved page in your pull request.
+1. 移动页面，并更新本网站上指向它的链接。`pnpm links` 可以找出您遗漏的链接。
+2. 在您的拉取请求中提及每一个被移动的页面。
 
-A maintainer then adds a redirect for the old URL. The redirects live in the `redirects/` folder of the repository, as one small table per area, and the build turns them into the redirects of the site.
+然后维护者会为旧 URL 添加重定向。重定向存放在仓库的 `redirects/` 文件夹中，每个区域一个小表，构建过程会将它们转换为网站的重定向。
 
-Renaming a heading changes its anchor, and links to that heading land at the top of the page instead. Rename headings when it makes the page better, but know that old links to them lose their place.
+重命名标题会改变其锚点（anchor），指向该标题的链接将落在页面顶部而不是原位置。当重命名能让页面更好时可以重命名标题，但要知道指向它的旧链接会失去定位。

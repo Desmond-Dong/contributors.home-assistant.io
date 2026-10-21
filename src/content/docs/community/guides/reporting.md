@@ -1,48 +1,48 @@
 ---
-title: Report a problem
-description: What to do when someone breaks the code of conduct, or when you or someone else does not feel safe.
+title: 报告问题
+description: 当有人违反行为准则，或者你或他人感到不安全时，该怎么做。
 order: 3
 ---
 
-Most conversations in the community are friendly. When one is not, you do not have to handle it alone, and you should not have to. Here is what to do.
+社区中的大多数交流都是友好的。当遇到不友好的情况时，你不必独自应对，也不应该独自应对。以下是应对方法。
 
-## Do not fight it in public
+## 不要在公开场合争执
 
-Replying to a troll or an insult in the same thread almost always makes it worse. It gives the post more attention, and it can pull you into breaking the rules yourself. Step back and report it instead.
+在同一帖子下回复挑衅者或侮辱性言论几乎总是会让情况更糟。这会让该帖子获得更多关注，还可能让你自己也违反规则。退一步，改为举报它。
 
-## Use the report feature of the platform
+## 使用平台的举报功能
 
-Every platform we use has a way to report a post or a message to its moderators. The [code of conduct](/start/code-of-conduct/) names this as one of the two ways to report.
+我们使用的每个平台都有向管理员举报帖子或消息的方式。[行为准则](/start/code-of-conduct/)将此列为两种举报方式之一。
 
-- **Forum**: use the flag button under the post.
-- **Discord**: report the message, or contact a moderator of the server.
-- **Reddit**: use the report option on the post or comment.
-- **GitHub**: use **Report content** in the menu of an issue, pull request, or comment.
+- **论坛**：使用帖子下方的举报（flag）按钮。
+- **Discord**：举报该消息，或联系服务器的管理员。
+- **Reddit**：使用帖子或评论上的举报选项。
+- **GitHub**：在 issue、pull request 或评论的菜单中使用 **Report content**。
 
-This is the right choice for spam, off-topic posts, rude replies, and most other everyday problems.
+对于垃圾信息、离题帖子、粗鲁回复以及大多数其他日常问题，这是正确的选择。
 
-## Email the safety team
+## 发送邮件给安全团队
 
-For anything serious, or anything that does not fit a single post, email [safety@home-assistant.io](mailto:safety@home-assistant.io). For example:
+对于任何严重的情况，或任何不适合单个帖子的情况，请发送邮件至 [safety@home-assistant.io](mailto:safety@home-assistant.io)。例如：
 
-- Harassment, threats, or someone who keeps contacting you after you asked them to stop.
-- Behavior that crosses platforms, like someone following you from the [forum](https://community.home-assistant.io/) to your social media.
-- Someone publishing private information, like an address.
-- A problem at an in-person event.
-- A complaint about a moderator.
+- 骚扰、威胁，或在你要求对方停止后仍不断联系你的人。
+- 跨平台的行为，比如有人从[论坛](https://community.home-assistant.io/)一路跟到你的社交媒体。
+- 有人发布私人信息，比如地址。
+- 线下活动中发生的问题。
+- 对管理员的投诉。
 
-Describe what happened, where, and when. Links and screenshots help. If you report something that happened to someone else, say so.
+请描述发生了什么、在哪里、何时发生。链接和截图会有帮助。如果你举报的是发生在他人身上的事情，请说明这一点。
 
-All complaints are reviewed and investigated promptly and fairly. The people handling them are obliged to respect the privacy and security of the person reporting.
+所有投诉都会得到及时、公正的审查和调查。处理投诉的人员有义务尊重举报人的隐私和安全。
 
-## If someone is in danger
+## 如果有人处于危险之中
 
-The community team cannot help in an emergency. If you believe someone is at risk of harm, contact your local emergency services first.
+社区团队无法在紧急情况下提供帮助。如果你认为有人面临受到伤害的风险，请首先联系当地的紧急服务部门。
 
-## At meetups and events
+## 在聚会和活动中
 
-The code of conduct also applies at meetups and other events. If something happens, tell the host of the event. Anyone can also email [safety@home-assistant.io](mailto:safety@home-assistant.io), during or after the event.
+行为准则同样适用于聚会和其他活动。如果发生了什么事，请告知活动的主办方。任何人也可以在活动期间或之后发送邮件至 [safety@home-assistant.io](mailto:safety@home-assistant.io)。
 
-## What happens next
+## 接下来会发生什么
 
-Moderators look at the report and decide what to do, following the [steps of enforcement](/community/guides/moderation/#the-steps-of-enforcement) of the code of conduct. You do not always hear back about the outcome, because the privacy of everyone involved matters too. That does not mean nothing happened.
+管理员会查看举报并决定如何处理，遵循行为准则的[执行步骤](/community/guides/moderation/#the-steps-of-enforcement)。你不一定会收到关于处理结果的回复，因为所有相关人员的隐私同样重要。这并不意味着什么都没有发生。

@@ -1,39 +1,39 @@
 ---
 title: Home Assistant Link
-description: How Home Assistant Link makes a home reachable from anywhere, and connects it to voice assistants, without opening it to the internet.
+description: Home Assistant Link 如何让家庭从任何地方都能访问，并将其连接到语音助手，而无需向互联网开放。
 order: 7
 ---
 
-Home Assistant Link is a subscription from [Nabu Casa](/glossary/nabu-casa/). It adds what is hard to do from inside a home: being reachable from anywhere, working with Amazon Alexa and Google Assistant, and speech services for voice. It was called Home Assistant Cloud until [October 2026](https://www.home-assistant.io/blog/2026/10/02/big-tech-ruined-the-cloud-so-were-renaming-ours/). In the code, it is still the `cloud` integration.
+Home Assistant Link 是 [Nabu Casa](/glossary/nabu-casa/) 提供的一项订阅服务。它解决了从家庭内部难以做到的事情：从任何地方都能访问、与 Amazon Alexa 和 Google Assistant 配合使用，以及为语音提供语音服务。在 [2026 年 10 月](https://www.home-assistant.io/blog/2026/10/02/big-tech-ruined-the-cloud-so-were-renaming-ours/)之前，它被称为 Home Assistant Cloud。在代码中，它仍然是 `cloud` 集成（integration）。
 
-It is always optional. Everything it does can be done without it, with more work.
+它始终是可选的。它所做的每一件事都可以在没有它的情况下完成，只是需要更多的工作。
 
-## In short
+## 简而言之
 
-- The `cloud` integration in Core connects to Nabu Casa, with the hass-nabucasa library.
-- **Remote access** goes through an encrypted tunnel that Home Assistant opens itself. No port is opened in the home.
-- **Alexa and Google Assistant** send their commands through the cloud to Home Assistant.
-- **Cloudhooks** give [webhooks](/architecture/connections/) a public URL, so the companion apps work away from home.
-- Speech-to-text and text-to-speech for [voice](/architecture/platform/voice/), and backups off-site.
+- Core 中的 `cloud` 集成通过 hass-nabucasa 库连接到 Nabu Casa。
+- **远程访问**通过 Home Assistant 自行建立的加密隧道进行。家中不开放任何端口。
+- **Alexa 和 Google Assistant** 通过云端将它们的命令发送到 Home Assistant。
+- **Cloudhooks** 为 [webhooks](/architecture/connections/) 提供一个公共 URL，因此伴侣应用（companion apps）可以在离家时正常工作。
+- 为[语音](/architecture/platform/voice/)提供语音转文字和文字转语音服务，以及异地备份。
 
-## Remote access, without opening the door
+## 远程访问，无需敞开大门
 
-Normally, reaching Home Assistant from outside means opening a port on the router, and managing certificates. Home Assistant Link turns that around: Home Assistant connects out to the cloud, and keeps that connection open. Requests from outside come back through it.
+通常，从外部访问 Home Assistant 意味着要在路由器上开放端口并管理证书。Home Assistant Link 反其道而行之：Home Assistant 主动连接到云端，并保持该连接打开。来自外部的请求通过它返回。
 
-The connection is encrypted from the user's browser all the way to Home Assistant, with a certificate that belongs to the home. The cloud passes the traffic along, but can't read it.
+从用户的浏览器到 Home Assistant 的整个连接都是加密的，使用的是属于该家庭的证书。云端只负责传递流量，但无法读取它。
 
-## Voice assistants
+## 语音助手
 
-Amazon Alexa and Google Assistant need a service on the internet to talk to. The cloud is that service: it receives their commands, and passes them to the `alexa` and `google_assistant` integrations in Home Assistant, over the same connection. Users choose which entities are exposed to them.
+Amazon Alexa 和 Google Assistant 需要一个互联网上的服务来进行通信。云端就是那个服务：它接收它们的命令，并通过同一连接将它们传递给 Home Assistant 中的 `alexa` 和 `google_assistant` 集成。用户可以选择将哪些实体（entity）暴露给它们。
 
-## In the code
+## 在代码中
 
-| What | Where |
+| 内容 | 位置 |
 | --- | --- |
-| Core's side | [`homeassistant/components/cloud/`](https://github.com/home-assistant/core/tree/dev/homeassistant/components/cloud) |
-| The library | [hass-nabucasa](https://pypi.org/project/hass-nabucasa/) |
+| Core 侧 | [`homeassistant/components/cloud/`](https://github.com/home-assistant/core/tree/dev/homeassistant/components/cloud) |
+| 库 | [hass-nabucasa](https://pypi.org/project/hass-nabucasa/) |
 
-## Work on this
+## 参与贡献
 
-- The `cloud` integration is part of Core: start with [your first contribution to Core](/core/first-contribution/).
-- The cloud makes webhooks reachable from outside, see [how the pieces talk](/architecture/connections/).
+- `cloud` 集成是 Core 的一部分：从[你对 Core 的第一次贡献](/core/first-contribution/)开始。
+- 云端使 webhooks 可以从外部访问，请参阅[各部分如何通信](/architecture/connections/)。
