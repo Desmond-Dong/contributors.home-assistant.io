@@ -1,35 +1,35 @@
 ---
-title: Secure your app
-description: Keep your app and the system it runs on safe. Ask for as little as possible, add an AppArmor profile, pick the right API role, and use Home Assistant for logins.
+title: 保护你的应用安全
+description: 保证你的应用及其运行系统的安全。尽量少申请权限，添加 AppArmor 配置文件，选择合适的 API 角色，并使用 Home Assistant 进行登录。
 order: 9
 ---
 
-Your app runs on someone's home, next to their cameras, locks, and alarm. Users trust you with that. The Supervisor helps by keeping apps contained, and by showing users a [security rating](/apps/reference/security-rating/) of your app. This guide covers what you can do to keep that rating high and the risks low.
+你的应用运行在别人的家中，与他们的摄像头、门锁和警报系统相邻。用户对此给予你信任。Supervisor 通过将应用限制在容器内，以及向用户展示你应用的[安全评级](/apps/reference/security-rating/)来提供帮助。本指南介绍你可以做些什么来保持高评级并降低风险。
 
-## Ask for as little as possible
+## 尽量少申请权限
 
-The most effective step costs nothing: only ask for the access your app needs.
+最有效的一步不需要任何成本：只申请你的应用所需的访问权限。
 
-- Do not run on the host network unless you have to.
-- Map folders read-only, unless your app writes to them.
-- Prefer a `device` option or `devices` over `uart`, `usb`, or `full_access`.
-- Only add the capabilities in `privileged` that your software really uses.
-- Only ask for the API access you call, with the lowest role that works.
-- Use ingress for your web interface, instead of exposing a port.
+- 除非必要，不要在主机网络上运行。
+- 除非你的应用需要写入，否则将文件夹映射为只读。
+- 优先使用 `device` 选项或 `devices`，而不是 `uart`、`usb` 或 `full_access`。
+- 只在 `privileged` 中添加你的软件真正使用的权限。
+- 只申请你会调用的 API 访问权限，并使用可行的最低角色。
+- 为你的网页界面使用 ingress，而不是暴露端口。
 
-## Protection mode
+## 保护模式
 
-Every app runs with **Protection mode** on by default. With it on, the Supervisor does not grant `full_access`, `docker_api`, or `host_pid`, even if your `config.yaml` asks for them. The user turns protection mode off on the app page, and the UI warns them when they do. Through the Supervisor API, only a caller with the `admin` role can change it. That includes an app with `hassio_api: true` and `hassio_role: admin`, for itself or for any other app.
+每个应用默认都开启**保护模式**。开启时，即使你的 `config.yaml` 申请了 `full_access`、`docker_api` 或 `host_pid`，Supervisor 也不会授予这些权限。用户可以在应用页面关闭保护模式，UI 会在他们这样做时发出警告。通过 Supervisor API，只有拥有 `admin` 角色的调用者才能更改它。这包括拥有 `hassio_api: true` 和 `hassio_role: admin` 的应用，无论是对自身还是对任何其他应用。
 
-If your app needs it off, say so in your documentation, and explain why.
+如果你的应用需要关闭它，请在你的文档中说明，并解释原因。
 
 ## AppArmor
 
-AppArmor limits what the processes in your container can do: which files they can read and write, which programs they can run, and which signals they can send. Every app runs with the default AppArmor profile of Docker, unless you set `apparmor: false` (which lowers the rating).
+AppArmor 限制容器中的进程可以做什么：它们可以读写哪些文件、可以运行哪些程序、可以发送哪些信号。除非你设置 `apparmor: false`（这会降低评级），否则每个应用都使用 Docker 的默认 AppArmor 配置文件运行。
 
-Put an `apparmor.txt` in your app folder, and the Supervisor loads it as the profile of your app instead. A profile fitted to your app is a strong second line of defense: even if an attacker finds a hole in your software, they can only do what the profile allows. It also raises the security rating.
+在你的应用文件夹中放置一个 `apparmor.txt`，Supervisor 就会将其加载为你的应用的配置文件。一个为你的应用量身定制的配置文件是强大的第二道防线：即使攻击者在你的软件中找到了漏洞，他们也只能做配置文件允许的事情。它还会提高安全评级。
 
-The file must hold exactly one top-level `profile` line. The Supervisor replaces the name on that line with the ID of your app, like `local_example`, when it loads the profile, so use the slug of your app as the name. This example is for an app with the slug `example` that runs `/usr/bin/my_program` with S6 overlay. The rules for `/etc/services.d`, `/etc/cont-init.d`, and `/etc/cont-finish.d` cover the legacy service format, and the rule for `/etc/s6-overlay` covers the [s6-rc format](/apps/guides/s6-overlay/#the-s6-rc-layout). That rule includes write access: if your app keeps its `user` bundle in `s6-rc.d` instead of `user-bundles.d`, S6 overlay writes to that folder at startup.
+该文件必须恰好包含一行顶层 `profile` 行。Supervisor 在加载配置文件时，会将该行上的名称替换为你的应用的 ID，例如 `local_example`，因此请使用你的应用的 slug 作为名称。此示例适用于一个 slug 为 `example`、使用 S6 overlay 运行 `/usr/bin/my_program` 的应用。`/etc/services.d`、`/etc/cont-init.d` 和 `/etc/cont-finish.d` 的规则涵盖旧版服务格式，`/etc/s6-overlay` 的规则涵盖 [s6-rc 格式](/apps/guides/s6-overlay/#the-s6-rc-layout)。该规则包含写权限：如果你的应用将其 `user` bundle 保存在 `s6-rc.d` 而不是 `user-bundles.d` 中，S6 overlay 会在启动时写入该文件夹。
 
 ```text
 #include <tunables/global>
@@ -83,38 +83,38 @@ profile example flags=(attach_disconnected,mediate_deleted) {
 }
 ```
 
-To write a profile for your own app:
+要为你的应用编写配置文件：
 
-1. Start from the example. The S6 overlay part is the same for every app that uses the base images; add to it if your startup scripts need more, but do not remove anything.
-2. If the software you package ships an AppArmor profile, use that one for its process. A profile by the developers of the software is better than one you guess.
-3. Otherwise, add the access you know the software needs, and add `complain` to the flags of the profile.
-4. Run the app and use every feature. In complain mode, AppArmor logs what it would block, instead of blocking it. Read the log on the host with `journalctl _TRANSPORT="audit" -g 'apparmor="ALLOWED"'`.
-5. Add what is missing, until using the app logs no more warnings.
-6. Remove `complain`, so AppArmor blocks everything else.
+1. 从示例开始。S6 overlay 部分对每个使用基础镜像的应用都是相同的；如果你的启动脚本需要更多权限，可以添加，但不要删除任何内容。
+2. 如果你打包的软件自带 AppArmor 配置文件，请将其用于该软件的进程。软件开发者提供的配置文件比你猜测的更好。
+3. 否则，添加你所知道的软件需要的访问权限，并在配置文件的 flags 中添加 `complain`。
+4. 运行应用并使用每个功能。在 complain 模式下，AppArmor 会记录它本会阻止的操作，而不是阻止它。在主机上使用 `journalctl _TRANSPORT="audit" -g 'apparmor="ALLOWED"'` 读取日志。
+5. 补充缺失的权限，直到使用应用时不再记录警告。
+6. 移除 `complain`，让 AppArmor 阻止其他所有操作。
 
-Repeat this when you update the software, as a new version may need new access.
+更新软件时重复此过程，因为新版本可能需要新的访问权限。
 
-## API roles
+## API 角色
 
-With `hassio_api: true`, your app can call the Supervisor API beyond the basic endpoints. `hassio_role` decides how far:
+设置 `hassio_api: true` 后，你的应用可以调用 Supervisor API 中基本端点之外的端点。`hassio_role` 决定可以访问的范围：
 
-| Role | Can call |
+| 角色 | 可以调用 |
 | --- | --- |
-| `default` | Every `info` endpoint, like `/supervisor/info` or `/addons/<app>/info` |
-| `homeassistant` | The above, and all `/core` endpoints |
-| `backup` | The above `info` endpoints, and all `/backups` endpoints |
-| `manager` | Most of the API: apps, the store, backups, Core, the host, the OS, and the plugins. Not the security settings of apps, wiping the data disk, or the SSH keys of the host |
-| `admin` | Everything, including the protection mode of any app, its own too |
+| `default` | 每个 `info` 端点，例如 `/supervisor/info` 或 `/addons/<app>/info` |
+| `homeassistant` | 上述内容，以及所有 `/core` 端点 |
+| `backup` | 上述 `info` 端点，以及所有 `/backups` 端点 |
+| `manager` | API 的大部分内容：应用、商店、备份、Core、主机、操作系统和插件。不包括应用的安全设置、擦除数据盘或主机的 SSH 密钥 |
+| `admin` | 一切，包括任何应用的保护模式，包括它自己的 |
 
-`manager` and `admin` lower the security rating, by 1 and 2. They are meant for apps that manage the system, like a terminal or a dashboard for the Supervisor.
+`manager` 和 `admin` 会降低安全评级，分别降低 1 和 2。它们是为管理系统设计的应用准备的，例如终端或 Supervisor 的仪表盘。
 
-Without `hassio_api`, your app can still use most of its own `/addons/self` endpoints (not `security` or `update`), `/info`, services, discovery, and authentication. See [Talk to Home Assistant and the Supervisor](/apps/guides/communication/#the-supervisor-api).
+没有 `hassio_api` 时，你的应用仍然可以使用它自己的大部分 `/addons/self` 端点（不包括 `security` 和 `update`）、`/info`、服务、发现和身份验证。请参阅[与 Home Assistant 和 Supervisor 通信](/apps/guides/communication/#the-supervisor-api)。
 
-`homeassistant_api` is separate from these roles: it controls access to the Home Assistant Core API proxy at `/core/api`.
+`homeassistant_api` 与这些角色是分开的：它控制对 `/core/api` 处的 Home Assistant Core API 代理的访问。
 
-## Use Home Assistant users
+## 使用 Home Assistant 用户
 
-If your app has a login that does not go through ingress, do not invent its own user database with passwords in the app options. Check the user's Home Assistant credentials instead. Add `auth_api: true`, and send the user name and password to the Supervisor. Send your token in the `X-Supervisor-Token` header here, not in `Authorization`: this endpoint reads an `Authorization` header as the HTTP basic authentication of the user, and a `Bearer` token there gets a `401`.
+如果你的应用有一个不通过 ingress 的登录功能，不要在应用选项中发明自己的带密码的用户数据库。请改为检查用户的 Home Assistant 凭据。添加 `auth_api: true`，并将用户名和密码发送给 Supervisor。在这里，请将你的令牌放在 `X-Supervisor-Token` 头中，而不是 `Authorization` 中：此端点将 `Authorization` 头读取为用户的 HTTP 基本身份验证，在那里放置 `Bearer` 令牌会得到 `401`。
 
 ```bash
 curl -sSL -X POST \
@@ -124,10 +124,10 @@ curl -sSL -X POST \
   http://supervisor/auth
 ```
 
-A `200` response means the credentials are valid; anything else means they are not. The endpoint also accepts form data, and HTTP basic authentication with the user's credentials in the `Authorization` header.
+`200` 响应表示凭据有效；其他任何响应都表示无效。该端点还接受表单数据，以及在 `Authorization` 头中携带用户凭据的 HTTP 基本身份验证。
 
-With ingress, you usually do not need this: Home Assistant already logged the user in, and the [user headers](/apps/guides/ingress/#know-who-is-there) tell you who it is when the ingress session has a user.
+使用 ingress 时，你通常不需要这样做：Home Assistant 已经让用户登录，并且当 ingress 会话有用户时，[用户头](/apps/guides/ingress/#know-who-is-there)会告诉你这个人是谁。
 
-## Sign your images
+## 为你的镜像签名
 
-The `build-image` and `publish-multi-arch-manifest` actions of the [builder](/apps/guides/publishing/) can sign your images with Cosign. Signing lets anyone verify that an image came from your repository's workflow. The Supervisor does not check signatures today, and they do not change the security rating, but it costs little to turn on.
+[builder](/apps/guides/publishing/) 的 `build-image` 和 `publish-multi-arch-manifest` 操作可以使用 Cosign 为你的镜像签名。签名让任何人都可以验证镜像是否来自你的仓库的工作流。Supervisor 目前不检查签名，签名也不会改变安全评级，但开启它的成本很低。

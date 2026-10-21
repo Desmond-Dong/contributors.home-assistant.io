@@ -1,39 +1,39 @@
 ---
-title: Deprecate something
-description: The deprecation policy of Home Assistant, what it means for the people who use it, and how deprecations show up in the release notes.
+title: 弃用某些功能
+description: Home Assistant 的弃用政策、它对使用者意味着什么，以及弃用如何在发布说明中呈现。
 order: 3
 ---
 
-A [deprecation](/glossary/deprecation/) is a backward-incompatible change scheduled for the future. The old way keeps working for a while, everyone who uses it is warned, and only after that period does it get removed. It gives people time to move on at their own pace.
+[弃用](/glossary/deprecation/)（deprecation）是一种计划在未来进行的、不向后兼容的变更。旧方式在一段时间内仍然可用，所有使用它的人都会收到警告，只有在这段时间过后它才会被移除。这让人们可以按照自己的节奏进行迁移。
 
-This page is the policy, and what it means for users and the release notes. How to deprecate something in code, with repair issues, translation strings, and the right severity, is in the Core and integrations area: [Deprecating](/core/development/deprecating/).
+本页面介绍的是这项政策，以及它对用户和发布说明意味着什么。关于如何在代码中弃用某些内容，包括修复问题（repair issues）、翻译字符串以及正确的严重级别，请参阅 Core 与集成部分：[弃用](/core/development/deprecating/)。
 
-## The rule
+## 规则
 
-Anything that is removed must be deprecated first. That holds even when you think only a few people use it, because an entity, action, or option can be used in automations, scripts, and dashboards that nobody else can see.
+任何要被移除的内容都必须先经过弃用。即使你认为只有少数人在使用它，这条规则依然适用，因为一个实体（entity）、动作（action）或选项可能被用于其他人无法看到的自动化、脚本和仪表盘中。
 
-## How long
+## 时限
 
-| Who is affected | Minimum period |
+| 受影响的对象 | 最短期限 |
 | --- | --- |
-| Users: YAML configuration, actions, entities, attributes, integrations | 6 months |
-| Developers: constants, helpers, entity properties, and platform APIs used by custom integrations | 12 months |
+| 用户：YAML 配置、动作、实体、属性、集成 | 6 个月 |
+| 开发者：自定义集成所使用的常量、辅助元素（helper）、实体属性和平台 API | 12 个月 |
 
-A deprecation names the release in which the old way is removed. The period can be extended when people need more time, but it is never shortened.
+弃用公告中会指明旧方式将在哪个版本中被移除。当人们需要更多时间时，期限可以延长，但绝不会缩短。
 
-## What users see
+## 用户会看到什么
 
-A deprecation that asks something of users shows up as a [repair](/glossary/repair/) in **Settings** > **System** > **Repairs**, only on installations it affects. The repair explains what is going away, when, and what to do. People who are affected get told, and people who are not affected are not bothered.
+需要用户采取行动的弃用会以[修复](/glossary/repair/)（repair）的形式出现在 **设置** > **系统** > **修复** 中，且只出现在受影响的安装实例上。该修复会说明什么内容将被移除、何时移除，以及应该怎么做。受影响的人会收到通知，而不受影响的人则不会被打扰。
 
-## In the release notes
+## 在发布说明中
 
-A deprecation reaches the release notes twice:
+一项弃用会在发布说明中出现两次：
 
-1. **When it starts.** The release notes of the version that deprecates something can list it under **Backward-incompatible changes**, like "The uptime sensor is deprecated and will be removed in a future release. Use the new last restart sensor instead."
-2. **When it ends.** The pull request that removes the old way, after the deprecation period, is a backward-incompatible change. Its text from the pull request ends up in the same section of that release. See [Document a backward-incompatible change](/releases/guides/backward-incompatible-changes/).
+1. **弃用开始时。** 弃用某个功能的版本的发布说明可以在 **不向后兼容的变更** 下列出它，例如“uptime 传感器已被弃用，并将在未来的版本中移除。请改用新的 last restart 传感器。”
+2. **弃用结束时。** 在弃用期限过后，移除旧方式的拉取请求（pull request）属于不向后兼容的变更。其拉取请求中的文字会出现在该版本发布的同一章节中。参见[记录不向后兼容的变更](/releases/guides/backward-incompatible-changes/)。
 
-Deprecations of Python APIs, which affect developers of custom integrations, are announced on the [developer blog](/blog/). The release notes link the most notable posts of that release, and the old code logs a warning while it still works.
+影响自定义集成开发者的 Python API 弃用会在[开发者博客](/blog/)上公告。发布说明会链接该版本中最值得关注的文章，而旧代码在仍然可用期间会记录一条警告。
 
-## In the pull request
+## 在拉取请求中
 
-The pull request template of the [core repository](https://github.com/home-assistant/core) has a type of change for this: check **Deprecation** when the break happens in the future, and **Breaking change** when it happens now. A pull request that starts a deprecation is the first, the one that ends it the second.
+[core 仓库](https://github.com/home-assistant/core)的拉取请求模板中有一个变更类型选项：当破坏发生在未来时，勾选 **Deprecation**；当破坏现在发生时，勾选 **Breaking change**。发起弃用的拉取请求属于前者，结束弃用的拉取请求属于后者。

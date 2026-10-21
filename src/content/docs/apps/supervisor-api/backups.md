@@ -1,52 +1,52 @@
 ---
-title: Backup endpoints
-description: Supervisor API endpoints to make, restore, upload, download, and manage backups.
+title: 备份端点
+description: 用于创建、恢复、上传、下载和管理备份的 Supervisor API 端点。
 sidebarLabel: Backups
 order: 3
 ---
 
-With these endpoints your app can make and restore backups, like a backup app that copies backups to another location. Your app needs `hassio_api: true` and the `backup` role, or the `manager` or `admin` role.
+通过这些端点，您的应用可以创建和恢复备份，例如将备份复制到其他位置的备份应用。您的应用需要 `hassio_api: true` 和 `backup` 角色，或者 `manager` 或 `admin` 角色。
 
-`<backup>` is the slug of a backup, a short random ID like `a1b2c3d4`.
+`<backup>` 是备份的 slug，即一个简短的随机 ID，例如 `a1b2c3d4`。
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/backups` | List backups |
-| `GET` | `/backups/info` | List backups, and the backup settings |
-| `POST` | `/backups/options` | Change the backup settings |
-| `POST` | `/backups/reload` | Read the backup locations again |
-| `POST` | `/backups/new/full` | Make a full backup |
-| `POST` | `/backups/new/partial` | Make a partial backup |
-| `POST` | `/backups/new/upload` | Upload a backup file |
-| `GET` | `/backups/<backup>/info` | Details of a backup |
-| `GET` | `/backups/<backup>/download` | Download a backup file |
-| `DELETE` | `/backups/<backup>` | Delete a backup |
-| `POST` | `/backups/<backup>/restore/full` | Restore everything from a backup |
-| `POST` | `/backups/<backup>/restore/partial` | Restore parts of a backup |
-| `POST` | `/backups/freeze` | Prepare the system for an external backup |
-| `POST` | `/backups/thaw` | Undo a freeze |
+| `GET` | `/backups` | 列出备份 |
+| `GET` | `/backups/info` | 列出备份以及备份设置 |
+| `POST` | `/backups/options` | 更改备份设置 |
+| `POST` | `/backups/reload` | 重新读取备份位置 |
+| `POST` | `/backups/new/full` | 创建完整备份 |
+| `POST` | `/backups/new/partial` | 创建部分备份 |
+| `POST` | `/backups/new/upload` | 上传备份文件 |
+| `GET` | `/backups/<backup>/info` | 备份的详细信息 |
+| `GET` | `/backups/<backup>/download` | 下载备份文件 |
+| `DELETE` | `/backups/<backup>` | 删除备份 |
+| `POST` | `/backups/<backup>/restore/full` | 从备份恢复所有内容 |
+| `POST` | `/backups/<backup>/restore/partial` | 恢复备份中的部分内容 |
+| `POST` | `/backups/freeze` | 为外部备份准备系统 |
+| `POST` | `/backups/thaw` | 解除冻结 |
 
-## Locations
+## 位置
 
-A backup can be stored in more than one place. A location is one of:
+一个备份可以存储在多个位置。位置可以是以下之一：
 
-- `null` or `.local`: the local backup folder of the system
-- The name of a [network mount](/apps/supervisor-api/host/#mounts) that is used for backups
-- `.cloud_backup`: Home Assistant Link. Only Home Assistant Core can use this location
+- `null` 或 `.local`：系统的本地备份文件夹
+- 用于备份的[网络挂载](/apps/supervisor-api/host/#mounts)的名称
+- `.cloud_backup`：Home Assistant Link。只有 Home Assistant Core 可以使用此位置
 
-## Folders
+## 文件夹
 
-Backups can include these folders: `share`, `ssl`, `media`, and `addons/local` (the local apps). The API also accepts `apps/local` for the local apps. In requests, the folder `homeassistant` means the same as `homeassistant: true`.
+备份可以包含以下文件夹：`share`、`ssl`、`media` 和 `addons/local`（本地应用）。API 也接受 `apps/local` 来表示本地应用。在请求中，文件夹 `homeassistant` 与 `homeassistant: true` 含义相同。
 
-## List and settings
+## 列表和设置
 
 ### `GET /backups`
 
-Returns the backups.
+返回备份列表。
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `backups` | list | A list of [backup models](/apps/supervisor-api/models/#backup) |
+| `backups` | 列表 | [备份模型](/apps/supervisor-api/models/#backup)的列表 |
 
 ```json
 {
@@ -80,41 +80,41 @@ Returns the backups.
 
 ### `GET /backups/info`
 
-Returns the same list as `GET /backups`, plus the backup settings.
+返回与 `GET /backups` 相同的列表，外加备份设置。
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `backups` | list | A list of [backup models](/apps/supervisor-api/models/#backup) |
-| `days_until_stale` | integer | After how many days a backup counts as old |
+| `backups` | 列表 | [备份模型](/apps/supervisor-api/models/#backup)的列表 |
+| `days_until_stale` | 整数 | 多少天后备份被视为过期 |
 
 ### `POST /backups/options`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `days_until_stale` | integer | No | After how many days a backup counts as old. At least 1 |
+| `days_until_stale` | 整数 | 否 | 多少天后备份被视为过期。至少为 1 |
 
 ### `POST /backups/reload`
 
-Reads all backup locations again, to pick up backup files that were added or removed outside of the Supervisor.
+重新读取所有备份位置，以获取在 Supervisor 之外添加或删除的备份文件。
 
-## Make a backup
+## 创建备份
 
 ### `POST /backups/new/full`
 
-Makes a backup of everything: Home Assistant, all apps, and all folders.
+创建所有内容的备份：Home Assistant、所有应用和所有文件夹。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `name` | string | No | Name of the backup |
-| `filename` | string | No | File name of the backup. Must end in `.tar` and contain no slashes |
-| `password` | string or null | No | Password to encrypt the backup with |
-| `compressed` | boolean or null | No | Compress the backup. Default `true` |
-| `location` | string, null, or list | No | Where to store the backup. With a list, the first entry is the main location, and copies go to the others |
-| `homeassistant_exclude_database` | boolean | No | Leave the Home Assistant database out |
-| `background` | boolean | No | Return a `job_id` right away instead of waiting. Default `false` |
-| `extra` | dictionary | No | Extra data to store with the backup |
+| `name` | 字符串 | 否 | 备份的名称 |
+| `filename` | 字符串 | 否 | 备份的文件名。必须以 `.tar` 结尾且不包含斜杠 |
+| `password` | 字符串或 null | 否 | 用于加密备份的密码 |
+| `compressed` | 布尔值或 null | 否 | 是否压缩备份。默认为 `true` |
+| `location` | 字符串、null 或列表 | 否 | 备份的存储位置。如果使用列表，第一个条目是主要位置，副本存储到其他位置 |
+| `homeassistant_exclude_database` | 布尔值 | 否 | 不包含 Home Assistant 数据库 |
+| `background` | 布尔值 | 否 | 立即返回 `job_id` 而不是等待。默认为 `false` |
+| `extra` | 字典 | 否 | 与备份一起存储的额外数据 |
 
-When the backup is done, the response has the `job_id` and the `slug` of the new backup:
+备份完成后，响应中包含新备份的 `job_id` 和 `slug`：
 
 ```json
 {
@@ -125,13 +125,13 @@ When the backup is done, the response has the `job_id` and the `slug` of the new
 
 ### `POST /backups/new/partial`
 
-Makes a backup of the parts you choose. Takes all keys of `POST /backups/new/full`, plus:
+创建您所选部分的备份。接受 `POST /backups/new/full` 的所有键，外加：
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `addons` | list or string | No | Slugs of the apps to include, or `ALL` for all installed apps |
-| `folders` | list | No | [Folders](#folders) to include |
-| `homeassistant` | boolean | No | Include Home Assistant |
+| `addons` | 列表或字符串 | 否 | 要包含的应用的 slug，或使用 `ALL` 表示所有已安装的应用 |
+| `folders` | 列表 | 否 | 要包含的[文件夹](#folders) |
+| `homeassistant` | 布尔值 | 否 | 包含 Home Assistant |
 
 ```json
 {
@@ -143,84 +143,84 @@ Makes a backup of the parts you choose. Takes all keys of `POST /backups/new/ful
 
 ### `POST /backups/new/upload`
 
-Uploads a backup file. Send the `.tar` file as `multipart/form-data`. Responds with the `slug` of the backup.
+上传备份文件。将 `.tar` 文件作为 `multipart/form-data` 发送。响应中包含备份的 `slug`。
 
-| Query parameter | Description |
+| 查询参数 | 描述 |
 | --- | --- |
-| `location` | Where to store the backup. Repeat it to store copies in more than one location |
-| `filename` | File name to store the backup under. Must end in `.tar` |
+| `location` | 备份的存储位置。重复使用该参数可将副本存储到多个位置 |
+| `filename` | 存储备份时使用的文件名。必须以 `.tar` 结尾 |
 
-## Use a backup
+## 使用备份
 
 ### `GET /backups/<backup>/info`
 
-Returns the details of a backup.
+返回备份的详细信息。
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `slug` | string | ID of the backup |
-| `type` | string | `full` or `partial` |
-| `name` | string | Name of the backup |
-| `date` | string | When the backup was made, in ISO 8601 |
-| `size` | float | Size in MB |
-| `size_bytes` | integer | Size in bytes |
-| `compressed` | boolean | `true` if the backup is compressed |
-| `protected` | boolean | `true` if the backup has a password |
-| `location_attributes` | dictionary | `protected` and `size_bytes` per location. The local folder is `.local` |
-| `supervisor_version` | string | Version of the Supervisor that made the backup |
-| `homeassistant` | string or null | Version of Home Assistant in the backup, `null` if it is not included |
-| `location` | string or null | The main location |
-| `locations` | list | All locations the backup is stored in |
-| `addons` | list | Apps in the backup, each with `slug`, `name`, `version`, and `size` |
-| `repositories` | list | URLs of the app repositories that were added at the time |
-| `folders` | list | Folders in the backup |
-| `homeassistant_exclude_database` | boolean | `true` if the Home Assistant database was left out |
-| `extra` | dictionary | Extra data stored with the backup |
+| `slug` | 字符串 | 备份的 ID |
+| `type` | 字符串 | `full` 或 `partial` |
+| `name` | 字符串 | 备份的名称 |
+| `date` | 字符串 | 备份的创建时间，采用 ISO 8601 格式 |
+| `size` | 浮点数 | 大小（MB） |
+| `size_bytes` | 整数 | 大小（字节） |
+| `compressed` | 布尔值 | 如果备份已压缩则为 `true` |
+| `protected` | 布尔值 | 如果备份设有密码则为 `true` |
+| `location_attributes` | 字典 | 每个位置的 `protected` 和 `size_bytes`。本地文件夹为 `.local` |
+| `supervisor_version` | 字符串 | 创建备份的 Supervisor 版本 |
+| `homeassistant` | 字符串或 null | 备份中的 Home Assistant 版本，如果未包含则为 `null` |
+| `location` | 字符串或 null | 主要位置 |
+| `locations` | 列表 | 备份存储的所有位置 |
+| `addons` | 列表 | 备份中的应用，每个应用包含 `slug`、`name`、`version` 和 `size` |
+| `repositories` | 列表 | 当时已添加的应用仓库的 URL |
+| `folders` | 列表 | 备份中的文件夹 |
+| `homeassistant_exclude_database` | 布尔值 | 如果未包含 Home Assistant 数据库则为 `true` |
+| `extra` | 字典 | 与备份一起存储的额外数据 |
 
 ### `GET /backups/<backup>/download`
 
-Returns the backup as a `.tar` file. Use the `location` query parameter to pick the copy to download. Without it, you get the copy in the main location.
+以 `.tar` 文件的形式返回备份。使用 `location` 查询参数选择要下载的副本。如果不使用该参数，则返回主要位置中的副本。
 
 ### `DELETE /backups/<backup>`
 
-Deletes a backup.
+删除备份。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `location` | string, null, or list | No | Only delete the copies in these locations. Without it, all copies are deleted |
+| `location` | 字符串、null 或列表 | 否 | 仅删除这些位置中的副本。如果不使用该参数，则删除所有副本 |
 
 ### `POST /backups/<backup>/restore/full`
 
-Restores everything in the backup. Home Assistant and the apps restart during the restore.
+恢复备份中的所有内容。在恢复过程中，Home Assistant 和应用会重启。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `password` | string or null | No | Password of the backup |
-| `location` | string or null | No | The copy to restore from |
-| `background` | boolean | No | Return a `job_id` right away instead of waiting. Default `false` |
+| `password` | 字符串或 null | 否 | 备份的密码 |
+| `location` | 字符串或 null | 否 | 用于恢复的副本 |
+| `background` | 布尔值 | 否 | 立即返回 `job_id` 而不是等待。默认为 `false` |
 
-Responds with the `job_id` of the restore.
+响应中包含恢复操作的 `job_id`。
 
 ### `POST /backups/<backup>/restore/partial`
 
-Restores the parts you choose. Takes all keys of the full restore, plus:
+恢复您所选的部分。接受完整恢复的所有键，外加：
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `addons` | list | No | Slugs of the apps to restore |
-| `folders` | list | No | [Folders](#folders) to restore |
-| `homeassistant` | boolean | No | Restore Home Assistant |
+| `addons` | 列表 | 否 | 要恢复的应用的 slug |
+| `folders` | 列表 | 否 | 要恢复的[文件夹](#folders) |
+| `homeassistant` | 布尔值 | 否 | 恢复 Home Assistant |
 
-## External backups
+## 外部备份
 
 ### `POST /backups/freeze`
 
-Prepares the system for a backup made outside the Supervisor, like a snapshot of a virtual machine. Home Assistant and the running apps get ready for the backup, the same way they do for a normal one. Apps with `backup: cold` stop.
+为在 Supervisor 之外进行的备份（例如虚拟机的快照）准备系统。Home Assistant 和正在运行的应用会像进行普通备份一样为备份做好准备。带有 `backup: cold` 的应用会停止运行。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `timeout` | integer | No | Seconds after which the system thaws by itself. Default 600 |
+| `timeout` | 整数 | 否 | 系统自动解冻的秒数。默认为 600 |
 
 ### `POST /backups/thaw`
 
-Ends a freeze. Home Assistant and the apps go back to normal.
+结束冻结。Home Assistant 和应用恢复正常运行。

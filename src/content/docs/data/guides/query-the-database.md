@@ -1,22 +1,22 @@
 ---
-title: Query the database
-description: Example SQL queries to read states, events, and context from the Home Assistant database, for SQLite, MariaDB, and PostgreSQL.
+title: 查询数据库
+description: 用于从 Home Assistant 数据库读取状态、事件和上下文的 SQL 查询示例，适用于 SQLite、MariaDB 和 PostgreSQL。
 order: 3
 ---
 
-The recorder stores the history of your home in a SQL database. You can query it with any SQL tool, like a database client on your computer or a notebook in JupyterLab. This page has queries to start from.
+记录器（recorder）将您家中的历史数据存储在 SQL 数据库中。您可以使用任何 SQL 工具查询它，例如电脑上的数据库客户端或 JupyterLab 中的笔记本。本页面提供了一些可供起步的查询。
 
-Before you start:
+在开始之前：
 
-- Read [The data model](/data/reference/data-model/) and [Database schema](/data/reference/database-schema/). The tables are normalized: entity IDs, attributes, and event data live in their own tables, so most queries need a join.
-- Only read. Writing to the database while Home Assistant runs can corrupt your history.
-- Times are stored as Unix timestamps, in seconds since 1970, in UTC. The queries below convert them to readable dates.
+- 阅读[数据模型](/data/reference/data-model/)和[数据库模式](/data/reference/database-schema/)。这些表是规范化的：实体 ID、属性和事件数据分别存储在各自的表中，因此大多数查询都需要连接（join）。
+- 只读不写。在 Home Assistant 运行时写入数据库可能会损坏您的历史数据。
+- 时间以 Unix 时间戳的形式存储，即自 1970 年以来的秒数，采用 UTC。下面的查询会将它们转换为可读的日期。
 
-The examples use SQLite, the default database. Where MariaDB, MySQL, or PostgreSQL need different functions, it says so.
+示例使用 SQLite，即默认数据库。当 MariaDB、MySQL 或 PostgreSQL 需要不同的函数时，会特别说明。
 
-## States
+## 状态
 
-### The states of one entity
+### 单个实体的状态
 
 ```sql
 SELECT
@@ -29,14 +29,14 @@ ORDER BY states.last_updated_ts DESC
 LIMIT 100;
 ```
 
-To convert the timestamp in other databases:
+在其他数据库中转换时间戳的方法：
 
-- MariaDB and MySQL: `FROM_UNIXTIME(states.last_updated_ts)`
-- PostgreSQL: `TO_TIMESTAMP(states.last_updated_ts)`
+- MariaDB 和 MySQL：`FROM_UNIXTIME(states.last_updated_ts)`
+- PostgreSQL：`TO_TIMESTAMP(states.last_updated_ts)`
 
-### Only real state changes
+### 仅真正的状态变化
 
-A state row is written for every update, also when only an attribute changed, like the song on a media player or the color of a light. When the state value itself changed, `last_changed_ts` is the same as `last_updated_ts`, and to save space it is then stored as `NULL`. So to get only the rows where the state value changed:
+每次更新都会写入一行状态记录，即使只有属性发生了变化，例如媒体播放器上播放的歌曲或灯光的颜色。当状态值本身发生变化时，`last_changed_ts` 与 `last_updated_ts` 相同，为了节省空间，此时它会被存储为 `NULL`。因此，要只获取状态值发生变化的行：
 
 ```sql
 SELECT states_meta.entity_id, states.state, states.last_updated_ts
@@ -45,9 +45,9 @@ JOIN states_meta ON states.metadata_id = states_meta.metadata_id
 WHERE states.last_changed_ts IS NULL;
 ```
 
-### Fill in last changed
+### 填充最后变化时间
 
-Because `last_changed_ts` is `NULL` when it equals `last_updated_ts`, fall back to `last_updated_ts` to get the real value:
+由于 `last_changed_ts` 在等于 `last_updated_ts` 时为 `NULL`，可以回退到 `last_updated_ts` 来获取真实的值：
 
 ```sql
 SELECT
@@ -58,11 +58,11 @@ FROM states
 JOIN states_meta ON states.metadata_id = states_meta.metadata_id;
 ```
 
-`COALESCE` works in SQLite, MariaDB, MySQL, and PostgreSQL.
+`COALESCE` 在 SQLite、MariaDB、MySQL 和 PostgreSQL 中都可用。
 
-### Attributes
+### 属性
 
-Attributes are stored once in `state_attributes`, and shared by every state row with the same attributes:
+属性在 `state_attributes` 中只存储一次，并由具有相同属性的每个状态行共享：
 
 ```sql
 SELECT states_meta.entity_id, states.state, state_attributes.shared_attrs
@@ -73,11 +73,11 @@ LEFT JOIN state_attributes
 WHERE states_meta.entity_id = 'light.kitchen';
 ```
 
-`shared_attrs` is a JSON string.
+`shared_attrs` 是一个 JSON 字符串。
 
-### The previous state
+### 前一个状态
 
-Every state row points to the state before it with `old_state_id`:
+每个状态行都通过 `old_state_id` 指向它之前的状态：
 
 ```sql
 SELECT
@@ -91,11 +91,11 @@ LEFT JOIN states AS old_states
   ON states.old_state_id = old_states.state_id;
 ```
 
-## Events
+## 事件
 
-### All events with their data
+### 所有事件及其数据
 
-The `state_changed` event is not stored in the `events` table: the `states` table already has that information. All other events are.
+`state_changed` 事件不存储在 `events` 表中：`states` 表已经包含该信息。所有其他事件都存储在 `events` 表中。
 
 ```sql
 SELECT
@@ -111,9 +111,9 @@ ORDER BY events.time_fired_ts DESC
 LIMIT 100;
 ```
 
-### Events and state changes together
+### 事件与状态变化合并查看
 
-To see everything in order, combine both tables:
+要按顺序查看所有内容，可以合并这两个表：
 
 ```sql
 SELECT event_types.event_type, events.time_fired_ts AS fired_ts
@@ -125,11 +125,11 @@ FROM states
 ORDER BY fired_ts;
 ```
 
-## Context
+## 上下文
 
-Context ties together everything that happened because of one cause. The IDs are stored as binary values. Use `HEX()` to make them readable in SQLite, MariaDB, and MySQL. PostgreSQL shows them as they are.
+上下文（context）将因同一原因而发生的所有事情联系在一起。这些 ID 以二进制值的形式存储。在 SQLite、MariaDB 和 MySQL 中，可以使用 `HEX()` 使它们变得可读。PostgreSQL 则直接显示它们。
 
-### The context of state changes
+### 状态变化的上下文
 
 ```sql
 SELECT
@@ -142,9 +142,9 @@ FROM states
 JOIN states_meta ON states.metadata_id = states_meta.metadata_id;
 ```
 
-### Everything with the same context
+### 具有相同上下文的所有内容
 
-Pick a context ID from the previous query, and find all events and states that share it:
+从上一个查询中选取一个上下文 ID，查找共享该上下文的所有事件和状态：
 
 ```sql
 SELECT 'event', event_types.event_type, events.time_fired_ts
@@ -158,9 +158,9 @@ JOIN states_meta ON states.metadata_id = states_meta.metadata_id
 WHERE HEX(states.context_id_bin) = '0190A1B2C3D4E5F60718293A4B5C6D7E';
 ```
 
-## Statistics
+## 统计数据
 
-The hourly averages of a sensor with long-term statistics:
+具有长期统计数据的传感器的每小时平均值：
 
 ```sql
 SELECT
@@ -175,4 +175,4 @@ ORDER BY statistics.start_ts DESC
 LIMIT 48;
 ```
 
-For energy and other meters, use `state` and `sum` instead of `mean`, `min`, and `max`. See [Statistics](/data/reference/statistics/).
+对于能耗和其他计量类传感器，请使用 `state` 和 `sum` 代替 `mean`、`min` 和 `max`。参见[统计数据](/data/reference/statistics/)。

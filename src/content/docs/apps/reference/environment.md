@@ -1,33 +1,33 @@
 ---
-title: Runtime environment
-description: What an app container gets from the Supervisor. Environment variables, folders, host names, and network addresses.
+title: 运行环境
+description: 应用容器从 Supervisor 获得的内容。环境变量、文件夹、主机名和网络地址。
 order: 4
 ---
 
-When the Supervisor starts your app, it sets up the container with a few things your code can count on. This page lists them.
+当 Supervisor 启动你的应用时，它会为容器设置一些你的代码可以依赖的内容。本页面列出了这些内容。
 
-## Environment variables
+## 环境变量
 
-| Variable | Contents |
+| 变量 | 内容 |
 | --- | --- |
-| `SUPERVISOR_TOKEN` | The token of your app, for the Supervisor API and the Home Assistant Core API proxy. Unique per app. |
-| `HASSIO_TOKEN` | The same token, under its old name. Use `SUPERVISOR_TOKEN` in new code. |
-| `TZ` | The time zone of the system, like `Europe/Amsterdam`. |
+| `SUPERVISOR_TOKEN` | 你的应用的令牌，用于 Supervisor API 和 Home Assistant Core API 代理。每个应用唯一。 |
+| `HASSIO_TOKEN` | 同一个令牌，使用其旧名称。新代码中请使用 `SUPERVISOR_TOKEN`。 |
+| `TZ` | 系统的时区，例如 `Europe/Amsterdam`。 |
 
-Your own variables from `environment` in `config.yaml` are added too. With `legacy: true`, the top-level options that are a string or a number are also passed as variables.
+你在 `config.yaml` 的 `environment` 中定义的变量也会被添加。如果设置了 `legacy: true`，则顶层选项中字符串或数字类型的选项也会作为变量传入。
 
-The base images use S6 overlay, which keeps the environment of the container in a separate place. Scripts that start with `#!/command/with-contenv bashio` (or `with-contenv bash`) get these variables; other scripts started by S6 may not. See [the container environment](/apps/guides/s6-overlay/#the-container-environment).
+基础镜像使用 S6 overlay，它将容器的环境保存在一个单独的位置。以 `#!/command/with-contenv bashio`（或 `with-contenv bash`）开头的脚本可以获取这些变量；由 S6 启动的其他脚本可能无法获取。参见[容器环境](/apps/guides/s6-overlay/#the-container-environment)。
 
-## Folders
+## 文件夹
 
-| Path | Contents |
+| 路径 | 内容 |
 | --- | --- |
-| `/data` | The private, persistent storage of your app. Read and write, included in backups. |
-| `/data/options.json` | The options of the user, validated against your `schema`. Written before every start. |
+| `/data` | 你的应用的私有持久化存储。可读写，包含在备份中。 |
+| `/data/options.json` | 用户的选项，已根据你的 `schema` 进行校验。在每次启动前写入。 |
 
-Folders you map with `map` are mounted at these paths, unless you set a different `path`:
+你通过 `map` 映射的文件夹会挂载到以下路径，除非你设置了不同的 `path`：
 
-| Type | Path |
+| 类型 | 路径 |
 | --- | --- |
 | `homeassistant_config` | `/homeassistant` |
 | `app_config` | `/config` |
@@ -38,39 +38,39 @@ Folders you map with `map` are mounted at these paths, unless you set a differen
 | `media` | `/media` |
 | `backup` | `/backup` |
 
-Mapped folders are read-only unless you set `read_only: false`.
+映射的文件夹默认为只读，除非你设置了 `read_only: false`。
 
-Depending on other keys in `config.yaml`, the Supervisor mounts more:
+根据 `config.yaml` 中的其他配置项，Supervisor 还会挂载更多内容：
 
-| Key | Mounted |
+| 配置项 | 挂载内容 |
 | --- | --- |
-| `tmpfs: true` | `/tmp` as tmpfs, in memory |
-| `host_ipc: false` | A private `/dev/shm`, in memory |
-| `audio: true` | `/etc/pulse/client.conf`, `/run/audio`, and `/etc/asound.conf` |
+| `tmpfs: true` | `/tmp` 作为 tmpfs，位于内存中 |
+| `host_ipc: false` | 私有的 `/dev/shm`，位于内存中 |
+| `audio: true` | `/etc/pulse/client.conf`、`/run/audio` 和 `/etc/asound.conf` |
 | `devicetree: true` | `/device-tree` |
-| `gpio: true` | `/sys/class/gpio`, on systems that support it |
-| `udev: true` | `/run/udev`, read-only |
-| `kernel_modules: true` | `/lib/modules`, read-only |
-| `host_dbus: true` | `/run/dbus`, read-only |
-| `journald: true` | `/var/log/journal` and `/run/log/journal`, read-only |
-| `docker_api: true` | `/run/docker.sock`, read-only, only with protection mode off |
+| `gpio: true` | `/sys/class/gpio`，在支持的系统上 |
+| `udev: true` | `/run/udev`，只读 |
+| `kernel_modules: true` | `/lib/modules`，只读 |
+| `host_dbus: true` | `/run/dbus`，只读 |
+| `journald: true` | `/var/log/journal` 和 `/run/log/journal`，只读 |
+| `docker_api: true` | `/run/docker.sock`，只读，仅在关闭保护模式时可用 |
 
-## Network
+## 网络
 
-Unless you set `host_network`, your app runs on an internal network, `172.30.32.0/23`, together with the Supervisor and the other apps. Home Assistant Core is reachable from it too.
+除非你设置了 `host_network`，否则你的应用将运行在内部网络 `172.30.32.0/23` 上，与 Supervisor 和其他应用在一起。Home Assistant Core 也可以从该网络访问。
 
-| Name | What it is |
+| 名称 | 说明 |
 | --- | --- |
-| `supervisor` | The Supervisor, with its API. Always `172.30.32.2`. `hassio` is an alias. |
-| `homeassistant` | Home Assistant Core. It runs on the host network and is reachable at `172.30.32.1`, the gateway of the internal network. |
-| `{repository}-{slug}` | Another app, like `core-mosquitto` or `local-hello-world`. |
+| `supervisor` | Supervisor 及其 API。始终为 `172.30.32.2`。`hassio` 是它的别名。 |
+| `homeassistant` | Home Assistant Core。它运行在宿主机网络上，可以通过 `172.30.32.1`（内部网络的网关）访问。 |
+| `{repository}-{slug}` | 另一个应用，例如 `core-mosquitto` 或 `local-hello-world`。 |
 
-The host name of your own container is your app ID with `_` replaced by `-`. With `host_uts: true`, it is the host name of the host instead.
+你自己容器的主机名是你的应用 ID，其中 `_` 被替换为 `-`。如果设置了 `host_uts: true`，则改为使用宿主机的主机名。
 
-`supervisor` and `hassio` are added to the hosts file of your container, so they also work on the host network. An app on the host network is still registered by name in the internal DNS, pointing to the gateway `172.30.32.1`, so other apps reach it by name as well.
+`supervisor` 和 `hassio` 会被添加到你容器的 hosts 文件中，因此它们在宿主机网络上也能正常工作。运行在宿主机网络上的应用仍会以名称注册到内部 DNS 中，指向网关 `172.30.32.1`，因此其他应用也可以通过名称访问它。
 
-Ingress requests always come from the Supervisor, `172.30.32.2`.
+Ingress 请求始终来自 Supervisor，即 `172.30.32.2`。
 
 ## Init
 
-The Home Assistant base images use S6 overlay as their init system, with `/init` as the entrypoint. Set `init: false` in `config.yaml` so Docker does not add its own init process in front of it. See [Run services with S6 overlay](/apps/guides/s6-overlay/).
+Home Assistant 基础镜像使用 S6 overlay 作为其 init 系统，以 `/init` 作为入口点。请在 `config.yaml` 中设置 `init: false`，这样 Docker 就不会在它前面添加自己的 init 进程。参见[使用 S6 overlay 运行服务](/apps/guides/s6-overlay/)。

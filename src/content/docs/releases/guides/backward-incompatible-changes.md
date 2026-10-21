@@ -1,33 +1,33 @@
 ---
-title: Document a backward-incompatible change
-description: When your change means users have to do something, tell them what breaks, how to fix it, and why. That text ends up in the release notes.
+title: 记录不向后兼容的变更
+description: 当你的变更意味着用户需要做某些操作时，告诉他们什么会失效、如何修复以及原因。这些文字会出现在发布说明中。
 order: 2
 ---
 
-A backward-incompatible change is a change that requires people to do something on their side after they update, like changing their configuration, an automation, or a dashboard. Home Assistant tries hard to avoid them. When one is unavoidable, it has to be explained well, because thousands of people read it right before they update.
+不向后兼容的变更（backward-incompatible change）是指要求人们在更新后在自己这边做某些操作的变更，比如修改他们的配置、自动化（automation）或仪表盘（dashboard）。Home Assistant 会尽力避免这类变更。当无法避免时，必须把它解释清楚，因为成千上万的人会在更新前阅读它。
 
-## Avoid it if you can
+## 尽量避免它
 
-Before you write a backward-incompatible change, check if you can avoid it:
+在编写不向后兼容的变更之前，先检查是否可以避免它：
 
-- Can the old way keep working next to the new way for a while? Then it is a [deprecation](/releases/guides/deprecations/), not a backward-incompatible change yet.
-- Can Home Assistant migrate the old configuration automatically? Then nobody has to do anything.
+- 旧的方式能否在一段时间内与新方式并存继续工作？那么它是一个[弃用（deprecation）](/releases/guides/deprecations/)，还不是不向后兼容的变更。
+- Home Assistant 能否自动迁移旧配置？那么任何人都不需要做任何事。
 
-## Mark the pull request
+## 标记拉取请求
 
-The pull request template of the [core repository](https://github.com/home-assistant/core) has a type of change checklist. Check **Breaking change** when existing functionality breaks, or **Deprecation** when the break happens in a future release. The pull request then gets the `breaking-change` label, which is what puts your text in the release notes.
+[core 仓库](https://github.com/home-assistant/core)的拉取请求（pull request）模板中有一个变更类型清单。当现有功能会失效时，勾选 **Breaking change**；当失效发生在未来的版本中时，勾选 **Deprecation**。这样拉取请求就会获得 `breaking-change` 标签，正是这个标签让你的文字进入发布说明。
 
-## Write the backward-incompatible change section
+## 编写不向后兼容的变更部分
 
-The pull request template starts with a **Breaking change** section. The template says it plainly: tell users what breaks, how to make it work again, and why. The text is published with the release notes, so write it for users, not for developers.
+拉取请求模板以一个 **Breaking change** 部分开头。模板说得很直白：告诉用户什么会失效、如何让它重新工作，以及原因。这些文字会随发布说明一起发布，所以要为用户而写，而不是为开发者。
 
-A good backward-incompatible change section answers three questions:
+一个好的不向后兼容的变更部分会回答三个问题：
 
-1. **What changed?** Describe what the user sees, not the code. "The `uptime` sensor is removed" works. "Refactored the sensor platform" does not.
-2. **What do I need to do?** Give the concrete steps. If the user needs to change YAML, show the new YAML.
-3. **Why?** One or two sentences are enough. People accept a change more easily when they understand the reason.
+1. **什么变了？** 描述用户看到的东西，而不是代码。“`uptime` 传感器已被移除”是可以的。“重构了传感器平台”则不行。
+2. **我需要做什么？** 给出具体步骤。如果用户需要修改 YAML，请展示新的 YAML。
+3. **为什么？** 一两句话就够了。当人们理解了原因，就更容易接受变更。
 
-For example:
+例如：
 
 ```markdown
 The **Subscribed to Xbox Game Pass** binary sensor has been removed,
@@ -37,16 +37,16 @@ you were subscribed to Game Pass or not.
 If you use this binary sensor in an automation or a dashboard, remove it.
 ```
 
-## Tips
+## 提示
 
-- Write it so someone who does not know the integration understands it. Many people read every backward-incompatible change, just to check if it affects them.
-- Name the integration and the entities, actions, or options that change, using the names users see in the UI.
-- Do not hide the break. If something stops working, say so in the first sentence.
-- Keep the section in your pull request up to date when the change evolves during review.
-- Follow the [writing style of the user documentation](/writing/reference/style/). The release notes use it too.
+- 写作时要让不了解该集成（integration）的人也能看懂。很多人会阅读每一条不向后兼容的变更，只是为了确认它是否影响自己。
+- 使用用户在 UI 中看到的名称，指明发生变化的集成以及实体（entity）、操作（action）或选项。
+- 不要掩盖失效。如果有东西停止工作，请在第一句话中说明。
+- 当变更在审查过程中发生演变时，保持拉取请求中的该部分内容为最新。
+- 遵循[用户文档的写作风格](/writing/reference/style/)。发布说明也使用这种风格。
 
-## What happens with your text
+## 你的文字会怎样处理
 
-When the release is prepared, the release team collects the backward-incompatible change sections of all merged pull requests with the `breaking-change` label. They end up under **Backward-incompatible changes** in the release notes, grouped per integration, with a link to your pull request and to the documentation. The release notes authors may edit your text for clarity and consistency.
+在准备发布时，发布团队会收集所有带有 `breaking-change` 标签的已合并拉取请求中的不向后兼容的变更部分。它们会出现在发布说明的 **Backward-incompatible changes** 之下，按集成分组，并附上指向你的拉取请求和文档的链接。发布说明的作者可能会为了清晰和一致而编辑你的文字。
 
-Backward-incompatible changes that only affect developers, like a change to a Python API, go on the developer blog instead. The release notes link to those posts.
+只影响开发者的不向后兼容的变更，比如 Python API 的变更，会改为发布在开发者博客上。发布说明会链接到这些文章。

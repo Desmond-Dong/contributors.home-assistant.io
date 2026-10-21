@@ -1,15 +1,15 @@
 ---
-title: App reference
-description: The details you look up while building an app. Configuration keys, Bashio functions, files, the runtime environment, and the security rating.
+title: 应用参考
+description: 构建应用时需要查阅的详细信息。配置键、Bashio 函数、文件、运行时环境以及安全评级。
 order: 20
-sidebarLabel: Reference
+sidebarLabel: 参考
 ---
 
-The pages in this section are for looking things up. For the why and the how, start with the [guides](/apps/guides/).
+本节中的页面用于查阅信息。如需了解原因和方法，请从[指南](/apps/guides/)开始。
 
-- [App configuration](/apps/reference/configuration/): every key of `config.yaml`.
-- [Bashio](/apps/bashio/): every function of the shell library in the base images.
-- [App files](/apps/reference/files/): the files in an app folder and in a repository.
-- [Runtime environment](/apps/reference/environment/): what your container gets from the Supervisor: environment variables, folders, and network addresses.
-- [Security rating](/apps/reference/security-rating/): how the Supervisor computes the rating users see.
-- [Supervisor API](/apps/supervisor-api/): the endpoints your app can call.
+- [应用配置](/apps/reference/configuration/)：`config.yaml` 的每个配置键。
+- [Bashio](/apps/bashio/)：基础镜像中 shell 库的每个函数。
+- [应用文件](/apps/reference/files/)：应用文件夹和仓库中的文件。
+- [运行时环境](/apps/reference/environment/)：你的容器从 Supervisor 获得的内容：环境变量、文件夹和网络地址。
+- [安全评级](/apps/reference/security-rating/)：Supervisor 如何计算用户看到的评级。
+- [Supervisor API](/apps/supervisor-api/)：你的应用可以调用的端点。

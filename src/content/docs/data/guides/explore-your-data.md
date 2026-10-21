@@ -1,34 +1,34 @@
 ---
-title: Explore your own data
-description: Set up JupyterLab, connect it to the database of your Home Assistant, and run your first report. About fifteen minutes.
+title: 探索你自己的数据
+description: 设置 JupyterLab，将其连接到 Home Assistant 的数据库，并运行你的第一份报告。大约需要十五分钟。
 order: 2
 source: https://github.com/home-assistant/home-assistant-notebooks/blob/master/GETTING_STARTED.ipynb
 lastVerified: 2026-10-16
 ---
 
-Home Assistant records everything that happens in your home in a database: every state change, every event, and statistics over time. That data is yours, and you can learn a lot from it. When does the heating run? Which lights are on the longest? How does your energy use change with the seasons?
+Home Assistant 会把家中发生的一切记录到数据库中：每一次状态（state）变化、每一个事件，以及随时间推移的统计数据。这些数据属于你，你能从中学到很多东西。供暖什么时候运行？哪些灯亮的时间最长？你的能源使用量如何随季节变化？
 
-This guide sets up [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/), a tool that data scientists all over the world use, and runs a first report on your own data. Your data stays on your own hardware the whole time.
+本指南将设置 [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/)——一款全世界数据科学家都在使用的工具，并在你自己的数据上运行第一份报告。你的数据全程都保留在你自己的硬件上。
 
-## How it fits together
+## 整体是如何协作的
 
-- **JupyterLab** runs notebooks: documents that mix text, code, and charts. Think of a notebook as a document that can also calculate.
-- **HASS Data Detective** is a Python library that reads the Home Assistant database, and turns it into tables you can work with.
-- **The Home Assistant notebooks** are ready-made notebooks to start from, in the [home-assistant-notebooks repository](https://github.com/home-assistant/home-assistant-notebooks).
+- **JupyterLab** 运行 notebook：一种混合了文本、代码和图表的文档。可以把 notebook 想象成一份还能进行计算的文档。
+- **HASS Data Detective** 是一个 Python 库，它读取 Home Assistant 数据库，并将其转换成你可以处理的表格。
+- **Home Assistant notebooks** 是现成的入门 notebook，位于 [home-assistant-notebooks 仓库](https://github.com/home-assistant/home-assistant-notebooks)。
 
-## Option 1: as an app on Home Assistant OS
+## 方式一：作为 Home Assistant OS 上的应用
 
-If you run Home Assistant OS, the easiest way is the JupyterLab app from the Home Assistant Community Apps.
+如果你运行的是 Home Assistant OS，最简单的方法是使用 Home Assistant Community Apps 中的 JupyterLab 应用。
 
-1. Open the [JupyterLab app in your Home Assistant](https://my.home-assistant.io/redirect/supervisor_app/?app=a0d7b954_jupyterlablite&repository_url=https%3A%2F%2Fgithub.com%2Fhassio-addons%2Frepository). This also adds the Community Apps repository, if you do not have it yet.
-2. Install the app, and start it.
-3. Open the web interface of the app. It can take a minute to start the first time.
+1. 在你的 Home Assistant 中打开 [JupyterLab 应用](https://my.home-assistant.io/redirect/supervisor_app/?app=a0d7b954_jupyterlablite&repository_url=https%3A%2F%2Fgithub.com%2Fhassio-addons%2Frepository)。如果你还没有添加 Community Apps 仓库，这一步也会自动添加。
+2. 安装该应用并启动它。
+3. 打开该应用的网页界面。第一次启动可能需要一分钟。
 
-The app has access to your configuration folder, where the default database `home-assistant_v2.db` lives. The first time it starts, it also clones the Home Assistant notebooks into `notebooks/home-assistant` in that folder, so you can skip the next step about getting them.
+该应用可以访问你的配置文件夹，默认数据库 `home-assistant_v2.db` 就存放在那里。首次启动时，它还会把 Home Assistant notebooks 克隆到该文件夹的 `notebooks/home-assistant` 中，因此你可以跳过下一步获取 notebook 的操作。
 
-## Option 2: on your own computer
+## 方式二：在你自己的电脑上
 
-If you run Home Assistant in another way, or prefer to work on a separate computer, install JupyterLab with Python:
+如果你以其他方式运行 Home Assistant，或者更愿意在单独的电脑上工作，请使用 Python 安装 JupyterLab：
 
 ```bash
 mkdir ~/notebooks
@@ -39,20 +39,20 @@ pip install jupyterlab HASS-data-detective seaborn
 jupyter lab
 ```
 
-JupyterLab opens in your browser. Data Detective reads the database, and seaborn draws plots.
+JupyterLab 会在你的浏览器中打开。Data Detective 负责读取数据库，seaborn 负责绘制图表。
 
-On Python 3.13 or newer, pip installs HASS Data Detective 3.2, because later versions need an older Python. The notebook works with 3.2.
+在 Python 3.13 或更新版本上，pip 会安装 HASS Data Detective 3.2，因为更新的版本需要较旧的 Python。该 notebook 可以在 3.2 上正常工作。
 
-You need access to the database. With the default SQLite database, copy `home-assistant_v2.db` from your configuration folder to your computer. Make the copy while Home Assistant is stopped, or from a backup, so you do not get a half-written file.
+你需要能够访问数据库。如果使用默认的 SQLite 数据库，请把配置文件夹中的 `home-assistant_v2.db` 复制到你的电脑上。请在 Home Assistant 停止运行时进行复制，或者从备份中复制，以免得到一个写入了一半的文件。
 
-If you use MariaDB, MySQL, or PostgreSQL for the recorder, connect to it directly instead. Create a separate database user with read-only rights for this. Your notebooks only need to read.
+如果你为记录器（recorder）使用 MariaDB、MySQL 或 PostgreSQL，则改为直接连接它。为此请创建一个具有只读权限的独立数据库用户。你的 notebook 只需要读取权限。
 
-Python also needs a driver for that database. Install it in the same virtual environment, and start the database URL with the matching prefix:
+Python 还需要该数据库的驱动程序。请将其安装到同一个虚拟环境中，并使用匹配的前缀作为数据库 URL 的开头：
 
-- **MariaDB or MySQL**: `pip install pymysql`, and a URL that starts with `mysql+pymysql://`. If you copy the `db_url` of your recorder and it starts with `mysql://`, change that part.
-- **PostgreSQL**: `pip install "psycopg[binary]"`, and a URL that starts with `postgresql://`.
+- **MariaDB 或 MySQL**：运行 `pip install pymysql`，并使用以 `mysql+pymysql://` 开头的 URL。如果你复制了记录器的 `db_url`，而它以 `mysql://` 开头，请修改这一部分。
+- **PostgreSQL**：运行 `pip install "psycopg[binary]"`，并使用以 `postgresql://` 开头的 URL。
 
-On the PostgreSQL server, a read-only user for a recorder database called `hass` looks like this:
+在 PostgreSQL 服务器上，为名为 `hass` 的记录器数据库创建只读用户的语句如下：
 
 ```sql
 CREATE USER datascience WITH PASSWORD 'my_secret_password';
@@ -63,33 +63,33 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public
   GRANT SELECT ON TABLES TO datascience;
 ```
 
-The `ALTER DEFAULT PRIVILEGES` statement only applies to tables created by the user that runs it. Run it as the user Home Assistant connects with, and the new user can also read tables that a future schema migration creates.
+`ALTER DEFAULT PRIVILEGES` 语句只对执行该语句的用户所创建的表生效。请以 Home Assistant 连接数据库所用的用户身份运行它，这样新用户也能读取未来架构迁移所创建的表。
 
-## Get the notebooks
+## 获取 notebook
 
-On your own computer, open a terminal from the JupyterLab launcher, and clone the notebooks:
+在你自己的电脑上，从 JupyterLab 启动器打开一个终端，并克隆这些 notebook：
 
 ```bash
 git clone https://github.com/home-assistant/home-assistant-notebooks.git
 ```
 
-## Run your first report
+## 运行你的第一份报告
 
-1. In the file browser on the left, open the notebooks folder (`home-assistant-notebooks` on your own computer, `notebooks/home-assistant` in the app), and then `GETTING_STARTED.ipynb`.
-2. Find the code cell with `db = detective.db_from_hass_config()`. In the app, leave it as it is: it finds the database through your configuration. On your own computer, it cannot find it, so replace that line with a connection to your copy. For a copy of `home-assistant_v2.db` in the same folder as the notebook:
+1. 在左侧的文件浏览器中，打开 notebooks 文件夹（在你自己的电脑上是 `home-assistant-notebooks`，在应用中是 `notebooks/home-assistant`），然后打开 `GETTING_STARTED.ipynb`。
+2. 找到包含 `db = detective.db_from_hass_config()` 的代码单元格。在应用中，保持原样即可：它会通过你的配置找到数据库。在你自己的电脑上，它找不到数据库，因此请将该行替换为连接到你的副本的语句。如果 `home-assistant_v2.db` 的副本与 notebook 在同一文件夹中：
 
    ```python
    db = detective.HassDatabase("sqlite:///home-assistant_v2.db")
    ```
 
-   For MariaDB, MySQL, or PostgreSQL, pass the same kind of database URL as the `db_url` of your recorder instead.
-3. Run the cells from the top: select the first code cell, and press <kbd>Shift</kbd> + <kbd>Enter</kbd> to run it and move to the next one.
+   对于 MariaDB、MySQL 或 PostgreSQL，请改为传入与记录器的 `db_url` 同类的数据库 URL。
+3. 从顶部开始运行各个单元格：选中第一个代码单元格，按 <kbd>Shift</kbd> + <kbd>Enter</kbd> 运行它并移动到下一个单元格。
 
-The notebook reads your sensor data into a table, and plots it. It works with SQLite, MariaDB, MySQL, and PostgreSQL, and **Run** > **Run All Cells** runs every cell in one go. On a big database this takes a while. A cell that is still running shows `[*]` next to it. When it is done, the asterisk changes into a number.
+该 notebook 会将你的传感器数据读入一个表格并绘制出来。它支持 SQLite、MariaDB、MySQL 和 PostgreSQL，并且 **Run** > **Run All Cells** 可以一次性运行所有单元格。在大型数据库上这需要一些时间。仍在运行的单元格旁边会显示 `[*]`。运行完成后，星号会变成一个数字。
 
-## Read the database with pandas
+## 使用 pandas 读取数据库
 
-To start from scratch, or to see what the notebook does under the hood: [pandas](https://pandas.pydata.org/) and SQLAlchemy, which the `pip install` above already brought in, read the database directly. Paste this into a new cell of a notebook, next to your copy of `home-assistant_v2.db`:
+如果你想从头开始，或者想了解 notebook 在底层做了什么：上面 `pip install` 已经安装的 [pandas](https://pandas.pydata.org/) 和 SQLAlchemy 可以直接读取数据库。将以下代码粘贴到 notebook 的新单元格中，并放在你的 `home-assistant_v2.db` 副本旁边：
 
 ```python
 import pandas as pd
@@ -114,20 +114,20 @@ df = df.dropna(subset=["state"])
 print(df.groupby("entity_id")["state"].describe())
 ```
 
-This reads the states of all your sensors, turns the timestamps into dates, keeps only the numeric states, and prints the count, average, minimum, and maximum for each sensor. From here, `df` is a regular pandas table you can filter, group, and plot.
+这段代码会读取所有传感器的状态，把时间戳转换为日期，只保留数值型状态，并打印每个传感器的计数、平均值、最小值和最大值。从这里开始，`df` 就是一个普通的 pandas 表格，你可以对它进行筛选、分组和绘图。
 
-The query is plain SQL, the same kind the notebook uses on every database, so for MariaDB, MySQL, or PostgreSQL you only change the database URL.
+这个查询是纯 SQL，与 notebook 在每种数据库上使用的查询类型相同，因此对于 MariaDB、MySQL 或 PostgreSQL，你只需要修改数据库 URL。
 
-## Make it your own
+## 让它成为你自己的
 
-The best part: everything in the notebook can be changed. Edit a cell, run only that cell, and see the new result right away. You do not need to run the whole notebook again.
+最棒的部分：notebook 中的所有内容都可以修改。编辑一个单元格，只运行该单元格，就能立即看到新的结果。你不需要重新运行整个 notebook。
 
-When you want to go further:
+当你想更进一步时：
 
-- The [HASS Data Detective examples](https://github.com/robmarkcole/HASS-data-detective) show more ways to query and plot your data.
-- [The data model](/data/reference/data-model/) and [Database schema](/data/reference/database-schema/) explain what is in the database.
-- [Query the database](/data/guides/query-the-database/) has SQL queries to start from.
+- [HASS Data Detective 示例](https://github.com/robmarkcole/HASS-data-detective)展示了更多查询和绘制数据的方法。
+- [数据模型](/data/reference/data-model/)和[数据库架构](/data/reference/database-schema/)解释了数据库中包含哪些内容。
+- [查询数据库](/data/guides/query-the-database/)提供了可以作为起点的 SQL 查询。
 
-## Share what you learn
+## 分享你的发现
 
-Made a notebook that others could use? Share the notebook without the output, so it contains no data of your home, and others can run it on their own data. The [community forum](https://community.home-assistant.io/) is a good place to show it.
+做了一个别人可能用得上的 notebook？请分享不带输出的 notebook，这样它就不包含你家的任何数据，其他人也可以在他们自己的数据上运行它。[社区论坛](https://community.home-assistant.io/)是展示它的好地方。

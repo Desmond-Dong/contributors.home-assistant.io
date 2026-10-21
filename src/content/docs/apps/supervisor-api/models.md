@@ -1,385 +1,385 @@
 ---
-title: Supervisor API models
-description: The objects that several Supervisor API endpoints return, like apps, backups, jobs, network interfaces, and mounts.
+title: Supervisor API 模型
+description: 多个 Supervisor API 端点返回的对象，例如应用、备份、任务、网络接口和挂载。
 sidebarLabel: Models
 order: 9
 ---
 
-These are the objects that come back from more than one endpoint. The endpoint pages link here.
+这些是会从多个端点返回的对象。各端点页面会链接到这里。
 
-## App
+## 应用（App）
 
-An installed app, as [`GET /addons`](/apps/supervisor-api/apps/#get-addons) lists it. [`GET /addons/<app>/info`](/apps/supervisor-api/apps/#get-addonsappinfo) returns more.
+已安装的应用，即 [`GET /addons`](/apps/supervisor-api/apps/#get-addons) 列出的对象。[`GET /addons/<app>/info`](/apps/supervisor-api/apps/#get-addonsappinfo) 会返回更多信息。
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `name` | string | Name of the app |
-| `slug` | string | Slug of the app |
-| `description` | string | Short description |
-| `advanced` | boolean | Deprecated, always `false` |
-| `stage` | string | `stable`, `experimental`, or `deprecated` |
-| `version` | string | Installed version |
-| `version_latest` | string | Latest available version |
-| `update_available` | boolean | `true` if an update is available |
-| `available` | boolean | `true` if the app can run on this system |
-| `detached` | boolean | `true` if the app is no longer in any repository |
-| `homeassistant` | string or null | Minimum Home Assistant version |
-| `state` | string | `startup`, `started`, `stopped`, `unknown`, or `error` |
-| `repository` | string | Slug of the repository |
-| `build` | boolean | `true` if the app is built locally |
-| `url` | string or null | Website of the app |
-| `icon` | boolean | `true` if the app has an icon |
-| `logo` | boolean | `true` if the app has a logo |
-| `system_managed` | boolean | `true` if Home Assistant manages the app |
+| `name` | string | 应用名称 |
+| `slug` | string | 应用的 slug |
+| `description` | string | 简短描述 |
+| `advanced` | boolean | 已弃用，始终为 `false` |
+| `stage` | string | `stable`、`experimental` 或 `deprecated` |
+| `version` | string | 已安装的版本 |
+| `version_latest` | string | 最新可用版本 |
+| `update_available` | boolean | 如果有可用更新则为 `true` |
+| `available` | boolean | 如果应用可以在此系统上运行则为 `true` |
+| `detached` | boolean | 如果应用已不在任何仓库中则为 `true` |
+| `homeassistant` | string or null | 最低 Home Assistant 版本 |
+| `state` | string | `startup`、`started`、`stopped`、`unknown` 或 `error` |
+| `repository` | string | 仓库的 slug |
+| `build` | boolean | 如果应用是在本地构建的则为 `true` |
+| `url` | string or null | 应用的网站 |
+| `icon` | boolean | 如果应用有图标则为 `true` |
+| `logo` | boolean | 如果应用有徽标则为 `true` |
+| `system_managed` | boolean | 如果 Home Assistant 管理该应用则为 `true` |
 
-## Store app
+## 商店应用（Store app）
 
-An app in the store, installed or not, as [`GET /store/addons`](/apps/supervisor-api/store/#get-storeaddons) lists it.
+商店中的应用，无论是否已安装，即 [`GET /store/addons`](/apps/supervisor-api/store/#get-storeaddons) 列出的对象。
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `name` | string | Name of the app |
-| `slug` | string | Slug of the app |
-| `description` | string | Short description |
-| `advanced` | boolean | Deprecated, always `false` |
-| `arch` | list | Supported architectures |
-| `available` | boolean | `true` if the app can be installed on this system |
-| `build` | boolean | `true` if the app is built locally |
-| `documentation` | boolean | `true` if the app has documentation |
-| `homeassistant` | string or null | Minimum Home Assistant version |
-| `icon` | boolean | `true` if the app has an icon |
-| `logo` | boolean | `true` if the app has a logo |
-| `installed` | boolean | `true` if the app is installed |
-| `repository` | string | Slug of the repository |
-| `stage` | string | `stable`, `experimental`, or `deprecated` |
-| `update_available` | boolean | `true` if an update is available |
-| `url` | string or null | Website of the app |
-| `version` | string or null | Installed version, `null` if it is not installed |
-| `version_latest` | string | Latest available version |
+| `name` | string | 应用名称 |
+| `slug` | string | 应用的 slug |
+| `description` | string | 简短描述 |
+| `advanced` | boolean | 已弃用，始终为 `false` |
+| `arch` | list | 支持的架构 |
+| `available` | boolean | 如果应用可以安装在此系统上则为 `true` |
+| `build` | boolean | 如果应用是在本地构建的则为 `true` |
+| `documentation` | boolean | 如果应用有文档则为 `true` |
+| `homeassistant` | string or null | 最低 Home Assistant 版本 |
+| `icon` | boolean | 如果应用有图标则为 `true` |
+| `logo` | boolean | 如果应用有徽标则为 `true` |
+| `installed` | boolean | 如果应用已安装则为 `true` |
+| `repository` | string | 仓库的 slug |
+| `stage` | string | `stable`、`experimental` 或 `deprecated` |
+| `update_available` | boolean | 如果有可用更新则为 `true` |
+| `url` | string or null | 应用的网站 |
+| `version` | string or null | 已安装的版本，未安装时为 `null` |
+| `version_latest` | string | 最新可用版本 |
 
-## Repository
+## 仓库（Repository）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `slug` | string | Slug of the repository |
-| `name` | string | Name of the repository |
-| `source` | string | Git URL, or `local` and `core` for the built-in ones |
-| `url` | string | Website of the repository. Same as `source` when the repository sets none |
-| `maintainer` | string | Maintainer of the repository |
+| `slug` | string | 仓库的 slug |
+| `name` | string | 仓库名称 |
+| `source` | string | Git URL，内置仓库则为 `local` 和 `core` |
+| `url` | string | 仓库的网站。仓库未设置时与 `source` 相同 |
+| `maintainer` | string | 仓库的维护者 |
 
-## Backup
+## 备份（Backup）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `slug` | string | ID of the backup |
-| `name` | string | Name of the backup |
-| `date` | string | When the backup was made, in ISO 8601 |
-| `type` | string | `full` or `partial` |
-| `size` | float | Size in MB |
-| `size_bytes` | integer | Size in bytes |
-| `location` | string or null | The main location. `null` is the local backup folder |
-| `locations` | list | All locations the backup is stored in |
-| `protected` | boolean | `true` if the backup has a password |
-| `location_attributes` | dictionary | `protected` and `size_bytes` per location. The local folder is `.local` |
-| `compressed` | boolean | `true` if the backup is compressed |
-| `content` | dictionary | What is in the backup: `homeassistant` (boolean), `addons` (list of slugs), and `folders` (list) |
+| `slug` | string | 备份的 ID |
+| `name` | string | 备份名称 |
+| `date` | string | 备份创建的时间，采用 ISO 8601 格式 |
+| `type` | string | `full` 或 `partial` |
+| `size` | float | 大小（MB） |
+| `size_bytes` | integer | 大小（字节） |
+| `location` | string or null | 主位置。`null` 表示本地备份文件夹 |
+| `locations` | list | 备份存储的所有位置 |
+| `protected` | boolean | 如果备份有密码则为 `true` |
+| `location_attributes` | dictionary | 每个位置的 `protected` 和 `size_bytes`。本地文件夹为 `.local` |
+| `compressed` | boolean | 如果备份已压缩则为 `true` |
+| `content` | dictionary | 备份中的内容：`homeassistant`（boolean）、`addons`（slug 列表）和 `folders`（列表） |
 
-## Stats
+## 统计（Stats）
 
-Resource usage of a container.
+容器的资源使用情况。
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `cpu_percent` | float or null | CPU use in percent, `null` for a one-shot sample |
-| `cpu_usage` | integer | Total CPU time of the container |
-| `cpu_system_usage` | integer | Total CPU time of the system |
-| `online_cpus` | integer | Number of CPUs |
-| `memory_usage` | integer | Memory use in bytes |
-| `memory_limit` | integer | Memory limit in bytes |
-| `memory_percent` | float | Memory use in percent of the limit |
-| `network_rx` | integer | Bytes received |
-| `network_tx` | integer | Bytes sent |
-| `blk_read` | integer | Bytes read from disk |
-| `blk_write` | integer | Bytes written to disk |
+| `cpu_percent` | float or null | CPU 使用率（百分比），单次采样时为 `null` |
+| `cpu_usage` | integer | 容器的总 CPU 时间 |
+| `cpu_system_usage` | integer | 系统的总 CPU 时间 |
+| `online_cpus` | integer | CPU 数量 |
+| `memory_usage` | integer | 内存使用量（字节） |
+| `memory_limit` | integer | 内存限制（字节） |
+| `memory_percent` | float | 内存使用量占限制的百分比 |
+| `network_rx` | integer | 接收的字节数 |
+| `network_tx` | integer | 发送的字节数 |
+| `blk_read` | integer | 从磁盘读取的字节数 |
+| `blk_write` | integer | 写入磁盘的字节数 |
 
-## Service
+## 服务（Service）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `slug` | string | Name of the service, like `mqtt` |
-| `available` | boolean | `true` if an app provides the service |
-| `providers` | list | Slugs of the apps that can provide the service |
+| `slug` | string | 服务名称，例如 `mqtt` |
+| `available` | boolean | 如果有应用提供该服务则为 `true` |
+| `providers` | list | 可以提供该服务的应用的 slug |
 
-## Discovery
+## 发现（Discovery）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `addon` | string | Slug of the app that sent the message |
-| `service` | string | Domain of the integration |
-| `uuid` | string | ID of the message |
-| `config` | dictionary | What the integration needs to connect |
+| `addon` | string | 发送该消息的应用的 slug |
+| `service` | string | 集成（integration）的域 |
+| `uuid` | string | 消息的 ID |
+| `config` | dictionary | 集成连接所需的信息 |
 
-## Panel
+## 面板（Panel）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `title` | string | Title in the sidebar |
-| `icon` | string | Icon in the sidebar |
-| `admin` | boolean | `true` if only administrators see the panel |
-| `enable` | boolean | `true` if the panel shows in the sidebar |
+| `title` | string | 侧边栏中的标题 |
+| `icon` | string | 侧边栏中的图标 |
+| `admin` | boolean | 如果只有管理员可见该面板则为 `true` |
+| `enable` | boolean | 如果面板显示在侧边栏中则为 `true` |
 
-## User
+## 用户（User）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `username` | string | User name to log in with |
-| `name` | string | Display name |
-| `is_owner` | boolean | `true` if the user is the owner |
-| `is_active` | boolean | `true` if the user can log in |
-| `local_only` | boolean | `true` if the user can only log in from the local network |
-| `group_ids` | list | Groups of the user, like `system-admin` |
+| `username` | string | 用于登录的用户名 |
+| `name` | string | 显示名称 |
+| `is_owner` | boolean | 如果该用户是所有者则为 `true` |
+| `is_active` | boolean | 如果该用户可以登录则为 `true` |
+| `local_only` | boolean | 如果该用户只能从本地网络登录则为 `true` |
+| `group_ids` | list | 用户所属的组，例如 `system-admin` |
 
-## Job
+## 任务（Job）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `name` | string | Name of the job |
-| `reference` | string or null | What the job works on, like an app slug or backup ID |
-| `uuid` | string | ID of the job |
-| `progress` | float | Progress from 0 to 100, when the job can tell |
-| `stage` | string or null | Stage the job is in |
-| `done` | boolean or null | `true` when done, `null` if the job has not started |
-| `created` | string | When the job was created, in ISO 8601 |
-| `errors` | list | [Job errors](#job-error) |
-| `extra` | dictionary or null | Extra information about the job or its stage |
-| `child_jobs` | list | Jobs this job started |
+| `name` | string | 任务名称 |
+| `reference` | string or null | 任务处理的对象，例如应用 slug 或备份 ID |
+| `uuid` | string | 任务的 ID |
+| `progress` | float | 进度（0 到 100），当任务可以报告时 |
+| `stage` | string or null | 任务所处的阶段 |
+| `done` | boolean or null | 完成时为 `true`，任务尚未开始时为 `null` |
+| `created` | string | 任务创建的时间，采用 ISO 8601 格式 |
+| `errors` | list | [任务错误](#job-error) |
+| `extra` | dictionary or null | 关于任务或其阶段的额外信息 |
+| `child_jobs` | list | 此任务启动的任务 |
 
-### Job error
+### 任务错误（Job error）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `type` | string | Type of the error |
-| `message` | string | What went wrong |
-| `stage` | string or null | Stage the job was in |
-| `error_key` | string or null | Stable key for the error |
-| `extra_fields` | dictionary or null | Values that go with the `error_key` |
+| `type` | string | 错误类型 |
+| `message` | string | 出了什么问题 |
+| `stage` | string or null | 任务当时所处的阶段 |
+| `error_key` | string or null | 错误的稳定键 |
+| `extra_fields` | dictionary or null | 与 `error_key` 一起使用的值 |
 
-## Issue
+## 问题（Issue）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `uuid` | string | ID of the issue |
-| `type` | string | Type of the issue |
-| `context` | string | Where the issue is, like `addon`, `core`, or `system` |
-| `reference` | string or null | What it is about, like an app slug |
-| `reference_extra` | dictionary or null | Extra details, like the port that conflicts |
+| `uuid` | string | 问题的 ID |
+| `type` | string | 问题类型 |
+| `context` | string | 问题所在的位置，例如 `addon`、`core` 或 `system` |
+| `reference` | string or null | 相关对象，例如应用 slug |
+| `reference_extra` | dictionary or null | 额外细节，例如冲突的端口 |
 
-## Suggestion
+## 建议（Suggestion）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `uuid` | string | ID of the suggestion |
-| `type` | string | Type of the fix |
-| `context` | string | Where the fix applies |
-| `reference` | string or null | What it is about, like an app slug |
-| `reference_extra` | dictionary or null | Extra details |
-| `auto` | boolean | `true` if the Supervisor applies the fix by itself |
+| `uuid` | string | 建议的 ID |
+| `type` | string | 修复类型 |
+| `context` | string | 修复适用的位置 |
+| `reference` | string or null | 相关对象，例如应用 slug |
+| `reference_extra` | dictionary or null | 额外细节 |
+| `auto` | boolean | 如果 Supervisor 会自行应用修复则为 `true` |
 
-## Check
+## 检查（Check）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `slug` | string | Slug of the check |
-| `enabled` | boolean | `true` if the check runs |
+| `slug` | string | 检查的 slug |
+| `enabled` | boolean | 如果检查会运行则为 `true` |
 
-## Host service
+## 主机服务（Host service）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `name` | string | Name of the systemd unit |
-| `description` | string | Description of the unit |
-| `state` | string | State of the unit, like `active` |
+| `name` | string | systemd 单元的名称 |
+| `description` | string | 单元的描述 |
+| `state` | string | 单元的状态，例如 `active` |
 
-## Network interface
+## 网络接口（Network interface）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `interface` | string | Name of the interface, like `eth0` |
-| `type` | string | `ethernet`, `wireless`, or `vlan` |
-| `enabled` | boolean | `true` if the interface is on |
-| `connected` | boolean | `true` if the interface is connected |
-| `primary` | boolean | `true` if this is the primary interface |
-| `mac` | string | MAC address |
-| `ipv4` | dictionary or null | [IP configuration](#ip-configuration) |
-| `ipv6` | dictionary or null | [IP configuration](#ip-configuration) |
-| `wifi` | dictionary or null | [Wi-Fi configuration](#wi-fi-configuration) |
-| `vlan` | dictionary or null | [VLAN configuration](#vlan-configuration) |
-| `mdns` | string | `default`, `off`, `resolve`, or `announce` |
-| `llmnr` | string | `default`, `off`, `resolve`, or `announce` |
+| `interface` | string | 接口名称，例如 `eth0` |
+| `type` | string | `ethernet`、`wireless` 或 `vlan` |
+| `enabled` | boolean | 如果接口已启用则为 `true` |
+| `connected` | boolean | 如果接口已连接则为 `true` |
+| `primary` | boolean | 如果这是主接口则为 `true` |
+| `mac` | string | MAC 地址 |
+| `ipv4` | dictionary or null | [IP 配置](#ip-configuration) |
+| `ipv6` | dictionary or null | [IP 配置](#ip-configuration) |
+| `wifi` | dictionary or null | [Wi-Fi 配置](#wi-fi-configuration) |
+| `vlan` | dictionary or null | [VLAN 配置](#vlan-configuration) |
+| `mdns` | string | `default`、`off`、`resolve` 或 `announce` |
+| `llmnr` | string | `default`、`off`、`resolve` 或 `announce` |
 
-### IP configuration
+### IP 配置（IP configuration）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `method` | string | `auto`, `static`, or `disabled` |
-| `address` | list | Addresses with prefix |
-| `gateway` | string or null | The gateway |
-| `nameservers` | list | DNS servers |
-| `route_metric` | integer or null | Route metric, lower wins |
-| `ready` | boolean | `true` if the configuration is active |
-| `addr_gen_mode` | string | IPv6 only: `eui64`, `stable-privacy`, `default-or-eui64`, or `default` |
-| `ip6_privacy` | string | IPv6 only: `disabled`, `enabled-prefer-public`, `enabled`, or `default` |
+| `method` | string | `auto`、`static` 或 `disabled` |
+| `address` | list | 带前缀的地址 |
+| `gateway` | string or null | 网关 |
+| `nameservers` | list | DNS 服务器 |
+| `route_metric` | integer or null | 路由度量值，数值越小优先级越高 |
+| `ready` | boolean | 如果配置已生效则为 `true` |
+| `addr_gen_mode` | string | 仅限 IPv6：`eui64`、`stable-privacy`、`default-or-eui64` 或 `default` |
+| `ip6_privacy` | string | 仅限 IPv6：`disabled`、`enabled-prefer-public`、`enabled` 或 `default` |
 
-### Wi-Fi configuration
+### Wi-Fi 配置（Wi-Fi configuration）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `mode` | string | `infrastructure`, `mesh`, `adhoc`, or `ap` |
-| `auth` | string | `open`, `wep`, `wpa-psk`, or `unsupported` |
-| `ssid` | string | Name of the network |
-| `signal` | integer or null | Signal strength in percent |
+| `mode` | string | `infrastructure`、`mesh`、`adhoc` 或 `ap` |
+| `auth` | string | `open`、`wep`、`wpa-psk` 或 `unsupported` |
+| `ssid` | string | 网络名称 |
+| `signal` | integer or null | 信号强度（百分比） |
 
-### VLAN configuration
+### VLAN 配置（VLAN configuration）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
 | `id` | integer | VLAN ID |
-| `parent` | string | Interface the VLAN runs on |
+| `parent` | string | VLAN 运行所在的接口 |
 
-## Access point
+## 接入点（Access point）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `mode` | string | `infrastructure`, `mesh`, or `adhoc` |
-| `ssid` | string | Name of the network |
-| `frequency` | integer | Frequency in MHz |
-| `signal` | integer | Signal strength in percent |
-| `mac` | string | MAC address of the access point |
+| `mode` | string | `infrastructure`、`mesh` 或 `adhoc` |
+| `ssid` | string | 网络名称 |
+| `frequency` | integer | 频率（MHz） |
+| `signal` | integer | 信号强度（百分比） |
+| `mac` | string | 接入点的 MAC 地址 |
 
-## Mount
+## 挂载（Mount）
 
-The same object goes into `POST /mounts` and comes back from `GET /mounts`. Some keys only go one way.
+同一个对象会发送到 `POST /mounts` 并从 `GET /mounts` 返回。有些键只单向传递。
 
-| Key | Type | Direction | Description |
+| 键 | 类型 | 方向 | 描述 |
 | --- | --- | --- | --- |
-| `name` | string | Both | Name of the mount: letters, digits, and underscores |
-| `type` | string | Both | `cifs`, `nfs`, or `disk` |
-| `usage` | string | Both | `backup`, `media`, or `share` |
-| `read_only` | boolean | Both | Mount read-only. Not allowed for backup mounts. Default `false` |
-| `server` | string | Both | CIFS and NFS: host name or IP address of the server |
-| `port` | integer | Both | CIFS and NFS: port, when it is not the default |
-| `share` | string | Both | CIFS: name of the share |
-| `version` | string or null | Both | CIFS: `1.0` or `2.0` to force an old protocol version |
-| `username` | string | Request | CIFS: user name. Send it together with `password`, or leave both out |
-| `password` | string | Request | CIFS: password |
-| `path` | string | Both | NFS: path on the server |
-| `uuid` | string | Both | Disk: UUID of the partition, from [`GET /host/disks`](/apps/supervisor-api/host/#get-hostdisks) |
-| `device` | string | Request | Disk: device path of the partition. Send `uuid`, `device`, or both |
-| `filesystem` | string | Response | Disk: file system of the partition |
-| `state` | string or null | Response | State of the mount, like `active` or `failed` |
-| `user_path` | string or null | Response | Where apps find the mount, like `/media/nas` |
+| `name` | string | Both | 挂载的名称：字母、数字和下划线 |
+| `type` | string | Both | `cifs`、`nfs` 或 `disk` |
+| `usage` | string | Both | `backup`、`media` 或 `share` |
+| `read_only` | boolean | Both | 以只读方式挂载。备份挂载不允许。默认为 `false` |
+| `server` | string | Both | CIFS 和 NFS：服务器的主机名或 IP 地址 |
+| `port` | integer | Both | CIFS 和 NFS：端口（非默认端口时） |
+| `share` | string | Both | CIFS：共享名称 |
+| `version` | string or null | Both | CIFS：`1.0` 或 `2.0`，用于强制使用旧协议版本 |
+| `username` | string | Request | CIFS：用户名。与 `password` 一起发送，或两者都省略 |
+| `password` | string | Request | CIFS：密码 |
+| `path` | string | Both | NFS：服务器上的路径 |
+| `uuid` | string | Both | 磁盘：分区的 UUID，来自 [`GET /host/disks`](/apps/supervisor-api/host/#get-hostdisks) |
+| `device` | string | Request | 磁盘：分区的设备路径。发送 `uuid`、`device` 或两者 |
+| `filesystem` | string | Response | 磁盘：分区的文件系统 |
+| `state` | string or null | Response | 挂载的状态，例如 `active` 或 `failed` |
+| `user_path` | string or null | Response | 应用找到挂载的位置，例如 `/media/nas` |
 
-## Boot slot
+## 启动槽位（Boot slot）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `state` | string | State of the slot as RAUC reports it, like `booted`, `active`, or `inactive` |
-| `status` | string or null | Result of the last boot from this slot: `good` or `bad` |
-| `version` | string or null | OS version in this slot |
+| `state` | string | RAUC 报告的槽位状态，例如 `booted`、`active` 或 `inactive` |
+| `status` | string or null | 上次从此槽位启动的结果：`good` 或 `bad` |
+| `version` | string or null | 此槽位中的操作系统版本 |
 
-## Disk
+## 磁盘（Disk）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `name` | string | Name of the disk |
-| `vendor` | string | Vendor |
-| `model` | string | Model |
-| `serial` | string | Serial number |
-| `size` | integer | Size in bytes |
-| `id` | string | ID of the disk: the UDisks2 drive ID, or the device path when there is none |
-| `dev_path` | string | Device path |
+| `name` | string | 磁盘名称 |
+| `vendor` | string | 厂商 |
+| `model` | string | 型号 |
+| `serial` | string | 序列号 |
+| `size` | integer | 大小（字节） |
+| `id` | string | 磁盘的 ID：UDisks2 驱动器 ID，如果没有则为设备路径 |
+| `dev_path` | string | 设备路径 |
 
-## Device
+## 设备（Device）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `name` | string | Name of the device |
-| `sysfs` | string | Path in sysfs |
-| `dev_path` | string | Path in `/dev` |
-| `subsystem` | string or null | Subsystem, like `tty`, `input`, or `sound` |
-| `by_id` | string or null | The `/dev/serial/by-id` style link |
-| `attributes` | dictionary | The udev attributes |
-| `children` | list | Paths of the child devices in sysfs |
+| `name` | string | 设备名称 |
+| `sysfs` | string | sysfs 中的路径 |
+| `dev_path` | string | `/dev` 中的路径 |
+| `subsystem` | string or null | 子系统，例如 `tty`、`input` 或 `sound` |
+| `by_id` | string or null | `/dev/serial/by-id` 风格的链接 |
+| `attributes` | dictionary | udev 属性 |
+| `children` | list | sysfs 中子设备的路径 |
 
-## Drive
+## 驱动器（Drive）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `vendor` | string | Vendor |
-| `model` | string | Model |
-| `revision` | string | Firmware revision |
-| `serial` | string | Serial number |
-| `id` | string | ID of the drive |
-| `size` | integer | Size in bytes |
-| `time_detected` | string | When the drive was found, in ISO 8601 |
-| `connection_bus` | string | Bus, like `usb` |
-| `seat` | string | Seat the drive belongs to |
-| `removable` | boolean | `true` if the user can remove the drive |
-| `ejectable` | boolean | `true` if the system can eject the drive |
-| `filesystems` | list | [Filesystems](#filesystem) on the drive |
+| `vendor` | string | 厂商 |
+| `model` | string | 型号 |
+| `revision` | string | 固件版本 |
+| `serial` | string | 序列号 |
+| `id` | string | 驱动器的 ID |
+| `size` | integer | 大小（字节） |
+| `time_detected` | string | 发现驱动器的时间，采用 ISO 8601 格式 |
+| `connection_bus` | string | 总线，例如 `usb` |
+| `seat` | string | 驱动器所属的 seat |
+| `removable` | boolean | 如果用户可以移除驱动器则为 `true` |
+| `ejectable` | boolean | 如果系统可以弹出驱动器则为 `true` |
+| `filesystems` | list | 驱动器上的[文件系统](#filesystem) |
 
-### Filesystem
+### 文件系统（Filesystem）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `device` | string | Device file, like `/dev/sda1` |
-| `id` | string | ID of the filesystem |
-| `size` | integer | Size in bytes |
-| `name` | string | Label of the filesystem |
-| `system` | boolean | `true` if it is a system filesystem |
-| `mount_points` | list | Where the filesystem is mounted |
+| `device` | string | 设备文件，例如 `/dev/sda1` |
+| `id` | string | 文件系统的 ID |
+| `size` | integer | 大小（字节） |
+| `name` | string | 文件系统的标签 |
+| `system` | boolean | 如果是系统文件系统则为 `true` |
+| `mount_points` | list | 文件系统的挂载位置 |
 
-## Audio
+## 音频（Audio）
 
-The `audio` object of [`GET /audio/info`](/apps/supervisor-api/plugins/#get-audioinfo).
+[`GET /audio/info`](/apps/supervisor-api/plugins/#get-audioinfo) 的 `audio` 对象。
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `card` | list | [Sound cards](#sound-card) |
-| `input` | list | [Audio devices](#audio-device) for input |
-| `output` | list | [Audio devices](#audio-device) for output |
-| `application` | list | [Application streams](#application-stream) |
+| `card` | list | [声卡](#sound-card) |
+| `input` | list | 用于输入的[音频设备](#audio-device) |
+| `output` | list | 用于输出的[音频设备](#audio-device) |
+| `application` | list | [应用流](#application-stream) |
 
-### Sound card
+### 声卡（Sound card）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `name` | string | Name of the card |
-| `index` | integer | PulseAudio index of the card |
-| `driver` | string | Driver of the card |
-| `profiles` | list | Profiles, each with `name`, `description`, and `active` |
+| `name` | string | 声卡名称 |
+| `index` | integer | 声卡的 PulseAudio 索引 |
+| `driver` | string | 声卡的驱动程序 |
+| `profiles` | list | 配置文件，每个包含 `name`、`description` 和 `active` |
 
-### Audio device
+### 音频设备（Audio device）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `name` | string | Name of the device |
-| `index` | integer | PulseAudio index of the device |
-| `description` | string | Description |
-| `volume` | float | Volume, from 0 to 1 |
-| `mute` | boolean | `true` if muted |
-| `default` | boolean | `true` if this is the default device |
-| `card` | integer or null | Index of the sound card |
-| `applications` | list | [Application streams](#application-stream) on this device |
+| `name` | string | 设备名称 |
+| `index` | integer | 设备的 PulseAudio 索引 |
+| `description` | string | 描述 |
+| `volume` | float | 音量（0 到 1） |
+| `mute` | boolean | 如果已静音则为 `true` |
+| `default` | boolean | 如果这是默认设备则为 `true` |
+| `card` | integer or null | 声卡的索引 |
+| `applications` | list | 此设备上的[应用流](#application-stream) |
 
-### Application stream
+### 应用流（Application stream）
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `name` | string | Name of the application |
-| `index` | integer | PulseAudio index of the stream |
-| `stream_index` | string | Index of the device the stream plays on |
-| `stream_type` | string | `input` or `output` |
-| `volume` | float | Volume, from 0 to 1 |
-| `mute` | boolean | `true` if muted |
-| `app` | string | Slug of the app the stream belongs to |
+| `name` | string | 应用名称 |
+| `index` | integer | 流的 PulseAudio 索引 |
+| `stream_index` | string | 流播放所在设备的索引 |
+| `stream_type` | string | `input` 或 `output` |
+| `volume` | float | 音量（0 到 1） |
+| `mute` | boolean | 如果已静音则为 `true` |
+| `app` | string | 流所属应用的 slug |

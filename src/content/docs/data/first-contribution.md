@@ -1,30 +1,30 @@
 ---
-title: Your first data contribution
-description: Share analytics from your installation, check exactly what it sends, and see your installation counted. It takes a few minutes and one restart.
+title: 你的第一次数据贡献
+description: 从你的 Home Assistant 安装实例共享分析数据，准确查看它发送了什么，并看到你的安装实例被计入。只需几分钟和一次重启。
 order: 1
-sidebarLabel: Your first contribution
+sidebarLabel: 你的第一次贡献
 ---
 
-The simplest data contribution is sharing analytics from your own Home Assistant installation. It helps the project decide where to spend its time, and it gives the team real numbers when they ask manufacturers for local control. Nothing is shared unless you turn it on.
+最简单的数据贡献方式是从你自己的 Home Assistant 安装实例共享分析数据（analytics）。这能帮助项目决定把时间花在哪里，也能让团队在向厂商争取本地控制时拿出真实的数据。在你开启之前，不会共享任何内容。
 
-## 1. Open the analytics settings
+## 1. 打开分析设置
 
-In Home Assistant, go to **Settings** > **System** > **Analytics**. If you set up Home Assistant recently, you may have made a choice here during onboarding already.
+在 Home Assistant 中，前往 **设置** > **系统** > **分析**。如果你最近才设置 Home Assistant，可能在新手引导过程中已经在这里做过选择了。
 
-## 2. Choose what to share
+## 2. 选择要共享的内容
 
-There are several options, and each one is separate:
+有多个选项，每个都是独立的：
 
-- **Basic analytics**: your Home Assistant version and installation type, and some details about your system. Needed for usage and statistical data.
-- **Usage**: which integrations and apps you use.
-- **Statistical data**: counts only, like the number of entities and automations.
-- **Diagnostics**: crash reports when an unexpected error occurs, sent to Sentry. For now, this only covers the Supervisor and the OS Agent.
+- **基础分析**：你的 Home Assistant 版本和安装类型，以及一些关于你系统的细节。使用情况和统计数据需要它。
+- **使用情况**：你使用了哪些集成（integration）和应用。
+- **统计数据**：仅包含数量，例如实体（entity）和自动化（automation）的数量。
+- **诊断**：发生意外错误时的崩溃报告，发送到 Sentry。目前，这只涵盖 Supervisor 和 OS Agent。
 
-[What analytics shares](/data/reference/analytics-data/) lists every field. Turn on what you are comfortable with. Every option helps.
+[分析数据共享了什么](/data/reference/analytics-data/) 列出了每一个字段。开启你感到放心的选项即可。每个选项都有帮助。
 
-## 3. Turn on logging for analytics
+## 3. 为分析开启日志记录
 
-Every time Home Assistant sends a report, it writes the exact data to its log. It does that at the `info` level, and by default the log only shows warnings and errors. So turn it on for analytics first. Add this to your `configuration.yaml` file. If you already have a `logger:` section, add the line under its `logs:` instead:
+Home Assistant 每次发送报告时，都会把确切的数据写入它的日志。它以 `info` 级别写入，而默认情况下日志只显示警告和错误。所以要先为分析开启日志。把以下内容添加到你的 `configuration.yaml` 文件中。如果你已经有 `logger:` 部分，则把这一行添加到它的 `logs:` 下面：
 
 ```yaml
 logger:
@@ -32,30 +32,30 @@ logger:
     homeassistant.components.analytics: info
 ```
 
-Then restart Home Assistant. See the [logger integration](https://www.home-assistant.io/integrations/logger/) for more about log levels.
+然后重启 Home Assistant。有关日志级别的更多信息，请参阅 [logger 集成](https://www.home-assistant.io/integrations/logger/)。
 
-Rather not restart? Run the `logger.set_level` action from **Settings** > **Tools** > **Actions**, with `homeassistant.components.analytics: info` as its data. That lasts until the next restart, and the next report can then be up to 24 hours away.
+不想重启？可以在 **设置** > **工具** > **动作** 中运行 `logger.set_level` 动作，并以 `homeassistant.components.analytics: info` 作为其数据。这会持续到下次重启为止，而下一份报告最多可能在 24 小时之后。
 
-## 4. Check what you sent
+## 4. 检查你发送了什么
 
-Home Assistant sends the first report 15 minutes after it starts, and then once every 24 hours. Go to **Settings** > **System** > **Logs**, select **Show raw logs** in the menu, and look for a message that starts with:
+Home Assistant 在启动 15 分钟后发送第一份报告，之后每 24 小时发送一次。前往 **设置** > **系统** > **日志**，在菜单中选择 **显示原始日志**，然后查找一条以下列内容开头的消息：
 
 ```text
 Submitted analytics to Home Assistant servers. Information submitted includes
 ```
 
-That line is the complete daily report: your basic, usage, and statistical data. No names, no entity IDs, no addresses. The receiving server adds one thing: your country, derived from your IP address, and for the United States, your state.
+这一行就是完整的每日报告：你的基础数据、使用情况和统计数据。没有名称、没有实体 ID、没有地址。接收服务器会添加一项内容：你的国家，它由你的 IP 地址推导得出；对于美国，还包括你所在的州。
 
-It is not everything analytics can send. The **Device database** data goes out as a separate report, and the log only says that it was sent, not what was in it. **Diagnostics** crash reports go to Sentry, and do not show up here at all.
+这并不是分析功能能发送的全部内容。**设备数据库** 数据会作为单独的报告发出，日志只会说明它已发送，而不会说明其中包含什么。**诊断** 崩溃报告会发送到 Sentry，完全不会出现在这里。
 
-When you have seen it, remove the line from `configuration.yaml` and restart again, to keep your log quiet.
+查看之后，请从 `configuration.yaml` 中删除这一行并再次重启，以保持日志简洁。
 
-## 5. Look at the result
+## 5. 查看结果
 
-Open [analytics.home-assistant.io](https://analytics.home-assistant.io/). The site shows how many installations share analytics, which versions they run, and which integrations are most popular. Your installation is now one of them, as one anonymous count among many.
+打开 [analytics.home-assistant.io](https://analytics.home-assistant.io/)。该网站显示了有多少安装实例共享分析数据、它们运行哪些版本，以及哪些集成最受欢迎。你的安装实例现在也是其中之一，是众多匿名计数中的一个。
 
-## What is next
+## 接下来做什么
 
-- Help build the device database: turn on the **Device database** preview feature in **Settings** > **System** > **Labs**, and share anonymized data about your devices. See [How analytics works](/data/how-it-works/#the-device-database).
-- Read the [privacy principles](/data/privacy/) behind all of this.
-- Curious about the data of your own home? Try [Explore your own data](/data/guides/explore-your-data/).
+- 帮助构建设备数据库：在 **设置** > **系统** > **实验室** 中开启 **设备数据库** 预览功能，并共享关于你设备的匿名化数据。请参阅 [分析功能如何运作](/data/how-it-works/#the-device-database)。
+- 阅读这一切背后的[隐私原则](/data/privacy/)。
+- 对你自己家中的数据感到好奇？试试[探索你自己的数据](/data/guides/explore-your-data/)。

@@ -1,153 +1,153 @@
 ---
-title: Plugin endpoints
-description: Supervisor API endpoints for the plugins that run next to Home Assistant, the audio server, the CLI, DNS, multicast, and the observer.
-sidebarLabel: Plugins
+title: 插件端点
+description: Supervisor API 端点，用于运行在 Home Assistant 旁边的插件：音频服务器、CLI、DNS、多播和观察者。
+sidebarLabel: 插件
 order: 6
 ---
 
-Plugins are containers the Supervisor runs to support the system: the audio server, the CLI, the DNS server, the multicast proxy, and the observer. Every plugin has the same basic endpoints, plus a few of its own.
+插件（plugin）是 Supervisor 为支持系统而运行的容器：音频服务器、CLI、DNS 服务器、多播代理和观察者。每个插件都有相同的基本端点，外加一些自己的端点。
 
-To use them, your app needs `hassio_api: true` with the `manager` or `admin` role. The `/info` endpoints work with any role.
+要使用这些端点，你的应用需要 `hassio_api: true` 并具有 `manager` 或 `admin` 角色。`/info` 端点对任何角色都可用。
 
-## Shared endpoints
+## 共享端点
 
-Each plugin has these. Replace `<plugin>` with `audio`, `cli`, `dns`, `multicast`, or `observer`.
+每个插件都有以下端点。将 `<plugin>` 替换为 `audio`、`cli`、`dns`、`multicast` 或 `observer`。
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/<plugin>/info` | Version information, and the details listed per plugin below |
-| `GET` | `/<plugin>/stats` | Resource usage of the plugin |
-| `POST` | `/<plugin>/update` | Update the plugin |
+| `GET` | `/<plugin>/info` | 版本信息，以及下方各插件列出的详细信息 |
+| `GET` | `/<plugin>/stats` | 插件的资源使用情况 |
+| `POST` | `/<plugin>/update` | 更新插件 |
 
-`GET /<plugin>/info` always returns:
+`GET /<plugin>/info` 始终返回：
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `version` | string | Installed version |
-| `version_latest` | string | Latest available version |
-| `update_available` | boolean | `true` if an update is available |
+| `version` | string | 已安装的版本 |
+| `version_latest` | string | 可用的最新版本 |
+| `update_available` | boolean | 如果有可用更新则为 `true` |
 
-`GET /<plugin>/stats` returns a [stats model](/apps/supervisor-api/models/#stats). Add the `one_shot` query parameter to get a single quick sample.
+`GET /<plugin>/stats` 返回一个[统计模型](/apps/supervisor-api/models/#stats)。添加 `one_shot` 查询参数可获得单个快速采样。
 
-`POST /<plugin>/update` installs a new version. Fails while the Supervisor is still starting up or restoring a backup. The audio, DNS, and multicast plugins also refuse a version that is already installed.
+`POST /<plugin>/update` 安装新版本。在 Supervisor 仍在启动或恢复备份时会失败。audio、DNS 和 multicast 插件还会拒绝已经安装的版本。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `version` | string | No | Version to install. Default is the latest version |
+| `version` | string | 否 | 要安装的版本。默认为最新版本 |
 
-The audio, DNS, and multicast plugins also have `POST /<plugin>/restart`, which fails while the Supervisor is still starting up or restoring a backup, and [log endpoints](/apps/supervisor-api/#log-endpoints) under `/<plugin>/logs`.
+audio、DNS 和 multicast 插件还有 `POST /<plugin>/restart`（在 Supervisor 仍在启动或恢复备份时会失败），以及位于 `/<plugin>/logs` 下的[日志端点](/apps/supervisor-api/#log-endpoints)。
 
-## Audio
+## 音频
 
-The audio plugin runs PulseAudio, which apps with `audio: true` use.
+audio 插件运行 PulseAudio，具有 `audio: true` 的应用会使用它。
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/audio/info` | Audio devices and streams |
-| `POST` | `/audio/reload` | Read the audio devices again |
-| `POST` | `/audio/restart` | Restart the audio server |
-| `POST` | `/audio/profile` | Switch the profile of a sound card |
-| `POST` | `/audio/default/<source>` | Set the default device |
-| `POST` | `/audio/volume/<source>` | Set the volume of a device |
-| `POST` | `/audio/volume/<source>/application` | Set the volume of an application stream |
-| `POST` | `/audio/mute/<source>` | Mute a device |
-| `POST` | `/audio/mute/<source>/application` | Mute an application stream |
+| `GET` | `/audio/info` | 音频设备和流 |
+| `POST` | `/audio/reload` | 重新读取音频设备 |
+| `POST` | `/audio/restart` | 重启音频服务器 |
+| `POST` | `/audio/profile` | 切换声卡的配置文件 |
+| `POST` | `/audio/default/<source>` | 设置默认设备 |
+| `POST` | `/audio/volume/<source>` | 设置设备的音量 |
+| `POST` | `/audio/volume/<source>/application` | 设置应用程序流的音量 |
+| `POST` | `/audio/mute/<source>` | 静音设备 |
+| `POST` | `/audio/mute/<source>/application` | 静音应用程序流 |
 
-`<source>` is `input` or `output`.
+`<source>` 为 `input` 或 `output`。
 
 ### `GET /audio/info`
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `host` | string | IP address of the audio server on the internal network |
-| `audio` | dictionary | An [audio model](/apps/supervisor-api/models/#audio) |
+| `host` | string | 音频服务器在内部网络上的 IP 地址 |
+| `audio` | dictionary | 一个[音频模型](/apps/supervisor-api/models/#audio) |
 
-Plus `version`, `version_latest`, and `update_available`.
+另外还有 `version`、`version_latest` 和 `update_available`。
 
 ### `POST /audio/profile`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `card` | string | Yes | Name of the sound card |
-| `name` | string | Yes | Name of the profile |
+| `card` | string | 是 | 声卡的名称 |
+| `name` | string | 是 | 配置文件的名称 |
 
 ### `POST /audio/default/<source>`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `name` | string | Yes | Name of the device |
+| `name` | string | 是 | 设备的名称 |
 
 ### `POST /audio/volume/<source>`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `index` | integer | Yes | Index of the device, or of the stream for the `application` path |
-| `volume` | float | Yes | Volume, from 0 to 1 |
+| `index` | integer | 是 | 设备的索引，对于 `application` 路径则为流的索引 |
+| `volume` | float | 是 | 音量，从 0 到 1 |
 
 ### `POST /audio/mute/<source>`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `index` | integer | Yes | Index of the device, or of the stream for the `application` path |
-| `active` | boolean | Yes | `true` to mute |
+| `index` | integer | 是 | 设备的索引，对于 `application` 路径则为流的索引 |
+| `active` | boolean | 是 | `true` 表示静音 |
 
 ## CLI
 
-The CLI plugin runs the `ha` command line tool. It only has the shared endpoints.
+CLI 插件运行 `ha` 命令行工具。它只有共享端点。
 
 ## DNS
 
-The DNS plugin runs CoreDNS. Every container on the internal network uses it to resolve names, including the names of apps.
+DNS 插件运行 CoreDNS。内部网络上的每个容器都使用它来解析名称，包括应用的名称。
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/dns/info` | DNS settings |
-| `POST` | `/dns/options` | Change the DNS settings |
-| `POST` | `/dns/restart` | Restart the DNS server |
-| `POST` | `/dns/reset` | Reset the DNS settings to the defaults |
+| `GET` | `/dns/info` | DNS 设置 |
+| `POST` | `/dns/options` | 更改 DNS 设置 |
+| `POST` | `/dns/restart` | 重启 DNS 服务器 |
+| `POST` | `/dns/reset` | 将 DNS 设置重置为默认值 |
 
 ### `GET /dns/info`
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `host` | string | IP address of the DNS server on the internal network |
-| `servers` | list | DNS servers you set |
-| `locals` | list | DNS servers of the host |
-| `mdns` | boolean | `true` if mDNS names are resolved |
-| `llmnr` | boolean | `true` if LLMNR names are resolved |
-| `fallback` | boolean | `true` if a public DNS server is used when the others fail |
+| `host` | string | DNS 服务器在内部网络上的 IP 地址 |
+| `servers` | list | 你设置的 DNS 服务器 |
+| `locals` | list | 宿主机的 DNS 服务器 |
+| `mdns` | boolean | 如果解析 mDNS 名称则为 `true` |
+| `llmnr` | boolean | 如果解析 LLMNR 名称则为 `true` |
+| `fallback` | boolean | 如果在其他服务器失败时使用公共 DNS 服务器则为 `true` |
 
-Plus `version`, `version_latest`, and `update_available`.
+另外还有 `version`、`version_latest` 和 `update_available`。
 
 ### `POST /dns/options`
 
-A change restarts the DNS server.
+更改会重启 DNS 服务器。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `servers` | list | No | Up to 8 DNS servers, written as `dns://` with an IPv4 address, like `dns://1.1.1.1`. IPv6 addresses are not accepted |
-| `fallback` | boolean | No | Use a public DNS server when the others fail |
+| `servers` | list | 否 | 最多 8 个 DNS 服务器，写作 `dns://` 加上 IPv4 地址，例如 `dns://1.1.1.1`。不接受 IPv6 地址 |
+| `fallback` | boolean | 否 | 在其他服务器失败时使用公共 DNS 服务器 |
 
-## Multicast
+## 多播
 
-The multicast plugin forwards mDNS between the host network and the internal network.
+multicast 插件在宿主机网络和内部网络之间转发 mDNS。
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/multicast/info` | Multicast information |
-| `POST` | `/multicast/options` | Turn the plugin on or off |
-| `POST` | `/multicast/restart` | Restart the plugin |
+| `GET` | `/multicast/info` | 多播信息 |
+| `POST` | `/multicast/options` | 开启或关闭插件 |
+| `POST` | `/multicast/restart` | 重启插件 |
 
-`GET /multicast/info` adds `enabled` (boolean) to the shared keys.
+`GET /multicast/info` 在共享键的基础上增加了 `enabled`（boolean）。
 
 ### `POST /multicast/options`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `enabled` | boolean | No | Turn the plugin on or off |
+| `enabled` | boolean | 否 | 开启或关闭插件 |
 
-The update endpoint fails while the plugin is turned off.
+在插件关闭时，更新端点会失败。
 
-## Observer
+## 观察者
 
-The observer is a small web page that shows the state of the system, also when Home Assistant itself does not start. It only has the shared endpoints. `GET /observer/info` adds `host`, its IP address on the internal network.
+观察者（observer）是一个小型网页，用于显示系统的状态，即使 Home Assistant 本身无法启动时也可以使用。它只有共享端点。`GET /observer/info` 增加了 `host`，即它在内部网络上的 IP 地址。

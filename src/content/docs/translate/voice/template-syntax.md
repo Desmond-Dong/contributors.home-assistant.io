@@ -1,33 +1,33 @@
 ---
-title: Template sentence syntax
-description: The complete reference for sentence files, the template syntax, lists, expansion rules, responses, and the common file of a language.
+title: 模板句子语法
+description: 句子文件、模板语法、列表、展开规则、回复以及语言通用文件的完整参考。
 order: 7
-sidebarLabel: Template syntax
+sidebarLabel: 模板语法
 ---
 
-This page describes every file you write for a language in the [intents repository](https://github.com/OHF-Voice/intents), except tests, which have [their own page](/translate/voice/test-syntax/). New to all of this? Read [How Assist understands language](/translate/voice/how-assist-understands/) first.
+本页介绍在[意图仓库](https://github.com/OHF-Voice/intents)中为一种语言编写的所有文件，测试文件除外，测试文件有[单独的页面](/translate/voice/test-syntax/)。如果你是初次接触这些内容，请先阅读 [Assist 如何理解语言](/translate/voice/how-assist-understands/)。
 
-The templates are matched by [hassil](https://github.com/OHF-Voice/hassil). The repository uses hassil 3.
+模板由 [hassil](https://github.com/OHF-Voice/hassil) 进行匹配。该仓库使用 hassil 3。
 
-## Files of a language
+## 一种语言的文件
 
-| Path | Contents |
+| 路径 | 内容 |
 | --- | --- |
-| `sentences/<language>/<intent>/<slot_combination>.yaml` | [Sentence file](#sentence-files) for one intent and slot combination |
-| `sentences/<language>/_common.yaml` | [Common file](#the-common-file): error responses, skip words, and settings |
-| `lists/<language>/<group>.yaml` | [Lists](#lists) of this language |
-| `lists/<group>.yaml` | [Shared lists](#shared-lists): number ranges and wildcards for every language |
-| `rules/<language>/<group>.yaml` | [Expansion rules](#expansion-rules) of this language |
-| `responses/<language>/<intent>.yaml` | [Responses](#responses) of one intent |
-| `tests/<language>/<intent>/<slot_combination>.yaml` | [Tests](/translate/voice/test-syntax/) for one intent and slot combination |
+| `sentences/<language>/<intent>/<slot_combination>.yaml` | 一个意图和槽位组合的[句子文件](#sentence-files) |
+| `sentences/<language>/_common.yaml` | [通用文件](#the-common-file)：错误回复、跳过词和设置 |
+| `lists/<language>/<group>.yaml` | 该语言的[列表](#lists) |
+| `lists/<group>.yaml` | [共享列表](#shared-lists)：所有语言通用的数字范围和通配符 |
+| `rules/<language>/<group>.yaml` | 该语言的[展开规则](#expansion-rules) |
+| `responses/<language>/<intent>.yaml` | 一个意图的[回复](#responses) |
+| `tests/<language>/<intent>/<slot_combination>.yaml` | 一个意图和槽位组合的[测试](/translate/voice/test-syntax/) |
 
-You choose the group names of list and rule files yourself. Put things together in a way that makes sense for your language, like a `lights.yaml` for colors and brightness levels, or a `verbs.yaml` for verbs.
+列表文件和规则文件的组名由你自己决定。请以对您的语言有意义的方式组织内容，例如用 `lights.yaml` 存放颜色和亮度级别，或用 `verbs.yaml` 存放动词。
 
-Besides the lists in `lists/`, every template can use the lists `name`, `area`, and `floor`. Home Assistant fills those with the names of the user's exposed entities, areas, and floors when it matches a sentence.
+除了 `lists/` 中的列表外，每个模板还可以使用 `name`、`area` 和 `floor` 列表。Home Assistant 在匹配句子时，会用用户已公开的实体（entity）、区域（area）和楼层的名称来填充这些列表。
 
-## Slot combinations
+## 槽位组合
 
-The intents and their slot combinations are declared in [`intents.yaml`](https://github.com/OHF-Voice/intents/blob/main/intents.yaml), for all languages at once. You do not change this file, but you need to read it. A slot combination looks like this:
+所有语言的意图及其槽位组合都在 [`intents.yaml`](https://github.com/OHF-Voice/intents/blob/main/intents.yaml) 中统一声明。你不需要修改这个文件，但需要阅读它。槽位组合如下所示：
 
 ```yaml
 HassTurnOn:
@@ -51,29 +51,29 @@ HassTurnOn:
         - "open sliding door"
 ```
 
-| Key | Meaning |
+| 键 | 含义 |
 | --- | --- |
-| `slots` | The slots every sentence of this combination must fill, no more and no fewer |
-| `importance` | How much a language needs this combination: `required`, `usable`, `complete`, or `optional` |
-| `name_domains` | For combinations with the `name` slot: the entity domains `{name}` may match, grouped by importance |
-| `name_domain_groups` | Named sets of domains that sentence files can refer to, instead of repeating the list |
-| `inferred_domains` | For combinations with the `domain` slot: the domains the words of a sentence can imply, grouped by importance |
-| `context_area` | `true` when the area comes from the voice satellite, not from the sentence, like in "turn on the lights in here" |
-| `wildcard_slots` | Slots that must be filled by a [wildcard list](#wildcards), like the name of a timer |
-| `example` | One or more English examples |
+| `slots` | 该组合的每个句子必须填充的槽位，不多也不少 |
+| `importance` | 一种语言对该组合的需求程度：`required`、`usable`、`complete` 或 `optional` |
+| `name_domains` | 对于带有 `name` 槽位的组合：`{name}` 可以匹配的实体域（domain），按重要性分组 |
+| `name_domain_groups` | 句子文件可以引用的命名域集合，避免重复列出 |
+| `inferred_domains` | 对于带有 `domain` 槽位的组合：句子中的词语可以隐含的域，按重要性分组 |
+| `context_area` | 当区域来自语音卫星设备而非句子时为 `true`，例如"打开这里的灯" |
+| `wildcard_slots` | 必须由[通配符列表](#wildcards)填充的槽位，例如计时器的名称 |
+| `example` | 一个或多个英语示例 |
 
-The importance levels mean:
+重要性级别的含义：
 
-- `required`: the bare minimum. Validation fails when the sentences are missing.
-- `usable`: what people expect. Validation warns when the sentences are missing.
-- `complete`: needed for full coverage of the language.
-- `optional`: extra, not counted for full coverage.
+- `required`：最低要求。缺少句子时验证将失败。
+- `usable`：人们所期望的。缺少句子时验证会发出警告。
+- `complete`：完整覆盖该语言所必需的。
+- `optional`：额外的，不计入完整覆盖。
 
-When a combination uses `name` or `domain`, the levels are set per domain under `name_domains` or `inferred_domains`, instead of with `importance`.
+当组合使用 `name` 或 `domain` 时，重要性级别在 `name_domains` 或 `inferred_domains` 下按域分别设置，而不是使用 `importance`。
 
-## Sentence files
+## 句子文件
 
-A sentence file holds the templates of one intent and one slot combination, in one or more groups under `data`:
+一个句子文件包含一个意图和一个槽位组合的模板，按 `data` 下的一个或多个组组织：
 
 ```yaml
 # sentences/en/HassTurnOn/name_only.yaml, shortened
@@ -96,94 +96,94 @@ data:
     response: "cover"
 ```
 
-Each group supports these keys:
+每个组支持以下键：
 
-| Key | Required | Meaning |
+| 键 | 必需 | 含义 |
 | --- | --- | --- |
-| `sentences` | Yes | The [sentence templates](#template-syntax) |
-| `response` | Yes | The key of the [response](#responses) to give when one of these sentences matches |
-| `name_domains` | When the combination has `name` | The entity domains these sentences target, as a list, or the name of a group from `name_domain_groups` |
-| `inferred_domain` | When the combination has `domain` | The one domain the words of these sentences imply, like `light` for "lights" |
-| `example` | No | A sentence this group matches, in your language |
-| `speech_to_phrase` | No | `true` to use the group for Speech-to-Phrase, see below |
+| `sentences` | 是 | [句子模板](#template-syntax) |
+| `response` | 是 | 当这些句子之一匹配时给出的[回复](#responses)的键 |
+| `name_domains` | 当组合带有 `name` 时 | 这些句子针对的实体域，可以是列表，也可以是 `name_domain_groups` 中某个组的名称 |
+| `inferred_domain` | 当组合带有 `domain` 时 | 这些句子的词语所隐含的唯一域，例如"灯"对应的 `light` |
+| `example` | 否 | 该组匹配的一个句子，用您的语言书写 |
+| `speech_to_phrase` | 否 | 设为 `true` 表示该组用于 Speech-to-Phrase，见下文 |
 
-A few rules apply:
+有几条规则适用：
 
-- Every template must fill exactly the slots that `intents.yaml` declares for the combination. A template fills a slot directly with `{slot}`, or through an expansion rule that contains it. The `domain` slot is the exception: you never write it in a template, it comes from `inferred_domain`.
-- Every domain marked `required` in `name_domains` or `inferred_domains` must be covered by some group. Not necessarily the same group: split the sentences in whatever way suits your language. This is why English uses one group for things you "turn on" and another for covers you "open".
-- Write `example` in your language. An example that is the same as the English one gives a warning.
+- 每个模板必须恰好填充 `intents.yaml` 为该组合声明的槽位。模板可以直接用 `{slot}` 填充槽位，或通过包含该槽位的展开规则填充。`domain` 槽位是例外：你永远不要在模板中写它，它来自 `inferred_domain`。
+- 在 `name_domains` 或 `inferred_domains` 中标记为 `required` 的每个域都必须由某个组覆盖。不一定是同一个组：可以按适合您的语言的方式拆分句子。这就是为什么英语用一个组表示"打开"的事物，用另一个组表示"打开"的窗帘。
+- 用您的语言书写 `example`。与英语示例相同的示例会触发警告。
 
-You do not write which entities a sentence may target, or fixed slot values. That part is generated from `intents.yaml`, which keeps it the same for every language.
+你不需要写句子可以针对哪些实体，也不需要写固定的槽位值。这部分由 `intents.yaml` 生成，从而保证每种语言都保持一致。
 
 ### Speech-to-Phrase
 
-Speech-to-Phrase is a speech-to-text engine that only recognizes a fixed set of phrases, which makes it fast on small hardware. Groups with `speech_to_phrase: true` are used to build that set of phrases.
+Speech-to-Phrase 是一个只识别固定短语集合的语音转文本引擎，这使它在小型硬件上运行很快。带有 `speech_to_phrase: true` 的组用于构建该短语集合。
 
-When a slot combination has groups with and without the tag, the tagged groups are a smaller set just for Speech-to-Phrase, and Home Assistant itself ignores them. Every sentence in them must also be matched by the untagged groups. When every group is tagged, they are used for both.
+当一个槽位组合同时带有带标签和不带标签的组时，带标签的组是仅用于 Speech-to-Phrase 的较小集合，Home Assistant 本身会忽略它们。其中的每个句子也必须能被不带标签的组匹配。当所有组都带标签时，它们将同时用于两者。
 
-## Template syntax
+## 模板语法
 
-A sentence template describes many sentences at once.
+一个句子模板可以同时描述许多句子。
 
-### Alternatives
+### 备选项
 
-Put alternatives between parentheses and separate them with `|`:
+将备选项放在圆括号中，并用 `|` 分隔：
 
 ```text
 set color to (red | green | blue)
 ```
 
-Alternatives also work inside a word. `turn(s | ed | ing)` matches "turns", "turned", and "turning".
+备选项也可以在单词内部使用。`turn(s | ed | ing)` 匹配 "turns"、"turned" 和 "turning"。
 
-### Optional parts
+### 可选部分
 
-Put an optional word, phrase, or part of a word between square brackets:
+将可选的单词、短语或单词的一部分放在方括号中：
 
 ```text
 turn on [the] light[s]
 ```
 
-This matches "turn on the lights", "turn on the light", "turn on lights", and "turn on light". `[this | that]` makes a choice of alternatives optional.
+这会匹配 "turn on the lights"、"turn on the light"、"turn on lights" 和 "turn on light"。`[this | that]` 使一组备选项变为可选。
 
-### Lists
+### 列表
 
-`{list_name}` matches any value of a [list](#lists), and puts the value in the slot of the same name. When the slot has a different name than the list, write `{list_name:slot_name}`:
+`{list_name}` 匹配[列表](#lists)中的任意值，并将该值放入同名的槽位中。当槽位名称与列表名称不同时，写作 `{list_name:slot_name}`：
 
 ```text
 set [the] {name} brightness to {brightness_level:brightness}
 ```
 
-A list may not be inside an alternative or an optional part. `(text | {list_name})` and `[{list_name}]` are not allowed, because a template must always fill the same slots.
+列表不能位于备选项或可选部分之内。`(text | {list_name})` 和 `[{list_name}]` 都不允许，因为模板必须始终填充相同的槽位。
 
-### Expansion rules
+### 展开规则
 
-`<rule_name>` is replaced by the body of an [expansion rule](#expansion-rules):
+`<rule_name>` 会被[展开规则](#expansion-rules)的内容替换：
 
 ```text
 <turn> on [<the>] {name}
 ```
 
-### Permutations
+### 排列
 
-Items between parentheses, separated by `;`, match in any order:
+圆括号中用 `;` 分隔的各个项可以以任意顺序匹配：
 
 ```text
 <turn> on ({name}; <area>)
 ```
 
-This matches both "turn on the lamp in the kitchen" and "turn on in the kitchen the lamp", which some languages need. Spaces are added between the items, so they never merge into a new word. Keep it to two to four items: four items already give 24 orders, five give 120.
+这同时匹配 "turn on the lamp in the kitchen" 和 "turn on in the kitchen the lamp"，某些语言需要这种能力。各项之间会自动添加空格，因此它们不会合并成新单词。请控制在两到四个项：四个项已经有 24 种顺序，五个则有 120 种。
 
-### Escaping
+### 转义
 
-To match one of the characters `( ) [ ] { } < >` literally, put a backslash in front of it, like `\(`.
+要按字面匹配 `( ) [ ] { } < >` 中的某个字符，请在其前面加反斜杠，例如 `\(`。
 
-### Sizes
+### 大小
 
-Every optional part doubles the number of sentences a template matches, and alternatives multiply it. Large numbers make matching slow on small devices. Use `count_sentences` to check, see [Contribute sentences and responses](/translate/voice/contributing/#try-things-out).
+每个可选部分都会使模板匹配的句子数量翻倍，备选项则会使数量相乘。数量过大会使小型设备上的匹配变慢。可以使用 `count_sentences` 来检查，参见[贡献句子和回复](/translate/voice/contributing/#try-things-out)。
 
-## Lists
+## 列表
 
-A list holds the possible values of a slot. There are three types: fixed values, a range of numbers, and a wildcard. The lists of a language live in `lists/<language>/`, and every file names its language:
+一个列表保存一个槽位的可能取值。有三种类型：固定值、数字范围和通配符。一种语言的列表位于 `lists/<language>/` 中，每个文件都声明其语言：
 
 ```yaml
 # lists/en/lights.yaml
@@ -196,9 +196,9 @@ lists:
       - "orange"
 ```
 
-### Values in your language, values for Home Assistant
+### 您的语言中的值，Home Assistant 使用的值
 
-Intent handlers expect some values in English, like colors. Use `in` and `out` to match a word in your language and pass the English value on:
+意图处理器期望某些值是英语的，例如颜色。使用 `in` 和 `out` 来匹配您的语言中的词语，并传递英语值：
 
 ```yaml
 language: "nl"
@@ -211,7 +211,7 @@ lists:
         out: "orange"
 ```
 
-`in` can be a template with alternatives, and `out` can be a number. This turns words into fixed numbers:
+`in` 可以是带有备选项的模板，`out` 可以是数字。这可以将词语转换为固定数字：
 
 ```yaml
 language: "en"
@@ -224,11 +224,11 @@ lists:
         out: 1
 ```
 
-Values may not contain lists or expansion rules, and may not be entirely optional.
+值不能包含列表或展开规则，也不能完全为可选。
 
-### Ranges
+### 范围
 
-A range matches numbers, written as digits or as words. "Fifty percent" and "50 percent" both match:
+范围匹配数字，可以写成数字或词语。"百分之五十"和 "50 percent" 都能匹配：
 
 ```yaml
 lists:
@@ -240,18 +240,18 @@ lists:
       step: 1
 ```
 
-| Key | Required | Meaning |
+| 键 | 必需 | 含义 |
 | --- | --- | --- |
-| `from` | Yes | The lowest number |
-| `to` | Yes | The highest number |
-| `step` | No | The step between numbers, `1` by default |
-| `type` | No | `number`, `percentage`, or `temperature` |
-| `fractions` | No | Also match `halves` or `tenths` |
-| `multiplier` | No | Multiply the matched number by this value |
+| `from` | 是 | 最小数字 |
+| `to` | 是 | 最大数字 |
+| `step` | 否 | 数字之间的步长，默认为 `1` |
+| `type` | 否 | `number`、`percentage` 或 `temperature` |
+| `fractions` | 否 | 同时匹配 `halves` 或 `tenths` |
+| `multiplier` | 否 | 将匹配到的数字乘以该值 |
 
-### Wildcards
+### 通配符
 
-A wildcard matches any text:
+通配符匹配任意文本：
 
 ```yaml
 lists:
@@ -261,11 +261,11 @@ lists:
     wildcard: true
 ```
 
-With the template `play {album} by {artist}`, the sentence "play the white album by the beatles" fills `album` with "the white album" and `artist` with "the beatles". Wildcards are greedy, so make sure the words around them are specific enough not to catch sentences of other intents.
+使用模板 `play {album} by {artist}` 时，句子 "play the white album by the beatles" 会将 `album` 填充为 "the white album"，将 `artist` 填充为 "the beatles"。通配符是贪婪的，因此请确保其周围的词语足够具体，以免捕获其他意图的句子。
 
-### Shared lists
+### 共享列表
 
-Ranges and wildcards do not need translation. Put them in `lists/<group>.yaml`, at the root of `lists/`, and every language can use them. Shared files have no `language` key:
+范围和通配符不需要翻译。将它们放在 `lists/` 根目录下的 `lists/<group>.yaml` 中，所有语言都可以使用。共享文件没有 `language` 键：
 
 ```yaml
 # lists/lights.yaml
@@ -282,11 +282,11 @@ lists:
       step: 100
 ```
 
-Lists with values cannot be shared, because their values are words in a language.
+带有值的列表不能共享，因为它们的值是一种语言中的词语。
 
-## Expansion rules
+## 展开规则
 
-An expansion rule is a piece of a template you use often. The rules of a language live in `rules/<language>/`:
+展开规则是你经常使用的模板片段。一种语言的规则位于 `rules/<language>/` 中：
 
 ```yaml
 # rules/en/verbs.yaml
@@ -304,18 +304,18 @@ expansion_rules:
   here: "([in] here | [in] (this | the | my | our) (room | area | space))"
 ```
 
-A rule must contain some text that is not optional.
+规则必须包含一些非可选的文本。
 
-Rules make templates shorter, but they can also make them hard to read. Two recommendations keep that in check:
+规则可以让模板更简短，但也可能使模板难以阅读。以下两条建议可以避免这个问题：
 
-- **A rule should not contain a list.** With `{name}` hidden in a `<name>` rule, you cannot see which slots a template fills. It also leads to doubled words, like `[the] <name>` turning into `[the] [the] {name}`.
-- **A rule should not use other rules.** Readers then have to follow a chain to see what a template matches, and alternatives in nested rules multiply the number of sentences fast.
+- **规则不应包含列表。** 如果 `{name}` 被隐藏在 `<name>` 规则中，你就无法看出模板填充了哪些槽位。这还会导致词语重复，例如 `[the] <name>` 变成 `[the] [the] {name}`。
+- **规则不应使用其他规则。** 否则读者必须沿着链条追踪才能知道模板匹配什么，而且嵌套规则中的备选项会使句子数量快速增长。
 
-A pull request fails when your language has rules or lists that nothing uses. Remove them, or run `python3 -m script.intentfest prune --language <language> --write` to do it for you.
+当您的语言中存在无人使用的规则或列表时，拉取请求会失败。请删除它们，或者运行 `python3 -m script.intentfest prune --language <language> --write` 来自动完成。
 
-## Responses
+## 回复
 
-Every group of sentences names a `response`. The response templates of an intent live in `responses/<language>/<intent>.yaml`:
+每个句子组都会指定一个 `response`。一个意图的回复模板位于 `responses/<language>/<intent>.yaml` 中：
 
 ```yaml
 # responses/en/HassLightSet.yaml
@@ -338,19 +338,19 @@ data:
     response: "brightness"
 ```
 
-Responses are [Jinja2](https://jinja.palletsprojects.com/en/latest/templates/) templates. They are a different format than sentence templates: here, `{{ }}` prints a value.
+回复是 [Jinja2](https://jinja.palletsprojects.com/en/latest/templates/) 模板。它们与句子模板是不同的格式：在这里，`{{ }}` 用于输出一个值。
 
-Every response can use `slots`, with the value of each slot that matched, like `{{ slots.name }}`. Some intents give a response more to work with, like `state` (the first entity that matched) or `query` (the entities a question about states matched). [Built-in intents](/translate/voice/intents/) lists those response variables per intent, and `response_variables` in `intents.yaml` describes them.
+每个回复都可以使用 `slots`，其中包含每个匹配槽位的值，例如 `{{ slots.name }}`。某些意图会为回复提供更多信息，例如 `state`（第一个匹配的实体）或 `query`（关于状态的问题匹配到的实体）。[内置意图](/translate/voice/intents/)按意图列出了这些回复变量，`intents.yaml` 中的 `response_variables` 对它们进行了描述。
 
-The `default` response is used when no other response is named. Look at the [English responses](https://github.com/OHF-Voice/intents/tree/main/responses/en) for examples, and at the [style guide](/translate/voice/style-guide/#responses) for how to write them.
+当没有指定其他回复时，使用 `default` 回复。请参考[英语回复](https://github.com/OHF-Voice/intents/tree/main/responses/en)中的示例，以及[风格指南](/translate/voice/style-guide/#responses)中关于如何编写回复的说明。
 
-## The common file
+## 通用文件
 
-`sentences/<language>/_common.yaml` holds what is not tied to one intent: error responses, skip words, and settings.
+`sentences/<language>/_common.yaml` 保存与单个意图无关的内容：错误回复、跳过词和设置。
 
-### Error responses
+### 错误回复
 
-Assist gives an error response when it cannot handle a command, for example because no entity has the name you said:
+当 Assist 无法处理命令时，它会给出错误回复，例如因为没有实体具有你所说的名称：
 
 ```yaml
 language: "en"
@@ -361,11 +361,11 @@ responses:
     no_entity: "Sorry, I am not aware of any device called {{ entity }}"
 ```
 
-The full set of keys is in the [English common file](https://github.com/OHF-Voice/intents/blob/main/sentences/en/_common.yaml). Translate all of them.
+完整的键集合在[英语通用文件](https://github.com/OHF-Voice/intents/blob/main/sentences/en/_common.yaml)中。请翻译所有这些键。
 
-### Skip words
+### 跳过词
 
-Skip words are ignored while matching. They are words people add to a command without changing what it means:
+跳过词在匹配时会被忽略。它们是人们在命令中添加但不改变其含义的词语：
 
 ```yaml
 skip_words:
@@ -373,9 +373,9 @@ skip_words:
   - "can you"
 ```
 
-### Settings
+### 设置
 
-Languages that are written without spaces between words can change how matching works:
+单词之间没有空格分隔的语言可以更改匹配的工作方式：
 
 ```yaml
 language: "zh-CN"
@@ -383,5 +383,5 @@ settings:
   ignore_whitespace: true
 ```
 
-- `ignore_whitespace`: ignore spaces while matching, for languages such as Chinese and Japanese.
-- `filter_with_regex`: no longer has any effect. It is still accepted, so older files keep working.
+- `ignore_whitespace`：匹配时忽略空格，适用于中文和日语等语言。
+- `filter_with_regex`：已不再有任何效果。它仍然被接受，以便旧文件继续工作。

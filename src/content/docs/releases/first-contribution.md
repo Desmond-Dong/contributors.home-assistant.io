@@ -1,30 +1,30 @@
 ---
-title: Your first beta test
-description: Join the beta, run the next release a week before everyone else, and report what breaks.
+title: 你的第一次 Beta 测试
+description: 加入 Beta 渠道，比其他人提前一周运行下一个版本，并报告出现的问题。
 order: 1
-sidebarLabel: Your first contribution
+sidebarLabel: 你的第一次贡献
 ---
 
-Every month, a beta of the next release comes out a week before the release itself. Every bug found in that week is a bug that does not hit everyone else's home. Testing the beta is one of the most valuable things you can do, and you only need a Home Assistant installation to do it.
+每个月，下一个版本的 Beta 版会在正式发布前一周推出。在这一周里发现的每一个 Bug，都不会影响到其他所有人的家庭。测试 Beta 版是你能做的最有价值的事情之一，而你只需要一个 Home Assistant 安装即可完成。
 
-## 1. Know what you are signing up for
+## 1. 了解你要参与的事情
 
-A beta is almost done, but not quite. Most of the time it works fine. Sometimes something breaks. Before you join:
+Beta 版已接近完成，但还不算完全就绪。大多数时候它运行正常，但有时也会出问题。在加入之前：
 
-- Test on an installation where a problem is an annoyance, not a disaster. If your heating or your alarm depends on Home Assistant, think twice, or test on a second installation.
-- Make sure you have a recent backup. Home Assistant OS makes one before every update, if you let it.
-- Expect several betas in one week. Fixes come in as they are found.
+- 在一个出现问题只是小麻烦而非灾难的安装上进行测试。如果你的供暖或报警系统依赖 Home Assistant，请三思，或者在第二个安装上进行测试。
+- 确保你有最近的备份。如果你允许的话，Home Assistant OS 会在每次更新前自动创建备份。
+- 预计一周内会有多个 Beta 版本。修复会随着问题的发现陆续推出。
 
-## 2. Join the beta channel
+## 2. 加入 Beta 渠道
 
-On Home Assistant OS:
+在 Home Assistant OS 上：
 
-1. Go to **Settings** > **System** > **Updates**.
-2. In the top-right corner, open the three dots menu.
-3. Select **Join beta channel**.
-4. Install the update that shows up. If it does not show up, select **Check for updates** in the same menu.
+1. 前往 **设置** > **系统** > **更新**。
+2. 在右上角，打开三个点的菜单。
+3. 选择 **加入 Beta 渠道**。
+4. 安装出现的更新。如果没有出现，请在同一菜单中选择 **检查更新**。
 
-You can also do it from the command line:
+你也可以通过命令行操作：
 
 ```bash
 ha supervisor options --channel beta
@@ -32,50 +32,50 @@ ha supervisor reload
 ha core update --backup
 ```
 
-Running Home Assistant Container? Use the `beta` tag of the image, and recreate the container:
+运行 Home Assistant Container？使用镜像的 `beta` 标签，并重新创建容器：
 
 ```bash
 docker pull ghcr.io/home-assistant/home-assistant:beta
 ```
 
-## 3. Read the beta release notes
+## 3. 阅读 Beta 版发布说明
 
-The [beta release notes](https://rc.home-assistant.io/latest-release-notes/) explain what is new, and list the backward-incompatible changes. Read the backward-incompatible changes first: they tell you what might need a change on your side. Then try out the new features you care about.
+[Beta 版发布说明](https://rc.home-assistant.io/latest-release-notes/)介绍了新内容，并列出了不向后兼容的变更。请先阅读不向后兼容的变更：它们告诉你哪些地方可能需要你自己做出调整。然后试用你关心的新功能。
 
-## 4. Report what breaks
+## 4. 报告出现的问题
 
-Found a problem? Before you report it:
+发现了问题？在报告之前：
 
-- Check that it is new. Did it work in the current stable release?
-- Search the issue tracker. Someone may have reported it already. If so, add what you know to that issue, instead of opening a new one.
+- 确认这是新问题。它在当前稳定版中是否正常工作？
+- 搜索 Issue 跟踪器。可能已经有人报告过了。如果是这样，请把你所知的信息补充到那个 Issue 中，而不是新建一个。
 
-Then open an issue in the right repository:
+然后在正确的仓库中打开 Issue：
 
-- Integrations, automations, and the core: [core issues](https://github.com/home-assistant/core/issues).
-- The interface, dashboards, and cards: [frontend issues](https://github.com/home-assistant/frontend/issues).
-- The documentation and release notes: [home-assistant.io issues](https://github.com/home-assistant/home-assistant.io/issues).
+- 集成（integration）、自动化和核心：[core issues](https://github.com/home-assistant/core/issues)。
+- 界面、仪表盘（dashboard）和卡片：[frontend issues](https://github.com/home-assistant/frontend/issues)。
+- 文档和发布说明：[home-assistant.io issues](https://github.com/home-assistant/home-assistant.io/issues)。
 
-You need a free GitHub account to open an issue. New to GitHub? See [Use GitHub, without being a developer](/start/github/).
+你需要一个免费的 GitHub 账户才能打开 Issue。不熟悉 GitHub？请参阅[无需成为开发者也能使用 GitHub](/start/github/)。
 
-Fill in the issue template completely. Mention the beta version you run, like `2026.11.0b2`, what you expected, what happened instead, and the relevant log messages. In core, link the documentation page of the integration and attach its diagnostics file if it has one: the template asks for both. A clear report gets fixed faster.
+请完整填写 Issue 模板。注明你运行的 Beta 版本，例如 `2026.11.0b2`、你的预期、实际发生的情况，以及相关的日志信息。在 core 中，请链接该集成的文档页面，并附上其诊断文件（如果有的话）：模板会要求提供这两项。一份清晰的报告能更快得到修复。
 
-### What happens after you report
+### 报告之后会发生什么
 
-- **Labels and integration owners.** In core, the Home Assistant bot adds an `integration:` label based on the integration you named, and mentions the [integration owners](/glossary/integration-owner/) of that integration, so the people who know it best get a notification.
-- **Duplicate check.** Once an integration label is on the issue, a workflow in core looks for similar open issues. If it finds any, it links them in a comment and adds the `potential-duplicate` label. Have a look: if one of them is your problem, continue there.
-- **Questions.** An integration owner or maintainer may ask for more details, like logs or diagnostics, or label the issue `needs-more-information`. Answer when you can, and keep testing the next betas.
-- **The fix.** A fix starts as a normal pull request. During the beta week, it lands in one of the next betas. After the release, it goes into a patch release. See [Get a fix into a patch release](/releases/guides/patch-releases/).
+- **标签和集成负责人。** 在 core 中，Home Assistant 机器人会根据你提到的集成添加 `integration:` 标签，并提及该集成的[集成负责人](/glossary/integration-owner/)，这样最了解它的人就会收到通知。
+- **重复检查。** 一旦 Issue 上有了集成标签，core 中的一个工作流会查找类似的未关闭 Issue。如果找到，它会在评论中链接它们，并添加 `potential-duplicate` 标签。请查看一下：如果其中一个是你的问题，请继续在那里跟进。
+- **提问。** 集成负责人或维护者可能会要求提供更多细节，例如日志或诊断信息，或者将 Issue 标记为 `needs-more-information`。在你能回答时请回复，并继续测试下一个 Beta 版本。
+- **修复。** 修复最初是一个普通的 Pull Request。在 Beta 周期间，它会进入后续的某个 Beta 版本。正式发布后，它会进入补丁版本。请参阅[让修复进入补丁版本](/releases/guides/patch-releases/)。
 
-An issue in core or the frontend without any activity for 90 days is marked `stale`, and closed 7 days later if nothing happens. A comment is enough to keep it open.
+core 或 frontend 中连续 90 天没有任何活动的 Issue 会被标记为 `stale`，如果之后 7 天内仍无动静，则会被关闭。一条评论就足以让它保持打开状态。
 
 > [!TIP]
-> Not sure if something is a bug, or how to report it? Ask in the **#beta** channel on the [Home Assistant Discord server](https://www.home-assistant.io/join-chat). Other testers and developers are there during the beta week.
+> 不确定某个问题是否是 Bug，或者不知道如何报告？请在 [Home Assistant Discord 服务器](https://www.home-assistant.io/join-chat)的 **#beta** 频道提问。Beta 周期间，其他测试者和开发者都在那里。
 
-## 5. Stay or leave
+## 5. 留下或离开
 
-When the release comes out, you get it as a normal update. You can stay on the beta channel for the next month, or leave it with **Leave beta channel** in the same menu. Leaving does not downgrade you automatically: you get the next stable release when it is newer than what you run.
+正式版发布时，你会像收到普通更新一样收到它。你可以继续留在 Beta 渠道等待下个月，也可以在同一菜单中选择 **离开 Beta 渠道** 离开。离开不会自动降级：当下一个稳定版比你当前运行的版本更新时，你才会收到它。
 
-## What is next
+## 接下来做什么
 
-- Read [How releases work](/releases/how-it-works/), so you know what happens when.
-- Found a typo or something unclear in the beta release notes? That is worth fixing too. See [Release notes and the release party](/releases/guides/release-notes/).
+- 阅读[版本发布是如何运作的](/releases/how-it-works/)，了解各阶段会发生什么。
+- 在 Beta 版发布说明中发现了错别字或不清楚的地方？这也值得修复。请参阅[发布说明与发布派对](/releases/guides/release-notes/)。

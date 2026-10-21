@@ -1,34 +1,34 @@
 ---
-title: Placeholders and references
-description: The parts of a string you should not translate, and how to handle them.
+title: 占位符和引用
+description: 字符串中不应翻译的部分，以及如何处理它们。
 order: 1
 ---
 
-Some strings are not plain text. They contain parts that Home Assistant fills in while it runs, or that point to another string. Those parts must stay exactly as they are.
+有些字符串并不是纯文本。它们包含 Home Assistant 在运行时填入的部分，或指向其他字符串的部分。这些部分必须保持原样。
 
-## Curly brackets: values filled in at runtime
+## 花括号：运行时填入的值
 
-A part between curly brackets, like `{name}`, is replaced by a live value. In this string:
+花括号之间的部分，例如 `{name}`，会被一个实时值替换。在这个字符串中：
 
 ```text
 {count} devices found
 ```
 
-Home Assistant puts the actual number in place of `{count}`. Keep the placeholder as it is, and move it to wherever it fits in your language:
+Home Assistant 会把实际数字填到 `{count}` 的位置。请保持占位符原样不动，并把它移动到在你的语言中合适的位置：
 
 ```text
 {count} Geräte gefunden
 ```
 
-Rules for curly brackets:
+花括号的规则：
 
-- Every placeholder in the English string must also appear in your translation.
-- Never translate the name between the brackets. `{count}` stays `{count}`.
-- You may move placeholders around, your sentence order wins.
+- 英文字符串中的每个占位符都必须出现在你的翻译中。
+- 永远不要翻译括号之间的名称。`{count}` 保持为 `{count}`。
+- 你可以移动占位符的位置，以你的语序为准。
 
-### Plurals and choices
+### 复数和选择
 
-Some placeholders choose between variants, for example for one or many items:
+有些占位符会在多个变体之间进行选择，例如用于单数或复数的情况：
 
 ```text
 {count, plural,
@@ -37,10 +37,10 @@ Some placeholders choose between variants, for example for one or many items:
 }
 ```
 
-Translate the text inside the inner brackets, not the keywords around it. Languages with more plural forms can add them, like `few` or `many`. The syntax is the ICU message format. The [format.js guide](https://formatjs.github.io/docs/core-concepts/icu-syntax/) explains all of it.
+请翻译内部括号中的文本，而不是它周围的关键字。拥有更多复数形式的语言可以添加它们，例如 `few` 或 `many`。其语法遵循 ICU 消息格式（ICU message format）。[format.js 指南](https://formatjs.github.io/docs/core-concepts/icu-syntax/) 对此有完整说明。
 
-## Square brackets: references to other strings
+## 方括号：对其他字符串的引用
 
-Text between square brackets, shown in green in Lokalise, is a reference. It points to another string, so the same text is translated only once. When you translate a string that contains a reference, you can usually take it over as is: use **Insert source** in the editor.
+方括号之间的文本（在 Lokalise 中显示为绿色）是一个引用。它指向另一个字符串，因此相同的文本只需翻译一次。当你翻译包含引用的字符串时，通常可以直接沿用：在编辑器中使用**插入源文（Insert source）**。
 
-Your language may have duplicates that English does not have. You are welcome to link those with references too. Lokalise explains how in its documentation on [key referencing](https://docs.lokalise.com/en/articles/1400528-key-referencing).
+你的语言中可能存在英语中没有的重复项。我们也欢迎你用引用将它们关联起来。Lokalise 在其关于[键引用（key referencing）](https://docs.lokalise.com/en/articles/1400528-key-referencing)的文档中对此有说明。

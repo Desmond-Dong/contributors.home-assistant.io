@@ -1,16 +1,16 @@
 ---
-title: Marketplace guides
-description: How to publish each kind of work, keep it up to date, and get it into the catalog.
+title: Marketplace 指南
+description: 如何发布各类作品、保持其更新，并将其收录到目录中。
 order: 10
-sidebarLabel: Guides
+sidebarLabel: 指南
 ---
 
-Each guide covers one kind of work. They build on [how the Marketplace works](/marketplace/how-it-works/), so read that first if you have not yet.
+每篇指南涵盖一种作品类型。它们建立在 [Marketplace 的工作原理](/marketplace/how-it-works/)之上，如果你还没有读过，请先阅读那篇。
 
-- [Custom integrations](/marketplace/guides/integrations/): what is different when your integration lives outside core.
-- [Dashboard cards and plugins](/marketplace/guides/dashboard/): package a card, a card feature, or another JavaScript module.
-- [Themes](/marketplace/guides/themes/): structure, the variables you can set, light and dark mode, and testing.
-- [Template macros](/marketplace/guides/templates/): share Jinja macros as a template file.
-- [Blueprints](/marketplace/guides/blueprints/): write, test, version, and share a blueprint.
-- [Releases and updates](/marketplace/guides/releases/): how users get your new versions, and how to keep them working.
-- [Get into the catalog](/marketplace/guides/catalog/): add your repository to the catalog, so everyone finds it.
+- [自定义集成（integration）](/marketplace/guides/integrations/)：当你的集成位于 core 之外时有什么不同。
+- [仪表盘卡片和插件](/marketplace/guides/dashboard/)：打包卡片、卡片功能或其他 JavaScript 模块。
+- [主题（theme）](/marketplace/guides/themes/)：结构、可设置的变量、浅色和深色模式，以及测试。
+- [模板宏（macro）](/marketplace/guides/templates/)：以模板文件的形式分享 Jinja 宏。
+- [蓝图（blueprint）](/marketplace/guides/blueprints/)：编写、测试、版本管理并分享蓝图。
+- [发布与更新](/marketplace/guides/releases/)：用户如何获取你的新版本，以及如何保持它们正常工作。
+- [收录到目录](/marketplace/guides/catalog/)：将你的仓库添加到目录中，让所有人都能找到它。

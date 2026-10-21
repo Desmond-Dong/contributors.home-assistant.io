@@ -1,22 +1,22 @@
 ---
-title: Test syntax
-description: How to write the tests that prove your sentences match the right intent, fill the right slots, and give the right response.
+title: 测试语法
+description: 如何编写测试，以证明你的句子匹配正确的意图、填充正确的槽位并给出正确的回复。
 order: 8
 ---
 
-Every sentence template in the [intents repository](https://github.com/OHF-Voice/intents) is covered by tests. A test gives a few example sentences, and says which slots they must fill and what Assist must answer. The tests run on every pull request.
+[intents 仓库](https://github.com/OHF-Voice/intents)中的每个句子模板都有测试覆盖。测试会给出几个示例句子，并说明它们必须填充哪些槽位，以及 Assist 必须回答什么。测试会在每次拉取请求（pull request）时运行。
 
-## Where tests live
+## 测试存放的位置
 
-Tests mirror the [sentence files](/translate/voice/template-syntax/#sentence-files), one file per intent and slot combination:
+测试与[句子文件](/translate/voice/template-syntax/#sentence-files)一一对应，每个意图和槽位组合对应一个文件：
 
 ```text
 tests/<language>/<intent>/<slot_combination>.yaml
 ```
 
-Every test file stands on its own. It declares the home it needs: the floors, areas, entities, timers, and media that its sentences talk about. Nothing is shared between test files, so you can read and change one without looking at the others.
+每个测试文件都是独立的。它会声明所需的家居环境：其句子所涉及的楼层、区域、实体、计时器和媒体。测试文件之间不共享任何内容，因此你可以只阅读和修改一个文件，而无需查看其他文件。
 
-## A test file
+## 一个测试文件
 
 ```yaml
 # tests/en/HassTurnOn/name_only.yaml
@@ -43,24 +43,24 @@ tests:
     response: "Opening"
 ```
 
-`tests` holds one or more groups. Each group has:
+`tests` 包含一个或多个组。每个组包含：
 
-| Key | Required | Meaning |
+| 键 | 是否必需 | 含义 |
 | --- | --- | --- |
-| `sentences` | Yes | The sentences to try |
-| `slots` | Yes, when the combination has slots | The slots every sentence must fill, with their values |
-| `response` | Yes | The exact text Assist must answer |
-| `timers` | No | [Timers](#timers-and-media) for this group only |
-| `media` | No | [Media](#timers-and-media) for this group only |
+| `sentences` | 是 | 要尝试的句子 |
+| `slots` | 是，当该组合包含槽位时 | 每个句子必须填充的槽位及其值 |
+| `response` | 是 | Assist 必须回答的确切文本 |
+| `timers` | 否 | 仅属于该组的[计时器](#timers-and-media) |
+| `media` | 否 | 仅属于该组的[媒体](#timers-and-media) |
 
-Every sentence must match the intent and slot combination the file is named after. `slots` must name exactly the slots of that combination in `intents.yaml`, including `domain` when the combination has it, like `domain: "light"`. `response` is the fully rendered response, compared character by character.
+每个句子都必须匹配文件名所对应的意图和槽位组合。`slots` 必须准确列出 `intents.yaml` 中该组合的槽位，如果组合中包含 `domain`，也要包含它，例如 `domain: "light"`。`response` 是完整渲染后的回复，会逐字符进行比较。
 
 > [!IMPORTANT]
-> Every sentence template must be matched by at least one test sentence. When a template is never used, the tests fail and list the untested templates. So when you add a template, add a test sentence that reaches it.
+> 每个句子模板必须至少被一个测试句子匹配到。当某个模板从未被使用时，测试会失败并列出未测试的模板。因此，添加模板时，请同时添加能匹配到它的测试句子。
 
-## Fixtures
+## 固定装置（fixture）
 
-The floors, areas, and entities at the top of a test file are its fixtures. They play the role of what a user has set up in Home Assistant. You only write names: the IDs are made from them.
+测试文件顶部的楼层、区域和实体是它的固定装置（fixture）。它们扮演用户在 Home Assistant 中已配置内容的作用。你只需编写名称：ID 会由名称生成。
 
 ```yaml
 language: "en"
@@ -82,17 +82,17 @@ entities:
     area: "Living Room"
 ```
 
-An entity accepts:
+实体可以接受：
 
-| Key | Required | Meaning |
+| 键 | 是否必需 | 含义 |
 | --- | --- | --- |
-| `name` | Yes | The name sentences use for the entity |
-| `domain` | Yes | The entity domain, like `light` or `cover` |
-| `area` | No | The name of an area declared in the same file |
-| `state` | No | The state of the entity, when the response reads it. Use `in` and `out` when the spoken state differs from the state Home Assistant stores |
-| `state_with_unit` | No | The state together with its unit, like `22 °C` |
-| `attributes` | No | Attributes the response or the match depends on. A device class goes here, as `device_class` |
-| `is_exposed` | No | Set to `false` for an entity that is not exposed to Assist. The response then leaves it out, for example from the answer to a question about states |
+| `name` | 是 | 句子中用于指代该实体的名称 |
+| `domain` | 是 | 实体域，例如 `light` 或 `cover` |
+| `area` | 否 | 同一文件中声明的某个区域的名称 |
+| `state` | 否 | 实体的状态，当回复会读取它时使用。当口语中的状态与 Home Assistant 存储的状态不同时，使用 `in` 和 `out` |
+| `state_with_unit` | 否 | 状态及其单位，例如 `22 °C` |
+| `attributes` | 否 | 回复或匹配所依赖的属性。设备类别（device class）写在这里，如 `device_class` |
+| `is_exposed` | 否 | 对于未暴露给 Assist 的实体，设置为 `false`。回复中会将其排除，例如在回答关于状态的问题时 |
 
 ```yaml
 entities:
@@ -103,11 +103,11 @@ entities:
       device_class: "window"
 ```
 
-Give fixtures specific names, like "Garage Door Left" or "Curtains Left", instead of generic ones like "garage door". Otherwise a test for a sentence like "open the garage door" cannot tell a name apart from a kind of device.
+请为固定装置使用具体的名称，例如"Garage Door Left"或"Curtains Left"，而不是"garage door"这样的通用名称。否则，对于"open the garage door"这样的句子，测试将无法区分名称和设备类型。
 
-## Timers and media
+## 计时器和媒体
 
-Intents that work with timers or media declare them like the other fixtures. Put them at the top of the file for all groups, or in a single group:
+使用计时器或媒体的意图会像其他固定装置一样声明它们。可以将它们放在文件顶部供所有组使用，也可以放在单个组中：
 
 ```yaml
 # tests/en/HassTimerStatus/area_only.yaml
@@ -134,9 +134,9 @@ tests:
     response: "3 minutes left."
 ```
 
-A timer needs at least one of `start_hours`, `start_minutes`, or `start_seconds`, and all of `total_seconds_left`, `rounded_hours_left`, `rounded_minutes_left`, and `rounded_seconds_left`. `name`, `area`, and `is_active` are optional.
+计时器至少需要 `start_hours`、`start_minutes` 或 `start_seconds` 中的一项，并且需要 `total_seconds_left`、`rounded_hours_left`、`rounded_minutes_left` 和 `rounded_seconds_left` 全部项。`name`、`area` 和 `is_active` 是可选的。
 
-A media item only has a `title`:
+媒体项只有一个 `title`：
 
 ```yaml
 # tests/en/HassMediaSearchAndPlay/area_only.yaml
@@ -157,11 +157,11 @@ tests:
     response: "Playing media"
 ```
 
-## Context areas
+## 上下文区域
 
-Some slot combinations have `context_area: true` in `intents.yaml`. Their area comes from the voice satellite, not from the sentence, like in "vacuum in here". Home Assistant passes the name of that area along, so a response like `Cleaning {{ slots.area }}` still says the real name.
+某些槽位组合在 `intents.yaml` 中带有 `context_area: true`。它们的区域来自语音卫星设备，而不是来自句子，例如"vacuum in here"。Home Assistant 会传递该区域的名称，因此像 `Cleaning {{ slots.area }}` 这样的回复仍然会说出真实的名称。
 
-In a test file for such a combination, mark the area the satellite is in with `context_area: true`, and write its name out in the response:
+在此类组合的测试文件中，用 `context_area: true` 标记卫星设备所在的区域，并在回复中写出其名称：
 
 ```yaml
 # tests/en/HassVacuumCleanArea/context_area.yaml
@@ -178,14 +178,14 @@ tests:
     response: "Cleaning Living Room"
 ```
 
-Only one area can be marked, and only in a file for a combination with `context_area: true`. Entities the response reads must be in the marked area, because the area of the satellite filters entities just like a spoken area does. Without a marked area, the tests use a placeholder name, `__context_area__`.
+只能标记一个区域，并且只能在带有 `context_area: true` 的组合的文件中标记。回复所读取的实体必须位于被标记的区域中，因为卫星设备的区域会像口语中提到的区域一样过滤实体。如果没有标记的区域，测试将使用占位符名称 `__context_area__`。
 
-## Run the tests
+## 运行测试
 
-Run the tests of your language:
+运行你的语言的测试：
 
 ```shell
 pytest tests --language en
 ```
 
-Leave off `--language` to test every language, add `-k <intent>` to test one intent, and add `-n auto` to run in parallel. In VS Code or a codespace, **Terminal** > **Run Task** > **Run tests for current file** validates your language and runs the tests for the file you have open.
+省略 `--language` 可测试所有语言，添加 `-k <intent>` 可测试单个意图，添加 `-n auto` 可并行运行。在 VS Code 或 codespace 中，通过 **Terminal** > **Run Task** > **Run tests for current file** 可以验证你的语言并运行当前打开文件的测试。

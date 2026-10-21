@@ -1,11 +1,11 @@
 ---
-title: Release reference
-description: The details you look up. Version numbers, release channels, and who does what in a release.
+title: 发布参考
+description: 供您查阅的详细信息。版本号、发布渠道，以及发布过程中各角色的职责分工。
 order: 20
-sidebarLabel: Reference
+sidebarLabel: 参考
 ---
 
-The pages in this section are for looking things up. For the whole cycle, start with [how releases work](/releases/how-it-works/).
+本节中的页面用于查阅信息。如需了解完整的发布周期，请从[发布的工作原理](/releases/how-it-works/)开始。
 
-- [Versions and channels](/releases/reference/versions/): what a version number means, and the stable, beta, and dev channels.
-- [Who does what](/releases/reference/roles/): the people involved in a release, and what each of them does.
+- [版本与渠道](/releases/reference/versions/)：版本号的含义，以及 stable、beta 和 dev 渠道。
+- [谁负责什么](/releases/reference/roles/)：参与发布的人员，以及他们各自的职责。

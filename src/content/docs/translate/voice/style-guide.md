@@ -1,69 +1,69 @@
 ---
-title: Voice style guide
-description: How to write sentences that match the way people talk, and responses that are short and clear.
+title: 语音风格指南
+description: 如何编写符合人们说话方式的句子，以及简短清晰的回复。
 order: 3
-sidebarLabel: Style guide
+sidebarLabel: 风格指南
 ---
 
-Good sentences match what people say, and nothing else. Good responses tell people what happened, and nothing more. This page collects what works, for every language. Your language leader may have agreements on top of this for your language.
+好的句子只匹配人们会说的话，别无其他。好的回复只告诉人们发生了什么，别无更多。本页收集了对所有语言都适用的经验。您的语言负责人可能在此基础上有针对您语言的额外约定。
 
-## Sentences
+## 句子
 
-### Write how people talk
+### 像人们说话那样编写
 
-Do not translate the English templates word for word. Think of how people in your language say the command out loud, at home, to a speaker in the corner. Include the short forms ("kitchen lights on") as well as the full ones ("turn on the lights in the kitchen"), and the word orders your language allows.
+不要逐字翻译英文模板。想一想您语言中的人们在家里对着角落里的音箱会怎么说出这个命令。既要包含简短形式（“厨房灯打开”），也要包含完整形式（“把厨房的灯打开”），以及您的语言所允许的语序。
 
-If your language has a free word order, use [permutations](/translate/voice/template-syntax/#permutations), like `({name}; <area>)`, instead of writing every order out.
+如果您的语言语序自由，请使用[排列](/translate/voice/template-syntax/#permutations)，例如 `({name}; <area>)`，而不是把每种语序都写出来。
 
-### Use your language for examples
+### 示例使用您的语言
 
-Every group of sentences has an `example`. Write it in your language. It shows reviewers and the progress overview what the group is meant to match.
+每组句子都有一个 `example`。请用您的语言编写。它向审阅者和进度概览展示该组句子旨在匹配的内容。
 
-### Use rules for repeated parts
+### 对重复的部分使用规则
 
-When the same words keep coming back, like the verbs for turning something on, put them in an [expansion rule](/translate/voice/template-syntax/#expansion-rules). Then you improve them in one place. Keep rules simple: no lists inside rules, and no rules inside rules. Otherwise nobody can tell what a template matches.
+当相同的词语反复出现时，比如打开某个东西的动词，请把它们放入[展开规则](/translate/voice/template-syntax/#expansion-rules)（expansion rule）中。这样您就可以在一处改进它们。保持规则简单：规则内不要有列表，规则内也不要再嵌套规则。否则没人能弄清一个模板到底匹配什么。
 
-### Leave politeness to skip words
+### 把礼貌用语留给跳过词
 
-People add "please" or "can you" to commands. Do not add those words to every template. Put them in the [skip words](/translate/voice/template-syntax/#skip-words) of your language, and the matcher ignores them everywhere.
+人们会在命令中加上“请”或“能不能”。不要把这些词加到每个模板中。把它们放入您语言的[跳过词](/translate/voice/template-syntax/#skip-words)（skip words）中，匹配器就会在所有地方忽略它们。
 
-### Keep the numbers in check
+### 控制句子数量
 
-Every optional part doubles the number of sentences a template matches. A few too many, and your language has millions of sentences, which makes Assist slow on small devices. Check with `count_sentences` (see [Try things out](/translate/voice/contributing/#try-things-out)), and prefer a few clear templates over one that matches everything.
+每个可选部分都会使模板匹配的句子数量翻倍。可选部分稍多几个，您的语言就会有数百万个句子，这会让 Assist 在小型设备上运行缓慢。请使用 `count_sentences` 检查（参见[动手尝试](/translate/voice/contributing/#try-things-out)），并且宁可使用几个清晰的模板，也不要使用一个匹配一切的模板。
 
-### Do not match too much
+### 不要匹配过多
 
-A template that is too loose catches sentences that belong to another intent. This happens most with [wildcards](/translate/voice/template-syntax/#wildcards), which match any text: a loose "play `{search_query}`" can swallow "set the light to maximum". Put specific words around wildcards. A check on every pull request catches this, but it is easier to avoid it while you write.
+过于宽松的模板会捕获属于其他意图（intent）的句子。这种情况最常发生在[通配符](/translate/voice/template-syntax/#wildcards)（wildcard）上，因为它们匹配任意文本：一个宽松的“播放 `{search_query}`”可能会吞掉“把灯调到最大”。请在通配符周围加上具体的词语。每次拉取请求（pull request）的检查都会捕获这个问题，但在编写时避免它更容易。
 
-### Translate values, keep what Home Assistant needs
+### 翻译值，保留 Home Assistant 需要的内容
 
-Colors, states, and other values that Home Assistant expects in English use the `in` and `out` form of a [list](/translate/voice/template-syntax/#values-in-your-language-values-for-home-assistant): your word goes in, the English value comes out.
+Home Assistant 期望为英文的颜色、状态（state）和其他值，使用[列表](/translate/voice/template-syntax/#values-in-your-language-values-for-home-assistant)的 `in` 和 `out` 形式：您的词语作为输入，英文值作为输出。
 
-### Drafts from an AI model
+### 来自 AI 模型的草稿
 
-The repository can write a prompt for an AI model, to get a first draft of the sentences of an intent:
+仓库可以为 AI 模型生成一个提示词（prompt），以获得某个意图句子的初稿：
 
 ```shell
 python3 -m script.intentfest llm_template nl HassListAddItem
 ```
 
-Treat the output as a draft. You are the native speaker: read every sentence, drop what nobody would say, and add what is missing.
+请把输出当作草稿。您才是母语使用者：阅读每一个句子，删掉没人会说的话，补上缺失的内容。
 
-### Stay consistent with the interface
+### 与界面保持一致
 
-Use the same words and the same form of address as the Home Assistant interface in your language. If your language has agreed on formal or informal address, or on how to translate certain words, follow that. See the [language guidelines](/translate/reference/languages/).
+使用与您语言中的 Home Assistant 界面相同的词语和称呼方式。如果您的语言已就正式或非正式称呼达成一致，或就某些词语的翻译达成一致，请遵循这些约定。参见[语言指南](/translate/reference/languages/)。
 
-## Responses
+## 回复
 
-### Be concise
+### 简洁
 
-Responses are spoken, so every word counts.
+回复是语音播报的，所以每个词都很重要。
 
-- When a command targets a single device, do not repeat its name. "Turned on the light" is enough.
-- When a command targets an area, do not repeat the area or name its entities.
-- When a response lists entities, name them all if there are four or fewer. If there are more, name the first three and say how many more there are, like "Kitchen, Hallway, Office and 2 more".
+- 当命令针对单个设备时，不要重复其名称。“灯已打开”就足够了。
+- 当命令针对一个区域（area）时，不要重复区域名称，也不要列出其实体（entity）。
+- 当回复列出实体时，如果不超过四个，请全部列出。如果更多，请列出前三个，并说明还有多少个，例如“厨房、走廊、书房，还有 2 个”。
 
-For lists, use the same template as the English responses, so every response reads the same way. Do not write your own variant:
+对于列表，请使用与英文回复相同的模板，这样每个回复的读法都一致。不要编写自己的变体：
 
 ```jinja
 {% if query.matched %}
@@ -82,14 +82,14 @@ For lists, use the same template as the English responses, so every response rea
 {% endif %}
 ```
 
-Translate the words in it, like "Yes", "No", "and", and "more", and keep the logic as it is.
+请翻译其中的词语，比如“Yes”、“No”、“and”和“more”，并保持逻辑原样。
 
-### Use the present tense
+### 使用现在时
 
-"The light is on", not "The light was on".
+“灯是开着的”，而不是“灯当时是开着的”。
 
-### Use the active voice
+### 使用主动语态
 
-"Turned on the light", not "The light has been turned on".
+“打开了灯”，而不是“灯被打开了”。
 
-Covers and valves are the exception. They take a while to open or close, so their responses describe what is happening: "Opening", "Closing".
+卷帘（cover）和阀门是例外。它们打开或关闭需要一段时间，所以它们的回复描述正在发生的事情：“正在打开”、“正在关闭”。

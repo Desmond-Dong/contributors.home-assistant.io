@@ -1,38 +1,38 @@
 ---
-title: How translation works
-description: Where the strings come from, where they get translated, and how they end up in Home Assistant.
+title: 翻译是如何工作的
+description: 字符串从哪里来、在哪里被翻译，以及它们如何最终进入 Home Assistant。
 order: 2
-sidebarLabel: How it works
+sidebarLabel: 工作原理
 ---
 
-Every piece of text in Home Assistant starts in English, in the source code. From there, it travels through Lokalise to translators, and back into Home Assistant when it is built.
+Home Assistant 中的每一段文本都以英文形式存在于源代码中。从那里，它通过 Lokalise 传递给翻译者，并在构建时回到 Home Assistant 中。
 
-## Where the strings come from
+## 字符串从哪里来
 
-Developers write the English text next to the code that uses it:
+开发者在代码旁边编写使用它的英文文本：
 
-- **Frontend** text, like menus and dialogs, lives in the [frontend repository](https://github.com/home-assistant/frontend).
-- **Backend** text belongs to integrations. Each integration has a `strings.json` file with its setup steps, entity names, states, and error messages.
-- **Companion apps** have their own strings, in the iOS and Android repositories.
+- **前端（frontend）**文本，如菜单和对话框，位于[前端仓库](https://github.com/home-assistant/frontend)中。
+- **后端（backend）**文本属于各个集成（integration）。每个集成都有一个 `strings.json` 文件，包含其设置步骤、实体（entity）名称、状态（state）和错误消息。
+- **伴侣应用（Companion apps）**有自己的字符串，位于 iOS 和 Android 仓库中。
 
-When a change with new or updated English text is merged into the frontend or [core repository](https://github.com/home-assistant/core), the new strings are uploaded to Lokalise automatically. The iOS app uploads its strings once a day.
+当包含新增或更新英文文本的更改被合并到前端或[核心仓库](https://github.com/home-assistant/core)时，新字符串会自动上传到 Lokalise。iOS 应用每天上传一次其字符串。
 
-## Where translation happens
+## 翻译在哪里进行
 
-Each of those sources has its own Lokalise project. That is why there are four projects to join: frontend, backend, iOS, and Android. Within a project, every language is translated by the community. Anyone who joins can translate strings and improve existing translations. There is no separate approval step: the translation saved in Lokalise is the one that ships.
+上述每个来源都有自己独立的 Lokalise 项目。这就是为什么有四个项目可以加入：前端、后端、iOS 和 Android。在每个项目中，每种语言都由社区翻译。任何加入的人都可以翻译字符串并改进现有翻译。没有单独的审批步骤：保存在 Lokalise 中的翻译就是最终发布的版本。
 
-## How translations get back
+## 翻译如何返回
 
-For Home Assistant itself, translations are not stored in the source code. They are downloaded from Lokalise when the code is built. Only translations that Lokalise marks as unverified are left out. The frontend and the backend are built separately, so they get their translations at different moments:
+对于 Home Assistant 本身，翻译并不存储在源代码中。它们是在构建代码时从 Lokalise 下载的。只有 Lokalise 标记为未验证的翻译才会被排除在外。前端和后端是分开构建的，因此它们在不同时刻获取翻译：
 
-- **Backend**: every build of Home Assistant Core, nightly, beta, or release, downloads the latest backend translations. That build contains everything translated up to that moment.
-- **Frontend**: the frontend downloads its translations when it is built, every night and for every frontend release. Nightly builds of Home Assistant use the latest nightly frontend. A beta or release of Home Assistant includes a specific frontend release, with the translations from the moment that frontend release was built.
+- **后端**：Home Assistant Core 的每次构建（nightly、beta 或正式发布）都会下载最新的后端翻译。该构建包含截至那一刻已翻译的所有内容。
+- **前端**：前端在构建时下载其翻译，每晚一次，并且每次前端发布时也会下载。Home Assistant 的 nightly 构建使用最新的 nightly 前端。Home Assistant 的 beta 或正式发布包含特定的前端发布版本，以及该前端发布构建时的翻译。
 
-The Android app also downloads translations when it is built. The iOS app is the exception: a daily job pulls the translations from Lokalise and opens a pull request with them in the [iOS repository](https://github.com/home-assistant/iOS).
+Android 应用也在构建时下载翻译。iOS 应用是个例外：一个每日任务会从 Lokalise 拉取翻译，并在 [iOS 仓库](https://github.com/home-assistant/iOS)中打开一个包含这些翻译的 pull request。
 
-This also means that a fix is never far away. Correct a translation today, and it is in the next backend build, or the next frontend release.
+这也意味着修复永远不会太遥远。今天修正一个翻译，它就会出现在下一次后端构建或下一次前端发布中。
 
-## What is not translated here
+## 哪些内容不在这里翻译
 
-- **Documentation**: the documentation on [home-assistant.io](https://www.home-assistant.io/) is English only.
-- **Voice commands**: the sentences Assist understands are maintained on GitHub, not in Lokalise. See [Voice](/translate/voice/).
+- **文档**：[home-assistant.io](https://www.home-assistant.io/) 上的文档仅提供英文。
+- **语音命令**：Assist 能理解的句子在 GitHub 上维护，而不是在 Lokalise 中。参见[语音](/translate/voice/)。

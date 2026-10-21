@@ -1,14 +1,14 @@
 ---
-title: Access hardware and the host
-description: Give your app access to serial ports, USB devices, GPIO, audio, and parts of the host, and only as much as it needs.
+title: 访问硬件和宿主机
+description: 让你的应用访问串口、USB 设备、GPIO、音频以及宿主机的部分内容，并且只授予它真正需要的最小权限。
 order: 4
 ---
 
-By default, an app sees nothing of the hardware and little of the host. That is on purpose: every bit of access you add is something a bug in your app can misuse. This guide shows the options, from narrow to broad. Pick the narrowest one that works.
+默认情况下，应用看不到任何硬件，也只能看到宿主机的一小部分。这是有意为之：你添加的每一分访问权限，都可能被应用中的一个 bug 所滥用。本指南介绍从窄到宽的各种选项。请选择能满足需求的最窄选项。
 
-## Let the user pick a device
+## 让用户选择设备
 
-For a USB stick or a serial adapter, the best option is usually not in `config.yaml` at all, but in your options. A `device` option shows the user a dropdown of the devices on the system, and the Supervisor maps the chosen one into your container:
+对于 U 盘或串口适配器，最佳方案通常根本不在 `config.yaml` 中，而是在你的选项（options）里。`device` 选项会向用户显示一个系统上设备的下拉列表，然后 Supervisor 会将所选设备映射进你的容器：
 
 ```yaml
 options:
@@ -17,53 +17,53 @@ schema:
   device: "device(subsystem=tty)"
 ```
 
-The user picks the device, it keeps working across reboots because the dropdown offers stable `/dev/serial/by-id/...` paths where the system has them, and your app gets access to that one device only. This is how the official Z-Wave JS app does it.
+用户选择设备后，它在重启后依然有效，因为下拉列表在系统支持时会提供稳定的 `/dev/serial/by-id/...` 路径，而且你的应用只会获得对这一个设备的访问权限。官方的 Z-Wave JS 应用就是这样做的。
 
-## Fixed devices
+## 固定设备
 
-If your app always uses the same device, list its path in `devices`:
+如果你的应用总是使用同一个设备，可以在 `devices` 中列出它的路径：
 
 ```yaml
 devices:
   - /dev/ttyAMA0
 ```
 
-## Groups of devices
+## 设备组
 
-These options map a whole class of devices, including devices plugged in after the app started:
+这些选项会映射一整类设备，包括应用启动后才插入的设备：
 
-| Key | Access |
+| 键 | 访问权限 |
 | --- | --- |
-| `uart: true` | All serial devices |
-| `usb: true` | Raw USB access, through `/dev/bus/usb` |
-| `video: true` | All video devices |
-| `gpio: true` | GPIO, through `/sys/class/gpio`. Some libraries also need `/dev/mem` and the `SYS_RAWIO` capability |
-| `udev: true` | The udev database of the host, read-only, to look up device details |
-| `devicetree: true` | The device tree of the host, at `/device-tree` |
+| `uart: true` | 所有串口设备 |
+| `usb: true` | 原始 USB 访问，通过 `/dev/bus/usb` |
+| `video: true` | 所有视频设备 |
+| `gpio: true` | GPIO，通过 `/sys/class/gpio`。某些库还需要 `/dev/mem` 和 `SYS_RAWIO` 能力（capability） |
+| `udev: true` | 宿主机的 udev 数据库，只读，用于查询设备详情 |
+| `devicetree: true` | 宿主机的设备树（device tree），位于 `/device-tree` |
 
-On systems with AppArmor, GPIO access usually needs a custom AppArmor profile as well. See [Secure your app](/apps/guides/security/#apparmor).
+在启用 AppArmor 的系统上，GPIO 访问通常还需要自定义的 AppArmor 配置文件。参见[保护你的应用](/apps/guides/security/#apparmor)。
 
-## Audio
+## 音频
 
-With `audio: true`, your app connects to the audio system of Home Assistant through PulseAudio, and the user picks the input and output device on the app page. If your software only speaks ALSA, install the PulseAudio plugin for ALSA: `alsa-plugins-pulse` on Alpine, `libasound2-plugins` on Debian and Ubuntu.
+设置 `audio: true` 后，你的应用会通过 PulseAudio 连接到 Home Assistant 的音频系统，用户可以在应用页面上选择输入和输出设备。如果你的软件只支持 ALSA，请安装 ALSA 的 PulseAudio 插件：Alpine 上是 `alsa-plugins-pulse`，Debian 和 Ubuntu 上是 `libasound2-plugins`。
 
-## The host
+## 宿主机
 
-Some apps need more of the host than devices:
+有些应用需要的不仅仅是设备，还有宿主机的更多内容：
 
-| Key | What it gives |
+| 键 | 提供的内容 |
 | --- | --- |
-| `host_network: true` | The network of the host. Needed for discovery protocols like mDNS and for software that must see the real network interfaces. Lowers the security rating. |
-| `host_dbus: true` | The D-Bus system bus of the host, read-only, to talk to services like NetworkManager or BlueZ. |
-| `journald: true` | The system journal, read-only. It is at `/var/log/journal` on some systems and at `/run/log/journal` on others, so check both. |
-| `kernel_modules: true` | The kernel modules of the host, read-only, and the right to load them. |
-| `realtime: true` | Real-time scheduling, for audio software that needs low latency. |
-| `host_uts: true` | The host name of the host. |
+| `host_network: true` | 宿主机的网络。mDNS 等发现协议以及必须看到真实网络接口的软件需要它。会降低安全评级。 |
+| `host_dbus: true` | 宿主机的 D-Bus 系统总线，只读，用于与 NetworkManager 或 BlueZ 等服务通信。 |
+| `journald: true` | 系统日志，只读。它位于某些系统的 `/var/log/journal`，另一些系统的 `/run/log/journal`，所以请两处都检查。 |
+| `kernel_modules: true` | 宿主机的内核模块，只读，以及加载它们的权限。 |
+| `realtime: true` | 实时调度，适用于需要低延迟的音频软件。 |
+| `host_uts: true` | 宿主机的主机名。 |
 
-For the full list, including capabilities with `privileged`, see the [app configuration](/apps/reference/configuration/#host-and-privileges).
+完整列表（包括通过 `privileged` 获得的能力）请参见[应用配置](/apps/reference/configuration/#host-and-privileges)。
 
-## Protection mode
+## 保护模式
 
-Some options only work with **Protection mode** off: `full_access`, `docker_api`, and `host_pid`. Protection mode is on by default, and the UI warns the user when it is off. With protection mode off and these options set, your app can do almost anything to the system.
+某些选项只有在关闭**保护模式（Protection mode）**时才能生效：`full_access`、`docker_api` 和 `host_pid`。保护模式默认开启，当它被关闭时 UI 会向用户发出警告。在保护模式关闭且设置了这些选项的情况下，你的应用几乎可以对系统做任何事情。
 
-Use these only for apps whose job is managing the system itself, and explain in your documentation why your app needs it. `full_access` in particular gives access to every device, and makes `devices`, `uart`, `usb`, and `gpio` pointless. `full_access` and `docker_api` set the [security rating](/apps/reference/security-rating/) to 1, and `host_pid` lowers it by 2.
+这些选项只应用于职责本身就是管理系统管理的应用，并在你的文档中解释为什么你的应用需要它。尤其是 `full_access`，它会授予对所有设备的访问权限，并使 `devices`、`uart`、`usb` 和 `gpio` 变得毫无意义。`full_access` 和 `docker_api` 会将[安全评级](/apps/reference/security-rating/)设为 1，`host_pid` 会将其降低 2。

@@ -1,37 +1,37 @@
 ---
-title: Language leaders
-description: Every language in the intents repository has leaders who review its changes. What the role involves, and how to become one.
+title: 语言负责人
+description: intents 仓库中的每种语言都有负责人来审核其变更。这个角色需要做什么，以及如何成为其中一员。
 order: 5
 ---
 
-Assist should understand people in their own language, and understand them well. To keep the quality of each language up, languages have language leaders: native speakers who look after their language.
+Assist 应当以人们的母语理解他们，并很好地理解他们。为了保持每种语言的质量，每种语言都设有语言负责人（language leader）：由母语使用者来照看自己的语言。
 
-## What language leaders do
+## 语言负责人做什么
 
-- **Review every change to their language.** They are notified of each pull request that touches the folders of their language, and they decide whether it gets merged.
-- **Guard the quality.** They check that sentences are correct, natural, and consistent with the rest of the language. A sentence that slips through matches the wrong things, or does not match at all.
-- **Keep the language consistent.** They decide on choices like formal or informal address, and on the words to use for common things.
+- **审核其语言的每一项变更。** 每当有触及该语言文件夹的拉取请求（pull request）时，他们都会收到通知，并决定该请求是否被合并。
+- **守护质量。** 他们检查句子是否正确、自然，并与该语言的其余部分保持一致。一个漏网的句子可能会匹配到错误的内容，或者完全无法匹配。
+- **保持语言的一致性。** 他们决定诸如使用正式还是非正式称呼，以及常用事物使用哪些词语等选择。
 
-Language leaders own the `sentences/`, `responses/`, `tests/`, `rules/`, and `lists/` folders of their language. They do not need anyone else's approval to change them.
+语言负责人拥有其语言的 `sentences/`、`responses/`、`tests/`、`rules/` 和 `lists/` 文件夹。他们修改这些文件夹时不需要其他人的批准。
 
-## Who the leaders are
+## 负责人是谁
 
-The leaders of each language are listed under `leaders` in [`languages.yaml`](https://github.com/OHF-Voice/intents/blob/main/languages.yaml), with their GitHub usernames. The [`CODEOWNERS`](https://github.com/OHF-Voice/intents/blob/main/CODEOWNERS) file is generated from that list, which is how GitHub knows whom to ask for a review. You also find them in the table of [supported languages](/translate/voice/languages/).
+每种语言的负责人在 [`languages.yaml`](https://github.com/OHF-Voice/intents/blob/main/languages.yaml) 的 `leaders` 项下列出，并附有他们的 GitHub 用户名。[`CODEOWNERS`](https://github.com/OHF-Voice/intents/blob/main/CODEOWNERS) 文件就是根据该列表生成的，GitHub 由此知道该请谁进行审核。你也可以在[支持的语言](/translate/voice/languages/)表格中找到他们。
 
-## Become a language leader
+## 成为语言负责人
 
-Anyone can apply, if you:
+任何人都可以申请，只要你：
 
-- Are a native speaker of the language.
-- Have made at least two pull requests to the intents repository.
-- Help review pull requests for the language.
+- 是该语言的母语使用者。
+- 已向 intents 仓库提交过至少两个拉取请求。
+- 协助审核该语言的拉取请求。
 
-To apply, start a topic in the [intents discussions](https://github.com/OHF-Voice/intents/discussions), or ask in **#developers** on the Home Assistant [Discord server](https://www.home-assistant.io/join-chat).
+要申请，请在 [intents discussions](https://github.com/OHF-Voice/intents/discussions) 中发起一个话题，或在 Home Assistant [Discord 服务器](https://www.home-assistant.io/join-chat)的 **#developers** 频道中询问。
 
-Some languages have no leader yet. If yours is one of them, that is your chance: contribute, review what others open, and apply.
+有些语言还没有负责人。如果你的语言是其中之一，那就是你的机会：做出贡献，审核他人发起的请求，然后申请。
 
-## Losing the role
+## 失去该角色
 
-A language leader is the gatekeeper of a language. When a leader is inactive, contributions to the language wait. When a leader accepts low quality changes, Assist stops understanding people correctly.
+语言负责人是一门语言的守门人。当负责人不活跃时，对该语言的贡献就会搁置。当负责人接受低质量的变更时，Assist 就无法正确理解人们。
 
-So if a leader becomes a bottleneck, or the quality is not good enough, they are removed as leader. They can apply again later.
+因此，如果负责人成为瓶颈，或者质量不够好，他们将被移除负责人身份。他们之后可以再次申请。

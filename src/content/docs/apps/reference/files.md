@@ -1,12 +1,12 @@
 ---
-title: App files
-description: The files the Supervisor reads from an app folder and from a repository, and what each one is for.
+title: 应用（App）文件
+description: Supervisor 从应用文件夹和仓库中读取的文件，以及每个文件的用途。
 order: 3
 ---
 
-The Supervisor reads a fixed set of file names from your app folder. Everything else in the folder is only used by your `Dockerfile`.
+Supervisor 会从你的应用文件夹中读取一组固定的文件名。文件夹中的其他内容仅由你的 `Dockerfile` 使用。
 
-## App folder
+## 应用文件夹
 
 ```text
 hello_world/
@@ -23,26 +23,26 @@ hello_world/
   README.md
 ```
 
-| File | Required | What the Supervisor does with it |
+| 文件 | 是否必需 | Supervisor 对它的处理方式 |
 | --- | --- | --- |
-| `config.yaml` | Yes | The [app configuration](/apps/reference/configuration/). Also accepted as `config.yml` or `config.json`. |
-| `Dockerfile` | To build locally | Builds the image when `config.yaml` has no `image`. A `Dockerfile.aarch64` or `Dockerfile.amd64` takes precedence for that architecture. |
-| `README.md` | No | The introduction of the app in the app store. |
-| `DOCS.md` | No | The **Documentation** tab of the app. |
-| `CHANGELOG.md` | No | The changes, shown when an update is available. |
-| `icon.png` | No | The square icon of the app. |
-| `logo.png` | No | The logo, shown on the app page. |
-| `apparmor.txt` | No | A custom AppArmor profile, loaded instead of the default one. |
-| `translations/` | No | Translated names and descriptions of options and ports, one file per language, like `en.yaml`. YAML or JSON. |
-| `build.yaml` | No | Deprecated. See [Build the container image](/apps/guides/dockerfile/#buildyaml). |
+| `config.yaml` | 是 | [应用配置](/apps/reference/configuration/)。也接受 `config.yml` 或 `config.json`。 |
+| `Dockerfile` | 本地构建时需要 | 当 `config.yaml` 中没有 `image` 时用于构建镜像。`Dockerfile.aarch64` 或 `Dockerfile.amd64` 对相应架构优先。 |
+| `README.md` | 否 | 应用商店中应用的介绍。 |
+| `DOCS.md` | 否 | 应用的**文档**标签页。 |
+| `CHANGELOG.md` | 否 | 变更内容，在有更新可用时显示。 |
+| `icon.png` | 否 | 应用的方形图标。 |
+| `logo.png` | 否 | 标志（logo），显示在应用页面上。 |
+| `apparmor.txt` | 否 | 自定义 AppArmor 配置文件，加载后会替代默认配置。 |
+| `translations/` | 否 | 选项和端口的翻译名称与描述，每种语言一个文件，例如 `en.yaml`。YAML 或 JSON 格式。 |
+| `build.yaml` | 否 | 已弃用。参见[构建容器镜像](/apps/guides/dockerfile/#buildyaml)。 |
 
-`rootfs/` is not special to the Supervisor, but it is the convention in the example and official apps: a folder that the `Dockerfile` copies into the image with `COPY rootfs /`. The Supervisor skips folders called `rootfs` when it looks for `config.yaml` files, so configuration files inside it are safe.
+`rootfs/` 对 Supervisor 来说并没有特殊之处，但它是示例应用和官方应用中的惯例：一个由 `Dockerfile` 通过 `COPY rootfs /` 复制进镜像的文件夹。Supervisor 在查找 `config.yaml` 文件时会跳过名为 `rootfs` 的文件夹，因此其中的配置文件是安全的。
 
-What goes in the documentation files, the icon, and the logo is in [Present your app](/apps/guides/presentation/).
+关于文档文件、图标和标志中应包含的内容，请参见[展示你的应用](/apps/guides/presentation/)。
 
-## Translation file
+## 翻译文件
 
-A translation file has two keys: `configuration` for the options, and `network` for the ports.
+翻译文件有两个键：`configuration` 用于选项，`network` 用于端口。
 
 ```yaml
 configuration:
@@ -60,18 +60,18 @@ network:
   80/tcp: "The web server port (not used for ingress)"
 ```
 
-| Key | Description |
+| 键 | 描述 |
 | --- | --- |
-| `configuration.<option>.name` | Required. The label of the option. `<option>` matches a key in `schema`. |
-| `configuration.<option>.description` | The help text below the option. |
-| `configuration.<option>.fields` | The same structure, for the keys of a nested option. |
-| `network.<port>` | The description of a port. `<port>` matches a key in `ports`. |
+| `configuration.<option>.name` | 必需。选项的标签。`<option>` 对应 `schema` 中的一个键。 |
+| `configuration.<option>.description` | 选项下方的帮助文本。 |
+| `configuration.<option>.fields` | 相同的结构，用于嵌套选项的键。 |
+| `network.<port>` | 端口的描述。`<port>` 对应 `ports` 中的一个键。 |
 
-The file name is the language code, like `en.yaml` or `pt-BR.yaml`. The UI falls back to English when a language is missing. See [Add options](/apps/guides/options/#translate-the-options) for how to use it.
+文件名是语言代码，例如 `en.yaml` 或 `pt-BR.yaml`。当缺少某种语言时，界面会回退到英语。有关如何使用它，请参见[添加选项](/apps/guides/options/#translate-the-options)。
 
-## Repository
+## 仓库
 
-A repository is a Git repository with a `repository.yaml` (or `repository.yml`, or `repository.json`) at the root, and one folder per app.
+仓库（repository）是一个 Git 仓库，其根目录包含一个 `repository.yaml`（或 `repository.yml`，或 `repository.json`），并且每个应用各有一个文件夹。
 
 ```text
 my-apps/
@@ -89,10 +89,10 @@ url: "https://github.com/me/my-apps"
 maintainer: "Jane Doe <jane@example.com>"
 ```
 
-| Key | Required | Description |
+| 键 | 是否必需 | 描述 |
 | --- | --- | --- |
-| `name` | Yes | The name of the repository, shown in the app store. |
-| `url` | No | The homepage of the repository. |
-| `maintainer` | No | Who maintains the repository, and how to reach them. |
+| `name` | 是 | 仓库名称，显示在应用商店中。 |
+| `url` | 否 | 仓库的主页。 |
+| `maintainer` | 否 | 仓库的维护者，以及联系方式。 |
 
-Without a valid `repository.yaml`, the Supervisor does not load the repository. See [Create and share a repository](/apps/guides/repository/).
+如果没有有效的 `repository.yaml`，Supervisor 将不会加载该仓库。参见[创建并分享仓库](/apps/guides/repository/)。

@@ -1,31 +1,31 @@
 ---
-title: Request a new language
-description: Your language is not available yet? Here is how to get it added.
+title: 申请新语言
+description: 你的语言还没有被支持？这里介绍如何申请添加。
 order: 2
 ---
 
-If your language is not in the list, you can request it. Once it is added, it appears in Lokalise and anyone can start translating.
+如果你的语言不在列表中，你可以申请添加。一旦添加完成，它就会出现在 Lokalise 中，任何人都可以开始翻译。
 
-## Make the request
+## 提出申请
 
-Start a discussion in the [localization category](https://github.com/home-assistant/frontend/discussions/categories/localization) of the frontend repository. Include both the English name and the native name of your language:
+在前端仓库的[本地化分类](https://github.com/home-assistant/frontend/discussions/categories/localization)中发起一个讨论。请同时包含你的语言的英文名称和本地名称：
 
 ```text
 English name: German
 Native name: Deutsch
 ```
 
-## Regional variants
+## 地区变体
 
-Regional variants, like Canadian French or Brazilian Portuguese, are possible too. They only make sense when the text really differs from the base language. A variant is only included when it has translations that differ from the base language.
+地区变体，例如加拿大法语或巴西葡萄牙语，也是可以支持的。但只有当文本确实与基础语言不同时，地区变体才有意义。只有当某个变体拥有与基础语言不同的翻译时，才会被收录。
 
-When you translate a regional variant, copy the base translation for strings that are the same in your region, instead of leaving them empty. That way it stays clear which strings have been reviewed.
+在翻译地区变体时，对于在你的地区相同的字符串，请复制基础语言的翻译，而不是将其留空。这样可以清楚地知道哪些字符串已经过审核。
 
-## What happens next
+## 接下来会发生什么
 
-A maintainer adds the language to Home Assistant and to Lokalise. Languages are identified with [BCP 47](https://www.rfc-editor.org/info/bcp47) tags, like `fr`, `fr-CA`, or `zh-Hans`. A tag only includes a region when that region needs its own translations, and the base language is already translated. Once that is done, you can join the project and start translating.
+维护者会将该语言添加到 Home Assistant 和 Lokalise 中。语言通过 [BCP 47](https://www.rfc-editor.org/info/bcp47) 标签来标识，例如 `fr`、`fr-CA` 或 `zh-Hans`。只有当某个地区需要自己的翻译，且基础语言已经完成翻译时，标签中才会包含地区代码。完成这些之后，你就可以加入项目并开始翻译了。
 
-For maintainers, adding a language takes two steps:
+对于维护者来说，添加一种语言需要两个步骤：
 
-1. Add the language tag and its native name, like "Français" or "Français (CA)", to `src/translations/translationMetadata.json` in the frontend repository.
-2. Add the language in Lokalise. Sometimes the tag in Lokalise needs to be changed to match, under the language settings, as a custom ISO code.
+1. 将语言标签及其本地名称（例如 "Français" 或 "Français (CA)"）添加到前端仓库的 `src/translations/translationMetadata.json` 中。
+2. 在 Lokalise 中添加该语言。有时需要在语言设置中将 Lokalise 中的标签修改为自定义 ISO 代码以保持一致。

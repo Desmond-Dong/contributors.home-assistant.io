@@ -1,62 +1,62 @@
 ---
-title: Publish your app
-description: Build images for every architecture with the builder actions, publish them to a container registry, and version your releases.
+title: 发布你的应用
+description: 使用 builder actions 为每种架构构建镜像，发布到容器镜像仓库，并为你的发布进行版本管理。
 order: 11
 ---
 
-There are two ways to get your app to users: let their device build it, or build images yourself and publish them to a container registry. Publishing images is better for your users in almost every way.
+让用户用上你的应用有两种方式：让他们的设备自行构建，或者你自己构建镜像并发布到容器镜像仓库（container registry）。发布镜像在几乎所有方面都对用户更好。
 
-## Built on the device, or pre-built
+## 在设备上构建，还是预构建
 
-Without `image` in `config.yaml`, every user's device builds your app from the `Dockerfile` when they install or update it. That is easy for you, and fine while you try out an idea. For your users it is slow, wears out SD cards, and fails whenever a package your build downloads changes or disappears.
+如果 `config.yaml` 中没有 `image`，每个用户的设备在安装或更新你的应用时都会根据 `Dockerfile` 进行构建。这对你来说很省事，在你尝试想法的阶段也没问题。但对用户来说，这很慢，会损耗 SD 卡，而且一旦构建所下载的软件包发生变化或消失，构建就会失败。
 
-With `image`, the Supervisor pulls a ready image. Installing is fast and reliable, and every user runs exactly what you tested. Once people use your app, publish images.
+配置了 `image` 后，Supervisor 会拉取现成的镜像。安装快速且可靠，每个用户运行的都正是你测试过的内容。一旦有人开始使用你的应用，就应发布镜像。
 
-## Build with GitHub Actions
+## 使用 GitHub Actions 构建
 
-The [builder](https://github.com/home-assistant/builder) repository has composable GitHub Actions to build, sign, and publish multi-architecture images:
+[builder](https://github.com/home-assistant/builder) 仓库提供可组合的 GitHub Actions，用于构建、签名和发布多架构镜像：
 
-| Action | What it does |
+| Action | 作用 |
 | --- | --- |
-| `prepare-multi-arch-matrix` | Turns a list of architectures into a build matrix |
-| `build-image` | Builds and pushes the image for one architecture, like `ghcr.io/me/aarch64-my-app` |
-| `publish-multi-arch-manifest` | Combines the images per architecture into one multi-arch image, like `ghcr.io/me/my-app` |
-| `cosign-verify` | Verifies Cosign signatures, used by the others |
+| `prepare-multi-arch-matrix` | 将架构列表转换为构建矩阵 |
+| `build-image` | 为单个架构构建并推送镜像，例如 `ghcr.io/me/aarch64-my-app` |
+| `publish-multi-arch-manifest` | 将各架构的镜像合并为一个多架构镜像，例如 `ghcr.io/me/my-app` |
+| `cosign-verify` | 验证 Cosign 签名，供其他 action 使用 |
 
-The [example app repository](https://github.com/home-assistant/apps-example) has a complete workflow that builds every app that changed, on every push to `main`. Copy it as a starting point. The README of the builder has a smaller example for a single image.
+[示例应用仓库](https://github.com/home-assistant/apps-example) 包含一个完整的工作流，在每次推送到 `main` 时构建所有发生变更的应用。可以复制它作为起点。builder 的 README 中有一个针对单个镜像的更简单的示例。
 
-A few things to set up:
+需要设置的一些事项：
 
-- The workflow pushes to the GitHub Container Registry with the token of the workflow, which needs the `packages: write` permission. Signing with Cosign needs `id-token: write`.
-- The first time an image is pushed, it is private. Make it public in the package settings on GitHub, or users cannot pull it.
-- Pin the actions to a release of the builder, not to a branch.
+- 工作流使用工作流自身的令牌推送到 GitHub Container Registry，这需要 `packages: write` 权限。使用 Cosign 签名需要 `id-token: write`。
+- 首次推送镜像时，它是私有的。请在 GitHub 的软件包设置中将其设为公开，否则用户无法拉取它。
+- 将 action 固定到 builder 的某个发布版本，而不是分支。
 
 > [!NOTE]
-> The old all-in-one `home-assistant/builder` action is deprecated and no longer maintained. If your workflow still uses it, move to the actions above. The [example app repository](https://github.com/home-assistant/apps-example) shows the new setup.
+> 旧的一体化 `home-assistant/builder` action 已弃用且不再维护。如果你的工作流仍在使用它，请迁移到上述 action。[示例应用仓库](https://github.com/home-assistant/apps-example) 展示了新的配置方式。
 
-## Point config.yaml at the image
+## 让 config.yaml 指向镜像
 
-Set `image` to the name of the multi-arch image, without a tag:
+将 `image` 设置为多架构镜像的名称，不带标签：
 
 ```yaml
 image: "ghcr.io/me/my-app"
 ```
 
-The Supervisor pulls the tag that matches `version`, and Docker picks the right architecture from the manifest. Older apps publish one image per architecture and use the `{arch}` placeholder, like `ghcr.io/me/{arch}-my-app`. That still works, but a multi-arch image is the better choice for new apps.
+Supervisor 会拉取与 `version` 匹配的标签，Docker 会从 manifest 中选择正确的架构。较旧的应用会为每个架构发布一个镜像，并使用 `{arch}` 占位符，例如 `ghcr.io/me/{arch}-my-app`。这仍然可用，但对于新应用来说，多架构镜像是更好的选择。
 
-## Versions
+## 版本
 
-`version` in `config.yaml` is the single source of truth: it is the version users see, the tag the Supervisor pulls, and what the update notification compares against. So:
+`config.yaml` 中的 `version` 是唯一的权威来源：它是用户看到的版本、Supervisor 拉取的标签，也是更新通知所比较的依据。因此：
 
-- Push the image with the new tag before you change `version` in your repository. Otherwise, users get an update they cannot download.
-- Never push a different image under an existing tag. Users who already have it do not get the change, and new users get something else than the old ones.
-- Use a version scheme that sorts correctly, like [Semantic Versioning](https://semver.org/) or a date-based scheme like `2026.10.0`.
+- 在修改仓库中的 `version` 之前，先以新标签推送镜像。否则，用户会收到一个无法下载的更新。
+- 绝不要在已有标签下推送不同的镜像。已经拥有该镜像的用户不会得到变更，而新用户会得到与老用户不同的内容。
+- 使用能正确排序的版本方案，例如[语义化版本（Semantic Versioning）](https://semver.org/)，或基于日期的方案如 `2026.10.0`。
 
-The example workflow reads the tag from `version` in `config.yaml`, and builds and pushes an app when its `config.yaml`, `Dockerfile`, or `rootfs` changes on `main`. Between that push and the end of the build, a user whose Supervisor reloads your repository already sees the update but cannot download it yet. Keep that window short, and do not publish a version bump when the build is failing.
+示例工作流会从 `config.yaml` 中的 `version` 读取标签，并在应用的 `config.yaml`、`Dockerfile` 或 `rootfs` 在 `main` 上发生变更时构建并推送该应用。从这次推送直到构建结束之间，如果用户的 Supervisor 重新加载了你的仓库，用户已经能看到更新，但还无法下载。请保持这个时间窗口尽量短，并且不要在构建失败时发布版本更新。
 
-## Backward-incompatible changes
+## 不向后兼容的变更
 
-Users can turn on automatic updates per app. If a release needs their attention, like a configuration change or a migration that cannot be undone, add its version to `breaking_versions`:
+用户可以为每个应用开启自动更新。如果某个发布需要用户关注，例如配置变更或无法撤销的迁移，请将其版本添加到 `breaking_versions` 中：
 
 ```yaml
 version: "3.0.1"
@@ -64,12 +64,12 @@ breaking_versions:
   - "3.0.0"
 ```
 
-The Supervisor then never installs that version, or a version after it, automatically for users on an older version. They see the update, read your changelog, and install it themselves. Explain the backward-incompatible change at the top of `CHANGELOG.md`.
+这样，对于使用较旧版本的用户，Supervisor 绝不会自动安装该版本或其之后的版本。他们会看到更新，阅读你的更新日志，然后自行安装。请在 `CHANGELOG.md` 的顶部说明这个不向后兼容的变更。
 
-## Minimum versions
+## 最低版本要求
 
-If your app needs a feature of a recent Home Assistant Core, set `homeassistant` to the minimum version. On older installations, the app is not available to install.
+如果你的应用需要较新版 Home Assistant Core 的某项功能，请将 `homeassistant` 设置为最低版本。在较旧的安装中，该应用将不可安装。
 
-## Let users add it
+## 让用户添加你的应用
 
-Users install your app from your repository. A [My link](/glossary/my-link/) badge in your README opens the dialog to add your repository in their own Home Assistant, with the URL filled in. See [make it one step](/apps/guides/repository/#make-it-one-step).
+用户从你的仓库安装你的应用。README 中的 [My link](/glossary/my-link/) 徽章会打开在他们自己的 Home Assistant 中添加你的仓库的对话框，并自动填入 URL。参见[一步到位](/apps/guides/repository/#make-it-one-step)。

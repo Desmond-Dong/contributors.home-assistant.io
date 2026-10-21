@@ -1,12 +1,12 @@
 ---
-title: Language guidelines
-description: Agreements made per language, like formal or informal address. Written in the language they are about.
+title: 语言规范
+description: 各语言达成的约定，例如使用正式或非正式称呼。以该语言本身书写。
 order: 2
 ---
 
-Most languages offer several ways to say the same thing. To keep a language consistent, its translators agree on a few choices. Those agreements are listed here, in the language they are about, because they are written for native speakers.
+大多数语言都有多种方式表达同一件事。为了保持一种语言的一致性，其翻译者会就一些选择达成一致。这些约定列在此处，并以该语言本身书写，因为它们是为母语使用者编写的。
 
-Is your language missing, and have you made agreements with other translators? Add them to this page.
+如果你的语言缺失，并且你已与其他翻译者达成约定？请将它们添加到此页面。
 
 ## Deutsch
 

@@ -1,41 +1,41 @@
 ---
-title: Services, discovery, auth, and ingress endpoints
-description: Supervisor API endpoints apps use to share services like MQTT, announce themselves to Home Assistant, check user credentials, and work with ingress.
-sidebarLabel: Services, discovery, auth, and ingress
+title: 服务、发现、认证和 Ingress 端点
+description: Supervisor API 端点，供应用共享 MQTT 等服务、向 Home Assistant 宣告自身、校验用户凭据以及使用 ingress。
+sidebarLabel: 服务、发现、认证和 Ingress
 order: 8
 ---
 
-These endpoints are how apps work together, and with Home Assistant. Most of them need no `hassio_api` permission: what your app may do is set in its `config.yaml` instead, with `services`, `discovery`, and `auth_api`. See [services and discovery](/apps/guides/services-discovery/) for how to use them in your app.
+这些端点是应用之间以及应用与 Home Assistant 协作的方式。其中大多数不需要 `hassio_api` 权限：你的应用可以做什么，是在其 `config.yaml` 中通过 `services`、`discovery` 和 `auth_api` 设置的。请参阅[服务与发现](/apps/guides/services-discovery/)，了解如何在你的应用中使用它们。
 
-## Services
+## 服务
 
-A service is something one app provides and other apps use, like an MQTT broker. The providing app registers its connection details, and apps that need the service read them, so users do not have to type in a host name and password.
+服务（service）是一个应用提供、其他应用使用的东西，例如 MQTT 代理。提供服务的应用注册其连接详情，需要该服务的应用读取这些详情，这样用户就不必手动输入主机名和密码。
 
-There are two services: `mqtt` and `mysql`.
+共有两种服务：`mqtt` 和 `mysql`。
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/services` | List the services |
-| `GET` | `/services/<service>` | Read the connection details of a service |
-| `POST` | `/services/<service>` | Register as the provider of a service |
-| `DELETE` | `/services/<service>` | Remove the registration of a service |
+| `GET` | `/services` | 列出服务 |
+| `GET` | `/services/<service>` | 读取某个服务的连接详情 |
+| `POST` | `/services/<service>` | 注册为某个服务的提供者 |
+| `DELETE` | `/services/<service>` | 移除某个服务的注册 |
 
-Your app needs the service in the `services` option of its configuration. What the Supervisor checks:
+你的应用需要在其配置的 `services` 选项中声明该服务。Supervisor 会检查以下内容：
 
-- Reading and registering work with any role for the service: `want`, `need`, or `provide`. Registering fails while another app is registered as the provider.
-- Removing a registration needs `<service>:provide`.
+- 读取和注册对该服务的任何角色都有效：`want`、`need` 或 `provide`。当另一个应用已注册为提供者时，注册会失败。
+- 移除注册需要 `<service>:provide`。
 
-In the configuration, `provide` is the role meant for the app that registers.
+在配置中，`provide` 是为注册服务的应用准备的角色。
 
 ### `GET /services`
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `services` | list | A list of [service models](/apps/supervisor-api/models/#service) |
+| `services` | 列表 | [服务模型](/apps/supervisor-api/models/#service)列表 |
 
 ### `GET /services/<service>`
 
-Returns the connection details the provider registered. Fails when no app provides the service.
+返回提供者注册的连接详情。当没有应用提供该服务时会失败。
 
 ```json
 {
@@ -51,49 +51,49 @@ Returns the connection details the provider registered. Fails when no app provid
 
 ### `POST /services/mqtt`
 
-Registers your app as the MQTT broker.
+将你的应用注册为 MQTT 代理。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `host` | string | Yes | Host name of the broker |
-| `port` | integer | Yes | Port of the broker |
-| `username` | string | No | User name for other apps |
-| `password` | string | No | Password for other apps |
-| `ssl` | boolean | No | The broker uses TLS. Default `false` |
-| `protocol` | string | No | `3.1` or `3.1.1`. Default `3.1.1` |
+| `host` | 字符串 | 是 | 代理的主机名 |
+| `port` | 整数 | 是 | 代理的端口 |
+| `username` | 字符串 | 否 | 供其他应用使用的用户名 |
+| `password` | 字符串 | 否 | 供其他应用使用的密码 |
+| `ssl` | 布尔值 | 否 | 代理使用 TLS。默认为 `false` |
+| `protocol` | 字符串 | 否 | `3.1` 或 `3.1.1`。默认为 `3.1.1` |
 
 ### `POST /services/mysql`
 
-Registers your app as the MySQL server.
+将你的应用注册为 MySQL 服务器。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `host` | string | Yes | Host name of the server |
-| `port` | integer | Yes | Port of the server |
-| `username` | string | No | User name for other apps |
-| `password` | string | No | Password for other apps |
+| `host` | 字符串 | 是 | 服务器的主机名 |
+| `port` | 整数 | 是 | 服务器的端口 |
+| `username` | 字符串 | 否 | 供其他应用使用的用户名 |
+| `password` | 字符串 | 否 | 供其他应用使用的密码 |
 
 ### `DELETE /services/<service>`
 
-Removes the registration of the service. Call it from the providing app when it stops providing the service. The Supervisor does not check which app made the registration: it removes the current one.
+移除该服务的注册。当提供服务的应用停止提供该服务时，应从该应用调用此端点。Supervisor 不会检查注册是由哪个应用发起的：它会移除当前的注册。
 
-## Discovery
+## 发现
 
-With discovery, your app tells Home Assistant it is running, and how to reach it. Home Assistant then offers to set up the matching integration. Your app may only send discovery for the integrations listed in the `discovery` option of its configuration.
+通过发现（discovery），你的应用告知 Home Assistant 它正在运行，以及如何访问它。Home Assistant 随后会提议设置对应的集成（integration）。你的应用只能为其配置中 `discovery` 选项所列出的集成发送发现消息。
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `POST` | `/discovery` | Send a discovery message |
-| `DELETE` | `/discovery/<uuid>` | Remove a discovery message |
-| `GET` | `/discovery` | List the discovery messages. Only Home Assistant Core can call this |
-| `GET` | `/discovery/<uuid>` | One discovery message. Only Home Assistant Core can call this |
+| `POST` | `/discovery` | 发送发现消息 |
+| `DELETE` | `/discovery/<uuid>` | 移除一条发现消息 |
+| `GET` | `/discovery` | 列出发现消息。只有 Home Assistant Core 可以调用 |
+| `GET` | `/discovery/<uuid>` | 获取一条发现消息。只有 Home Assistant Core 可以调用 |
 
 ### `POST /discovery`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `service` | string | Yes | Domain of the integration, like `mqtt` |
-| `config` | dictionary | Yes | What the integration needs to connect, like a host and port |
+| `service` | 字符串 | 是 | 集成的域（domain），例如 `mqtt` |
+| `config` | 字典 | 是 | 集成连接所需的信息，例如主机和端口 |
 
 ```json
 {
@@ -105,43 +105,43 @@ With discovery, your app tells Home Assistant it is running, and how to reach it
 }
 ```
 
-The response has the `uuid` of the message. Keep it, so you can remove the message later.
+响应中包含该消息的 `uuid`。请保存它，以便之后移除该消息。
 
 ### `DELETE /discovery/<uuid>`
 
-Removes a discovery message. Your app can only remove its own messages.
+移除一条发现消息。你的应用只能移除自己发送的消息。
 
 ### `GET /discovery`
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `discovery` | list | [Discovery models](/apps/supervisor-api/models/#discovery) of apps that are running |
-| `services` | dictionary | Per integration, the slugs of the apps that can send discovery for it |
+| `discovery` | 列表 | 正在运行的应用的[发现模型](/apps/supervisor-api/models/#discovery) |
+| `services` | 字典 | 按集成划分，能够为其发送发现消息的应用的 slug |
 
-## Auth
+## 认证
 
-With `auth_api: true` in its configuration, your app can check the user name and password of a Home Assistant user. Use it to let users log in to your app with their Home Assistant account.
+在配置中设置 `auth_api: true` 后，你的应用可以校验 Home Assistant 用户的用户名和密码。可以用它让用户使用其 Home Assistant 账户登录你的应用。
 
-`auth_api` only covers `/auth` itself. The other auth endpoints are account administration, and need `hassio_api: true` with a [role](/apps/guides/security/#api-roles): `admin` for `/auth/list` and `/auth/reset`, `manager` or `admin` for `/auth/cache`.
+`auth_api` 仅涵盖 `/auth` 本身。其他认证端点属于账户管理，需要 `hassio_api: true` 以及相应的[角色](/apps/guides/security/#api-roles)：`/auth/list` 和 `/auth/reset` 需要 `admin`，`/auth/cache` 需要 `manager` 或 `admin`。
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET`, `POST` | `/auth` | Check user credentials |
-| `GET` | `/auth/list` | List the users |
-| `POST` | `/auth/reset` | Change the password of a user |
-| `DELETE` | `/auth/cache` | Clear the credentials cache |
+| `GET`, `POST` | `/auth` | 校验用户凭据 |
+| `GET` | `/auth/list` | 列出用户 |
+| `POST` | `/auth/reset` | 更改用户的密码 |
+| `DELETE` | `/auth/cache` | 清除凭据缓存 |
 
 ### `POST /auth`
 
-Checks a user name and password. Send them in one of three ways:
+校验用户名和密码。可以通过以下三种方式之一发送：
 
-- An `Authorization: Basic` header. Send your token in `X-Supervisor-Token` then.
-- A JSON body with `username` and `password`.
-- A form body (`application/x-www-form-urlencoded`) with `username` and `password`.
+- `Authorization: Basic` 请求头。此时请将你的令牌放在 `X-Supervisor-Token` 中。
+- 包含 `username` 和 `password` 的 JSON 请求体。
+- 包含 `username` 和 `password` 的表单请求体（`application/x-www-form-urlencoded`）。
 
-Returns success when the credentials are right, and `401` when they are not. The Supervisor caches correct credentials for a while, so Home Assistant does not get a request for every login.
+凭据正确时返回成功，否则返回 `401`。Supervisor 会将正确的凭据缓存一段时间，这样 Home Assistant 就不会在每次登录时都收到请求。
 
-Any `Authorization` header counts as the first way, so the Supervisor tries to read it as `Basic` credentials. Send your token in `X-Supervisor-Token` here, not in `Authorization: Bearer`:
+任何 `Authorization` 请求头都会被视为第一种方式，因此 Supervisor 会尝试将其读取为 `Basic` 凭据。此处请将你的令牌放在 `X-Supervisor-Token` 中，而不是 `Authorization: Bearer` 中：
 
 ```bash
 curl -sSL -X POST \
@@ -153,51 +153,51 @@ curl -sSL -X POST \
 
 ### `GET /auth/list`
 
-Returns the users of Home Assistant that have a user name.
+返回拥有用户名的 Home Assistant 用户。
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `users` | list | A list of [user models](/apps/supervisor-api/models/#user) |
+| `users` | 列表 | [用户模型](/apps/supervisor-api/models/#user)列表 |
 
 ### `POST /auth/reset`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `username` | string | Yes | User name |
-| `password` | string | Yes | New password |
+| `username` | 字符串 | 是 | 用户名 |
+| `password` | 字符串 | 是 | 新密码 |
 
 ### `DELETE /auth/cache`
 
-Clears the cache of correct credentials.
+清除正确凭据的缓存。
 
 ## Ingress
 
-[Ingress](/apps/guides/ingress/) shows the web interface of your app inside Home Assistant. The Supervisor proxies the requests, so your app does not need its own login or open port. Home Assistant Core uses these endpoints to set up ingress sessions. Your app does not call them itself.
+[Ingress](/apps/guides/ingress/) 在 Home Assistant 中展示你的应用的网页界面。Supervisor 会代理这些请求，因此你的应用不需要自己的登录功能或开放端口。Home Assistant Core 使用这些端点来建立 ingress 会话。你的应用自身不会调用它们。
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/ingress/panels` | Sidebar panels of apps that use ingress. An app needs the `admin` role |
-| `POST` | `/ingress/session` | Create an ingress session. Only Home Assistant Core can call this |
-| `POST` | `/ingress/validate_session` | Check an ingress session. Only Home Assistant Core can call this |
+| `GET` | `/ingress/panels` | 使用 ingress 的应用的侧边栏面板。应用需要 `admin` 角色 |
+| `POST` | `/ingress/session` | 创建 ingress 会话。只有 Home Assistant Core 可以调用 |
+| `POST` | `/ingress/validate_session` | 校验 ingress 会话。只有 Home Assistant Core 可以调用 |
 
 ### `GET /ingress/panels`
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `panels` | dictionary | Per app slug, a [panel model](/apps/supervisor-api/models/#panel) |
+| `panels` | 字典 | 按应用 slug 划分的[面板模型](/apps/supervisor-api/models/#panel) |
 
 ### `POST /ingress/session`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `user_id` | string | No | ID of the Home Assistant user. The Supervisor passes the user to the app in headers |
+| `user_id` | 字符串 | 否 | Home Assistant 用户的 ID。Supervisor 会通过请求头将该用户传递给应用 |
 
-Returns the new session as `session`. The browser sends it to the Supervisor in the `ingress_session` cookie.
+以 `session` 返回新会话。浏览器会通过 `ingress_session` cookie 将其发送给 Supervisor。
 
 ### `POST /ingress/validate_session`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `session` | string | Yes | The session to check |
+| `session` | 字符串 | 是 | 要校验的会话 |
 
-Returns success when the session is valid, and `401` when it is not.
+会话有效时返回成功，无效时返回 `401`。

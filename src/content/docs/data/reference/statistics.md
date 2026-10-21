@@ -1,87 +1,87 @@
 ---
-title: Statistics
-description: How Home Assistant summarizes sensor data into 5-minute and hourly statistics, and how those are stored.
+title: 统计数据
+description: Home Assistant 如何将传感器数据汇总为 5 分钟和每小时的统计数据，以及这些数据是如何存储的。
 order: 4
 ---
 
-The `states` table keeps every state change exactly as it happened, but only for a limited time: 10 days by default. To keep history for longer, Home Assistant also compiles [statistics](/glossary/statistics/): summaries of sensor values per time period. Those power the energy dashboard, the statistic graph card, and the long-term history graphs. The user documentation explains them in [Long-term statistics](https://www.home-assistant.io/docs/configuration/long-term-statistics/).
+`states` 表会完整保留每一次状态变化，但仅限有限时间：默认为 10 天。为了更长久地保存历史记录，Home Assistant 还会编译[统计数据](/glossary/statistics/)（statistics）：即每个时间段内传感器数值的汇总。这些数据为能源仪表盘、统计图表卡片和长期历史图表提供支持。用户文档在[长期统计数据](https://www.home-assistant.io/docs/configuration/long-term-statistics/)中对它们进行了说明。
 
-## Short-term and long-term
+## 短期与长期
 
-- **Short-term statistics** are compiled every 5 minutes, from the states of that period. They are purged together with the states.
-- **Long-term statistics** are compiled every hour, from the short-term statistics of that hour. They are never purged. With 24 rows per sensor per day, they stay small enough to keep forever.
+- **短期统计数据**每 5 分钟编译一次，数据来源于该时间段内的状态。它们会与状态一起被清除。
+- **长期统计数据**每小时编译一次，数据来源于该小时内的短期统计数据。它们永远不会被清除。每个传感器每天 24 行数据，因此体积足够小，可以永久保留。
 
-## Which entities get statistics
+## 哪些实体会生成统计数据
 
-Statistics are kept for sensors with a [state class](/glossary/state-class/). What is stored depends on that class:
+只有具有[状态类](/glossary/state-class/)（state class）的传感器才会保留统计数据。存储的内容取决于该状态类：
 
-| State class | Example | Stored per period |
+| 状态类 | 示例 | 每个时间段存储的内容 |
 | --- | --- | --- |
-| `measurement` | A temperature, or the current power use. | `mean`, `min`, and `max`. |
-| `measurement_angle` | A wind direction. | A circular `mean`, so 350 and 10 degrees average to 0, not 180. |
-| `total` or `total_increasing` | An energy meter, or a water meter. | `state`, `sum`, and `last_reset_ts`. |
+| `measurement` | 温度，或当前用电功率。 | `mean`、`min` 和 `max`。 |
+| `measurement_angle` | 风向。 | 圆形 `mean`（平均值），因此 350 度和 10 度的平均值是 0，而不是 180。 |
+| `total` 或 `total_increasing` | 电表，或水表。 | `state`、`sum` 和 `last_reset_ts`。 |
 
-For meters:
+对于计量表：
 
-- `state` is the value of the sensor at the end of the period.
-- `sum` is the running total since statistics were first compiled for this sensor. The difference between the `sum` of two periods is how much was used in between, even when the meter was reset in the meantime.
-- `last_reset_ts` is when the meter last started a new cycle, if known.
+- `state` 是该时间段结束时传感器的数值。
+- `sum` 是自该传感器首次编译统计数据以来的累计总量。两个时间段的 `sum` 之差就是这期间的使用量，即使期间计量表被重置过也是如此。
+- `last_reset_ts` 是计量表上次开始新周期的时刻（如果已知）。
 
-How an integration enables statistics for its sensors is explained in [Sensor entities](/core/entities/sensor/#long-term-statistics).
+集成如何为其传感器启用统计数据，在[传感器实体](/core/entities/sensor/#long-term-statistics)中有说明。
 
-Statistics can also be imported from outside sources, like the history of an energy provider. Those use a `:` instead of a `.` in their ID, like `energy_provider:electricity_import`.
+统计数据也可以从外部来源导入，例如能源供应商的历史记录。这些统计数据的 ID 中使用 `:` 而不是 `.`，例如 `energy_provider:electricity_import`。
 
-## The tables
+## 相关数据表
 
 ### `statistics_meta`
 
-One row per statistic, describing what it is.
+每个统计数据一行，描述它是什么。
 
-| Column | Type | What it is |
+| 列 | 类型 | 说明 |
 | --- | --- | --- |
-| `id` | Integer, primary key | The ID used by the data tables. |
-| `statistic_id` | String | For entities, the entity ID. For imported statistics, an ID like `domain:name`. Renaming an entity updates it. |
-| `source` | String | Where it comes from: `recorder` for entities, or the domain of the integration that imported it. |
-| `unit_of_measurement` | String | The unit of the statistic. |
-| `unit_class` | String | The kind of unit, like `energy` or `temperature`, used to convert between units. |
-| `mean_type` | Integer | `0` for no mean, `1` for a normal mean, `2` for a circular mean. |
-| `has_sum` | Boolean | Whether the statistic has a `sum`. |
-| `name` | String | A name, mostly for imported statistics. |
+| `id` | 整数，主键 | 数据表使用的 ID。 |
+| `statistic_id` | 字符串 | 对于实体，即实体 ID。对于导入的统计数据，则是类似 `domain:name` 的 ID。重命名实体会更新它。 |
+| `source` | 字符串 | 数据来源：实体为 `recorder`，或导入它的集成的域名。 |
+| `unit_of_measurement` | 字符串 | 统计数据的单位。 |
+| `unit_class` | 字符串 | 单位的类别，例如 `energy` 或 `temperature`，用于单位之间的换算。 |
+| `mean_type` | 整数 | `0` 表示无平均值，`1` 表示普通平均值，`2` 表示圆形平均值。 |
+| `has_sum` | 布尔值 | 该统计数据是否有 `sum`。 |
+| `name` | 字符串 | 名称，主要用于导入的统计数据。 |
 
-There is also a `has_mean` column, which is being replaced by `mean_type`.
+还有一个 `has_mean` 列，它正在被 `mean_type` 取代。
 
-### `statistics` and `statistics_short_term`
+### `statistics` 和 `statistics_short_term`
 
-Both tables have the same columns. `statistics` holds one row per hour, `statistics_short_term` one per 5 minutes.
+这两个表具有相同的列。`statistics` 每小时一行，`statistics_short_term` 每 5 分钟一行。
 
-| Column | Type | What it is |
+| 列 | 类型 | 说明 |
 | --- | --- | --- |
-| `id` | Integer, primary key | The ID of this row. |
-| `metadata_id` | Integer, refers to `statistics_meta` | Which statistic. |
-| `start_ts` | Timestamp | The start of the period. |
-| `created_ts` | Timestamp | When the row was written. |
-| `mean` | Number | The time-weighted average over the period. |
-| `mean_weight` | Number | The weight used to combine circular means. |
-| `min` | Number | The lowest value in the period. |
-| `max` | Number | The highest value in the period. |
-| `state` | Number | For meters: the value at the end of the period. |
-| `sum` | Number | For meters: the running total. |
-| `last_reset_ts` | Timestamp | For meters: when the last cycle started. |
+| `id` | 整数，主键 | 该行的 ID。 |
+| `metadata_id` | 整数，指向 `statistics_meta` | 对应哪个统计数据。 |
+| `start_ts` | 时间戳 | 时间段的开始时间。 |
+| `created_ts` | 时间戳 | 该行的写入时间。 |
+| `mean` | 数值 | 该时间段内按时间加权的平均值。 |
+| `mean_weight` | 数值 | 用于合并圆形平均值的权重。 |
+| `min` | 数值 | 该时间段内的最小值。 |
+| `max` | 数值 | 该时间段内的最大值。 |
+| `state` | 数值 | 对于计量表：该时间段结束时的数值。 |
+| `sum` | 数值 | 对于计量表：累计总量。 |
+| `last_reset_ts` | 时间戳 | 对于计量表：上一个周期开始的时间。 |
 
-Each table has an index on `metadata_id` with `start_ts`.
+每个表都在 `metadata_id` 和 `start_ts` 上建立了索引。
 
 ### `statistics_runs`
 
-Keeps track of which periods statistics have already been compiled for, so nothing is compiled twice, and missed periods are caught up after a restart.
+记录哪些时间段已经编译过统计数据，从而避免重复编译，并在重启后补齐遗漏的时间段。
 
-| Column | Type | What it is |
+| 列 | 类型 | 说明 |
 | --- | --- | --- |
-| `run_id` | Integer, primary key | The ID of this row. |
-| `start` | Date and time | The start of the compiled period. |
+| `run_id` | 整数，主键 | 该行的 ID。 |
+| `start` | 日期和时间 | 已编译时间段的开始时间。 |
 
-## Where you see statistics
+## 在哪里可以查看统计数据
 
-- The [history](https://www.home-assistant.io/integrations/history/) panel, for periods older than the states that are kept.
-- The [statistic graph card](https://www.home-assistant.io/dashboards/statistics-graph/) and the [statistic card](https://www.home-assistant.io/dashboards/statistic/).
-- The [energy dashboard](https://www.home-assistant.io/docs/energy/).
-- The `recorder.get_statistics` action, to use them in scripts and automations.
+- [历史](https://www.home-assistant.io/integrations/history/)面板，用于查看早于所保留状态的时间段。
+- [统计图表卡片](https://www.home-assistant.io/dashboards/statistics-graph/)和[统计卡片](https://www.home-assistant.io/dashboards/statistic/)。
+- [能源仪表盘](https://www.home-assistant.io/docs/energy/)。
+- `recorder.get_statistics` 动作，可在脚本和自动化中使用这些数据。

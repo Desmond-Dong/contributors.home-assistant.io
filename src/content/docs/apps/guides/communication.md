@@ -1,34 +1,34 @@
 ---
-title: Talk to Home Assistant and the Supervisor
-description: Reach Home Assistant Core, the Supervisor, and other apps from your app, over the internal network and through the API proxies.
+title: 与 Home Assistant 和 Supervisor 通信
+description: 通过内部网络和 API 代理，从你的应用访问 Home Assistant Core、Supervisor 以及其他应用。
 order: 5
 ---
 
-Your app runs on an internal network with the Supervisor and the other apps, and it gets a token to call their APIs. This guide covers the ways to talk to each of them, and which permission you need for each.
+你的应用与 Supervisor 及其他应用运行在同一个内部网络上，并获得一个用于调用它们 API 的令牌（token）。本指南介绍与它们各自通信的方式，以及每种方式所需的权限。
 
-## The internal network
+## 内部网络
 
-Every app reaches the others by host name. The Supervisor registers each app in the internal DNS as its app ID with `_` replaced by `-`:
+每个应用都通过主机名访问其他应用。Supervisor 会将每个应用以应用 ID 注册到内部 DNS 中，其中 `_` 被替换为 `-`：
 
-| Host name | What it is |
+| 主机名 | 说明 |
 | --- | --- |
-| `supervisor` | The Supervisor and its API, at `172.30.32.2` |
+| `supervisor` | Supervisor 及其 API，位于 `172.30.32.2` |
 | `homeassistant` | Home Assistant Core |
-| `core-mosquitto` | The official Mosquitto broker app (`core_mosquitto`) |
-| `local-hello-world` | Your local app `hello_world` |
-| `a0d7b954-adguard` | An app from the community repository |
+| `core-mosquitto` | 官方 Mosquitto broker 应用（`core_mosquitto`） |
+| `local-hello-world` | 你的本地应用 `hello_world` |
+| `a0d7b954-adguard` | 来自社区仓库的应用 |
 
-The app ID starts with the repository ID: `local` for local apps, `core` for the official apps, and a hash of the URL for other repositories. [How apps work](/apps/how-apps-work/#names-and-ids) explains how it is made. The `GET /addons` endpoint of the Supervisor API lists the `slug` and `repository` of every installed app.
+应用 ID 以仓库 ID 开头：本地应用为 `local`，官方应用为 `core`，其他仓库则为 URL 的哈希值。[应用的工作原理](/apps/how-apps-work/#names-and-ids)解释了它是如何生成的。Supervisor API 的 `GET /addons` 端点会列出每个已安装应用的 `slug` 和 `repository`。
 
-## Your token
+## 你的令牌
 
-The Supervisor gives every app its own token, in the environment variable `SUPERVISOR_TOKEN`. Use it for the Supervisor API and for the Home Assistant Core API proxy, in an `Authorization: Bearer` header. What the token may do depends on the permissions in your `config.yaml`.
+Supervisor 通过环境变量 `SUPERVISOR_TOKEN` 为每个应用分配专属令牌。在 `Authorization: Bearer` 请求头中使用它来访问 Supervisor API 和 Home Assistant Core API 代理。令牌能做什么取决于你的 `config.yaml` 中的权限。
 
-Remember that scripts started by S6 overlay need `#!/command/with-contenv bashio` (or `with-contenv bash`) to see this variable. See [the container environment](/apps/guides/s6-overlay/#the-container-environment).
+请注意，由 S6 overlay 启动的脚本需要 `#!/command/with-contenv bashio`（或 `with-contenv bash`）才能看到这个变量。参见[容器环境](/apps/guides/s6-overlay/#the-container-environment)。
 
 ## Home Assistant Core
 
-The easiest way to call Home Assistant is through the proxy of the Supervisor. You do not need to know the port, whether SSL is on, or a user's access token. Add `homeassistant_api: true` to `config.yaml`, and use your `SUPERVISOR_TOKEN`:
+调用 Home Assistant 最简单的方式是通过 Supervisor 的代理。你无需知道端口、是否启用了 SSL，也无需用户的访问令牌。在 `config.yaml` 中添加 `homeassistant_api: true`，并使用你的 `SUPERVISOR_TOKEN`：
 
 ```bash
 curl -sSL \
@@ -37,21 +37,21 @@ curl -sSL \
   http://supervisor/core/api/config
 ```
 
-`http://supervisor/core/api/` maps to the REST API of Home Assistant, `/api/` on Core. The event stream at `/core/api/stream` works the same way.
+`http://supervisor/core/api/` 映射到 Home Assistant 的 REST API，即 Core 上的 `/api/`。`/core/api/stream` 处的事件流的工作方式相同。
 
-The WebSocket API is at `ws://supervisor/core/websocket`. Send your `SUPERVISOR_TOKEN` as `access_token` in the auth message, like you would a normal access token:
+WebSocket API 位于 `ws://supervisor/core/websocket`。在认证消息中，将你的 `SUPERVISOR_TOKEN` 作为 `access_token` 发送，就像使用普通的访问令牌一样：
 
 ```json
 { "type": "auth", "access_token": "<your SUPERVISOR_TOKEN>" }
 ```
 
-The proxy does not forward commands of the `supervisor/` and `hassio/` types, and blocks the `hassio` endpoints of the REST API. Those are for the Home Assistant frontend only.
+代理不会转发 `supervisor/` 和 `hassio/` 类型的命令，并会阻止 REST API 的 `hassio` 端点。这些仅供 Home Assistant 前端使用。
 
-You can also connect to Home Assistant directly at `homeassistant` on port 8123, but then you need a user's access token and you have to know how the user configured Home Assistant. The proxy is almost always the better choice.
+你也可以在端口 8123 上直接连接 `homeassistant` 来访问 Home Assistant，但那样你需要用户的访问令牌，并且必须了解用户是如何配置 Home Assistant 的。代理几乎总是更好的选择。
 
-## The Supervisor API
+## Supervisor API
 
-The Supervisor API is at `http://supervisor/`, with the same token:
+Supervisor API 位于 `http://supervisor/`，使用相同的令牌：
 
 ```bash
 curl -sSL \
@@ -59,17 +59,17 @@ curl -sSL \
   http://supervisor/addons/self/info
 ```
 
-Every app may call a few endpoints without any extra permission:
+每个应用无需任何额外权限即可调用以下几个端点：
 
-- `/addons/self/...`: information about your own app, its options, logs, and stats. You can also start, stop, and restart it. Changing its security settings or updating it is not part of this: that needs `hassio_api` and a role that allows it.
-- `/info`: general information about the system.
-- `/services` and `/discovery`: [services and discovery](/apps/guides/services-discovery/).
-- `/auth`: user authentication, with `auth_api: true`.
-- `/supervisor/ping`: needs no token at all.
+- `/addons/self/...`：关于你自己的应用的信息，包括其选项、日志和统计信息。你也可以启动、停止和重启它。更改其安全设置或更新它不在此范围内：这需要 `hassio_api` 以及允许该操作的角色。
+- `/info`：关于系统的一般信息。
+- `/services` 和 `/discovery`：[服务与发现](/apps/guides/services-discovery/)。
+- `/auth`：用户认证，需要 `auth_api: true`。
+- `/supervisor/ping`：完全不需要令牌。
 
-For anything else, add `hassio_api: true`. What you may call then depends on `hassio_role`: the `default` role can read every `info` endpoint, and the other roles add more. The roles are in [Secure your app](/apps/guides/security/#api-roles), the endpoints in the [Supervisor API reference](/apps/supervisor-api/).
+对于其他任何内容，请添加 `hassio_api: true`。之后你可以调用什么取决于 `hassio_role`：`default` 角色可以读取所有 `info` 端点，其他角色则拥有更多权限。角色说明见[保护你的应用](/apps/guides/security/#api-roles)，端点见 [Supervisor API 参考](/apps/supervisor-api/)。
 
-With Bashio, most of these calls are a single function, and Bashio adds the token for you:
+使用 Bashio 时，这些调用中的大多数只需一个函数，而且 Bashio 会自动为你添加令牌：
 
 ```bash
 #!/command/with-contenv bashio
@@ -81,17 +81,17 @@ port=$(bashio::app.ingress_port)
 info=$(bashio::api.supervisor GET /addons/self/info)
 ```
 
-Every function is in the [Bashio reference](/apps/bashio/).
+每个函数都记录在 [Bashio 参考](/apps/bashio/)中。
 
-## Other apps
+## 其他应用
 
-Apps talk to each other over the internal network like any other network service: use the host name of the other app and the port it listens on. There is no permission involved; whatever the other app exposes inside the network is reachable.
+应用之间通过内部网络相互通信，就像任何其他网络服务一样：使用对方应用的主机名及其监听的端口。这里不涉及权限；对方应用在网络内部暴露的任何内容都是可访问的。
 
-For a few common services, the Supervisor can hand you the connection details, so the user does not need to type them. See [Share services and discover integrations](/apps/guides/services-discovery/).
+对于少数常见服务，Supervisor 可以为你提供连接详情，这样用户就无需手动输入。参见[共享服务与发现集成](/apps/guides/services-discovery/)。
 
-## Send input to your app
+## 向你的应用发送输入
 
-With `stdin: true` in `config.yaml`, Home Assistant can write to the standard input of your app with the `hassio.app_stdin` action:
+在 `config.yaml` 中设置 `stdin: true` 后，Home Assistant 可以通过 `hassio.app_stdin` 动作（action）向你的应用的标准输入写入内容：
 
 ```yaml
 actions:
@@ -101,4 +101,4 @@ actions:
       input: "restart"
 ```
 
-Home Assistant encodes `input` as JSON before it sends it, so the text `restart` arrives as `"restart"`, quotes included, and a mapping arrives as a JSON object. The Supervisor writes the data to the standard input of your app as it is.
+Home Assistant 在发送前会将 `input` 编码为 JSON，因此文本 `restart` 会以 `"restart"` 的形式到达（包含引号），而映射则会以 JSON 对象的形式到达。Supervisor 会将数据原样写入你的应用的标准输入。

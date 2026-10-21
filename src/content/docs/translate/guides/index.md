@@ -1,12 +1,12 @@
 ---
-title: Translation guides
-description: How to handle the trickier parts of translating, task by task. Placeholders, new languages, and translatable strings.
+title: 翻译指南
+description: 逐项讲解翻译中较难处理的部分。占位符、新语言以及可翻译的字符串。
 order: 10
-sidebarLabel: Guides
+sidebarLabel: 指南
 ---
 
-Each guide covers one task. The first two are for translators, the last one is for developers who add text to Home Assistant.
+每篇指南涵盖一个任务。前两篇面向翻译人员，最后一篇面向为 Home Assistant 添加文本的开发者。
 
-- [Placeholders and references](/translate/guides/placeholders/): the parts of a string you should not translate, and how to handle them.
-- [Request a new language](/translate/guides/new-language/): how to get your language added.
-- [Make your strings translatable](/translate/guides/developers/): how to write strings that translators can work with.
+- [占位符和引用](/translate/guides/placeholders/)：字符串中不应翻译的部分，以及如何处理它们。
+- [申请新语言](/translate/guides/new-language/)：如何让您的语言被添加。
+- [让您的字符串可翻译](/translate/guides/developers/)：如何编写翻译人员能够处理的字符串。

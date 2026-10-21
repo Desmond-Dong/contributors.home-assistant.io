@@ -1,16 +1,16 @@
 ---
 title: Supervisor API
-description: The REST API the Supervisor offers to apps, how to authenticate, what your app is allowed to call, and what the responses look like.
+description: Supervisor 提供给应用的 REST API，如何进行身份验证，你的应用可以调用哪些内容，以及响应的格式。
 order: 40
 ---
 
-The Supervisor runs a REST API on the internal network. Home Assistant Core uses it, the CLI uses it, and so can your app: to read its own configuration, find an MQTT broker, make a backup, or restart Home Assistant. This section is the reference for that API.
+Supervisor 在内部网络上运行一个 REST API。Home Assistant Core 使用它，CLI 使用它，你的应用也可以使用它：读取自己的配置、查找 MQTT 代理（broker）、创建备份，或重启 Home Assistant。本节是该 API 的参考文档。
 
-The paths still use the old name: apps live under `/addons` and `/store/addons`. That is the real API, so that is what you call.
+这些路径仍然使用旧名称：应用位于 `/addons` 和 `/store/addons` 之下。这就是真实的 API，所以你调用的就是这些路径。
 
-## Base URL and authentication
+## 基础 URL 和身份验证
 
-From inside an app container, the API is at `http://supervisor/`. The Supervisor gives every app its own token in the `SUPERVISOR_TOKEN` environment variable. Send it with every request:
+在应用容器内部，API 位于 `http://supervisor/`。Supervisor 通过 `SUPERVISOR_TOKEN` 环境变量为每个应用提供自己的令牌（token）。在每次请求中都要携带它：
 
 ```bash
 curl -sSL \
@@ -18,64 +18,64 @@ curl -sSL \
   http://supervisor/info
 ```
 
-The Supervisor accepts the token in any of these headers, checked in this order:
+Supervisor 接受以下任意一种请求头中的令牌，按此顺序检查：
 
 - `X-Supervisor-Token: <token>`
-- `X-Hassio-Key: <token>` (legacy)
+- `X-Hassio-Key: <token>`（旧版）
 - `Authorization: Bearer <token>`
 
-The same token is also available as `HASSIO_TOKEN`, the old name of the variable. Use `SUPERVISOR_TOKEN` in new code.
+同一个令牌也可以通过 `HASSIO_TOKEN` 获取，这是该变量的旧名称。在新代码中请使用 `SUPERVISOR_TOKEN`。
 
-If you write your app scripts in Bash, [Bashio](/apps/bashio/) wraps most of this API in functions like `bashio::app.option` and `bashio::services`. It handles the token for you.
+如果你使用 Bash 编写应用脚本，[Bashio](/apps/bashio/) 将此 API 的大部分功能封装在 `bashio::app.option` 和 `bashio::services` 等函数中。它会为你处理令牌。
 
-## What your app may call
+## 你的应用可以调用什么
 
-Which endpoints your app can reach depends on its configuration in `config.yaml`. See [Talk to Home Assistant and the Supervisor](/apps/guides/communication/) for the full picture, and the [configuration reference](/apps/reference/configuration/) for the options.
+你的应用能够访问哪些端点取决于它在 `config.yaml` 中的配置。完整说明请参阅[与 Home Assistant 和 Supervisor 通信](/apps/guides/communication/)，相关选项请参阅[配置参考](/apps/reference/configuration/)。
 
-### Without any extra permission
+### 无需任何额外权限
 
-Every app can call these endpoints with its token, even without `hassio_api`:
+每个应用都可以使用其令牌调用这些端点，即使没有 `hassio_api`：
 
-| Path | What it is for |
+| 路径 | 用途 |
 | --- | --- |
-| `/addons/self/<endpoint>` | One level below your own app, like `info`, `options`, `logs`, `stats`, `start`, or `restart`. Not `security` and `update`, and not deeper paths like `logs/follow` |
-| `/addons/self/options/config` | Your own validated options |
-| `/info` | General information about the system |
-| `/services` and everything under it | [Services](/apps/supervisor-api/services/) like MQTT |
-| `/discovery` and everything under it | [Discovery](/apps/supervisor-api/services/#discovery) messages |
-| `/auth` | Check user credentials, needs `auth_api: true` |
+| `/addons/self/<endpoint>` | 你自己应用下一级的端点，如 `info`、`options`、`logs`、`stats`、`start` 或 `restart`。不包括 `security` 和 `update`，也不包括更深的路径如 `logs/follow` |
+| `/addons/self/options/config` | 你自己应用的已验证选项 |
+| `/info` | 关于系统的一般信息 |
+| `/services` 及其下所有内容 | [服务](/apps/supervisor-api/services/)，如 MQTT |
+| `/discovery` 及其下所有内容 | [发现](/apps/supervisor-api/services/#discovery)消息 |
+| `/auth` | 检查用户凭据，需要 `auth_api: true` |
 
-`self` is an alias: wherever a path takes an app slug, your app can use `self` to mean itself.
+`self` 是一个别名：在路径中需要应用 slug 的地方，你的应用可以使用 `self` 来指代自己。
 
-### With `hassio_api: true`
+### 需要 `hassio_api: true`
 
-Set `hassio_api: true` in `config.yaml` to get access to more of the API. What exactly depends on the role you set with `hassio_role`:
+在 `config.yaml` 中设置 `hassio_api: true` 可以访问更多的 API。具体能访问什么取决于你通过 `hassio_role` 设置的角色：
 
-| Role | Can call |
+| 角色 | 可以调用 |
 | --- | --- |
-| `default` | Every path that ends in `/info`, like `/core/info` or `/os/info` |
-| `homeassistant` | Everything of `default`, plus everything under `/core/` and `/homeassistant/` |
-| `backup` | Everything of `default`, plus everything under `/backups` |
-| `manager` | Everything of `default`, plus `/addons` (except the `security` endpoint of other apps), `/addons/reload`, `/audio`, `/auth/cache`, `/available_updates`, `/backups`, `/cli`, `/core`, `/dns`, `/docker`, `/hardware`, `/homeassistant`, `/host`, `/jobs`, `/mounts`, `/multicast`, `/network`, `/observer`, `/os` (except `/os/datadisk/wipe`), `/refresh_updates`, `/resolution`, `/security`, `/store`, `/supervisor`, and `/time` |
-| `admin` | Everything |
+| `default` | 所有以 `/info` 结尾的路径，如 `/core/info` 或 `/os/info` |
+| `homeassistant` | `default` 的全部内容，外加 `/core/` 和 `/homeassistant/` 下的所有内容 |
+| `backup` | `default` 的全部内容，外加 `/backups` 下的所有内容 |
+| `manager` | `default` 的全部内容，外加 `/addons`（其他应用的 `security` 端点除外）、`/addons/reload`、`/audio`、`/auth/cache`、`/available_updates`、`/backups`、`/cli`、`/core`、`/dns`、`/docker`、`/hardware`、`/homeassistant`、`/host`、`/jobs`、`/mounts`、`/multicast`、`/network`、`/observer`、`/os`（`/os/datadisk/wipe` 除外）、`/refresh_updates`、`/resolution`、`/security`、`/store`、`/supervisor` 和 `/time` |
+| `admin` | 所有内容 |
 
-Only ask for the role your app needs. The `manager` and `admin` roles lower the [security rating](/apps/guides/security/) of your app.
+只请求你的应用所需的角色。`manager` 和 `admin` 角色会降低你应用的[安全评级](/apps/guides/security/)。
 
-### Never from an app
+### 应用永远不能调用的路径
 
-Some paths are off limits for every app, whatever its role:
+有些路径对所有应用都是禁止的，无论其角色如何：
 
-- `/addons/<app>/sys_options` and `/os/ssh/authorized_keys` only accept calls from Home Assistant Core.
-- `/core/api/hassio...` and `/homeassistant/api/hassio...` are blocked for everyone. Through these Core endpoints, a caller would act as the Supervisor itself.
-- Through the [WebSocket proxy](/apps/supervisor-api/core/#get-corewebsocket), commands that start with `supervisor/` or `hassio/` are refused.
+- `/addons/<app>/sys_options` 和 `/os/ssh/authorized_keys` 只接受来自 Home Assistant Core 的调用。
+- `/core/api/hassio...` 和 `/homeassistant/api/hassio...` 对所有人都是封锁的。通过这些 Core 端点，调用者将以 Supervisor 本身的身份执行操作。
+- 通过 [WebSocket 代理](/apps/supervisor-api/core/#get-corewebsocket)，以 `supervisor/` 或 `hassio/` 开头的命令会被拒绝。
 
-### Without a token
+### 无需令牌
 
-`GET /supervisor/ping` needs no token. Calls to the [Home Assistant Core proxy](/apps/supervisor-api/core/#home-assistant-core-api-proxy) are not checked against your role either: the proxy checks your token itself, and only lets you through when your app has `homeassistant_api: true`.
+`GET /supervisor/ping` 不需要令牌。对 [Home Assistant Core 代理](/apps/supervisor-api/core/#home-assistant-core-api-proxy)的调用也不会根据你的角色进行检查：代理会自行检查你的令牌，并且只有当你的应用具有 `homeassistant_api: true` 时才允许你通过。
 
-## Responses
+## 响应
 
-Most endpoints answer with JSON in the same envelope. A successful call:
+大多数端点以相同的信封（envelope）格式返回 JSON。一次成功的调用：
 
 ```json
 {
@@ -84,9 +84,9 @@ Most endpoints answer with JSON in the same envelope. A successful call:
 }
 ```
 
-`data` holds the response of the endpoint. The response tables in this reference describe what is inside `data`. Endpoints that only do something, like a restart, return an empty `data`.
+`data` 包含端点的响应。本参考文档中的响应表描述的是 `data` 内部的内容。只执行某个操作的端点（如重启）会返回空的 `data`。
 
-A failed call:
+一次失败的调用：
 
 ```json
 {
@@ -97,62 +97,62 @@ A failed call:
 }
 ```
 
-| Key | Description |
+| 键 | 描述 |
 | --- | --- |
-| `result` | `ok` or `error` |
-| `data` | The response, only on success |
-| `message` | A human readable error message |
-| `error_key` | A stable key for the error, when the error has one. Use it in code instead of parsing `message` |
-| `extra_fields` | Values that go with the `error_key`, when there are any |
-| `job_id` | The ID of the [job](/apps/supervisor-api/supervisor/#jobs) that failed, when the error came from one |
+| `result` | `ok` 或 `error` |
+| `data` | 响应内容，仅在成功时存在 |
+| `message` | 人类可读的错误消息 |
+| `error_key` | 错误的稳定键名（当错误有键名时）。在代码中请使用它，而不是解析 `message` |
+| `extra_fields` | 与 `error_key` 相关的值（如果有的话） |
+| `job_id` | 失败的[任务](/apps/supervisor-api/supervisor/#jobs)的 ID（当错误来自某个任务时） |
 
-Some endpoints do not use the envelope. Logs, changelogs, and documentation come back as plain text. Icons and logos come back as PNG images. Backup downloads come back as a tar file. When those fail, the error is plain text too.
+有些端点不使用这种信封格式。日志、更新日志和文档以纯文本形式返回。图标和徽标以 PNG 图像形式返回。备份下载以 tar 文件形式返回。当这些操作失败时，错误信息也是纯文本。
 
-### Status codes
+### 状态码
 
-| Code | Meaning |
+| 代码 | 含义 |
 | --- | --- |
-| `200` | Success |
-| `400` | The request failed. Read `message` to learn why. This is also what you get while the Supervisor is still starting up |
-| `401` | No token, or a token the endpoint does not accept |
-| `403` | Your app does not have the permission for this path |
-| `404` | The app, backup, job, or other object does not exist |
-| `409` | A conflict, like an operation that is already running |
-| `500` | Something went wrong inside the Supervisor. Check the Supervisor logs |
+| `200` | 成功 |
+| `400` | 请求失败。阅读 `message` 了解原因。当 Supervisor 仍在启动时，你也会收到此状态码 |
+| `401` | 没有令牌，或端点不接受该令牌 |
+| `403` | 你的应用没有此路径的权限 |
+| `404` | 应用、备份、任务或其他对象不存在 |
+| `409` | 冲突，例如某个操作已经在运行 |
+| `500` | Supervisor 内部出现错误。请检查 Supervisor 日志 |
 
-### Background jobs
+### 后台任务
 
-Long operations, like installing an app or making a backup, run as [jobs](/apps/supervisor-api/supervisor/#jobs). Several endpoints take a `background` option. With `background: true`, the call returns right away with a `job_id`, and you follow the progress with `GET /jobs/<job_id>`.
+长时间运行的操作，如安装应用或创建备份，会作为[任务](/apps/supervisor-api/supervisor/#jobs)运行。多个端点接受 `background` 选项。设置 `background: true` 后，调用会立即返回一个 `job_id`，你可以通过 `GET /jobs/<job_id>` 跟踪进度。
 
-## Log endpoints
+## 日志端点
 
-Apps, Home Assistant Core, the Supervisor, the plugins, and the host all have log endpoints that work the same way. They read from the systemd journal of the host and return plain text.
+应用、Home Assistant Core、Supervisor、插件和主机都有工作方式相同的日志端点。它们从主机的 systemd journal 读取数据并返回纯文本。
 
-| Path | Returns |
+| 路径 | 返回内容 |
 | --- | --- |
-| `<base>/logs` | The most recent log lines |
-| `<base>/logs/follow` | The most recent lines, then keeps the connection open and streams new ones |
-| `<base>/logs/latest` | All lines since the container last started |
-| `<base>/logs/boots/<bootid>` | The lines of one boot |
-| `<base>/logs/boots/<bootid>/follow` | The lines of one boot, then streams new ones |
+| `<base>/logs` | 最近的日志行 |
+| `<base>/logs/follow` | 最近的日志行，然后保持连接打开并流式传输新行 |
+| `<base>/logs/latest` | 自容器上次启动以来的所有日志行 |
+| `<base>/logs/boots/<bootid>` | 某次启动的日志行 |
+| `<base>/logs/boots/<bootid>/follow` | 某次启动的日志行，然后流式传输新行 |
 
-`<bootid>` is either a boot ID from [`GET /host/logs/boots`](/apps/supervisor-api/host/#get-hostlogsboots), or an offset: `0` is the current boot, `-1` the one before, and so on. A positive number counts from the oldest boot the journal still has.
+`<bootid>` 可以是来自 [`GET /host/logs/boots`](/apps/supervisor-api/host/#get-hostlogsboots) 的启动 ID，也可以是一个偏移量：`0` 表示当前启动，`-1` 表示上一次启动，依此类推。正数从 journal 中仍保留的最早一次启动开始计数。
 
-The log endpoints take these query parameters and headers:
+日志端点接受以下查询参数和请求头：
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `lines` | Query parameter. The number of lines to return. The default is 100, the minimum is 2 |
-| `verbose` | Query parameter, no value needed. Adds the timestamp, host name, and process to each line |
-| `no_colors` | Query parameter, no value needed. Strips ANSI color codes |
-| `Accept` | Header. `text/plain` (the default) or `text/x-log`. `text/x-log` gives the same output as `verbose` |
-| `Range` | Header. A [systemd-journal-gatewayd](https://www.freedesktop.org/software/systemd/man/latest/systemd-journal-gatewayd.service.html) range like `entries=cursor[[:num_skip]:num_entries]`. Ignored when you set `lines` |
+| `lines` | 查询参数。要返回的行数。默认为 100，最小为 2 |
+| `verbose` | 查询参数，无需值。为每行添加时间戳、主机名和进程 |
+| `no_colors` | 查询参数，无需值。去除 ANSI 颜色代码 |
+| `Accept` | 请求头。`text/plain`（默认）或 `text/x-log`。`text/x-log` 提供与 `verbose` 相同的输出 |
+| `Range` | 请求头。[systemd-journal-gatewayd](https://www.freedesktop.org/software/systemd/man/latest/systemd-journal-gatewayd.service.html) 范围，如 `entries=cursor[[:num_skip]:num_entries]`。设置 `lines` 时会被忽略 |
 
-The response has an `X-First-Cursor` header with the journal cursor of the first line. Pass it in a `Range` header to page back through older lines.
+响应中有一个 `X-First-Cursor` 请求头，包含第一行的 journal 游标（cursor）。将其传入 `Range` 请求头即可向前翻阅更早的日志行。
 
-## Examples
+## 示例
 
-Check that the Supervisor is up. This one needs no token:
+检查 Supervisor 是否已启动。这个调用不需要令牌：
 
 ```bash
 curl -sSL http://supervisor/supervisor/ping
@@ -165,7 +165,7 @@ curl -sSL http://supervisor/supervisor/ping
 }
 ```
 
-Get the network configuration of the host. Your app needs `hassio_api: true` for this one, any role will do:
+获取主机的网络配置。这个调用需要你的应用具有 `hassio_api: true`，任何角色都可以：
 
 ```bash
 curl -sSL \
@@ -173,7 +173,7 @@ curl -sSL \
   http://supervisor/network/info
 ```
 
-Read the options of your own app, validated against its schema:
+读取你自己应用的选项，并根据其模式（schema）进行验证：
 
 ```bash
 curl -sSL \
@@ -191,18 +191,18 @@ curl -sSL \
 }
 ```
 
-## The endpoints
+## 各端点
 
-- [Apps](/apps/supervisor-api/apps/): installed apps, their options, state, and logs.
-- [Store](/apps/supervisor-api/store/): apps that can be installed, and app repositories.
-- [Backups](/apps/supervisor-api/backups/): make, restore, and manage backups.
-- [Home Assistant Core](/apps/supervisor-api/core/): control Core, and the proxy to its REST and WebSocket API.
-- [Host and OS](/apps/supervisor-api/host/): the host, Home Assistant OS, hardware, network, time, mounts, and Docker.
-- [Plugins](/apps/supervisor-api/plugins/): audio, CLI, DNS, multicast, and observer.
-- [Supervisor](/apps/supervisor-api/supervisor/): the Supervisor itself, updates, jobs, resolution, and security.
-- [Services, discovery, auth, and ingress](/apps/supervisor-api/services/): what apps use to work together and with Home Assistant.
-- [Models](/apps/supervisor-api/models/): the objects that several endpoints return.
+- [应用](/apps/supervisor-api/apps/)：已安装的应用、它们的选项、状态和日志。
+- [商店](/apps/supervisor-api/store/)：可安装的应用和应用仓库。
+- [备份](/apps/supervisor-api/backups/)：创建、恢复和管理备份。
+- [Home Assistant Core](/apps/supervisor-api/core/)：控制 Core，以及访问其 REST 和 WebSocket API 的代理。
+- [主机和操作系统](/apps/supervisor-api/host/)：主机、Home Assistant OS、硬件、网络、时间、挂载和 Docker。
+- [插件](/apps/supervisor-api/plugins/)：audio、CLI、DNS、multicast 和 observer。
+- [Supervisor](/apps/supervisor-api/supervisor/)：Supervisor 本身、更新、任务、resolution 和安全。
+- [服务、发现、身份验证和 ingress](/apps/supervisor-api/services/)：应用之间以及与 Home Assistant 协同工作所使用的内容。
+- [模型](/apps/supervisor-api/models/)：多个端点返回的对象。
 
-## API version 2
+## API 版本 2
 
-The Supervisor also has a second version of this API under `/v2`, where apps are under `/apps` and `/store/apps` instead of `/addons` and `/store/addons`. It is only there when the `supervisor_v2_api` development feature flag is on, and it is still changing. This reference covers the API without `/v2`, the one every installation has.
+Supervisor 在 `/v2` 下还有此 API 的第二个版本，其中应用位于 `/apps` 和 `/store/apps` 之下，而不是 `/addons` 和 `/store/addons`。它仅在 `supervisor_v2_api` 开发功能标志开启时才可用，并且仍在变化中。本参考文档涵盖的是不带 `/v2` 的 API，即每个安装都有的那个版本。

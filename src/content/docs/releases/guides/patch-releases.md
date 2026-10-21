@@ -1,36 +1,36 @@
 ---
-title: Get a fix into a patch release
-description: How a bug fix reaches the beta and the patch releases, and what you can do to help it get there.
+title: 如何让修复进入补丁版本
+description: Bug 修复如何进入 beta 版和补丁版本，以及你可以做些什么来帮助它达成这一目标。
 order: 4
 ---
 
-Once a release is out, new features wait for next month. Bug fixes do not have to. During the beta week, fixes go into the next beta. After the release, they go into the weekly patch releases.
+一旦某个版本发布，新功能就要等到下个月。但 Bug 修复不必如此。在 beta 周期间，修复会进入下一个 beta 版。版本发布之后，修复会进入每周的补丁版本（patch release）。
 
-## How it works
+## 工作原理
 
-All fixes start the normal way: a pull request against the `dev` branch. There is no separate branch to target, and you do not have to open a second pull request.
+所有修复都从常规流程开始：针对 `dev` 分支提交一个 pull request。不需要指定其他分支，也不必再开第二个 pull request。
 
-When a fix should go into the beta or the next patch release, the pull request is added to the milestone of that version on GitHub, like `2026.11.1`. When the release team prepares the beta or patch release, they take every merged pull request in that milestone, and copy its changes into the release branch. That is called cherry-picking. The pull request then gets the `cherry-picked` label, so you can see it made it in.
+当某个修复应该进入 beta 版或下一个补丁版本时，该 pull request 会被添加到 GitHub 上对应版本的里程碑（milestone）中，例如 `2026.11.1`。当发布团队准备 beta 版或补丁版本时，他们会取出该里程碑中每一个已合并的 pull request，并将其更改复制到发布分支中。这称为 cherry-picking（摘取）。该 pull request 随后会被打上 `cherry-picked` 标签，这样你就能看到它已被纳入。
 
-In the release notes, fixes picked during the beta week are marked as beta fixes.
+在发布说明中，beta 周期间摘取的修复会被标记为 beta 修复。
 
-## What gets picked
+## 哪些修复会被摘取
 
-Patch releases only contain bug fixes, never features. The release team decides case by case, and these things make a fix more likely to be picked:
+补丁版本只包含 Bug 修复，绝不包含新功能。发布团队会逐个案例进行判断，以下情况会让修复更有可能被摘取：
 
-- It fixes a regression: something that worked in the previous release, and broke in this one.
-- It fixes a bug that affects a lot of people, or breaks something important.
-- It fixes a problem with a new integration or feature of this release.
-- It is small and safe. A patch release should never break something else.
+- 它修复了一个回归（regression）：即上一个版本中正常工作、而在本版本中出问题的功能。
+- 它修复了一个影响很多人、或破坏了重要功能的 Bug。
+- 它修复了本版本中某个新集成（integration）或新功能的问题。
+- 它改动小且安全。补丁版本绝不应破坏其他功能。
 
-Dependency updates that fix a bug, or that are needed because a service changed its API, can be picked too.
+修复 Bug 的依赖更新，或因某个服务更改了其 API 而需要的依赖更新，也可以被摘取。
 
-## What you can do
+## 你可以做什么
 
-- **Say it in the pull request.** Explain which issue it fixes, and that it is a regression or affects the current release. Link the issue.
-- **Keep the fix small.** A focused fix is easy to review, and easy to pick. A fix mixed with a refactor is not.
-- **Ask for it.** If you think a merged fix should be in the next patch release, mention it in the pull request, and ask a maintainer of the integration or the release team. Do not take it personally when the answer is "next month": the release team weighs every pick against the risk of breaking something else.
+- **在 pull request 中说明。** 解释它修复了哪个 issue，并说明它是一个回归或影响当前版本。附上该 issue 的链接。
+- **保持修复精简。** 聚焦的修复易于审查，也易于摘取。与重构混在一起的修复则不然。
+- **主动提出。** 如果你认为某个已合并的修复应该进入下一个补丁版本，请在 pull request 中提及，并向该集成的维护者或发布团队提出。当得到的回答是“下个月”时，请不要往心里去：发布团队会权衡每一次摘取与破坏其他功能的风险。
 
-## Who decides
+## 谁来决定
 
-Maintainers and the release team decide what goes into a milestone. The release team does the cherry-picking and publishes the release. See [Who does what](/releases/reference/roles/).
+维护者和发布团队决定哪些内容进入里程碑。发布团队负责 cherry-picking 并发布版本。参见[谁负责什么](/releases/reference/roles/)。

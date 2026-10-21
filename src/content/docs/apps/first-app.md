@@ -1,25 +1,25 @@
 ---
-title: Your first app
-description: Build a "Hello world" app, install it on your own Home Assistant, and grow it into a small web server with options.
+title: 你的第一个应用
+description: 构建一个“Hello world”应用，安装到你自己的 Home Assistant 上，并逐步将其扩展为一个带选项的小型 Web 服务器。
 order: 2
 ---
 
-The fastest way to understand apps is to build one. In this tutorial, you write a tiny app, install it on your own Home Assistant, and then extend it step by step. It takes about half an hour.
+理解应用最快的方法就是亲手构建一个。在本教程中，你将编写一个极小的应用，安装到你自己的 Home Assistant 上，然后一步步扩展它。整个过程大约需要半小时。
 
-You need a Home Assistant installation that runs apps, which means Home Assistant OS, and a way to put files on it.
+你需要一个能运行应用的 Home Assistant 安装，也就是 Home Assistant OS，以及一种往上面放文件的方式。
 
-## 1. Get access to the local apps folder
+## 1. 获取本地应用文件夹的访问权限
 
-The Supervisor looks for apps you build yourself in a folder called `local_apps`. Every app in there shows up in the app store under **Local apps**. To get to that folder, install one of these apps first:
+Supervisor 会在一个名为 `local_apps` 的文件夹中查找你自己构建的应用。其中的每个应用都会显示在应用商店的 **Local apps**（本地应用）下。要访问该文件夹，请先安装以下应用之一：
 
-- [Samba share](https://my.home-assistant.io/redirect/supervisor_app/?app=core_samba): your Home Assistant shows up as a network share on your computer, with a folder called `local_apps`. On macOS, if it does not show up, open Finder, press <kbd>Cmd</kbd> + <kbd>K</kbd>, and enter `smb://homeassistant.local`.
-- [Terminal & SSH](https://my.home-assistant.io/redirect/supervisor_app/?app=core_ssh): open its web terminal, or log in over SSH, and work in `/local_apps`. For SSH, add your public key to the app configuration first, see its documentation.
+- [Samba share](https://my.home-assistant.io/redirect/supervisor_app/?app=core_samba)：你的 Home Assistant 会作为网络共享出现在你的电脑上，其中有一个名为 `local_apps` 的文件夹。在 macOS 上，如果它没有出现，请打开 Finder，按下 <kbd>Cmd</kbd> + <kbd>K</kbd>，并输入 `smb://homeassistant.local`。
+- [Terminal & SSH](https://my.home-assistant.io/redirect/supervisor_app/?app=core_ssh)：打开它的 Web 终端，或通过 SSH 登录，然后在 `/local_apps` 中操作。若使用 SSH，请先将你的公钥添加到该应用的配置中，详见其文档。
 
-## 2. Create the app
+## 2. 创建应用
 
-In `local_apps`, create a folder called `hello_world` with three files: `Dockerfile`, `config.yaml`, and `run.sh`.
+在 `local_apps` 中，创建一个名为 `hello_world` 的文件夹，其中包含三个文件：`Dockerfile`、`config.yaml` 和 `run.sh`。
 
-The `Dockerfile` describes the container image of your app. It starts from the Home Assistant base image, which already contains the tools most apps need:
+`Dockerfile` 描述了你的应用的容器镜像。它基于 Home Assistant 基础镜像构建，该镜像已经包含了大多数应用所需的工具：
 
 ```dockerfile
 FROM ghcr.io/home-assistant/base:3.24
@@ -31,7 +31,7 @@ RUN chmod a+x /run.sh
 CMD [ "/run.sh" ]
 ```
 
-The `config.yaml` tells the Supervisor what your app is and what it needs:
+`config.yaml` 告诉 Supervisor 你的应用是什么以及它需要什么：
 
 ```yaml
 name: "Hello world"
@@ -44,7 +44,7 @@ arch:
   - amd64
 ```
 
-The `run.sh` script runs when your app starts:
+`run.sh` 脚本会在你的应用启动时运行：
 
 ```bash
 #!/command/with-contenv bashio
@@ -53,33 +53,33 @@ bashio::log.info "Hello world!"
 ```
 
 > [!IMPORTANT]
-> Save `run.sh` with Unix line endings (LF), not Windows line endings (CRLF). With CRLF, the script fails to start with an error that does not mention line endings at all.
+> 保存 `run.sh` 时请使用 Unix 换行符（LF），而不是 Windows 换行符（CRLF）。如果使用 CRLF，脚本将无法启动，且报错信息完全不会提到换行符。
 
-A few things worth knowing about these files:
+关于这些文件，有几点值得了解：
 
-- `slug` is the ID of your app. It must be unique within the repository, and it is good practice to give the folder the same name.
-- `init: false` is needed because the base image brings its own init system, S6 overlay. [Run services with S6 overlay](/apps/guides/s6-overlay/) explains why.
-- The first line of `run.sh` loads [Bashio](/apps/bashio/), a library of shell functions for apps, with the environment of the container. `bashio::log.info` writes a log line with a time and a level. In step 6, you use Bashio to read options too.
+- `slug` 是你的应用的 ID。它在仓库内必须唯一，并且最好让文件夹使用相同的名称。
+- 需要 `init: false`，因为基础镜像自带了 init 系统 S6 overlay。[使用 S6 overlay 运行服务](/apps/guides/s6-overlay/)解释了原因。
+- `run.sh` 的第一行会加载 [Bashio](/apps/bashio/)，这是一个面向应用的 shell 函数库，并带有容器的环境。`bashio::log.info` 会写入一条带有时间和级别的日志。在第 6 步中，你还会使用 Bashio 来读取选项。
 
-## 3. Install and start your app
+## 3. 安装并启动你的应用
 
-1. In Home Assistant, go to **Settings** > **Apps** and select **Install app**. This opens the **App store**.
-2. In the top-right menu, select **Check for updates**. Refresh the page if needed.
-3. A new section, **Local apps**, shows up with your app in it. Select it.
-4. Select **Install**. The Supervisor now builds the image from your `Dockerfile`, which takes a moment.
-5. Select **Start**, then open the **Log** tab. You see a line like `[12:34:56] INFO: Hello world!`.
+1. 在 Home Assistant 中，前往 **Settings**（设置）> **Apps**（应用），然后选择 **Install app**（安装应用）。这会打开 **App store**（应用商店）。
+2. 在右上角菜单中，选择 **Check for updates**（检查更新）。如有需要，刷新页面。
+3. 会出现一个新板块 **Local apps**（本地应用），其中包含你的应用。选择它。
+4. 选择 **Install**（安装）。Supervisor 现在会根据你的 `Dockerfile` 构建镜像，这需要一点时间。
+5. 选择 **Start**（启动），然后打开 **Log**（日志）标签页。你会看到类似 `[12:34:56] INFO: Hello world!` 的一行日志。
 
-### My app does not show up
+### 我的应用没有显示
 
-First, refresh your browser with <kbd>Ctrl</kbd> + <kbd>F5</kbd> (Windows and Linux) or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> (macOS). If it is still missing, the Supervisor could not read your `config.yaml`. It is either invalid YAML, or one of the keys has a value the Supervisor does not accept.
+首先，使用 <kbd>Ctrl</kbd> + <kbd>F5</kbd>（Windows 和 Linux）或 <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>（macOS）强制刷新浏览器。如果它仍然没有出现，说明 Supervisor 无法读取你的 `config.yaml`。要么是 YAML 无效，要么是某个键的值不被 Supervisor 接受。
 
-The Supervisor logs tell you which one. Go to **Settings** > **System** > **Logs**, select **Supervisor** in the menu at the top right, and look for a line that mentions your app. Fix the problem, then select **Check for updates** in the app store again.
+Supervisor 日志会告诉你具体是哪个问题。前往 **Settings**（设置）> **System**（系统）> **Logs**（日志），在右上角菜单中选择 **Supervisor**，然后查找提到你的应用的那一行。修复问题后，再次在应用商店中选择 **Check for updates**（检查更新）。
 
-## 4. Serve a web page
+## 4. 提供一个网页
 
-An app that prints one line is not very useful yet. Let's turn it into a web server, using the HTTP server that comes with Python.
+一个只打印一行内容的应用还不太有用。让我们把它变成一个 Web 服务器，使用 Python 自带的 HTTP 服务器。
 
-Install Python in the `Dockerfile`, and make `/data` the working directory. `/data` is the persistent storage of your app; more on that in a moment.
+在 `Dockerfile` 中安装 Python，并将 `/data` 设为工作目录。`/data` 是你的应用的持久化存储；稍后会详细介绍。
 
 ```dockerfile
 FROM ghcr.io/home-assistant/base:3.24
@@ -96,7 +96,7 @@ RUN chmod a+x /run.sh
 CMD [ "/run.sh" ]
 ```
 
-Start the server in `run.sh`:
+在 `run.sh` 中启动服务器：
 
 ```bash
 #!/command/with-contenv bashio
@@ -106,7 +106,7 @@ bashio::log.info "Hello world!"
 python3 -m http.server 8000
 ```
 
-Then expose port 8000 of the container on port 8000 of the host, and raise the version:
+然后将容器的 8000 端口暴露在主机的 8000 端口上，并提升版本号：
 
 ```yaml
 name: "Hello world"
@@ -122,15 +122,15 @@ ports:
   8000/tcp: 8000
 ```
 
-## 5. Install the update
+## 5. 安装更新
 
-Because you raised `version`, Home Assistant offers an update for your app. Select **Check for updates** in the app store if you do not see it yet, then update the app. The Supervisor rebuilds the image with your changes. Did you forget to raise the version? Then uninstall and install the app again.
+因为你提升了 `version`，Home Assistant 会为你的应用提供更新。如果你还没有看到，请在应用商店中选择 **Check for updates**（检查更新），然后更新应用。Supervisor 会根据你的更改重新构建镜像。忘记提升版本号了？那就卸载应用后重新安装。
 
-Start the app and open `http://homeassistant.local:8000` in your browser. You see a file listing with one file in it: `options.json`.
+启动应用，并在浏览器中打开 `http://homeassistant.local:8000`。你会看到一个文件列表，其中只有一个文件：`options.json`。
 
-## 6. Add options
+## 6. 添加选项
 
-`options.json` holds the settings the user chose for your app. The Supervisor writes it to `/data` before your app starts. It is empty now, because your app has no options yet. Add some to `config.yaml`: `options` holds the default values, and `schema` says what type each option is.
+`options.json` 保存了用户为你的应用选择的设置。Supervisor 会在你的应用启动之前将它写入 `/data`。它现在是空的，因为你的应用还没有任何选项。在 `config.yaml` 中添加一些：`options` 保存默认值，`schema` 说明每个选项的类型。
 
 ```yaml
 options:
@@ -143,9 +143,9 @@ schema:
   year: int
 ```
 
-Raise the version again and update the app. The **Configuration** tab of your app now shows a form with these three options. Change one, save, and restart the app. Download `options.json` from your web server, and you see your values in it.
+再次提升版本号并更新应用。你的应用的 **Configuration**（配置）标签页现在会显示一个包含这三个选项的表单。修改其中一个，保存，然后重启应用。从你的 Web 服务器下载 `options.json`，你会看到其中的值。
 
-Your script can read the options with Bashio. Change `run.sh`:
+你的脚本可以使用 Bashio 读取这些选项。修改 `run.sh`：
 
 ```bash
 #!/command/with-contenv bashio
@@ -160,19 +160,19 @@ fi
 python3 -m http.server 8000
 ```
 
-Raise the version, update, and start the app again. The log now greets the name you set. `bashio::config` gets the options from the Supervisor, which is one reason the script starts with `with-contenv`: that gives it the token it needs to ask. The [Bashio options reference](/apps/bashio/config/) has every function for options.
+提升版本号，更新，然后再次启动应用。日志现在会问候你设置的名字。`bashio::config` 会从 Supervisor 获取选项，这也是脚本以 `with-contenv` 开头的原因之一：它为脚本提供了询问所需的令牌。[Bashio 选项参考](/apps/bashio/config/)列出了所有用于选项的函数。
 
-## What is next
+## 接下来做什么
 
-You now have the basics: a `Dockerfile`, a `config.yaml`, options, logging, and a port.
+你现在已经掌握了基础：一个 `Dockerfile`、一个 `config.yaml`、选项、日志记录和一个端口。
 
-Next: [build a real app](/apps/build-a-real-app/). It walks through a complete example app, with services that start in order, options and logging with Bashio, translations, documentation, CI, and releases. That is how you set up an app other people install.
+下一步：[构建一个真正的应用](/apps/build-a-real-app/)。它将带你完成一个完整的示例应用，包括按顺序启动的服务、使用 Bashio 的选项和日志记录、翻译、文档、CI 和发布。这就是你搭建一个供他人安装的应用的方式。
 
-After that, [how apps work](/apps/how-apps-work/) explains what the Supervisor does with your app.
+之后，[应用的工作原理](/apps/how-apps-work/)会解释 Supervisor 对你的应用做了什么。
 
-Other places to go from here:
+从这里还可以前往的其他地方：
 
-- Show your web server inside the Home Assistant UI with [ingress](/apps/guides/ingress/), instead of opening a port.
-- Copy the [example app repository](https://github.com/home-assistant/apps-example) as the start of your own. It has a build workflow, documentation files, and an AppArmor profile ready to go.
-- Look up every key in the [app configuration](/apps/reference/configuration/) reference.
-- Ready to help with the official apps or the tooling behind them? Continue with [contribute to the official apps](/apps/first-contribution/#2-pick-where-to-help).
+- 使用 [ingress](/apps/guides/ingress/) 在 Home Assistant UI 中展示你的 Web 服务器，而不是开放端口。
+- 复制[示例应用仓库](https://github.com/home-assistant/apps-example)作为你自己的起点。它带有构建工作流、文档文件和现成的 AppArmor 配置文件。
+- 在[应用配置](/apps/reference/configuration/)参考中查找每个键的含义。
+- 准备好为官方应用或其背后的工具贡献力量了吗？请继续阅读[为官方应用做贡献](/apps/first-contribution/#2-pick-where-to-help)。

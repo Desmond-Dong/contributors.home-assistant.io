@@ -1,79 +1,79 @@
 ---
-title: Get into the catalog
-description: Add your repository to the catalog that the Marketplace and HACS show to everyone, what the review checks, and how renames and removals work.
-sidebarLabel: Get into the catalog
+title: 进入目录
+description: 将你的仓库添加到 Marketplace 和 HACS 向所有人展示的目录中，了解审查会检查什么，以及重命名和移除是如何运作的。
+sidebarLabel: 进入目录
 order: 7
 source: https://github.com/hacs/documentation/blob/main/source/docs/publish/include.md
 lastVerified: 2026-10-12
 ---
 
-Any user can add your repository from a link. To have it show up for everyone, without a link, it needs to be in the catalog. The catalog is the [hacs/default](https://github.com/hacs/default) repository, run by the HACS team, and the Marketplace reads the same catalog. You get in with a pull request.
+任何用户都可以通过链接添加你的仓库。要让它在没有链接的情况下对所有人显示，它需要被收录进目录。目录是 [hacs/default](https://github.com/hacs/default) 仓库，由 HACS 团队维护，Marketplace 读取同一个目录。你通过一个 pull request 即可加入。
 
-Be ready to wait. The HACS documentation is honest about it: new additions take months to be reviewed. You can see where your pull request is in the [backlog](https://github.com/hacs/default/pulls?q=is%3Apr+is%3Aopen+draft%3Afalse+sort%3Acreated-asc). In the meantime, users can add your repository from a link.
+请做好等待的准备。HACS 文档对此很坦诚：新收录的审查需要数月时间。你可以在[积压列表](https://github.com/hacs/default/pulls?q=is%3Apr+is%3Aopen+draft%3Afalse+sort%3Acreated-asc)中查看你的 pull request 的进度。在此期间，用户仍然可以通过链接添加你的仓库。
 
-## The link to your repository
+## 你的仓库的链接
 
-The link users add your repository from is a [My link](/glossary/my-link/). It opens your repository in the Marketplace of their own Home Assistant. When the Marketplace does not know your repository yet, and the link names its category, it offers to add it as a custom repository first. The category is `integration`, `plugin`, `template`, or `theme`, the same as the file of its type in the catalog.
+用户用来添加你的仓库的链接是一个 [My link](/glossary/my-link/)。它会在他们自己的 Home Assistant 的 Marketplace 中打开你的仓库。当 Marketplace 还不知道你的仓库，且链接中指明了其类别时，它会先提议将其添加为自定义仓库。类别为 `integration`、`plugin`、`template` 或 `theme`，与目录中对应类型的文件相同。
 
-The [My link creator](https://my.home-assistant.io/create-link/?redirect=marketplace_repository) makes the link from the owner, the name, and the category of your repository. Put the badge in your README:
+[My link 创建器](https://my.home-assistant.io/create-link/?redirect=marketplace_repository)会根据你仓库的所有者、名称和类别生成链接。将徽章放入你的 README 中：
 
 ```markdown
 [![Open your Home Assistant instance and open a repository in the Marketplace.](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=me&repository=my-card&category=plugin)
 ```
 
-The `marketplace_repository` link is new in Home Assistant 2026.11. The older `hacs_repository` link takes the same `owner`, `repository`, and `category`. It opens HACS before 2026.11, and the Marketplace after, so it reaches users on both. HACS documents it on its [My Home Assistant](https://hacs.xyz/docs/use/my/) page.
+`marketplace_repository` 链接是 Home Assistant 2026.11 中新增的。较旧的 `hacs_repository` 链接接受相同的 `owner`、`repository` 和 `category`。它在 2026.11 之前打开 HACS，之后打开 Marketplace，因此可以覆盖两边的用户。HACS 在其 [My Home Assistant](https://hacs.xyz/docs/use/my/) 页面上对此进行了说明。
 
-## Who can submit
+## 谁可以提交
 
-Only the owner of the repository, or a major contributor, can submit it.
+只有仓库的所有者或主要贡献者才能提交。
 
-Integrations that are only for testing an alpha or beta of a core integration, or that replace a core integration, are not accepted. Users can still add them from a link.
+仅用于测试核心集成的 alpha 或 beta 版本的集成，或者替换核心集成的集成，不会被接受。用户仍然可以通过链接添加它们。
 
-## Before you open the pull request
+## 在打开 pull request 之前
 
-1. Make sure your repository meets the [requirements of its type](/marketplace/reference/repository-structure/), and has a description, topics, issues turned on, and a README.
-2. Add the [HACS action](https://github.com/hacs/action) to your repository, and make it pass without ignoring any check. See [validation checks](/marketplace/reference/validation/).
-3. For an integration, add the [hassfest action](https://github.com/home-assistant/actions#hassfest), and make it pass too.
-4. After both pass, publish a full GitHub release. A tag alone is not enough.
+1. 确保你的仓库满足[其类型的要求](/marketplace/reference/repository-structure/)，并且有描述、topics、已开启的 issues 以及 README。
+2. 将 [HACS action](https://github.com/hacs/action) 添加到你的仓库，并使其在不忽略任何检查的情况下通过。参见[验证检查](/marketplace/reference/validation/)。
+3. 对于集成，添加 [hassfest action](https://github.com/home-assistant/actions#hassfest)，并使其也通过。
+4. 在两者都通过后，发布一个完整的 GitHub release。仅有 tag 是不够的。
 
-## Open the pull request
+## 打开 pull request
 
-1. Fork [hacs/default](https://github.com/hacs/default), and create a new branch from `master`. Do not work on `master` directly.
-2. Add your repository, as `owner/repository`, to the file of its type: `integration`, `plugin`, `theme`, or `template`. Each file is a JSON list. Add yours in alphabetical order, not at the end.
-3. Open the pull request from your own account, not from an organization, so the HACS team can edit it.
-4. Fill in the pull request template completely: the checklist, a link to your latest release, a link to a passing run of the HACS action without `ignore`, and for an integration, a link to a passing run of hassfest.
+1. Fork [hacs/default](https://github.com/hacs/default)，并从 `master` 创建一个新分支。不要直接在 `master` 上工作。
+2. 将你的仓库以 `owner/repository` 的形式添加到其对应类型的文件中：`integration`、`plugin`、`theme` 或 `template`。每个文件都是一个 JSON 列表。按字母顺序添加你的仓库，而不是加在末尾。
+3. 从你自己的账户（而不是组织）打开 pull request，以便 HACS 团队可以编辑它。
+4. 完整填写 pull request 模板：检查清单、指向你最新 release 的链接、指向一次未使用 `ignore` 且通过的 HACS action 运行的链接，对于集成，还需要指向一次通过的 hassfest 运行的链接。
 
-A pull request with an incomplete template, or with statements that are not true, is closed without notice. So is one where you request reviews from people. A repository with small problems gets its pull request set to draft: fix them, and mark it ready for review again. Major problems close it.
+模板填写不完整或包含不实陈述的 pull request 会被直接关闭，不予通知。请求他人审查的 pull request 也是如此。有小问题的仓库，其 pull request 会被设为草稿：修复问题后，再次将其标记为准备好接受审查。有重大问题则会关闭。
 
-The files also have an `appdaemon`, `python_script`, and `netdaemon` list. HACS still reads those, but the Marketplace does not install those types.
+这些文件中还有 `appdaemon`、`python_script` 和 `netdaemon` 列表。HACS 仍然会读取它们，但 Marketplace 不会安装这些类型。
 
-## What the review checks
+## 审查会检查什么
 
-When your pull request comes up for review, automated checks run. All of them have to pass, unless the HACS team agreed otherwise before you opened it:
+当你的 pull request 进入审查时，会运行自动化检查。所有检查都必须通过，除非 HACS 团队在你打开之前另有约定：
 
-| Check | What it checks |
+| 检查 | 检查内容 |
 | --- | --- |
-| Brands | Integrations only. A `brand` folder with at least an `icon.png`, or images for the domain in the [brands repository](https://github.com/home-assistant/brands). |
-| Manifest | Integrations only. A valid `manifest.json`, with `domain`, `documentation`, `issue_tracker`, `codeowners`, `name`, and `version`. |
-| HACS validation | The same validation HACS runs on a repository. |
-| HACS manifest | A `hacs.json` with at least a `name`. |
-| Archived | The repository is not archived. |
-| Releases | At least one release. |
-| Owner | You own the repository, or are a major contributor. |
-| Images | Dashboard plugins and themes only. Images in the README. |
-| Repository | A description, issues turned on, and topics. |
-| Lint | The files you changed are valid JSON, and sorted. |
+| Brands | 仅限集成。一个至少包含 `icon.png` 的 `brand` 文件夹，或者在 [brands 仓库](https://github.com/home-assistant/brands)中该域名的图片。 |
+| Manifest | 仅限集成。一个有效的 `manifest.json`，包含 `domain`、`documentation`、`issue_tracker`、`codeowners`、`name` 和 `version`。 |
+| HACS validation | HACS 对仓库运行的相同验证。 |
+| HACS manifest | 一个至少包含 `name` 的 `hacs.json`。 |
+| Archived | 仓库未被归档。 |
+| Releases | 至少有一个 release。 |
+| Owner | 你拥有该仓库，或者是主要贡献者。 |
+| Images | 仅限仪表盘插件和主题。README 中有图片。 |
+| Repository | 有描述、已开启的 issues 以及 topics。 |
+| Lint | 你修改的文件是有效的 JSON，并且已排序。 |
 
-After your pull request is merged, your repository is included in the next scheduled scan.
+在你的 pull request 合并后，你的仓库将被包含在下一次计划扫描中。
 
-## Rename or move your repository
+## 重命名或移动你的仓库
 
-When you rename your repository, or transfer it to another account, you do not need to do anything. The HACS team updates the catalog.
+当你重命名你的仓库，或将其转移到另一个账户时，你不需要做任何事情。HACS 团队会更新目录。
 
-## Take it out
+## 将其移除
 
-When you archive your repository on GitHub, the HACS team takes it out of the catalog. Users who installed it keep it, but get no more updates, and a repair tells them why.
+当你在 GitHub 上归档你的仓库时，HACS 团队会将其从目录中移除。已安装它的用户会保留它，但不会再收到更新，并且一个修复提示会告知他们原因。
 
-To have it taken out for another reason, open an issue in [hacs/integration](https://github.com/hacs/integration/issues/new?template=removal.yml) with the **Request for repository removal** template. Do that before you delete a repository: if you delete one that is in the catalog, you will not be able to add any repositories to the catalog in the future.
+如果因其他原因需要将其移除，请在 [hacs/integration](https://github.com/hacs/integration/issues/new?template=removal.yml) 中使用 **Request for repository removal** 模板打开一个 issue。请在删除仓库之前这样做：如果你删除了一个已在目录中的仓库，你将来将无法向目录添加任何仓库。
 
-Repositories are also taken out when they are abandoned, break Home Assistant, steal credentials, or are deleted. One that is harmful is marked critical: the Marketplace then uninstalls it from every Home Assistant that has it, right away.
+仓库在被放弃、破坏 Home Assistant、窃取凭据或被删除时也会被移除。有害的仓库会被标记为 critical：Marketplace 随后会立即从每一台安装了它的 Home Assistant 中将其卸载。

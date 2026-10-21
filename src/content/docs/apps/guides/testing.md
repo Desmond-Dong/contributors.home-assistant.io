@@ -1,59 +1,59 @@
 ---
-title: Test your app
-description: Run your app with a full Supervisor and Home Assistant on your own computer, on a real device, or with plain Docker.
+title: 测试你的应用
+description: 在你自己的电脑上、真实设备上，或使用纯 Docker，以完整的 Supervisor 和 Home Assistant 运行你的应用。
 order: 8
 ---
 
-You can test an app in three ways. The devcontainer is the most complete and the most comfortable. A real device is what you need for hardware. Plain Docker is the quickest for a build check.
+你可以通过三种方式测试应用。devcontainer 最完整、最舒适。真实设备是测试硬件所必需的。纯 Docker 则是进行构建检查最快的方式。
 
-## The devcontainer
+## devcontainer
 
-The [example app repository](https://github.com/home-assistant/apps-example) comes with a devcontainer for Visual Studio Code. It runs a Supervisor and Home Assistant inside a container on your computer, with every app of your repository available as a local app. It works on Windows, macOS, and Linux.
+[示例应用仓库](https://github.com/home-assistant/apps-example) 自带了适用于 Visual Studio Code 的 devcontainer。它会在你电脑上的一个容器内运行 Supervisor 和 Home Assistant，并且你仓库中的每个应用都可以作为本地应用使用。它支持 Windows、macOS 和 Linux。
 
-1. Install [Visual Studio Code](https://code.visualstudio.com/), Docker, and the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension.
-2. Copy `.devcontainer.json` and `.vscode/tasks.json` from the example repository into your repository. If you started from the example repository, you already have them.
-3. Open your repository in Visual Studio Code, and select **Reopen in Container** when it asks. The first start takes a while.
-4. Run the task **Start Home Assistant**: open the Command Palette, select **Tasks: Run Task**, and pick it. This starts the Supervisor and Home Assistant.
-5. Open `http://localhost:7123/` and go through the onboarding.
+1. 安装 [Visual Studio Code](https://code.visualstudio.com/)、Docker 以及 [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) 扩展。
+2. 将示例仓库中的 `.devcontainer.json` 和 `.vscode/tasks.json` 复制到你的仓库中。如果你是从示例仓库开始的，那么你已经拥有它们了。
+3. 在 Visual Studio Code 中打开你的仓库，并在提示时选择 **Reopen in Container**。首次启动需要一些时间。
+4. 运行 **Start Home Assistant** 任务：打开命令面板（Command Palette），选择 **Tasks: Run Task**，然后选择该任务。这将启动 Supervisor 和 Home Assistant。
+5. 打开 `http://localhost:7123/` 并完成引导设置。
 
-Your apps show up in the app store under **Local apps**. The other tasks in `tasks.json` install, start, and rebuild an app for you, with `ha apps` commands. Add the slugs of your apps to the list at the bottom of `tasks.json` to use them.
+你的应用会显示在应用商店的 **Local apps** 下。`tasks.json` 中的其他任务会使用 `ha apps` 命令为你安装、启动和重新构建应用。将你的应用的 slug 添加到 `tasks.json` 底部的列表中即可使用它们。
 
-The devcontainer runs Docker inside Docker with `--privileged`, which is why it can run the whole stack. It does not have your hardware, though.
+devcontainer 使用 `--privileged` 在 Docker 中运行 Docker，这就是它能够运行整个技术栈的原因。不过，它无法访问你的硬件。
 
-## A real device
+## 真实设备
 
-For anything that needs real hardware, like a serial port or Bluetooth, test on a device with Home Assistant OS. Copy your app folder into `local_apps` with the [Samba share](https://my.home-assistant.io/redirect/supervisor_app/?app=core_samba) or [Terminal & SSH](https://my.home-assistant.io/redirect/supervisor_app/?app=core_ssh) app, like in [your first app](/apps/first-app/).
+对于任何需要真实硬件的场景，例如串口或蓝牙，请在运行 Home Assistant OS 的设备上进行测试。使用 [Samba share](https://my.home-assistant.io/redirect/supervisor_app/?app=core_samba) 或 [Terminal & SSH](https://my.home-assistant.io/redirect/supervisor_app/?app=core_ssh) 应用，将你的应用文件夹复制到 `local_apps` 中，就像在[你的第一个应用](/apps/first-app/)中那样。
 
-If your `config.yaml` has an `image` key, the Supervisor pulls that image instead of building your local changes. Comment the key out while you develop, and put it back before you publish:
+如果你的 `config.yaml` 中有 `image` 键，Supervisor 会拉取该镜像，而不是构建你的本地更改。在开发期间请注释掉该键，并在发布前恢复它：
 
 ```yaml
 # image: "ghcr.io/me/my-app"
 ```
 
-After a change, select **Check for updates** in the app store, then **Rebuild** on the app page. Over SSH, `ha apps rebuild --force local_my_app` does the same.
+更改之后，在应用商店中选择 **Check for updates**，然后在应用页面上选择 **Rebuild**。通过 SSH，`ha apps rebuild --force local_my_app` 可以实现同样的效果。
 
-## Plain Docker
+## 纯 Docker
 
-To check that your image builds, use Docker BuildKit in the app folder:
+要检查你的镜像能否构建，请在应用文件夹中使用 Docker BuildKit：
 
 ```bash
 docker buildx build -t local/my-app .
 ```
 
-To build for the other architecture, add `--platform`. Docker names the architectures differently: `amd64` is `linux/amd64`, and `aarch64` is `linux/arm64`. A cross build needs QEMU emulation, see the [Docker documentation on multi-platform builds](https://docs.docker.com/build/building/multi-platform/).
+要为其他架构构建，请添加 `--platform`。Docker 对架构的命名有所不同：`amd64` 对应 `linux/amd64`，`aarch64` 对应 `linux/arm64`。交叉构建需要 QEMU 模拟，请参阅 [Docker 关于多平台构建的文档](https://docs.docker.com/build/building/multi-platform/)。
 
 ```bash
 docker buildx build --platform linux/arm64 -t local/my-app .
 ```
 
-You can also run the image, with a folder of your own as `/data`. Put an `options.json` in that folder for programs that read it directly:
+你也可以运行该镜像，并使用你自己的一个文件夹作为 `/data`。对于直接读取该文件的程序，请在该文件夹中放置一个 `options.json`：
 
 ```bash
 docker run --rm -v /tmp/my-app-data:/data -p 8080:8080 local/my-app
 ```
 
-Without a Supervisor, there is no `SUPERVISOR_TOKEN` and no Supervisor API, so every Bashio call that uses the API fails. That includes `bashio::config`, which gets the options from the API and not from `options.json`. Use this for a quick check, not as a full test.
+没有 Supervisor 时，就没有 `SUPERVISOR_TOKEN`，也没有 Supervisor API，因此每个使用该 API 的 Bashio 调用都会失败。这包括 `bashio::config`，它从 API 而不是从 `options.json` 获取配置。请将其用于快速检查，而不是作为完整的测试。
 
-## Logs
+## 日志
 
-Everything your app writes to `stdout` and `stderr` shows up on the **Log** tab of the app, and with `ha apps logs local_my_app`. If your app does not start or does not show up at all, check the Supervisor logs under **Settings** > **System** > **Logs**, with **Supervisor** selected.
+你的应用写入 `stdout` 和 `stderr` 的所有内容都会显示在应用的 **Log** 标签页中，也可以通过 `ha apps logs local_my_app` 查看。如果你的应用没有启动或根本没有显示，请在 **Settings** > **System** > **Logs** 下查看 Supervisor 日志，并选择 **Supervisor**。

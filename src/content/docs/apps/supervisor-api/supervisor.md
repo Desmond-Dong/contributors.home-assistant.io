@@ -1,41 +1,41 @@
 ---
-title: Supervisor endpoints
-description: Supervisor API endpoints for the Supervisor itself, system information, updates, jobs, resolution, and security settings.
+title: Supervisor 端点
+description: Supervisor API 端点，涵盖 Supervisor 本身、系统信息、更新、任务、问题解决中心和安全设置。
 sidebarLabel: Supervisor
 order: 7
 ---
 
-These endpoints are about the Supervisor and the system as a whole. `GET /info` works for every app, without extra permissions. The other `/info` endpoints work with any role. The rest needs `hassio_api: true` with the `manager` or `admin` role.
+这些端点与 Supervisor 和整个系统相关。`GET /info` 对每个应用都可用，无需额外权限。其他 `/info` 端点适用于任何角色。其余端点需要 `hassio_api: true` 以及 `manager` 或 `admin` 角色。
 
-## System
+## 系统
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/info` | Overview of the system |
-| `GET` | `/available_updates` | Updates that are available |
-| `POST` | `/reload_updates` | Check for updates |
-| `POST` | `/refresh_updates` | Check for updates and reload the store |
+| `GET` | `/info` | 系统概览 |
+| `GET` | `/available_updates` | 可用的更新 |
+| `POST` | `/reload_updates` | 检查更新 |
+| `POST` | `/refresh_updates` | 检查更新并重新加载商店 |
 
 ### `GET /info`
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `supervisor` | string | Version of the Supervisor |
-| `homeassistant` | string or null | Version of Home Assistant Core |
-| `hassos` | string or null | Version of Home Assistant OS, `null` on other systems |
-| `docker` | string | Version of Docker |
-| `hostname` | string or null | Host name |
-| `operating_system` | string or null | Name of the operating system |
-| `features` | list | Features the host supports |
-| `machine` | string | Machine type, like `generic-x86-64` |
-| `machine_id` | string or null | Machine ID of the host |
-| `arch` | string | Main architecture |
-| `supported_arch` | list | All architectures the system can run |
-| `state` | string | State of the Supervisor, like `running` |
-| `supported` | boolean | `true` if the installation is supported |
-| `channel` | string | Update channel: `stable`, `beta`, or `dev` |
-| `logging` | string | Log level of the Supervisor |
-| `timezone` | string | Time zone |
+| `supervisor` | string | Supervisor 的版本 |
+| `homeassistant` | string or null | Home Assistant Core 的版本 |
+| `hassos` | string or null | Home Assistant OS 的版本，在其他系统上为 `null` |
+| `docker` | string | Docker 的版本 |
+| `hostname` | string or null | 主机名 |
+| `operating_system` | string or null | 操作系统名称 |
+| `features` | list | 主机支持的功能 |
+| `machine` | string | 机器类型，例如 `generic-x86-64` |
+| `machine_id` | string or null | 主机的机器 ID |
+| `arch` | string | 主架构 |
+| `supported_arch` | list | 系统可运行的所有架构 |
+| `state` | string | Supervisor 的状态，例如 `running` |
+| `supported` | boolean | 如果安装受支持则为 `true` |
+| `channel` | string | 更新通道：`stable`、`beta` 或 `dev` |
+| `logging` | string | Supervisor 的日志级别 |
+| `timezone` | string | 时区 |
 
 ```json
 {
@@ -60,122 +60,122 @@ These endpoints are about the Supervisor and the system as a whole. `GET /info` 
 
 ### `GET /available_updates`
 
-Returns the updates that are available for Core, the Supervisor, the OS, and installed apps. The older path `/supervisor/available_updates` returns the same.
+返回 Core、Supervisor、操作系统以及已安装应用的可用更新。旧路径 `/supervisor/available_updates` 返回相同内容。
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `available_updates` | list | One entry per update, with `update_type` (`core`, `supervisor`, `os`, or `addon`), `panel_path`, and `version_latest`. App updates also have `name` and `icon` |
+| `available_updates` | list | 每个更新一个条目，包含 `update_type`（`core`、`supervisor`、`os` 或 `addon`）、`panel_path` 和 `version_latest`。应用更新还包含 `name` 和 `icon` |
 
 ### `POST /reload_updates`
 
-Checks for new versions of Core, the Supervisor, the OS, and the plugins.
+检查 Core、Supervisor、操作系统和插件的新版本。
 
 ### `POST /refresh_updates`
 
-Does the same as `POST /reload_updates`, and also reloads the app store. Prefer `POST /reload_updates` and [`POST /store/reload`](/apps/supervisor-api/store/#post-storereload).
+与 `POST /reload_updates` 相同，还会重新加载应用商店。建议使用 `POST /reload_updates` 和 [`POST /store/reload`](/apps/supervisor-api/store/#post-storereload)。
 
 ## Supervisor
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/supervisor/ping` | Check that the Supervisor is up. Needs no token |
-| `GET` | `/supervisor/info` | Information about the Supervisor |
-| `POST` | `/supervisor/options` | Change Supervisor settings |
-| `POST` | `/supervisor/update` | Update the Supervisor |
-| `POST` | `/supervisor/reload` | Reload versions, secrets, and system checks |
-| `POST` | `/supervisor/restart` | Restart the Supervisor |
-| `POST` | `/supervisor/repair` | Repair the installation |
-| `GET` | `/supervisor/stats` | Resource usage of the Supervisor |
-| `GET` | `/supervisor/logs` | Logs of the Supervisor, and the other [log endpoints](/apps/supervisor-api/#log-endpoints). When the journal cannot deliver them, you get the Docker logs of the container instead |
+| `GET` | `/supervisor/ping` | 检查 Supervisor 是否已启动。无需令牌 |
+| `GET` | `/supervisor/info` | 关于 Supervisor 的信息 |
+| `POST` | `/supervisor/options` | 更改 Supervisor 设置 |
+| `POST` | `/supervisor/update` | 更新 Supervisor |
+| `POST` | `/supervisor/reload` | 重新加载版本、密钥和系统检查 |
+| `POST` | `/supervisor/restart` | 重启 Supervisor |
+| `POST` | `/supervisor/repair` | 修复安装 |
+| `GET` | `/supervisor/stats` | Supervisor 的资源使用情况 |
+| `GET` | `/supervisor/logs` | Supervisor 的日志，以及其他[日志端点](/apps/supervisor-api/#log-endpoints)。当日志系统无法提供日志时，将返回容器的 Docker 日志 |
 
 ### `GET /supervisor/ping`
 
-Returns success when the Supervisor is up. It needs no token, so you can call it before anything else.
+当 Supervisor 已启动时返回成功。它无需令牌，因此你可以在调用其他任何内容之前先调用它。
 
 ### `GET /supervisor/info`
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `version` | string | Installed version |
-| `version_latest` | string | Latest available version |
-| `update_available` | boolean | `true` if an update is available |
-| `channel` | string | `stable`, `beta`, or `dev` |
-| `arch` | string | Architecture |
-| `supported` | boolean | `true` if the installation is supported |
-| `healthy` | boolean | `true` if the installation is healthy |
-| `ip_address` | string | IP address of the Supervisor on the internal network |
-| `timezone` | string or null | Time zone |
-| `logging` | string | Log level |
-| `debug` | boolean | `true` if debug mode is on |
-| `debug_block` | boolean | `true` if the Supervisor waits for a debugger at startup |
-| `diagnostics` | boolean or null | `true` if diagnostics are shared |
-| `auto_update` | boolean | `true` if the Supervisor updates automatically |
-| `detect_blocking_io` | boolean | `true` if detection of blocking I/O is on |
-| `country` | string or null | Country code |
-| `feature_flags` | dictionary | Development feature flags and whether they are on |
-| `wait_boot` | integer | Deprecated |
-| `addons` | list | Deprecated. Installed apps, with `name`, `slug`, `version`, `version_latest`, `update_available`, `state`, `repository`, and `icon`. Use [`GET /addons`](/apps/supervisor-api/apps/#get-addons) |
-| `addons_repositories` | list | Deprecated. Repositories, with `name` and `slug`. Use [`GET /store/repositories`](/apps/supervisor-api/store/#get-storerepositories) |
+| `version` | string | 已安装的版本 |
+| `version_latest` | string | 最新可用版本 |
+| `update_available` | boolean | 如果有可用更新则为 `true` |
+| `channel` | string | `stable`、`beta` 或 `dev` |
+| `arch` | string | 架构 |
+| `supported` | boolean | 如果安装受支持则为 `true` |
+| `healthy` | boolean | 如果安装状态健康则为 `true` |
+| `ip_address` | string | Supervisor 在内部网络上的 IP 地址 |
+| `timezone` | string or null | 时区 |
+| `logging` | string | 日志级别 |
+| `debug` | boolean | 如果调试模式已开启则为 `true` |
+| `debug_block` | boolean | 如果 Supervisor 在启动时等待调试器则为 `true` |
+| `diagnostics` | boolean or null | 如果已共享诊断信息则为 `true` |
+| `auto_update` | boolean | 如果 Supervisor 自动更新则为 `true` |
+| `detect_blocking_io` | boolean | 如果阻塞 I/O 检测已开启则为 `true` |
+| `country` | string or null | 国家代码 |
+| `feature_flags` | dictionary | 开发功能标志及其是否开启 |
+| `wait_boot` | integer | 已弃用 |
+| `addons` | list | 已弃用。已安装的应用，包含 `name`、`slug`、`version`、`version_latest`、`update_available`、`state`、`repository` 和 `icon`。请使用 [`GET /addons`](/apps/supervisor-api/apps/#get-addons) |
+| `addons_repositories` | list | 已弃用。仓库，包含 `name` 和 `slug`。请使用 [`GET /store/repositories`](/apps/supervisor-api/store/#get-storerepositories) |
 
 ### `POST /supervisor/options`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `channel` | string | No | `stable`, `beta`, or `dev` |
-| `timezone` | string | No | Time zone, like `Europe/Amsterdam`. On Home Assistant OS 16.2 or newer, also sets the time zone of the host |
-| `logging` | string | No | `debug`, `info`, `warning`, `error`, or `critical` |
-| `debug` | boolean | No | Debug mode |
-| `debug_block` | boolean | No | Wait for a debugger at startup |
-| `diagnostics` | boolean | No | Share diagnostics |
-| `auto_update` | boolean | No | Update the Supervisor automatically |
-| `detect_blocking_io` | string | No | `on`, `off`, or `on-at-startup` |
-| `country` | string | No | Country code |
-| `feature_flags` | dictionary | No | Development feature flags to turn on or off, like `{"supervisor_v2_api": true}`. Flags you leave out keep their value |
-| `wait_boot` | integer | No | Deprecated |
-| `addons_repositories` | list | No | Deprecated. Replaces the list of repositories. Use the [repository endpoints](/apps/supervisor-api/store/#repositories) |
+| `channel` | string | 否 | `stable`、`beta` 或 `dev` |
+| `timezone` | string | 否 | 时区，例如 `Europe/Amsterdam`。在 Home Assistant OS 16.2 或更新版本上，还会设置主机的时区 |
+| `logging` | string | 否 | `debug`、`info`、`warning`、`error` 或 `critical` |
+| `debug` | boolean | 否 | 调试模式 |
+| `debug_block` | boolean | 否 | 启动时等待调试器 |
+| `diagnostics` | boolean | 否 | 共享诊断信息 |
+| `auto_update` | boolean | 否 | 自动更新 Supervisor |
+| `detect_blocking_io` | string | 否 | `on`、`off` 或 `on-at-startup` |
+| `country` | string | 否 | 国家代码 |
+| `feature_flags` | dictionary | 否 | 要开启或关闭的开发功能标志，例如 `{"supervisor_v2_api": true}`。未列出的标志保持其原值 |
+| `wait_boot` | integer | 否 | 已弃用 |
+| `addons_repositories` | list | 否 | 已弃用。替换仓库列表。请使用[仓库端点](/apps/supervisor-api/store/#repositories) |
 
 ### `POST /supervisor/update`
 
-Updates the Supervisor to the latest version. Fails when there is no update. A `version` key only works in a Supervisor development environment, where `SUPERVISOR_DEV` is `1`. Everywhere else, the Supervisor ignores it and installs the latest version.
+将 Supervisor 更新到最新版本。没有可用更新时会失败。`version` 键仅在 Supervisor 开发环境（`SUPERVISOR_DEV` 为 `1`）中有效。在其他任何地方，Supervisor 都会忽略它并安装最新版本。
 
 ### `POST /supervisor/reload`
 
-Checks for new versions, reloads the Home Assistant secrets, and checks the system again.
+检查新版本，重新加载 Home Assistant 密钥，并再次检查系统。
 
 ### `POST /supervisor/restart`
 
-Restarts the Supervisor.
+重启 Supervisor。
 
 ### `POST /supervisor/repair`
 
-Repairs the installation: fixes missing images, containers, and files where it can.
+修复安装：在可能的情况下修复缺失的镜像、容器和文件。
 
 ### `GET /supervisor/stats`
 
-Returns the resource usage of the Supervisor as a [stats model](/apps/supervisor-api/models/#stats).
+以[统计模型](/apps/supervisor-api/models/#stats)的形式返回 Supervisor 的资源使用情况。
 
-## Jobs
+## 任务
 
-The Supervisor runs long tasks, like installs, updates, and backups, as jobs. Jobs form a tree: a backup job has child jobs per app, for example.
+Supervisor 将长时间运行的任务（如安装、更新和备份）作为任务（job）运行。任务构成一棵树：例如，一个备份任务包含每个应用的子任务。
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/jobs/info` | All jobs |
-| `GET` | `/jobs/<job_id>` | One job |
-| `DELETE` | `/jobs/<job_id>` | Remove a finished job |
-| `POST` | `/jobs/options` | Change job settings |
-| `POST` | `/jobs/reset` | Reset the job settings |
+| `GET` | `/jobs/info` | 所有任务 |
+| `GET` | `/jobs/<job_id>` | 单个任务 |
+| `DELETE` | `/jobs/<job_id>` | 移除一个已完成的任务 |
+| `POST` | `/jobs/options` | 更改任务设置 |
+| `POST` | `/jobs/reset` | 重置任务设置 |
 
 ### `GET /jobs/info`
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `ignore_conditions` | list | Conditions the Supervisor ignores before it starts a job |
-| `jobs` | list | [Job models](/apps/supervisor-api/models/#job), newest first |
+| `ignore_conditions` | list | Supervisor 在启动任务前会忽略的条件 |
+| `jobs` | list | [任务模型](/apps/supervisor-api/models/#job)，最新的在前 |
 
 ### `GET /jobs/<job_id>`
 
-Returns one [job model](/apps/supervisor-api/models/#job), with its child jobs. Use it to follow a job you started with `background: true`.
+返回单个[任务模型](/apps/supervisor-api/models/#job)，包含其子任务。用它来跟踪你以 `background: true` 启动的任务。
 
 ```json
 {
@@ -192,81 +192,81 @@ Returns one [job model](/apps/supervisor-api/models/#job), with its child jobs. 
 }
 ```
 
-Unless the `supervisor_websocket_v2_api` development feature flag is on, some jobs still use their older names here. Backup and restore jobs report stages like `addons` instead of `apps`, and the job that updates an app is `addon_manager_update`.
+除非 `supervisor_websocket_v2_api` 开发功能标志已开启，某些任务在这里仍使用其旧名称。备份和恢复任务报告的阶段如 `addons` 而非 `apps`，更新应用的任务名为 `addon_manager_update`。
 
 ### `DELETE /jobs/<job_id>`
 
-Removes a job from the list. Fails when the job is not done.
+从列表中移除一个任务。任务未完成时会失败。
 
 ### `POST /jobs/options`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `ignore_conditions` | list | No | Conditions to ignore before starting a job, like `healthy` or `internet_host`. Replaces the current list. This can break things, so only use it to debug |
+| `ignore_conditions` | list | 否 | 启动任务前要忽略的条件，例如 `healthy` 或 `internet_host`。会替换当前列表。这可能导致问题，因此仅用于调试 |
 
 ### `POST /jobs/reset`
 
-Resets the job settings to the defaults, so no conditions are ignored anymore.
+将任务设置重置为默认值，因此不再忽略任何条件。
 
-## Resolution
+## 问题解决
 
-The resolution center finds problems with the system and suggests fixes. An issue is a problem, a suggestion is a fix for one, and a check is the test that finds them.
+问题解决中心（resolution center）会发现系统问题并建议修复方法。问题（issue）是一个故障，建议（suggestion）是针对某个问题的修复方法，检查（check）是发现它们的测试。
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/resolution/info` | Issues, suggestions, and checks |
-| `GET` | `/resolution/issue/<issue>/suggestions` | Suggestions for one issue |
-| `DELETE` | `/resolution/issue/<issue>` | Dismiss an issue |
-| `POST` | `/resolution/suggestion/<suggestion>` | Apply a suggestion |
-| `DELETE` | `/resolution/suggestion/<suggestion>` | Dismiss a suggestion |
-| `POST` | `/resolution/check/<check>/options` | Turn a check on or off |
-| `POST` | `/resolution/check/<check>/run` | Run a check |
-| `POST` | `/resolution/healthcheck` | Run all checks, and apply the fixes that run by themselves |
+| `GET` | `/resolution/info` | 问题、建议和检查 |
+| `GET` | `/resolution/issue/<issue>/suggestions` | 针对某个问题的建议 |
+| `DELETE` | `/resolution/issue/<issue>` | 忽略一个问题 |
+| `POST` | `/resolution/suggestion/<suggestion>` | 应用一个建议 |
+| `DELETE` | `/resolution/suggestion/<suggestion>` | 忽略一个建议 |
+| `POST` | `/resolution/check/<check>/options` | 开启或关闭一项检查 |
+| `POST` | `/resolution/check/<check>/run` | 运行一项检查 |
+| `POST` | `/resolution/healthcheck` | 运行所有检查，并应用可自动执行的修复 |
 
-`<issue>` and `<suggestion>` are UUIDs. `<check>` is the slug of a check.
+`<issue>` 和 `<suggestion>` 是 UUID。`<check>` 是检查的 slug。
 
 ### `GET /resolution/info`
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `unsupported` | list | Reasons the installation is unsupported |
-| `unhealthy` | list | Reasons the installation is unhealthy |
-| `issues` | list | [Issue models](/apps/supervisor-api/models/#issue) |
-| `suggestions` | list | [Suggestion models](/apps/supervisor-api/models/#suggestion) |
-| `checks` | list | [Check models](/apps/supervisor-api/models/#check) |
+| `unsupported` | list | 安装不受支持的原因 |
+| `unhealthy` | list | 安装状态不健康的原因 |
+| `issues` | list | [问题模型](/apps/supervisor-api/models/#issue) |
+| `suggestions` | list | [建议模型](/apps/supervisor-api/models/#suggestion) |
+| `checks` | list | [检查模型](/apps/supervisor-api/models/#check) |
 
-Some issue types and check slugs still use their older names here, like `deprecated_addon` and `addon_pwned`.
+某些问题类型和检查 slug 在这里仍使用其旧名称，例如 `deprecated_addon` 和 `addon_pwned`。
 
 ### `GET /resolution/issue/<issue>/suggestions`
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `suggestions` | list | [Suggestion models](/apps/supervisor-api/models/#suggestion) that fix this issue |
+| `suggestions` | list | 可修复此问题的[建议模型](/apps/supervisor-api/models/#suggestion) |
 
 ### `POST /resolution/check/<check>/options`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `enabled` | boolean | No | Turn the check on or off |
+| `enabled` | boolean | 否 | 开启或关闭该检查 |
 
-## Security
+## 安全
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/security/info` | Security settings |
-| `POST` | `/security/options` | Change the security settings |
-| `POST` | `/security/integrity` | Removed. Always returns `410` |
+| `GET` | `/security/info` | 安全设置 |
+| `POST` | `/security/options` | 更改安全设置 |
+| `POST` | `/security/integrity` | 已移除。始终返回 `410` |
 
 ### `GET /security/info`
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `pwned` | boolean | `true` if app passwords are checked against known leaks |
-| `force_security` | boolean | `true` if apps with leaked passwords are not allowed to start |
+| `pwned` | boolean | 如果应用密码会与已知泄露进行比对检查则为 `true` |
+| `force_security` | boolean | 如果密码已泄露的应用不允许启动则为 `true` |
 
 ### `POST /security/options`
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `pwned` | boolean | No | Check app passwords against known leaks |
-| `force_security` | boolean | No | Block apps with leaked passwords |
+| `pwned` | boolean | 否 | 将应用密码与已知泄露进行比对检查 |
+| `force_security` | boolean | 否 | 阻止密码已泄露的应用 |

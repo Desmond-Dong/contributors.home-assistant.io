@@ -1,50 +1,50 @@
 ---
-title: Who does what
-description: The people involved in a Home Assistant release, and what each of them does.
+title: 谁负责什么
+description: 参与 Home Assistant 发布的人员，以及他们各自的工作。
 order: 2
 ---
 
-A release is the work of hundreds of people. Most of them never think of themselves as part of the release. Here is who does what.
+一次发布是数百人共同努力的成果。他们中的大多数人从未把自己当作发布工作的一部分。下面介绍谁负责什么。
 
-## Contributors
+## 贡献者
 
-Everyone who opens a pull request. For the release, your part is:
+所有提交拉取请求（pull request）的人。对于发布而言，你的任务是：
 
-- Getting your pull request merged before the beta starts, if you want it in this month's release.
-- Writing a clear [backward-incompatible change section](/releases/guides/backward-incompatible-changes/) when your change requires action from users.
-- Opening the documentation pull request on the `next` branch of [home-assistant.io](https://github.com/home-assistant/home-assistant.io), together with the code.
+- 如果你希望自己的改动进入本月的发布版本，请在 beta 开始前让你的拉取请求被合并。
+- 当你的改动需要用户采取行动时，编写清晰的[不向后兼容的变更章节](/releases/guides/backward-incompatible-changes/)。
+- 与代码一起，在 [home-assistant.io](https://github.com/home-assistant/home-assistant.io) 的 `next` 分支上提交文档拉取请求。
 
-## Maintainers and integration owners
+## 维护者和集成负责人
 
-[Maintainers](/glossary/maintainer/) review and merge pull requests. [Integration owners](/glossary/integration-owner/) look after a specific integration. For the release, they:
+[维护者](/glossary/maintainer/)（maintainer）负责审查并合并拉取请求。[集成负责人](/glossary/integration-owner/)（integration owner）负责照看特定的集成。对于发布而言，他们：
 
-- Decide what gets merged before the beta starts.
-- Fix problems found in the beta, in the code they know best.
-- Flag fixes that should go into the beta or the next patch release. See [Get a fix into a patch release](/releases/guides/patch-releases/).
+- 决定在 beta 开始前合并哪些内容。
+- 修复 beta 中发现的问题，尤其是他们最熟悉的代码。
+- 标记应进入 beta 或下一个补丁版本的修复。参见[让修复进入补丁版本](/releases/guides/patch-releases/)。
 
-## Beta testers
+## Beta 测试者
 
-Everyone on the [beta channel](/releases/first-contribution/#2-join-the-beta-channel). They run the next release a week early, in real homes, and report what breaks. Without them, those bugs would hit everyone. You can be one: see [Your first contribution](/releases/first-contribution/).
+[beta 频道](/releases/first-contribution/#2-join-the-beta-channel)上的所有人。他们提前一周在真实的家庭环境中运行下一个版本，并报告出现的问题。没有他们，这些 bug 就会影响所有人。你也可以成为其中一员：参见[你的第一次贡献](/releases/first-contribution/)。
 
-## Documentation reviewers
+## 文档审查者
 
-They review and merge the documentation pull requests on the `next` branch, so the documentation of new features is ready on release day. See [Writing docs](/writing/).
+他们审查并合并 `next` 分支上的文档拉取请求，确保新功能的文档在发布日已经就绪。参见[编写文档](/writing/)。
 
-## Translators
+## 翻译者
 
-They translate the new text on Lokalise. Translations are pulled in with every build, so their work lands in the beta and the release without a separate step. See [Translations](/translate/).
+他们在 Lokalise 上翻译新增的文本。翻译内容会随每次构建被拉取，因此他们的成果无需单独的步骤就能进入 beta 和正式发布版本。参见[翻译](/translate/)。
 
-## The release team
+## 发布团队
 
-The release team runs the release itself. Steps only they do:
+发布团队负责发布工作本身。只有他们执行的步骤包括：
 
-- Creating the betas, releases, and patch releases.
-- Cherry-picking the fixes of a milestone into the release branch.
-- Publishing the release.
-- Writing and publishing the release notes, with help from others.
+- 创建 beta、正式版本和补丁版本。
+- 将里程碑中的修复挑选（cherry-pick）到发布分支。
+- 发布正式版本。
+- 在其他人的协助下编写并发布发布说明。
 
-The release team uses the [release helper scripts](https://github.com/home-assistant/hass-release) to generate the changelog, cherry-pick milestones, and find documentation pull requests that are not merged yet.
+发布团队使用[发布辅助脚本](https://github.com/home-assistant/hass-release)来生成更新日志、挑选里程碑中的修复，以及查找尚未合并的文档拉取请求。
 
-## Creators
+## 创作者
 
-Members of the [Creator Network](/community/reference/programs/#creator-network) meet with the team on beta day, and can give feedback on a release before it comes out. Their videos and articles help many people understand what is new.
+[创作者网络](/community/reference/programs/#creator-network)（Creator Network）的成员会在 beta 日与团队会面，并可以在版本发布之前提供反馈。他们的视频和文章帮助许多人了解新功能。

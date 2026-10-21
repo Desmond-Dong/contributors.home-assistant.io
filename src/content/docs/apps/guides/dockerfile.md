@@ -1,12 +1,12 @@
 ---
-title: Build the container image
-description: Write the Dockerfile of your app. Pick a base image, add your services and scripts, and set build arguments and labels.
+title: 构建容器镜像
+description: 编写应用的 Dockerfile。选择基础镜像，添加你的服务和脚本，并设置构建参数和标签。
 order: 1
 ---
 
-Every app is a container image. You describe it in a `Dockerfile` in the app folder, like any other image. The Supervisor builds it on the device during development, and the [builder actions](/apps/guides/publishing/) build it for every architecture when you publish.
+每个应用都是一个容器镜像。你可以在应用文件夹中的 `Dockerfile` 里描述它，就像其他任何镜像一样。在开发阶段，Supervisor 会在设备上构建它；而当你发布时，[builder actions](/apps/guides/publishing/) 会为每种架构构建它。
 
-## A minimal Dockerfile
+## 一个最简的 Dockerfile
 
 ```dockerfile
 FROM ghcr.io/home-assistant/base:3.24
@@ -18,41 +18,41 @@ RUN apk add --no-cache nginx
 COPY rootfs /
 ```
 
-That is all it takes when your services are set up in `rootfs`, as explained in [S6 overlay](#s6-overlay) below. You can also keep it simpler and run a single script with `CMD`, like in [your first app](/apps/first-app/).
+如果你的服务已在 `rootfs` 中设置好（如下文 [S6 overlay](#s6-overlay) 所述），这就足够了。你也可以保持更简单的方式，用 `CMD` 运行单个脚本，就像[你的第一个应用](/apps/first-app/)中那样。
 
-## Base images
+## 基础镜像
 
-The Home Assistant base images, from [home-assistant/docker-base](https://github.com/home-assistant/docker-base), come with everything most apps need. They are published as multi-architecture images for `amd64` and `aarch64`.
+来自 [home-assistant/docker-base](https://github.com/home-assistant/docker-base) 的 Home Assistant 基础镜像，包含了大多数应用所需的一切。它们以多架构镜像的形式发布，支持 `amd64` 和 `aarch64`。
 
-| Image | Based on | Example tag |
+| 镜像 | 基于 | 标签示例 |
 | --- | --- | --- |
 | `ghcr.io/home-assistant/base` | Alpine Linux | `3.24` |
-| `ghcr.io/home-assistant/base-python` | Alpine Linux with Python | `3.14-alpine3.24` |
+| `ghcr.io/home-assistant/base-python` | 带 Python 的 Alpine Linux | `3.14-alpine3.24` |
 | `ghcr.io/home-assistant/base-debian` | Debian | `trixie` |
 | `ghcr.io/home-assistant/base-ubuntu` | Ubuntu | `26.04` |
 
-The README of the repository lists the supported tags. Prefer Alpine: it is small, which matters on a Raspberry Pi with an SD card. Use Debian or Ubuntu when your software needs glibc.
+该仓库的 README 列出了受支持的标签。优先选择 Alpine：它体积小，这在使用 SD 卡的 Raspberry Pi 上很重要。当你的软件需要 glibc 时，请使用 Debian 或 Ubuntu。
 
-Every base image contains:
+每个基础镜像都包含：
 
-- [S6 overlay](https://github.com/just-containers/s6-overlay) version 3, as the init system and service supervisor.
-- [Bashio](https://github.com/hassio-addons/bashio), a library of shell functions for apps.
-- [Tempio](https://github.com/home-assistant/tempio), to render configuration files from templates.
-- `bash`, `curl`, `jq`, `tzdata`, and CA certificates.
-- jemalloc, in the Alpine-based images. To use it, set `LD_PRELOAD="/usr/local/lib/libjemalloc.so.2"` for your application.
+- [S6 overlay](https://github.com/just-containers/s6-overlay) 版本 3，作为 init 系统和服务监督器。
+- [Bashio](https://github.com/hassio-addons/bashio)，一个面向应用的 shell 函数库。
+- [Tempio](https://github.com/home-assistant/tempio)，用于从模板渲染配置文件。
+- `bash`、`curl`、`jq`、`tzdata` 和 CA 证书。
+- jemalloc，位于基于 Alpine 的镜像中。要使用它，请为你的应用程序设置 `LD_PRELOAD="/usr/local/lib/libjemalloc.so.2"`。
 
-Pin a version of the base image, like `base:3.24`, instead of `latest`. Your builds stay reproducible, and a tool like Renovate or Dependabot can update the tag for you.
+请固定基础镜像的版本，例如 `base:3.24`，而不是使用 `latest`。这样你的构建就能保持可复现，而且像 Renovate 或 Dependabot 这样的工具可以帮你更新标签。
 
-You do not have to use these images. Any image works, as long as it runs on the architectures in your `arch`. Without S6 overlay, keep the default `init: true`, so Docker adds an init process, and leave out the Bashio parts below.
+你不必使用这些镜像。任何镜像都可以，只要它能在你的 `arch` 中列出的架构上运行即可。如果没有 S6 overlay，请保留默认的 `init: true`，让 Docker 添加一个 init 进程，并省略下文中的 Bashio 部分。
 
 ## S6 overlay
 
-The base images use S6 overlay as their init: `/init` is the entrypoint, and it starts and supervises your services. Two things follow from that:
+基础镜像使用 S6 overlay 作为其 init 系统：`/init` 是入口点，它负责启动并监督你的服务。由此带来两点要求：
 
-- Set `init: false` in `config.yaml`. S6 overlay must be process 1 in the container, and does not start if Docker adds its own init in front of it.
-- Do not set `host_pid: true`. S6 overlay does not work in the PID namespace of the host.
+- 在 `config.yaml` 中设置 `init: false`。S6 overlay 必须是容器中的 1 号进程，如果 Docker 在它前面添加了自己的 init，它就不会启动。
+- 不要设置 `host_pid: true`。S6 overlay 无法在宿主机的 PID 命名空间中工作。
 
-You describe your services in the `rootfs` folder of your app. A setup step that runs once is a oneshot service, your program is a longrun service, and a `finish` script decides whether a crash stops the container:
+你在应用的 `rootfs` 文件夹中描述你的服务。只运行一次的设置步骤是一个 oneshot 服务，你的程序是一个 longrun 服务，而 `finish` 脚本决定崩溃是否会导致容器停止：
 
 ```text
 rootfs/etc/s6-overlay/
@@ -72,11 +72,11 @@ rootfs/etc/s6-overlay/
     └── my-app
 ```
 
-[Run services with S6 overlay](/apps/guides/s6-overlay/) explains every file, the older `/etc/services.d` format, finish scripts, and the mistakes that are easy to make.
+[使用 S6 overlay 运行服务](/apps/guides/s6-overlay/)解释了每个文件的作用、较旧的 `/etc/services.d` 格式、finish 脚本，以及容易犯的错误。
 
 ## Bashio
 
-Bashio saves you from parsing JSON and calling the Supervisor API by hand. Use `bashio` as the interpreter of your scripts, with `with-contenv` in front so the script gets the environment of the container. A few functions you use all the time:
+Bashio 让你免于手动解析 JSON 和调用 Supervisor API。使用 `bashio` 作为脚本的解释器，并在前面加上 `with-contenv`，这样脚本就能获取容器的环境变量。一些你会经常用到的函数：
 
 ```bash
 #!/command/with-contenv bashio
@@ -97,42 +97,42 @@ bashio::log.debug "Only shown with debug logging"
 bashio::log.warning "Something looks off"
 ```
 
-Bashio also wraps most of the Supervisor API, like `bashio::services 'mqtt' 'host'` and `bashio::app.ingress_port`. Every function is in the [Bashio reference](/apps/bashio/).
+Bashio 还封装了大部分 Supervisor API，例如 `bashio::services 'mqtt' 'host'` 和 `bashio::app.ingress_port`。每个函数都可以在 [Bashio 参考](/apps/bashio/)中找到。
 
-## Build arguments
+## 构建参数
 
-The Supervisor and the builder actions pass two build arguments:
+Supervisor 和 builder actions 会传递两个构建参数：
 
-| Argument | Contents |
+| 参数 | 内容 |
 | --- | --- |
-| `BUILD_ARCH` | The architecture of the build: `aarch64` or `amd64` |
-| `BUILD_VERSION` | The `version` from `config.yaml` |
+| `BUILD_ARCH` | 构建的架构：`aarch64` 或 `amd64` |
+| `BUILD_VERSION` | `config.yaml` 中的 `version` |
 
-Declare them with `ARG` before you use them:
+在使用之前，请用 `ARG` 声明它们：
 
 ```dockerfile
 ARG BUILD_ARCH
 RUN echo "Building for ${BUILD_ARCH}"
 ```
 
-Both build with Docker BuildKit, so the standard `TARGETARCH` argument is available as well. Note that it says `arm64` where Home Assistant says `aarch64`.
+两者都使用 Docker BuildKit 构建，因此标准的 `TARGETARCH` 参数也可用。注意，Home Assistant 使用 `aarch64`，而它使用的是 `arm64`。
 
-If you need a different `Dockerfile` per architecture, name it `Dockerfile.aarch64` or `Dockerfile.amd64`. The Supervisor uses it instead of `Dockerfile` for that architecture.
+如果你需要为每种架构使用不同的 `Dockerfile`，请将其命名为 `Dockerfile.aarch64` 或 `Dockerfile.amd64`。对于该架构，Supervisor 会使用它而不是 `Dockerfile`。
 
 > [!NOTE]
-> Since Supervisor 2026.04.0, `BUILD_FROM` is no longer passed by default. If your `Dockerfile` starts with `FROM ${BUILD_FROM}`, give the argument a default value, or replace it with a fixed `FROM`.
+> 从 Supervisor 2026.04.0 起，默认不再传递 `BUILD_FROM`。如果你的 `Dockerfile` 以 `FROM ${BUILD_FROM}` 开头，请为该参数指定默认值，或将其替换为固定的 `FROM`。
 
-## Labels
+## 标签
 
-The Supervisor reads a few labels from the image:
+Supervisor 会从镜像中读取几个标签：
 
-| Label | Contents |
+| 标签 | 内容 |
 | --- | --- |
-| `io.hass.version` | The version of the app |
-| `io.hass.arch` | The architecture of the image |
+| `io.hass.version` | 应用的版本 |
+| `io.hass.arch` | 镜像的架构 |
 | `io.hass.type` | `app` |
 
-You do not have to set them yourself in most cases. When the Supervisor builds an app, it adds all three. The `build-image` action of the builder adds `io.hass.version` and `io.hass.arch`. If you build your images some other way, add them with `LABEL`:
+在大多数情况下，你不必自己设置它们。当 Supervisor 构建应用时，它会添加全部三个标签。builder 的 `build-image` action 会添加 `io.hass.version` 和 `io.hass.arch`。如果你以其他方式构建镜像，请使用 `LABEL` 添加它们：
 
 ```dockerfile
 LABEL \
@@ -141,13 +141,13 @@ LABEL \
   io.hass.arch="aarch64"
 ```
 
-For an existing image without these labels, set `legacy: true` in `config.yaml`.
+对于没有这些标签的现有镜像，请在 `config.yaml` 中设置 `legacy: true`。
 
 ## build.yaml
 
-Older apps have a `build.yaml` next to `config.yaml`, with the base image per architecture (`build_from`), extra build arguments (`args`), and labels (`labels`). This file is deprecated. The Supervisor still reads it, with a warning, but put everything in the `Dockerfile` instead:
+较旧的应用在 `config.yaml` 旁边有一个 `build.yaml`，其中包含每种架构的基础镜像（`build_from`）、额外的构建参数（`args`）和标签（`labels`）。此文件已被弃用。Supervisor 仍会读取它，但会发出警告；请改为将所有内容放在 `Dockerfile` 中：
 
-- `build_from`: a `FROM` line, or `ARG BUILD_FROM=...` with a default.
-- `args`: `ARG` lines with default values.
-- `labels`: `LABEL` lines.
-- `squash`: no replacement; BuildKit does not support it.
+- `build_from`：一行 `FROM`，或带有默认值的 `ARG BUILD_FROM=...`。
+- `args`：带有默认值的 `ARG` 行。
+- `labels`：`LABEL` 行。
+- `squash`：没有替代方案；BuildKit 不支持它。

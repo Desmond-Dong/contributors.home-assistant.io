@@ -1,95 +1,95 @@
 ---
-title: Contribute sentences and responses
-description: How to change the sentences, responses, and tests of your language in the intents repository, check your work, and open a pull request.
+title: 贡献句子和回复
+description: 如何在 intents 仓库中修改您所用语言的句子、回复和测试，检查您的工作，并创建拉取请求（pull request）。
 order: 2
-sidebarLabel: Contribute sentences
+sidebarLabel: 贡献句子
 ---
 
-All sentences, responses, and tests live in the [intents repository](https://github.com/OHF-Voice/intents) on GitHub. You change them with a pull request, and the language leader of your language reviews it. This page walks you through that.
+所有句子、回复和测试都存放在 GitHub 上的 [intents 仓库](https://github.com/OHF-Voice/intents)中。您通过拉取请求（pull request）来修改它们，由您所用语言的语言负责人进行审核。本页面将引导您完成整个过程。
 
-## Add one sentence in your browser
+## 在浏览器中添加一个句子
 
-The smallest useful change is one new way to say a command that Assist already knows. You can make it on GitHub, in your browser, without installing anything. New to GitHub? [Use GitHub, without being a developer](/start/github/) covers the basics.
+最小而有用的改动，就是为 Assist 已经认识的命令添加一种新的说法。您可以在 GitHub 上、在浏览器中完成，无需安装任何东西。初次接触 GitHub？[像非开发者一样使用 GitHub](/start/github/) 介绍了基础知识。
 
-Every sentence needs a test, so your change always touches two files with the same path: the sentence file and its test file. To teach Dutch a new way to turn something on by its name, for example:
+每个句子都需要一个测试，因此您的改动总是会涉及两个路径相同的文件：句子文件及其测试文件。例如，要教荷兰语一种按名称打开设备的新说法：
 
-1. Open [`sentences/nl/HassTurnOn/name_only.yaml`](https://github.com/OHF-Voice/intents/blob/main/sentences/nl/HassTurnOn/name_only.yaml) and select the pencil icon to edit it.
-2. Add your sentence template to the `sentences` list of the block it belongs to.
-3. Select **Commit changes** and create a new branch. If you cannot write to the repository, GitHub makes a copy (a fork) for you and puts the branch there.
-4. Before you open the pull request, open `tests/nl/HassTurnOn/name_only.yaml` on that same branch and edit it the same way. Add a test sentence that uses your new template to the test group with the same slots and response, and commit it to the branch.
-5. Open the pull request.
+1. 打开 [`sentences/nl/HassTurnOn/name_only.yaml`](https://github.com/OHF-Voice/intents/blob/main/sentences/nl/HassTurnOn/name_only.yaml)，选择铅笔图标进行编辑。
+2. 将您的句子模板添加到所属代码块的 `sentences` 列表中。
+3. 选择 **Commit changes** 并创建一个新分支。如果您没有该仓库的写入权限，GitHub 会为您创建一个副本（即 fork），并将分支放在那里。
+4. 在创建拉取请求之前，在同一分支上打开 `tests/nl/HassTurnOn/name_only.yaml` 并以相同的方式进行编辑。将一个使用您新模板的测试句子添加到测试组中，使用相同的槽位（slot）和回复，然后提交到该分支。
+5. 创建拉取请求。
 
-The checks on your pull request then tell you if something is off. They fail when a sentence file has no test file, when a file has fewer test sentences than sentence templates, when a sentence template is not used by any test sentence, and when a test sentence does not match the expected intent, slots, or response. They also check the formatting of your YAML. After that, the language leader of your language reviews your change.
+拉取请求上的检查随后会告诉您是否有问题。当句子文件没有对应的测试文件、文件中的测试句子少于句子模板、某个句子模板没有被任何测试句子使用，或者某个测试句子与预期的意图（intent）、槽位或回复不匹配时，检查会失败。它们还会检查您的 YAML 格式。之后，您所用语言的语言负责人会审核您的改动。
 
-Ready for more than one sentence? Read on.
+准备好添加更多句子了吗？请继续阅读。
 
-## What is where
+## 什么在哪里
 
-Every language has its own folders. Replace `<language>` with your language code, like `nl` or `pt-BR`:
+每种语言都有自己的文件夹。将 `<language>` 替换为您的语言代码，例如 `nl` 或 `pt-BR`：
 
-| Folder | What it holds |
+| 文件夹 | 内容 |
 | --- | --- |
-| `sentences/<language>/<intent>/<slot_combination>.yaml` | The sentence templates for one intent and slot combination |
-| `sentences/<language>/_common.yaml` | Error responses, skip words, and settings for the whole language |
-| `responses/<language>/<intent>.yaml` | The responses of one intent |
-| `lists/<language>/` | Slot lists, like colors or states |
-| `rules/<language>/` | Expansion rules, like the verbs for turning something on |
-| `tests/<language>/<intent>/<slot_combination>.yaml` | The tests for one intent and slot combination |
+| `sentences/<language>/<intent>/<slot_combination>.yaml` | 某个意图和槽位组合的句子模板 |
+| `sentences/<language>/_common.yaml` | 错误回复、跳过词以及整个语言的设置 |
+| `responses/<language>/<intent>.yaml` | 某个意图的回复 |
+| `lists/<language>/` | 槽位列表，例如颜色或状态 |
+| `rules/<language>/` | 展开规则，例如用于打开设备的动词 |
+| `tests/<language>/<intent>/<slot_combination>.yaml` | 某个意图和槽位组合的测试 |
 
-Two files at the root apply to every language:
+根目录下有两个文件适用于所有语言：
 
-- [`intents.yaml`](https://github.com/OHF-Voice/intents/blob/main/intents.yaml) declares the intents and their slot combinations.
-- [`languages.yaml`](https://github.com/OHF-Voice/intents/blob/main/languages.yaml) lists the languages and their leaders.
+- [`intents.yaml`](https://github.com/OHF-Voice/intents/blob/main/intents.yaml) 声明了各个意图及其槽位组合。
+- [`languages.yaml`](https://github.com/OHF-Voice/intents/blob/main/languages.yaml) 列出了各语言及其负责人。
 
-So if you want to improve how Dutch speakers turn things on and off by name, you change these four files:
+因此，如果您想改进荷兰语使用者按名称打开和关闭设备的表达方式，您需要修改这四个文件：
 
 - `sentences/nl/HassTurnOn/name_only.yaml`
 - `sentences/nl/HassTurnOff/name_only.yaml`
 - `tests/nl/HassTurnOn/name_only.yaml`
 - `tests/nl/HassTurnOff/name_only.yaml`
 
-## Who owns what
+## 谁负责什么
 
-The folders of a language belong to its language leaders. The [`CODEOWNERS`](https://github.com/OHF-Voice/intents/blob/main/CODEOWNERS) file, generated from `languages.yaml`, asks them for a review automatically.
+每种语言的文件夹归其语言负责人所有。[`CODEOWNERS`](https://github.com/OHF-Voice/intents/blob/main/CODEOWNERS) 文件由 `languages.yaml` 生成，会自动请求他们进行审核。
 
-`intents.yaml` is different. A change there affects every language at once, so only the repository maintainers can change it. A pull request from anyone else that touches it fails the `guard-core-files` check. If a slot combination is missing, is marked wrong, or does not fit your language, [open an issue](https://github.com/OHF-Voice/intents/issues) that explains what you need.
+`intents.yaml` 则不同。对它的修改会同时影响所有语言，因此只有仓库维护者才能修改它。其他任何人创建的触及该文件的拉取请求都会导致 `guard-core-files` 检查失败。如果缺少某个槽位组合、某个组合被标记错误，或者某个组合不适合您的语言，请[创建一个 issue](https://github.com/OHF-Voice/intents/issues) 说明您的需求。
 
 > [!NOTE]
-> Serbian in Latin script (`sr-Latn`) is generated from Serbian in Cyrillic script (`sr`). Make your changes in `sr`. A check fails when the two drift apart.
+> 拉丁字母书写的塞尔维亚语（`sr-Latn`）由西里尔字母书写的塞尔维亚语（`sr`）生成。请在 `sr` 中进行修改。当两者出现不一致时，检查会失败。
 
-## Keep it small
+## 保持小改动
 
-Limit each pull request to one language and one intent. Small pull requests are easier to review, so they get merged sooner. Ten small pull requests beat one huge one.
+将每个拉取请求限制为一种语言和一个意图。小的拉取请求更容易审核，因此能更快被合并。十个小的拉取请求胜过一个巨大的拉取请求。
 
-## Pick your setup
+## 选择您的工作方式
 
-There are three ways to work on the repository. Pick the one that fits the size of your change.
+有三种方式可以在这个仓库上工作。请根据您改动的规模选择合适的方式。
 
-### Edit on GitHub
+### 在 GitHub 上编辑
 
-For a small fix in one file, like a typo in a response, you do not need anything installed. New to GitHub? [Use GitHub, without being a developer](/start/github/) walks you through the same steps in more detail.
+对于单个文件中的小修复，例如回复中的错别字，您无需安装任何东西。初次接触 GitHub？[像非开发者一样使用 GitHub](/start/github/) 更详细地介绍了相同的步骤。
 
-1. Open the file on GitHub and select the pencil icon to edit it.
-2. Make your change.
-3. Select **Commit changes**, choose to create a new branch and start a pull request, and describe what you changed.
+1. 在 GitHub 上打开该文件，选择铅笔图标进行编辑。
+2. 进行您的修改。
+3. 选择 **Commit changes**，选择创建新分支并开始拉取请求，然后描述您所做的修改。
 
-The checks run on your pull request, so you still find out if something is wrong.
+检查会在您的拉取请求上运行，因此您仍然能发现是否有问题。
 
-### Use a codespace
+### 使用 codespace
 
-For anything bigger, a [GitHub codespace](https://docs.github.com/codespaces/overview) gives you a complete environment in your browser, with an editor and a terminal. Nothing to install.
+对于更大的改动，[GitHub codespace](https://docs.github.com/codespaces/overview) 可以在浏览器中为您提供完整的环境，包括编辑器和终端。无需安装任何东西。
 
-1. On the [repository page](https://github.com/OHF-Voice/intents), select **Code** > **Codespaces** > **Create codespace on main**. It takes a minute or two to start.
-2. Select the branch name in the status bar at the bottom, and create a new branch.
-3. Make your changes.
-4. Run the checks for the file you have open: open the menu, select **Terminal** > **Run Task**, and pick **Run tests for current file**.
-5. In **Source Control**, commit your changes and select **Create Pull Request**.
+1. 在[仓库页面](https://github.com/OHF-Voice/intents)上，选择 **Code** > **Codespaces** > **Create codespace on main**。启动需要一两分钟。
+2. 在底部的状态栏中选择分支名称，并创建一个新分支。
+3. 进行您的修改。
+4. 为当前打开的文件运行检查：打开菜单，选择 **Terminal** > **Run Task**，然后选择 **Run tests for current file**。
+5. 在 **Source Control** 中提交您的修改，并选择 **Create Pull Request**。
 
-The [codespace walkthrough](https://github.com/OHF-Voice/intents/blob/main/docs/codespace/README.md) in the repository has screenshots of every step.
+仓库中的 [codespace 演练](https://github.com/OHF-Voice/intents/blob/main/docs/codespace/README.md)包含每个步骤的截图。
 
-### Work locally
+### 在本地工作
 
-If you prefer your own machine, fork and clone the repository, then set it up:
+如果您更喜欢使用自己的电脑，请 fork 并克隆该仓库，然后进行设置：
 
 ```shell
 git clone https://github.com/<your-username>/intents
@@ -97,79 +97,79 @@ cd intents
 script/setup
 ```
 
-`script/setup` creates a Python virtual environment in `venv/` and installs everything you need. Activate it with `source venv/bin/activate` before you run the commands below. The repository also works as a [devcontainer](https://containers.dev/), if your editor supports those.
+`script/setup` 会在 `venv/` 中创建一个 Python 虚拟环境，并安装您需要的一切。在运行下面的命令之前，请先使用 `source venv/bin/activate` 激活它。如果您的编辑器支持，该仓库也可以作为 [devcontainer](https://containers.dev/) 使用。
 
-Create a branch, make your changes, and push them to your fork to open a pull request.
+创建一个分支，进行修改，然后推送到您的 fork 以创建拉取请求。
 
-## Check your work
+## 检查您的工作
 
-The checks that run on your pull request can also run on your machine or in your codespace. Run them before you open the pull request, it saves you a round trip.
+在拉取请求上运行的检查也可以在您的电脑或 codespace 中运行。在创建拉取请求之前先运行它们，可以省去一个来回。
 
-Validate the files of your language:
+验证您所用语言的文件：
 
 ```shell
 python3 -m script.intentfest validate --language nl
 ```
 
-Validation checks that every file matches the slot combinations in `intents.yaml`, that every list and rule you use exists, and that all `required` slot combinations have sentences.
+验证会检查每个文件是否符合 `intents.yaml` 中的槽位组合、您使用的每个列表和规则是否存在，以及所有 `required` 槽位组合是否都有句子。
 
-Run the tests of your language:
+运行您所用语言的测试：
 
 ```shell
 pytest tests --language nl
 ```
 
-Add `-k HassTurnOn` to only test one intent, and `-n auto` to run the tests in parallel. The tests check that every sentence matches the right intent, fills the right slots, and gives the right response. They also fail when a sentence template is never used by any test sentence.
+添加 `-k HassTurnOn` 可以只测试一个意图，添加 `-n auto` 可以并行运行测试。测试会检查每个句子是否匹配正确的意图、填充正确的槽位，并给出正确的回复。当某个句子模板从未被任何测试句子使用时，测试也会失败。
 
-`script/test` runs both: validation and all tests. You can pass the same options, like `script/test --language nl`.
+`script/test` 会同时运行两者：验证和所有测试。您可以传递相同的选项，例如 `script/test --language nl`。
 
-## Try things out
+## 尝试各种功能
 
-A few more tools help you while you write.
+在编写时，还有几个工具可以帮到您。
 
-See what your language makes of a sentence:
+查看您的语言如何解析一个句子：
 
 ```shell
 python3 -m script.intentfest parse --language en \
   --sentence 'turn on the lights in the kitchen'
 ```
 
-It prints the intent and the slots it matched, as JSON.
+它会以 JSON 格式打印匹配到的意图和槽位。
 
-See which sentences a template produces:
+查看一个模板会生成哪些句子：
 
 ```shell
 python3 -m script.intentfest sample_template 'turn on [the] light[s]'
 ```
 
-You can give it list values, number ranges, and rules too, like `--values color red green`, `--range brightness 1 2`, or `--rule color '[the] {color}'`.
+您也可以为它提供列表值、数字范围和规则，例如 `--values color red green`、`--range brightness 1 2` 或 `--rule color '[the] {color}'`。
 
-Sample sentences your language accepts, for some intents:
+为某些意图采样您的语言所接受的句子：
 
 ```shell
 python3 -m script.intentfest sample --language nl \
   --intents HassTurnOn HassTurnOff -n 5
 ```
 
-Count how many sentences your templates add up to:
+统计您的模板总共能组成多少个句子：
 
 ```shell
 python3 -m script.intentfest count_sentences --language nl --summary
 ```
 
-Optional words and alternatives multiply. A language with millions of possible sentences gets slow on small devices. Leave off `--summary` to see the count per template, so you can find the ones that grew too large.
+可选词和备选说法会使数量成倍增长。一个拥有数百万可能句子的语言在小型设备上会变慢。去掉 `--summary` 可以查看每个模板的数量，从而找出增长过大的模板。
 
-## What the pull request checks
+## 拉取请求会检查什么
 
-On top of validation and tests, a pull request also checks that:
+除了验证和测试之外，拉取请求还会检查：
 
-- No intent steals the sentences of another intent. A greedy template for playing media should not catch "set the light to maximum", for example.
-- Your language has no rules or lists left that nothing uses.
-- `CODEOWNERS` still matches `languages.yaml`.
-- Your YAML files are formatted the way [Prettier](https://prettier.io/) formats them. `script/lint` runs this check, and the Python checks, locally.
+- 没有意图会抢占其他意图的句子。例如，用于播放媒体的贪婪模板不应捕获“把灯调到最大”。
+- 您的语言中没有留下任何无人使用的规则或列表。
+- `CODEOWNERS` 仍然与 `languages.yaml` 一致。
+- 您的 YAML 文件按照 [Prettier](https://prettier.io/) 的格式进行格式化。`script/lint` 可以在本地运行此检查以及 Python 检查。
 
-A pull request can only be merged when all checks pass.
+只有当所有检查都通过时，拉取请求才能被合并。
 
-## After the merge
+## 合并之后
 
-New sentences are published in the next release of the `home-assistant-intents` package. Home Assistant updates to new releases of that package, and from then on, your sentences ship with Home Assistant.
+新句子会在 `home-assistant-intents` 包的下一个版本中发布。Home Assistant 会更新到该包的新版本，从那时起，您的句子就会随 Home Assistant 一起发布。

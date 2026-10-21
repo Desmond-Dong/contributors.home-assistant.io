@@ -1,125 +1,125 @@
 ---
-title: Database schema
-description: The tables of the recorder database, what is in them, and how they connect.
+title: 数据库模式
+description: recorder 数据库中的各个表、表中的内容，以及它们之间的关联方式。
 order: 3
 ---
 
-The [recorder](/glossary/recorder/) integration stores the history of Home Assistant in a SQL database. By default that is a SQLite file called `home-assistant_v2.db` in the configuration folder. It can also be MariaDB, MySQL, or PostgreSQL. How to set that up, and how long data is kept, is in the [recorder documentation](https://www.home-assistant.io/integrations/recorder/).
+[recorder](/glossary/recorder/) 集成将 Home Assistant 的历史记录存储在 SQL 数据库中。默认情况下，这是一个位于配置文件夹中名为 `home-assistant_v2.db` 的 SQLite 文件。也可以使用 MariaDB、MySQL 或 PostgreSQL。如何进行设置，以及数据保留多长时间，请参阅 [recorder 文档](https://www.home-assistant.io/integrations/recorder/)。
 
-The schema changes over time. When it does, Home Assistant migrates the database by itself during an update. This page describes schema version 53. The source of truth is [`db_schema.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/components/recorder/db_schema.py) in core.
+数据库模式会随时间变化。发生变化时，Home Assistant 会在更新过程中自动迁移数据库。本页描述的是模式版本 53。权威来源是 core 中的 [`db_schema.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/components/recorder/db_schema.py)。
 
 > [!NOTE]
-> Some tables still have columns from older schema versions, like `entity_id` in `states` or `event_type` in `events`. They are no longer filled, and are left out of this page. Use the columns listed here.
+> 一些表仍然保留着来自旧模式版本的列，例如 `states` 中的 `entity_id` 或 `events` 中的 `event_type`。它们不再被填充，因此未包含在本页中。请使用此处列出的列。
 
-## Overview
+## 概览
 
-| Table | What it holds |
+| 表 | 存储内容 |
 | --- | --- |
-| `states` | One row per state update of an entity. |
-| `states_meta` | The entity IDs, stored once. |
-| `state_attributes` | The attributes of states, stored once per unique set. |
-| `events` | One row per event, except `state_changed`. |
-| `event_types` | The event types, stored once. |
-| `event_data` | The data of events, stored once per unique set. |
-| `statistics` | Hourly statistics. |
-| `statistics_short_term` | 5-minute statistics. |
-| `statistics_meta` | What each statistic is about. |
-| `statistics_runs` | Which periods statistics have been compiled for. |
-| `recorder_runs` | Every time the recorder started and stopped. |
-| `schema_changes` and `migration_changes` | The history of schema migrations. Only for Home Assistant itself. |
+| `states` | 实体（entity）每次状态（state）更新对应一行。 |
+| `states_meta` | 实体 ID，只存储一次。 |
+| `state_attributes` | 状态的属性，每个唯一集合只存储一次。 |
+| `events` | 每个事件对应一行，`state_changed` 除外。 |
+| `event_types` | 事件类型，只存储一次。 |
+| `event_data` | 事件的数据，每个唯一集合只存储一次。 |
+| `statistics` | 每小时统计。 |
+| `statistics_short_term` | 5 分钟统计。 |
+| `statistics_meta` | 每个统计所针对的对象。 |
+| `statistics_runs` | 已为哪些时间段编译了统计。 |
+| `recorder_runs` | recorder 每次启动和停止的记录。 |
+| `schema_changes` 和 `migration_changes` | 模式迁移的历史。仅供 Home Assistant 自身使用。 |
 
-Values that repeat a lot, like entity IDs, attributes, and event types, live in their own table and are referenced by ID. That keeps the database a lot smaller, but means most queries need a join. See [Query the database](/data/guides/query-the-database/) for examples.
+重复次数很多的值，例如实体 ID、属性和事件类型，会存放在各自的表中，并通过 ID 引用。这使数据库小得多，但也意味着大多数查询需要进行连接（join）。示例请参阅[查询数据库](/data/guides/query-the-database/)。
 
-All timestamps ending in `_ts` are Unix timestamps in seconds, in UTC, stored as floating point numbers. Context IDs, ending in `_bin`, are 16 bytes of binary data.
+所有以 `_ts` 结尾的时间戳都是以秒为单位的 Unix 时间戳，采用 UTC，以浮点数存储。以 `_bin` 结尾的上下文 ID 是 16 字节的二进制数据。
 
-## States
+## 状态
 
 ### `states`
 
-| Column | Type | What it is |
+| 列 | 类型 | 说明 |
 | --- | --- | --- |
-| `state_id` | Integer, primary key | The ID of this row. |
-| `metadata_id` | Integer, refers to `states_meta` | Which entity. |
-| `state` | String, up to 255 characters | The state value. |
-| `last_updated_ts` | Timestamp | When the state or its attributes last changed. |
-| `last_changed_ts` | Timestamp | When the state value last changed. `NULL` when it is the same as `last_updated_ts`. |
-| `last_reported_ts` | Timestamp | When the integration last reported the state. `NULL` when it is the same as `last_updated_ts`. |
-| `old_state_id` | Integer, refers to `states` | The previous state of this entity. |
-| `attributes_id` | Integer, refers to `state_attributes` | The attributes. |
-| `context_id_bin` | Binary | The context of the change. |
-| `context_user_id_bin` | Binary | The user who started it, if known. |
-| `context_parent_id_bin` | Binary | The parent context, if any. |
-| `origin_idx` | Integer | Where the change came from: `0` for local, `1` for remote. |
+| `state_id` | 整数，主键 | 这一行的 ID。 |
+| `metadata_id` | 整数，引用 `states_meta` | 哪个实体。 |
+| `state` | 字符串，最多 255 个字符 | 状态值。 |
+| `last_updated_ts` | 时间戳 | 状态或其属性上次更改的时间。 |
+| `last_changed_ts` | 时间戳 | 状态值上次更改的时间。当它与 `last_updated_ts` 相同时为 `NULL`。 |
+| `last_reported_ts` | 时间戳 | 集成上次报告该状态的时间。当它与 `last_updated_ts` 相同时为 `NULL`。 |
+| `old_state_id` | 整数，引用 `states` | 该实体的上一个状态。 |
+| `attributes_id` | 整数，引用 `state_attributes` | 属性。 |
+| `context_id_bin` | 二进制 | 此次更改的上下文。 |
+| `context_user_id_bin` | 二进制 | 发起此次更改的用户（如果已知）。 |
+| `context_parent_id_bin` | 二进制 | 父上下文（如果有）。 |
+| `origin_idx` | 整数 | 更改的来源：`0` 表示本地，`1` 表示远程。 |
 
-Indexes: `metadata_id` with `last_updated_ts`, and `context_id_bin`.
+索引：`metadata_id` 与 `last_updated_ts`，以及 `context_id_bin`。
 
 ### `states_meta`
 
-| Column | Type | What it is |
+| 列 | 类型 | 说明 |
 | --- | --- | --- |
-| `metadata_id` | Integer, primary key | The ID used by `states`. |
-| `entity_id` | String | The entity ID, like `light.kitchen`. |
+| `metadata_id` | 整数，主键 | `states` 使用的 ID。 |
+| `entity_id` | 字符串 | 实体 ID，例如 `light.kitchen`。 |
 
-When an entity is renamed, its row here is updated, so its history moves along.
+当实体被重命名时，此表中的对应行会被更新，因此其历史记录会随之保留。
 
 ### `state_attributes`
 
-| Column | Type | What it is |
+| 列 | 类型 | 说明 |
 | --- | --- | --- |
-| `attributes_id` | Integer, primary key | The ID used by `states`. |
-| `hash` | Integer | A hash of the attributes, to find duplicates quickly. |
-| `shared_attrs` | Text | The attributes, as JSON. |
+| `attributes_id` | 整数，主键 | `states` 使用的 ID。 |
+| `hash` | 整数 | 属性的哈希值，用于快速查找重复项。 |
+| `shared_attrs` | 文本 | 属性，以 JSON 格式存储。 |
 
-## Events
+## 事件
 
 ### `events`
 
-| Column | Type | What it is |
+| 列 | 类型 | 说明 |
 | --- | --- | --- |
-| `event_id` | Integer, primary key | The ID of this row. |
-| `event_type_id` | Integer, refers to `event_types` | The type of event. |
-| `data_id` | Integer, refers to `event_data` | The data of the event. |
-| `time_fired_ts` | Timestamp | When the event was fired. |
-| `origin_idx` | Integer | Where the event came from: `0` for local, `1` for remote. |
-| `context_id_bin` | Binary | The context of the event. |
-| `context_user_id_bin` | Binary | The user who started it, if known. |
-| `context_parent_id_bin` | Binary | The parent context, if any. |
+| `event_id` | 整数，主键 | 这一行的 ID。 |
+| `event_type_id` | 整数，引用 `event_types` | 事件的类型。 |
+| `data_id` | 整数，引用 `event_data` | 事件的数据。 |
+| `time_fired_ts` | 时间戳 | 事件触发的时间。 |
+| `origin_idx` | 整数 | 事件的来源：`0` 表示本地，`1` 表示远程。 |
+| `context_id_bin` | 二进制 | 事件的上下文。 |
+| `context_user_id_bin` | 二进制 | 发起事件的用户（如果已知）。 |
+| `context_parent_id_bin` | 二进制 | 父上下文（如果有）。 |
 
-Indexes: `event_type_id` with `time_fired_ts`, and `context_id_bin`.
+索引：`event_type_id` 与 `time_fired_ts`，以及 `context_id_bin`。
 
-`state_changed` events are not in this table. The `states` table has all of their information, and its `last_updated_ts` is the time the event was fired.
+`state_changed` 事件不在此表中。`states` 表包含了它们的全部信息，其 `last_updated_ts` 就是事件触发的时间。
 
 ### `event_types`
 
-| Column | Type | What it is |
+| 列 | 类型 | 说明 |
 | --- | --- | --- |
-| `event_type_id` | Integer, primary key | The ID used by `events`. |
-| `event_type` | String | The event type, like `automation_triggered`. |
+| `event_type_id` | 整数，主键 | `events` 使用的 ID。 |
+| `event_type` | 字符串 | 事件类型，例如 `automation_triggered`。 |
 
 ### `event_data`
 
-| Column | Type | What it is |
+| 列 | 类型 | 说明 |
 | --- | --- | --- |
-| `data_id` | Integer, primary key | The ID used by `events`. |
-| `hash` | Integer | A hash of the data, to find duplicates quickly. |
-| `shared_data` | Text | The event data, as JSON. |
+| `data_id` | 整数，主键 | `events` 使用的 ID。 |
+| `hash` | 整数 | 数据的哈希值，用于快速查找重复项。 |
+| `shared_data` | 文本 | 事件数据，以 JSON 格式存储。 |
 
-## Recorder runs
+## recorder 运行记录
 
 ### `recorder_runs`
 
-Every time Home Assistant starts, the recorder starts a new run. The run ends when Home Assistant shuts down. When you analyze your data, this tells you when Home Assistant was not running, so you do not mistake a gap for a period without changes.
+Home Assistant 每次启动时，recorder 都会开始一次新的运行。该运行在 Home Assistant 关闭时结束。在分析数据时，这能告诉你 Home Assistant 何时没有运行，从而避免把数据缺口误认为是没有变化的时期。
 
-| Column | Type | What it is |
+| 列 | 类型 | 说明 |
 | --- | --- | --- |
-| `run_id` | Integer, primary key | The ID of the run. |
-| `start` | Date and time | When the run started. |
-| `end` | Date and time | When the run ended. |
-| `closed_incorrect` | Boolean | Whether Home Assistant stopped without shutting down cleanly. |
-| `created` | Date and time | When the row was created. |
+| `run_id` | 整数，主键 | 运行的 ID。 |
+| `start` | 日期和时间 | 运行开始的时间。 |
+| `end` | 日期和时间 | 运行结束的时间。 |
+| `closed_incorrect` | 布尔值 | Home Assistant 是否在未正常关闭的情况下停止。 |
+| `created` | 日期和时间 | 该行创建的时间。 |
 
-When `closed_incorrect` is true, Home Assistant did not shut down cleanly, and `end` is set to when it started again. That can be minutes or days later, so do not trust `end` in that case. The last event or state change of the run is a better guess of when it really stopped.
+当 `closed_incorrect` 为 true 时，说明 Home Assistant 未正常关闭，且 `end` 被设置为它再次启动的时间。那可能是几分钟或几天之后，因此在这种情况下不要相信 `end`。该运行中最后一个事件或状态更改的时间，是它实际停止时间的更好估计。
 
-## Statistics
+## 统计
 
-The statistics tables are described on their own page: [Statistics](/data/reference/statistics/).
+统计相关的表在其专属页面中描述：[统计](/data/reference/statistics/)。

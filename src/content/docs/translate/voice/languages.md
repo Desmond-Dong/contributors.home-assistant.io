@@ -1,85 +1,85 @@
 ---
-title: Supported languages
-description: The languages Assist understands with the built-in conversation agent, their leaders, and how to add a new language.
+title: 支持的语言
+description: Assist 通过内置对话代理（conversation agent）所理解的语言、各语言的负责人，以及如何添加新语言。
 order: 4
 ---
 
-The [intents repository](https://github.com/OHF-Voice/intents) lists 66 languages. How far each one is differs a lot: some cover nearly every intent, others have just started. The [progress overview](https://ohf-voice.github.io/intents/) shows the score of each language, per intent.
+[意图（intents）仓库](https://github.com/OHF-Voice/intents)列出了 66 种语言。每种语言的完成程度差异很大：有些几乎覆盖了所有意图，有些才刚刚起步。[进度总览](https://ohf-voice.github.io/intents/)页面按意图展示了每种语言的得分。
 
-## Where the list comes from
+## 列表的来源
 
-[`languages.yaml`](https://github.com/OHF-Voice/intents/blob/main/languages.yaml) in the intents repository is the source. For every language, it has:
+意图仓库中的 [`languages.yaml`](https://github.com/OHF-Voice/intents/blob/main/languages.yaml) 是数据来源。对于每种语言，它包含：
 
-- `nativeName`: the name of the language, in that language.
-- `isRTL`: `true` for languages written right to left.
-- `leaders`: the GitHub usernames of the [language leaders](/translate/voice/language-leaders/).
-- `support`: per region, which speech-to-text and text-to-speech engines work for the language, like Whisper, Speech-to-Phrase, Piper, or Home Assistant Link.
+- `nativeName`：该语言以其自身语言书写的名称。
+- `isRTL`：对于从右到左书写的语言为 `true`。
+- `leaders`：[语言负责人](/translate/voice/language-leaders/)的 GitHub 用户名。
+- `support`：按地区列出哪些语音转文本（speech-to-text）和文本转语音（text-to-speech）引擎支持该语言，例如 Whisper、Speech-to-Phrase、Piper 或 Home Assistant Link。
 
-The table below is a snapshot of that file. When they differ, `languages.yaml` is right.
+下表是该文件的一个快照。如果两者不一致，以 `languages.yaml` 为准。
 
-## Languages
+## 语言
 
-| Code | Language | Language leaders |
+| 代码 | 语言 | 语言负责人 |
 | --- | --- | --- |
-| `af` | Afrikaans | None yet |
-| `ar` | العربية | [Ahmed-farag36](https://github.com/Ahmed-farag36), [Natfaji](https://github.com/Natfaji) |
+| `af` | 南非荷兰语 | 暂无 |
+| `ar` | العربية | [Ahmed-farag36](https://github.com/Ahmed-farag36)、[Natfaji](https://github.com/Natfaji) |
 | `bg` | Български | [hristo-atanasov](https://github.com/hristo-atanasov) |
-| `bn` | বাংলা | [poltalashka](https://github.com/poltalashka), [DrHaque](https://github.com/DrHaque) |
+| `bn` | বাংলা | [poltalashka](https://github.com/poltalashka)、[DrHaque](https://github.com/DrHaque) |
 | `ca` | Català | [duhow](https://github.com/duhow) |
-| `cs` | Čeština | [halecivo](https://github.com/halecivo), [schizza](https://github.com/schizza) |
-| `cy` | Cymraeg | None yet |
-| `da` | Dansk | [fadamsen](https://github.com/fadamsen), [MTrab](https://github.com/MTrab) |
-| `de` | Deutsch | [andreasbrett](https://github.com/andreasbrett), [easterapps](https://github.com/easterapps), [hecktech27](https://github.com/hecktech27), [mib1185](https://github.com/mib1185) |
+| `cs` | Čeština | [halecivo](https://github.com/halecivo)、[schizza](https://github.com/schizza) |
+| `cy` | Cymraeg | 暂无 |
+| `da` | Dansk | [fadamsen](https://github.com/fadamsen)、[MTrab](https://github.com/MTrab) |
+| `de` | Deutsch | [andreasbrett](https://github.com/andreasbrett)、[easterapps](https://github.com/easterapps)、[hecktech27](https://github.com/hecktech27)、[mib1185](https://github.com/mib1185) |
 | `de-CH` | Schwyzerdütsch | [dontinelli](https://github.com/dontinelli) |
-| `el` | Ελληνικά | [apo-mak](https://github.com/apo-mak), [chatziko](https://github.com/chatziko) |
-| `en` | English | [mrdarrengriffin](https://github.com/mrdarrengriffin), [vividboarder](https://github.com/vividboarder) |
-| `es` | Español | [davefx](https://github.com/davefx), [duhow](https://github.com/duhow) |
-| `et` | Eesti | None yet |
+| `el` | Ελληνικά | [apo-mak](https://github.com/apo-mak)、[chatziko](https://github.com/chatziko) |
+| `en` | English | [mrdarrengriffin](https://github.com/mrdarrengriffin)、[vividboarder](https://github.com/vividboarder) |
+| `es` | Español | [davefx](https://github.com/davefx)、[duhow](https://github.com/duhow) |
+| `et` | Eesti | 暂无 |
 | `eu` | Euskara | [urtzai](https://github.com/urtzai) |
-| `fa` | فارسی | None yet |
-| `fi` | Suomi | [Arkkimaagi](https://github.com/Arkkimaagi), [salleq](https://github.com/salleq) |
-| `fr` | Français | [jlpouffier](https://github.com/jlpouffier), [piitaya](https://github.com/piitaya) |
+| `fa` | فارسی | 暂无 |
+| `fi` | Suomi | [Arkkimaagi](https://github.com/Arkkimaagi)、[salleq](https://github.com/salleq) |
+| `fr` | Français | [jlpouffier](https://github.com/jlpouffier)、[piitaya](https://github.com/piitaya) |
 | `ga` | Gaeilge | [AlanGreene](https://github.com/AlanGreene) |
-| `gl` | Galician | [cibernox](https://github.com/cibernox) |
-| `gu` | Gujarati | None yet |
-| `he` | עברית | [leranp](https://github.com/leranp), [haim-b](https://github.com/haim-b) |
+| `gl` | 加利西亚语 | [cibernox](https://github.com/cibernox) |
+| `gu` | 古吉拉特语 | 暂无 |
+| `he` | עברית | [leranp](https://github.com/leranp)、[haim-b](https://github.com/haim-b) |
 | `hi` | हिन्दी | [amankrokx](https://github.com/amankrokx) |
 | `hr` | Hrvatski | [spuljko](https://github.com/spuljko) |
-| `hu` | Magyar | [nagyrobi](https://github.com/nagyrobi), [v1k70rk4](https://github.com/v1k70rk4) |
-| `hy` | հայերեն | [eantonya](https://github.com/eantonya), [shahen94](https://github.com/shahen94) |
-| `id` | Bahasa Indonesia | None yet |
+| `hu` | Magyar | [nagyrobi](https://github.com/nagyrobi)、[v1k70rk4](https://github.com/v1k70rk4) |
+| `hy` | հայերեն | [eantonya](https://github.com/eantonya)、[shahen94](https://github.com/shahen94) |
+| `id` | Bahasa Indonesia | 暂无 |
 | `is` | íslenska | [thdg](https://github.com/thdg) |
-| `it` | Italiano | [auanasgheps](https://github.com/auanasgheps), [xraver](https://github.com/xraver) |
-| `ja` | 日本語 | None yet |
+| `it` | Italiano | [auanasgheps](https://github.com/auanasgheps)、[xraver](https://github.com/xraver) |
+| `ja` | 日本語 | 暂无 |
 | `ka` | ქართული | [hertzg](https://github.com/hertzg) |
-| `kn` | ಕನ್ನಡ | None yet |
+| `kn` | ಕನ್ನಡ | 暂无 |
 | `ko` | 한국어 | [limitless00net](https://github.com/limitless00net) |
-| `kw` | kernewek | None yet |
+| `kw` | kernewek | 暂无 |
 | `lb` | Lëtzebuergesch | [mojikosu](https://github.com/mojikosu) |
-| `lt` | Lietuvių | None yet |
-| `lv` | Latviešu | [makstech](https://github.com/makstech), [klejejs](https://github.com/klejejs) |
+| `lt` | Lietuvių | 暂无 |
+| `lv` | Latviešu | [makstech](https://github.com/makstech)、[klejejs](https://github.com/klejejs) |
 | `ml` | മലയാളം | [arunshekher](https://github.com/arunshekher) |
 | `mn` | монгол хэл | [chuk-a](https://github.com/chuk-a) |
-| `mr` | Marathi | None yet |
+| `mr` | 马拉地语 | 暂无 |
 | `ms` | Bahasa Melayu | [zubir2k](https://github.com/zubir2k) |
 | `nb` | Norsk Bokmål | [LaStrada](https://github.com/LaStrada) |
 | `ne` | नेपाली | [Rrp13](https://github.com/Rrp13) |
 | `nl` | Nederlands | [TheFes](https://github.com/TheFes) |
-| `pa` | Punjabi | [kmlkrwl](https://github.com/kmlkrwl) |
-| `pl` | Polski | [Uriziel01](https://github.com/Uriziel01), [witold-gren](https://github.com/witold-gren) |
-| `pt` | Português | [joaorgoncalves](https://github.com/joaorgoncalves), [abmantis](https://github.com/abmantis) |
-| `pt-BR` | Português (Brasil) | [mhentschke](https://github.com/mhentschke), [luyzfernando08](https://github.com/luyzfernando08), [staticdev](https://github.com/staticdev) |
-| `ro` | Română | [tetele](https://github.com/tetele), [gabimarchidan](https://github.com/gabimarchidan) |
+| `pa` | 旁遮普语 | [kmlkrwl](https://github.com/kmlkrwl) |
+| `pl` | Polski | [Uriziel01](https://github.com/Uriziel01)、[witold-gren](https://github.com/witold-gren) |
+| `pt` | Português | [joaorgoncalves](https://github.com/joaorgoncalves)、[abmantis](https://github.com/abmantis) |
+| `pt-BR` | Português (Brasil) | [mhentschke](https://github.com/mhentschke)、[luyzfernando08](https://github.com/luyzfernando08)、[staticdev](https://github.com/staticdev) |
+| `ro` | Română | [tetele](https://github.com/tetele)、[gabimarchidan](https://github.com/gabimarchidan) |
 | `ru` | Русский | [HepoH3](https://github.com/HepoH3) |
 | `sk` | Slovenčina | [LubosKadasi](https://github.com/LubosKadasi) |
 | `sl` | Slovenščina | [andrejs2](https://github.com/andrejs2) |
-| `sr` | Српски | [cvladan](https://github.com/cvladan), [ddxic](https://github.com/ddxic), [darkobg79](https://github.com/darkobg79), [PengBG](https://github.com/PengBG) |
-| `sr-Latn` | Srpski | None yet |
-| `sv` | Svenska | [larsdunemark](https://github.com/larsdunemark), [Robin-St](https://github.com/Robin-St) |
+| `sr` | Српски | [cvladan](https://github.com/cvladan)、[ddxic](https://github.com/ddxic)、[darkobg79](https://github.com/darkobg79)、[PengBG](https://github.com/PengBG) |
+| `sr-Latn` | Srpski | 暂无 |
+| `sv` | Svenska | [larsdunemark](https://github.com/larsdunemark)、[Robin-St](https://github.com/Robin-St) |
 | `sw` | Kiswahili | [BCorbeek](https://github.com/BCorbeek) |
-| `ta` | தமிழ் | None yet |
-| `te` | తెలుగు | None yet |
-| `th` | ภาษาไทย | None yet |
+| `ta` | தமிழ் | 暂无 |
+| `te` | తెలుగు | 暂无 |
+| `th` | ภาษาไทย | 暂无 |
 | `tr` | Türkçe | [alpdmrel](https://github.com/alpdmrel) |
 | `uk` | Українська | [skynetua](https://github.com/skynetua) |
 | `ur` | اُردُو | [AalianKhan](https://github.com/AalianKhan) |
@@ -88,41 +88,41 @@ The table below is a snapshot of that file. When they differ, `languages.yaml` i
 | `zh-HK` | 繁體中文（香港） | [swonge](https://github.com/swonge) |
 | `zh-TW` | 繁體中文（台灣） | [bluefoxlee](https://github.com/bluefoxlee) |
 
-Marathi (`mr`) is listed, but has no sentences yet. `sr-Latn` is generated from `sr`: change Serbian in `sr`, and the Latin script version follows.
+马拉地语（`mr`）已列出，但尚无任何句子。`sr-Latn` 是从 `sr` 生成的：修改 `sr` 中的塞尔维亚语内容，拉丁字母版本会随之更新。
 
-## Add a new language
+## 添加新语言
 
-Is your language missing? You can add it. This is a bigger first step than improving an existing language, so plan for a few rounds of review.
+你的语言不在列表中？你可以添加它。这比改进现有语言是更大的一步，因此请预留几轮审阅的时间。
 
-### 1. Create the files
+### 1. 创建文件
 
-Set up the repository as described in [Contribute sentences and responses](/translate/voice/contributing/#pick-your-setup), then run:
+按照[贡献句子和回复](/translate/voice/contributing/#pick-your-setup)中的说明设置仓库，然后运行：
 
 ```shell
 python3 -m script.intentfest add_language <code> <native name>
 ```
 
-- `<code>` is the language code. Use the two letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) code where there is one, like `pl`. Regional or script variants add a suffix, like `pt-BR` or `sr-Latn`.
-- `<native name>` is the name of the language in the language itself, like `Polski`.
-- Add `--rtl` for a language written right to left.
+- `<code>` 是语言代码。如果存在两位字母的 [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 代码，请使用它，例如 `pl`。地区或文字变体需添加后缀，例如 `pt-BR` 或 `sr-Latn`。
+- `<native name>` 是该语言以其自身语言书写的名称，例如 `Polski`。
+- 对于从右到左书写的语言，请添加 `--rtl`。
 
-The script adds your language to `languages.yaml`, and creates its sentence, response, and test files from the English ones. The sentences are left empty, and the responses start with `TODO` so you can see what still needs translating.
+该脚本会将你的语言添加到 `languages.yaml`，并根据英文文件创建其句子、回复和测试文件。句子会留空，回复则以 `TODO` 开头，以便你了解还有哪些内容需要翻译。
 
-Cannot run the script yourself? Ask in the **#language-leaders** channel on the Home Assistant [Discord server](https://www.home-assistant.io/join-chat), and a maintainer can run it for you.
+无法自己运行该脚本？请在 Home Assistant [Discord 服务器](https://www.home-assistant.io/join-chat)的 **#language-leaders** 频道中询问，维护者可以帮你运行。
 
-### 2. Keep the first pull request small
+### 2. 保持第一个拉取请求（pull request）小而精
 
-Limit your first pull request to:
+将你的第一个拉取请求限制在以下内容：
 
-- The error responses in `sentences/<code>/_common.yaml`.
-- The slot combinations of `HassTurnOn` and `HassTurnOff` that `intents.yaml` marks as `required`, with their tests.
-- The lists in `lists/<code>/` and the rules in `rules/<code>/` that those sentences need.
+- `sentences/<code>/_common.yaml` 中的错误回复。
+- `intents.yaml` 中标记为 `required` 的 `HassTurnOn` 和 `HassTurnOff` 槽位组合，及其测试。
+- 这些句子所需的 `lists/<code>/` 中的列表和 `rules/<code>/` 中的规则。
 
-That is enough for people to start turning things on and off in your language. More intents follow in later pull requests, one at a time.
+这就足以让人们开始用你的语言打开和关闭设备了。更多意图将在后续的拉取请求中添加，每次一个。
 
-### 3. Find a leader
+### 3. 寻找一位负责人
 
-A new language starts without a leader. If you keep contributing, consider [becoming the language leader](/translate/voice/language-leaders/#become-a-language-leader).
+新语言开始时没有负责人。如果你持续贡献，可以考虑[成为语言负责人](/translate/voice/language-leaders/#become-a-language-leader)。
 
 > [!NOTE]
-> Voice and the interface are separate. Adding a language here does not add it to the Home Assistant interface. For that, see [Request a new language](/translate/guides/new-language/).
+> 语音和界面是相互独立的。在此处添加语言并不会将其添加到 Home Assistant 界面中。如需添加界面语言，请参阅[申请新语言](/translate/guides/new-language/)。

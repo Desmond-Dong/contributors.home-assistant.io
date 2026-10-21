@@ -1,17 +1,17 @@
 ---
-title: Publish template macros
-description: Share Jinja macros that others import into their templates, as one template file the Marketplace installs in custom_templates.
-sidebarLabel: Template macros
+title: 发布模板宏
+description: 分享可供他人导入到自己模板中的 Jinja 宏，以单个模板文件的形式由 Marketplace 安装到 custom_templates 中。
+sidebarLabel: 模板宏
 order: 4
 ---
 
-A [template](/glossary/template/) file holds Jinja macros: reusable pieces of template that others import into their own templates, in automations, scripts, and template entities. How macros work, and how users import them, is in [custom templates and macros](https://www.home-assistant.io/docs/templating/custom-templates/) on home-assistant.io.
+[模板（template）](/glossary/template/)文件存放 Jinja 宏：可复用的模板片段，其他人可以将其导入到自己的模板中，用于自动化、脚本和模板实体。宏的工作方式以及用户如何导入它们，请参阅 home-assistant.io 上的[自定义模板与宏](https://www.home-assistant.io/docs/templating/custom-templates/)。
 
-This is the smallest type in the Marketplace: one file. The catalog and the HACS action call it `template`.
+这是 Marketplace 中最小的一种类型：只有一个文件。目录和 HACS action 将其称为 `template`。
 
-## The file
+## 文件
 
-Write your macros in one `.jinja` file:
+将你的宏写在一个 `.jinja` 文件中：
 
 ```jinja title="battery.jinja"
 {% macro battery_icon(entity_id) %}
@@ -20,18 +20,18 @@ Write your macros in one `.jinja` file:
 {% endmacro %}
 ```
 
-Users import a macro by the name of your file:
+用户通过你的文件名来导入宏：
 
 ```jinja
 {% from 'battery.jinja' import battery_icon %}
 {{ battery_icon('sensor.front_door_battery') }}
 ```
 
-That makes the name of your file part of how people use it. Pick one that is unlikely to clash with someone else's, and do not rename it later. When `filename` changes, the Marketplace removes the old file on the next update, and every template that imports it breaks.
+这意味着你的文件名会成为人们使用它的一部分。请选择一个不太可能与他人冲突的名称，并且之后不要重命名。当 `filename` 发生变化时，Marketplace 会在下次更新时删除旧文件，所有导入它的模板都会失效。
 
-## Package it
+## 打包
 
-Put the file in the root of your repository, and name it in `hacs.json` with `filename`:
+将文件放在仓库的根目录，并在 `hacs.json` 中通过 `filename` 指定它的名称：
 
 ```text
 battery.jinja
@@ -46,17 +46,17 @@ README.md
 }
 ```
 
-The Marketplace refuses a template repository when `filename` does not name a `.jinja` file in the root. It installs only that one file, into the `custom_templates` folder of the user's configuration, and reloads the custom templates, so it works right away.
+当 `filename` 指定的不是根目录下的 `.jinja` 文件时，Marketplace 会拒绝该模板仓库。它只安装这一个文件，安装到用户配置的 `custom_templates` 文件夹中，并重新加载自定义模板，因此立即可用。
 
-A few more rules, because Home Assistant reads every file in `custom_templates` when it starts:
+还有一些额外的规则，因为 Home Assistant 在启动时会读取 `custom_templates` 中的每一个文件：
 
-- The file must be UTF-8. One that Home Assistant can not decode stops it from starting.
-- The file must be smaller than 5 MiB. Home Assistant skips a larger one.
-- `zip_release` is not supported for templates: an archive would unpack into the folder all templates share.
-- Two repositories can not install a file with the same name. The Marketplace refuses the second.
+- 文件必须是 UTF-8 编码。Home Assistant 无法解码的文件会阻止它启动。
+- 文件必须小于 5 MiB。Home Assistant 会跳过更大的文件。
+- 模板不支持 `zip_release`：压缩包会解压到所有模板共享的文件夹中。
+- 两个仓库不能安装同名文件。Marketplace 会拒绝第二个。
 
-HACS requires GitHub releases for templates. Publish a release for every version. See [releases and updates](/marketplace/guides/releases/).
+HACS 要求模板使用 GitHub releases。请为每个版本发布一个 release。参见[发布与更新](/marketplace/guides/releases/)。
 
-## Check it in your repository
+## 在你的仓库中检查
 
-Run the [HACS action](https://github.com/hacs/action) with `category: "template"` on every push and pull request. Add a few examples of the macros in use to your README: that is what users read to decide whether they want it.
+在每次推送和拉取请求（pull request）时，使用 `category: "template"` 运行 [HACS action](https://github.com/hacs/action)。在 README 中添加几个宏的使用示例：这是用户决定是否想要使用它时阅读的内容。

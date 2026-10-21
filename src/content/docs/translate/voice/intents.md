@@ -1,43 +1,43 @@
 ---
-title: Built-in intents
-description: Every intent Home Assistant understands out of the box, with its slots, its slot combinations, and the integration that handles it.
+title: 内置意图（intent）
+description: Home Assistant 开箱即用所能理解的每一个意图，包括其槽位（slot）、槽位组合以及处理它的集成。
 order: 9
 ---
 
-An [intent](/glossary/intent/) is what a sentence means, in a form Home Assistant can act on. This page lists every intent that has sentences in the [intents repository](https://github.com/OHF-Voice/intents), and so can be spoken in every language that covers it.
+[意图](/glossary/intent/)（intent）是一句话的含义，以 Home Assistant 可以据此行动的形式表达。本页面列出了在 [intents 仓库](https://github.com/OHF-Voice/intents)中拥有句子的每一个意图，因此可以在覆盖它的每种语言中使用。
 
-The source of this list is [`intents.yaml`](https://github.com/OHF-Voice/intents/blob/main/intents.yaml) in the intents repository. This is the one full list on this site. The code that handles the intents lives in Home Assistant Core: [built-in intents in Core](/core/internals/built-in-intents/) shows where each handler lives, and [intents](/core/internals/intents/) explains how to write a handler or fire intents from your own code.
+此列表的来源是 intents 仓库中的 [`intents.yaml`](https://github.com/OHF-Voice/intents/blob/main/intents.yaml)。这是本站上唯一一份完整列表。处理这些意图的代码位于 Home Assistant Core 中：[Core 中的内置意图](/core/internals/built-in-intents/)展示了每个处理器的位置，[意图](/core/internals/intents/)则说明了如何编写处理器或从你自己的代码中触发意图。
 
-## How to read this page
+## 如何阅读本页面
 
-Each intent lists:
+每个意图列出了：
 
-- **Slots**: the pieces of information a sentence can fill in, like the `name` of a device or the `area` it is in. A slot marked as required must be filled for the intent to work.
-- **Response variables**: extra values a response template can use, besides `slots`. See [responses](/translate/voice/template-syntax/#responses).
-- **Slot combinations**: the sets of slots a sentence can fill, each with an English example. Sentences and tests are organized per slot combination. "Satellite area" means the area is not spoken: it comes from the voice satellite that heard the sentence.
+- **槽位（slot）**：句子可以填入的信息片段，比如设备的 `name` 或它所在的 `area`。标记为必需的槽位必须被填入，意图才能工作。
+- **响应变量**：响应模板可以使用的额外值，除 `slots` 之外。参见[响应](/translate/voice/template-syntax/#responses)。
+- **槽位组合**：句子可以填入的槽位集合，每个组合附有一个英文示例。句子和测试按槽位组合组织。“卫星区域”（satellite area）表示该区域不是通过语音说出的：它来自听到这句话的语音卫星（voice satellite）。
 
-The importance of a slot combination says how much a language needs it: `required` (the bare minimum, validation fails without it), `usable` (what people expect), `complete` (needed for full coverage), or `optional` (extra). For combinations that target entities by `name` or by an inferred `domain`, importance is set per entity domain. The table shows the highest level of any of its domains. [`intents.yaml`](https://github.com/OHF-Voice/intents/blob/main/intents.yaml) has the full detail.
+槽位组合的重要性表示一种语言对它的需求程度：`required`（最低要求，没有它验证会失败）、`usable`（人们所期望的）、`complete`（完整覆盖所必需的）或 `optional`（额外的）。对于通过 `name` 或推断出的 `domain` 来定位实体的组合，重要性按实体域（domain）分别设置。表格显示的是其所有域中的最高级别。[`intents.yaml`](https://github.com/OHF-Voice/intents/blob/main/intents.yaml) 中有完整的细节。
 
-`name`, `area`, and `floor` are filled from what exists in the user's Home Assistant: the names of their exposed entities, their areas, and their floors.
+`name`、`area` 和 `floor` 是根据用户 Home Assistant 中实际存在的内容填入的：他们已暴露的实体（entity）的名称、他们的区域（area）以及他们的楼层。
 
-## Devices and entities
+## 设备和实体
 
 ### HassTurnOn
 
-Turns on a device or entity. Handled by the `intent` integration.
+打开一个设备或实体。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
-| `floor` | No | Name of a floor |
-| `domain` | No | Domain of the targeted devices or entities |
-| `device_class` | No | Device class of the targeted devices or entities |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
+| `floor` | 否 | 楼层的名称 |
+| `domain` | 否 | 目标设备或实体的域 |
+| `device_class` | 否 | 目标设备或实体的设备类别 |
 
 <details>
-<summary>Slot combinations (12)</summary>
+<summary>槽位组合（12）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `domain_only` | `domain` (satellite area) | required | turn on the lights in here |
 | `name_only` | `name` | required | turn on the overhead light |
@@ -56,20 +56,20 @@ Turns on a device or entity. Handled by the `intent` integration.
 
 ### HassTurnOff
 
-Turns off a device or entity. Handled by the `intent` integration.
+关闭一个设备或实体。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
-| `floor` | No | Name of a floor |
-| `domain` | No | Domain of the targeted devices or entities |
-| `device_class` | No | Device class of the targeted devices or entities |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
+| `floor` | 否 | 楼层的名称 |
+| `domain` | 否 | 目标设备或实体的域 |
+| `device_class` | 否 | 目标设备或实体的设备类别 |
 
 <details>
-<summary>Slot combinations (10)</summary>
+<summary>槽位组合（10）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `domain_only` | `domain` (satellite area) | required | turn off the lights in here |
 | `name_only` | `name` | required | turn off the overhead light |
@@ -86,23 +86,23 @@ Turns off a device or entity. Handled by the `intent` integration.
 
 ### HassGetState
 
-Gets or checks the state of an entity. Handled by the `intent` integration.
+获取或检查实体的状态。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
-| `floor` | No | Name of a floor |
-| `domain` | No | Domain of the targeted devices or entities |
-| `device_class` | No | Device class of the targeted devices or entities |
-| `state` | No | Name of state to match |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
+| `floor` | 否 | 楼层的名称 |
+| `domain` | 否 | 目标设备或实体的域 |
+| `device_class` | 否 | 目标设备或实体的设备类别 |
+| `state` | 否 | 要匹配的状态名称 |
 
-Response variables: `state` (state of the first entity matched), `query.matched` (list of states that matched the query and state name), `query.unmatched` (list of states that matched everything except state name).
+响应变量：`state`（第一个匹配实体的状态）、`query.matched`（匹配查询和状态名称的状态列表）、`query.unmatched`（匹配除状态名称之外所有条件的状态列表）。
 
 <details>
-<summary>Slot combinations (12)</summary>
+<summary>槽位组合（12）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `name_only` | `name` | complete | what is the outside temperature |
 | `name_state` | `name`, `state` | complete | is the sliding door open |
@@ -121,21 +121,21 @@ Response variables: `state` (state of the first entity matched), `query.matched`
 
 ### HassSetPosition
 
-Sets the position of an entity. Handled by the `intent` integration.
+设置实体的位置。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
-| `floor` | No | Name of a floor |
-| `domain` | No | Domain of the targeted devices or entities |
-| `device_class` | No | Device class of the targeted devices or entities |
-| `position` | Yes | Position from 0 to 100 |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
+| `floor` | 否 | 楼层的名称 |
+| `domain` | 否 | 目标设备或实体的域 |
+| `device_class` | 否 | 目标设备或实体的设备类别 |
+| `position` | 是 | 0 到 100 之间的位置 |
 
 <details>
-<summary>Slot combinations (6)</summary>
+<summary>槽位组合（6）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `name_only` | `name`, `position` | complete | set curtain left to 50% |
 | `device_class` | `domain`, `device_class`, `position` (satellite area) | complete | set the curtains to 50% |
@@ -146,113 +146,113 @@ Sets the position of an entity. Handled by the `intent` integration.
 
 </details>
 
-## Conversation
+## 对话
 
 ### HassNevermind
 
-Does nothing. Used to cancel a request. Handled by the `intent` integration.
+什么都不做。用于取消一个请求。由 `intent` 集成处理。
 
-This intent has no slots.
+此意图没有槽位。
 
 <details>
-<summary>Slot combinations (1)</summary>
+<summary>槽位组合（1）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None | usable | nevermind |
+| `default` | 无 | usable | nevermind |
 
 </details>
 
 ### HassRespond
 
-Returns response but takes no action. Handled by the `intent` integration.
+返回响应但不执行任何操作。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `response` | No | Text to respond with |
+| `response` | 否 | 用于响应的文本 |
 
 <details>
-<summary>Slot combinations (1)</summary>
+<summary>槽位组合（1）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None | optional | hello |
+| `default` | 无 | optional | hello |
 
 </details>
 
 ### HassBroadcast
 
-Announces a message on other satellites. Handled by the `assist_satellite` integration.
+在其他卫星上播报一条消息。由 `assist_satellite` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `message` | Yes | Message to broadcast |
+| `message` | 是 | 要播报的消息 |
 
 <details>
-<summary>Slot combinations (1)</summary>
+<summary>槽位组合（1）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `message_only` | `message` | optional | broadcast that dinner is ready |
 
 </details>
 
-## Date and time
+## 日期和时间
 
 ### HassGetCurrentDate
 
-Gets the current date. Handled by the `intent` integration.
+获取当前日期。由 `intent` 集成处理。
 
-This intent has no slots.
+此意图没有槽位。
 
-Response variables: `date` (date object with day, month, and year).
+响应变量：`date`（包含日、月、年的日期对象）。
 
 <details>
-<summary>Slot combinations (1)</summary>
+<summary>槽位组合（1）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None | usable | what is the date |
+| `default` | 无 | usable | what is the date |
 
 </details>
 
 ### HassGetCurrentTime
 
-Gets the current time. Handled by the `intent` integration.
+获取当前时间。由 `intent` 集成处理。
 
-This intent has no slots.
+此意图没有槽位。
 
-Response variables: `time` (time object with hours, minutes, and seconds).
+响应变量：`time`（包含时、分、秒的时间对象）。
 
 <details>
-<summary>Slot combinations (1)</summary>
+<summary>槽位组合（1）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None | usable | what time is it |
+| `default` | 无 | usable | what time is it |
 
 </details>
 
-## Lights and fans
+## 灯光和风扇
 
 ### HassLightSet
 
-Sets the brightness or color of a light. Handled by the `light` integration.
+设置灯光的亮度或颜色。由 `light` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `domain` | No | Domain of the targeted devices or entities |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
-| `floor` | No | Name of a floor |
-| `brightness` | No | Brightness percentage from 0 to 100 |
-| `color` | No | Name of color |
-| `temperature` | No | Color temperature from 1000 to 10000 Kelvin |
+| `domain` | 否 | 目标设备或实体的域 |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
+| `floor` | 否 | 楼层的名称 |
+| `brightness` | 否 | 0 到 100 之间的亮度百分比 |
+| `color` | 否 | 颜色的名称 |
+| `temperature` | 否 | 1000 到 10000 开尔文之间的色温 |
 
 <details>
-<summary>Slot combinations (12)</summary>
+<summary>槽位组合（12）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `name_brightness` | `name`, `brightness` | usable | set the overhead light brightness to 50% |
 | `name_color` | `name`, `color` | usable | set the overhead light to red |
@@ -271,19 +271,19 @@ Sets the brightness or color of a light. Handled by the `light` integration.
 
 ### HassFanSetSpeed
 
-Sets the speed of a fan. Handled by the `fan` integration.
+设置风扇的速度。由 `fan` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
-| `floor` | No | Name of a floor |
-| `percentage` | Yes | Speed percentage from 0 to 100 |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
+| `floor` | 否 | 楼层的名称 |
+| `percentage` | 是 | 0 到 100 之间的速度百分比 |
 
 <details>
-<summary>Slot combinations (4)</summary>
+<summary>槽位组合（4）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `default` | `percentage` (satellite area) | complete | set fans to 50% |
 | `name_only` | `name`, `percentage` | complete | set ceiling fan to 50% |
@@ -292,23 +292,23 @@ Sets the speed of a fan. Handled by the `fan` integration.
 
 </details>
 
-## Climate and weather
+## 温控和天气
 
 ### HassClimateSetTemperature
 
-Sets the desired indoor temperature. Handled by the `climate` integration.
+设置期望的室内温度。由 `climate` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
-| `floor` | No | Name of a floor |
-| `temperature` | Yes | Temperature in degrees |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
+| `floor` | 否 | 楼层的名称 |
+| `temperature` | 是 | 以度为单位的温度 |
 
 <details>
-<summary>Slot combinations (4)</summary>
+<summary>槽位组合（4）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `temperature_only` | `temperature` (satellite area) | complete | set the temperature to 30 degrees |
 | `name_temperature` | `name`, `temperature` | complete | set the EcoBee to 30 degrees |
@@ -319,22 +319,22 @@ Sets the desired indoor temperature. Handled by the `climate` integration.
 
 ### HassClimateGetTemperature
 
-Gets the actual indoor temperature, not the target temperature that `HassClimateSetTemperature` sets. Handled by the `intent` integration.
+获取实际的室内温度，而不是 `HassClimateSetTemperature` 设置的目标温度。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
-| `floor` | No | Name of a floor |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
+| `floor` | 否 | 楼层的名称 |
 
-Response variables: `state` (state of the entity that contains the temperature).
+响应变量：`state`（包含温度的实体的状态）。
 
 <details>
-<summary>Slot combinations (4)</summary>
+<summary>槽位组合（4）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None (satellite area) | usable | what is the temperature |
+| `default` | 无 (satellite area) | usable | what is the temperature |
 | `name_only` | `name` | usable | what is the temperature of the EcoBee |
 | `area_only` | `area` | usable | what is the temperature in the bedroom |
 | `floor_only` | `floor` | complete | what is the temperature downstairs |
@@ -343,19 +343,19 @@ Response variables: `state` (state of the entity that contains the temperature).
 
 ### HassClimateSetFanMode
 
-Sets the fan mode of a climate device. Handled by the `climate` integration.
+设置温控设备的风扇模式。由 `climate` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
-| `floor` | No | Name of a floor |
-| `fan_mode` | Yes | Fan mode to set |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
+| `floor` | 否 | 楼层的名称 |
+| `fan_mode` | 是 | 要设置的风扇模式 |
 
 <details>
-<summary>Slot combinations (4)</summary>
+<summary>槽位组合（4）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `fan_mode_only` | `fan_mode` (satellite area) | complete | set the fan mode to auto |
 | `name_fan_mode` | `name`, `fan_mode` | complete | set the EcoBee fan to auto |
@@ -366,38 +366,38 @@ Sets the fan mode of a climate device. Handled by the `climate` integration.
 
 ### HassGetWeather
 
-Gets the current weather. Handled by the `weather` integration.
+获取当前天气。由 `weather` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of the weather entity to use |
+| `name` | 否 | 要使用的天气实体的名称 |
 
-Response variables: `state` (state of the entity that contains the weather).
+响应变量：`state`（包含天气的实体的状态）。
 
 <details>
-<summary>Slot combinations (2)</summary>
+<summary>槽位组合（2）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None | usable | what is the weather |
+| `default` | 无 | usable | what is the weather |
 | `name_only` | `name` | usable | what is the weather in New York |
 
 </details>
 
-## Lists
+## 列表
 
 ### HassShoppingListAddItem
 
-Adds an item to the shopping list. Handled by the `shopping_list` integration.
+向购物清单添加一个条目。由 `shopping_list` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `item` | Yes | Item to add |
+| `item` | 是 | 要添加的条目 |
 
 <details>
-<summary>Slot combinations (1)</summary>
+<summary>槽位组合（1）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `item_only` | `item` | optional | add apples to my shopping list |
 
@@ -405,16 +405,16 @@ Adds an item to the shopping list. Handled by the `shopping_list` integration.
 
 ### HassShoppingListCompleteItem
 
-Checks off an item from the shopping list. Handled by the `shopping_list` integration.
+勾选购物清单中的一个条目。由 `shopping_list` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `item` | Yes | Item to check off |
+| `item` | 是 | 要勾选的条目 |
 
 <details>
-<summary>Slot combinations (1)</summary>
+<summary>槽位组合（1）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `item_only` | `item` | optional | check off apples from my shopping list |
 
@@ -422,17 +422,17 @@ Checks off an item from the shopping list. Handled by the `shopping_list` integr
 
 ### HassListAddItem
 
-Adds an item to a todo list. Handled by the `todo` integration.
+向待办清单添加一个条目。由 `todo` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `item` | Yes | Item to add |
-| `name` | Yes | Name of the list |
+| `item` | 是 | 要添加的条目 |
+| `name` | 是 | 清单的名称 |
 
 <details>
-<summary>Slot combinations (1)</summary>
+<summary>槽位组合（1）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `name_item` | `item`, `name` | complete | add apples to my shopping list |
 
@@ -440,17 +440,17 @@ Adds an item to a todo list. Handled by the `todo` integration.
 
 ### HassListCompleteItem
 
-Checks off an item from a todo list. Handled by the `todo` integration.
+勾选待办清单中的一个条目。由 `todo` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `item` | Yes | Item to check off |
-| `name` | Yes | Name of the list |
+| `item` | 是 | 要勾选的条目 |
+| `name` | 是 | 清单的名称 |
 
 <details>
-<summary>Slot combinations (1)</summary>
+<summary>槽位组合（1）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `name_item` | `item`, `name` | complete | check off take out the trash from my chores list |
 
@@ -458,39 +458,39 @@ Checks off an item from a todo list. Handled by the `todo` integration.
 
 ### HassListRemoveItem
 
-Removes an item from a todo list. Handled by the `todo` integration.
+从待办清单中移除一个条目。由 `todo` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `item` | Yes | Item to remove |
-| `name` | Yes | Name of the list |
+| `item` | 是 | 要移除的条目 |
+| `name` | 是 | 清单的名称 |
 
 <details>
-<summary>Slot combinations (1)</summary>
+<summary>槽位组合（1）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `name_item` | `item`, `name` | complete | remove take out the trash from my chores list |
 
 </details>
 
-## Media
+## 媒体
 
 ### HassMediaPause
 
-Pauses a media player. Handled by the `media_player` integration.
+暂停一个媒体播放器。由 `media_player` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
 
 <details>
-<summary>Slot combinations (3)</summary>
+<summary>槽位组合（3）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None (satellite area) | usable | pause |
+| `default` | 无 (satellite area) | usable | pause |
 | `name_only` | `name` | usable | pause TV |
 | `area_only` | `area` | usable | pause music in kitchen |
 
@@ -498,19 +498,19 @@ Pauses a media player. Handled by the `media_player` integration.
 
 ### HassMediaUnpause
 
-Unpauses a media player. Handled by the `media_player` integration.
+恢复播放一个媒体播放器。由 `media_player` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
 
 <details>
-<summary>Slot combinations (3)</summary>
+<summary>槽位组合（3）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None (satellite area) | usable | resume |
+| `default` | 无 (satellite area) | usable | resume |
 | `name_only` | `name` | usable | resume TV |
 | `area_only` | `area` | usable | resume music in kitchen |
 
@@ -518,19 +518,19 @@ Unpauses a media player. Handled by the `media_player` integration.
 
 ### HassMediaNext
 
-Skips a media player to the next item. Handled by the `media_player` integration.
+将媒体播放器跳到下一个条目。由 `media_player` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
 
 <details>
-<summary>Slot combinations (3)</summary>
+<summary>槽位组合（3）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None (satellite area) | usable | next track |
+| `default` | 无 (satellite area) | usable | next track |
 | `name_only` | `name` | usable | next track on the stereo |
 | `area_only` | `area` | usable | next track in the kitchen |
 
@@ -538,19 +538,19 @@ Skips a media player to the next item. Handled by the `media_player` integration
 
 ### HassMediaPrevious
 
-Skips a media player back to the previous item. Handled by the `media_player` integration.
+将媒体播放器跳回上一个条目。由 `media_player` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
 
 <details>
-<summary>Slot combinations (3)</summary>
+<summary>槽位组合（3）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None (satellite area) | complete | previous track |
+| `default` | 无 (satellite area) | complete | previous track |
 | `name_only` | `name` | complete | previous track on the stereo |
 | `area_only` | `area` | complete | previous track in the kitchen |
 
@@ -558,18 +558,18 @@ Skips a media player back to the previous item. Handled by the `media_player` in
 
 ### HassSetVolume
 
-Sets the volume of a media player. Handled by the `media_player` integration.
+设置媒体播放器的音量。由 `media_player` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
-| `volume_level` | Yes | Volume level from 0 to 100 |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
+| `volume_level` | 是 | 0 到 100 之间的音量级别 |
 
 <details>
-<summary>Slot combinations (3)</summary>
+<summary>槽位组合（3）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `default` | `volume_level` (satellite area) | complete | set volume to 50% |
 | `name_only` | `name`, `volume_level` | complete | set TV volume to 50% |
@@ -579,19 +579,19 @@ Sets the volume of a media player. Handled by the `media_player` integration.
 
 ### HassSetVolumeRelative
 
-Increases or decreases the volume of a media player. Handled by the `media_player` integration.
+增大或减小媒体播放器的音量。由 `media_player` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `volume_step` | Yes | up, down, or the percentage to change from -100 to 100 |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
-| `floor` | No | Name of a floor |
+| `volume_step` | 是 | up、down，或 -100 到 100 之间要改变的百分比 |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
+| `floor` | 否 | 楼层的名称 |
 
 <details>
-<summary>Slot combinations (4)</summary>
+<summary>槽位组合（4）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `default` | `volume_step` (satellite area) | complete | increase volume |
 | `name_only` | `volume_step`, `name` | complete | decrease TV volume |
@@ -602,59 +602,59 @@ Increases or decreases the volume of a media player. Handled by the `media_playe
 
 ### HassMediaPlayerMute
 
-Mutes a media player. Handled by the `media_player` integration.
+静音一个媒体播放器。由 `media_player` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
 
 <details>
-<summary>Slot combinations (2)</summary>
+<summary>槽位组合（2）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None (satellite area) | complete | mute |
+| `default` | 无 (satellite area) | complete | mute |
 | `name_only` | `name` | complete | mute the TV |
 
 </details>
 
 ### HassMediaPlayerUnmute
 
-Unmutes a media player. Handled by the `media_player` integration.
+取消静音一个媒体播放器。由 `media_player` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
 
 <details>
-<summary>Slot combinations (2)</summary>
+<summary>槽位组合（2）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None (satellite area) | complete | unmute |
+| `default` | 无 (satellite area) | complete | unmute |
 | `name_only` | `name` | complete | unmute the TV |
 
 </details>
 
 ### HassMediaSearchAndPlay
 
-Searches for a media item and plays it. Handled by the `media_player` integration.
+搜索一个媒体条目并播放它。由 `media_player` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
-| `search_query` | Yes | Media to search for and play |
-| `media_class` | No | Type of media to search for (album, app, artist, channel, composer, contributing_artist, directory, episode, game, genre, image, movie, music, playlist, podcast, season, track, tv_show, url, video) |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
+| `search_query` | 是 | 要搜索并播放的媒体 |
+| `media_class` | 否 | 要搜索的媒体类型（album、app、artist、channel、composer、contributing_artist、directory、episode、game、genre、image、movie、music、playlist、podcast、season、track、tv_show、url、video） |
 
-Response variables: `media` (the matched media item as a `BrowseMedia` object, or `None` when the search found nothing).
+响应变量：`media`（匹配到的媒体条目，作为一个 `BrowseMedia` 对象，当搜索没有找到任何内容时为 `None`）。
 
 <details>
-<summary>Slot combinations (8)</summary>
+<summary>槽位组合（8）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `default` | `search_query` (satellite area) | optional | play Pink Floyd |
 | `name_only` | `name`, `search_query` | optional | play Pink Floyd on Sonos Speakers |
@@ -667,24 +667,24 @@ Response variables: `media` (the matched media item as a `BrowseMedia` object, o
 
 </details>
 
-## Timers
+## 定时器
 
 ### HassStartTimer
 
-Starts a timer. Handled by the `intent` integration.
+启动一个定时器。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `hours` | No | Number of hours |
-| `minutes` | No | Number of minutes |
-| `seconds` | No | Number of seconds |
-| `name` | No | Name attached to the timer |
-| `conversation_command` | No | Command to execute when timer finishes |
+| `hours` | 否 | 小时数 |
+| `minutes` | 否 | 分钟数 |
+| `seconds` | 否 | 秒数 |
+| `name` | 否 | 附加到定时器的名称 |
+| `conversation_command` | 否 | 定时器结束时执行的命令 |
 
 <details>
-<summary>Slot combinations (21)</summary>
+<summary>槽位组合（21）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `hours_only` | `hours` | usable | set a timer for 1 hour |
 | `minutes_only` | `minutes` | usable | set a timer for 10 minutes |
@@ -712,22 +712,22 @@ Starts a timer. Handled by the `intent` integration.
 
 ### HassCancelTimer
 
-Cancels a timer. Handled by the `intent` integration.
+取消一个定时器。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `start_hours` | No | Hours the timer was started with |
-| `start_minutes` | No | Minutes the timer was started with |
-| `start_seconds` | No | Seconds the timer was started with |
-| `name` | No | Name attached to the timer |
-| `area` | No | Area of the device used to start the timer |
+| `start_hours` | 否 | 定时器启动时设定的小时数 |
+| `start_minutes` | 否 | 定时器启动时设定的分钟数 |
+| `start_seconds` | 否 | 定时器启动时设定的秒数 |
+| `name` | 否 | 附加到定时器的名称 |
+| `area` | 否 | 用于启动定时器的设备所在的区域 |
 
 <details>
-<summary>Slot combinations (6)</summary>
+<summary>槽位组合（6）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None | usable | cancel my timer |
+| `default` | 无 | usable | cancel my timer |
 | `name_only` | `name` | complete | cancel the pizza timer |
 | `area_only` | `area` | complete | cancel the kitchen timer |
 | `hours_only` | `start_hours` | usable | cancel the 1 hour timer |
@@ -738,41 +738,41 @@ Cancels a timer. Handled by the `intent` integration.
 
 ### HassCancelAllTimers
 
-Cancels all timers. Handled by the `intent` integration.
+取消所有定时器。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `area` | No | Area of the device used to start the timer |
+| `area` | 否 | 用于启动定时器的设备所在的区域 |
 
 <details>
-<summary>Slot combinations (2)</summary>
+<summary>槽位组合（2）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None | usable | cancel all timers |
+| `default` | 无 | usable | cancel all timers |
 | `area_only` | `area` | complete | cancel all timers in the kitchen |
 
 </details>
 
 ### HassIncreaseTimer
 
-Adds time to a timer. Handled by the `intent` integration.
+为定时器增加时间。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `hours` | No | Number of hours |
-| `minutes` | No | Number of minutes |
-| `seconds` | No | Number of seconds |
-| `start_hours` | No | Hours the timer was started with |
-| `start_minutes` | No | Minutes the timer was started with |
-| `start_seconds` | No | Seconds the timer was started with |
-| `name` | No | Name attached to the timer |
-| `area` | No | Area of the device used to start the timer |
+| `hours` | 否 | 小时数 |
+| `minutes` | 否 | 分钟数 |
+| `seconds` | 否 | 秒数 |
+| `start_hours` | 否 | 定时器启动时设定的小时数 |
+| `start_minutes` | 否 | 定时器启动时设定的分钟数 |
+| `start_seconds` | 否 | 定时器启动时设定的秒数 |
+| `name` | 否 | 附加到定时器的名称 |
+| `area` | 否 | 用于启动定时器的设备所在的区域 |
 
 <details>
-<summary>Slot combinations (26)</summary>
+<summary>槽位组合（26）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `hours_only` | `hours` | complete | add 1 hour to my timer |
 | `minutes_only` | `minutes` | complete | add 10 minutes to my timer |
@@ -805,23 +805,23 @@ Adds time to a timer. Handled by the `intent` integration.
 
 ### HassDecreaseTimer
 
-Removes time from a timer. Handled by the `intent` integration.
+从定时器中减少时间。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `hours` | No | Number of hours |
-| `minutes` | No | Number of minutes |
-| `seconds` | No | Number of seconds |
-| `start_hours` | No | Hours the timer was started with |
-| `start_minutes` | No | Minutes the timer was started with |
-| `start_seconds` | No | Seconds the timer was started with |
-| `name` | No | Name attached to the timer |
-| `area` | No | Area of the device used to start the timer |
+| `hours` | 否 | 小时数 |
+| `minutes` | 否 | 分钟数 |
+| `seconds` | 否 | 秒数 |
+| `start_hours` | 否 | 定时器启动时设定的小时数 |
+| `start_minutes` | 否 | 定时器启动时设定的分钟数 |
+| `start_seconds` | 否 | 定时器启动时设定的秒数 |
+| `name` | 否 | 附加到定时器的名称 |
+| `area` | 否 | 用于启动定时器的设备所在的区域 |
 
 <details>
-<summary>Slot combinations (26)</summary>
+<summary>槽位组合（26）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `hours_only` | `hours` | complete | remove 1 hour to my timer |
 | `minutes_only` | `minutes` | complete | remove 10 minutes to my timer |
@@ -847,29 +847,29 @@ Removes time from a timer. Handled by the `intent` integration.
 | `minutes_start_minutes` | `start_minutes`, `minutes` | complete | remove 10 minutes from the 20 minute timer |
 | `minutes_start_seconds` | `start_seconds`, `minutes` | complete | remove 10 minutes from the 40 second timer |
 | `seconds_start_hours` | `start_hours`, `seconds` | complete | remove 30 seconds to my timer |
-| `seconds_start_minutes` | `start_minutes`, `seconds` | complete | remove 30 seconds from the 20 minute timer |
-| `seconds_start_seconds` | `start_seconds`, `seconds` | complete | remove 30 seconds from the 40 second timer |
+| `seconds_start_minutes` | `start_minutes`, `seconds` | complete | remove 30 seconds to the 20 minute timer |
+| `seconds_start_seconds` | `start_seconds`, `seconds` | complete | remove 30 seconds to the 40 second timer |
 
 </details>
 
 ### HassPauseTimer
 
-Pauses a running timer. Handled by the `intent` integration.
+暂停一个正在运行的定时器。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `start_hours` | No | Hours the timer was started with |
-| `start_minutes` | No | Minutes the timer was started with |
-| `start_seconds` | No | Seconds the timer was started with |
-| `name` | No | Name attached to the timer |
-| `area` | No | Area of the device used to start the timer |
+| `start_hours` | 否 | 定时器启动时设定的小时数 |
+| `start_minutes` | 否 | 定时器启动时设定的分钟数 |
+| `start_seconds` | 否 | 定时器启动时设定的秒数 |
+| `name` | 否 | 附加到定时器的名称 |
+| `area` | 否 | 用于启动定时器的设备所在的区域 |
 
 <details>
-<summary>Slot combinations (6)</summary>
+<summary>槽位组合（6）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None | usable | pause my timer |
+| `default` | 无 | usable | pause my timer |
 | `name_only` | `name` | complete | pause the pizza timer |
 | `area_only` | `area` | complete | pause the kitchen timer |
 | `hours_only` | `start_hours` | complete | pause the 1 hour timer |
@@ -880,22 +880,22 @@ Pauses a running timer. Handled by the `intent` integration.
 
 ### HassUnpauseTimer
 
-Resumes a paused timer. Handled by the `intent` integration.
+恢复一个已暂停的定时器。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `start_hours` | No | Hours the timer was started with |
-| `start_minutes` | No | Minutes the timer was started with |
-| `start_seconds` | No | Seconds the timer was started with |
-| `name` | No | Name attached to the timer |
-| `area` | No | Area of the device used to start the timer |
+| `start_hours` | 否 | 定时器启动时设定的小时数 |
+| `start_minutes` | 否 | 定时器启动时设定的分钟数 |
+| `start_seconds` | 否 | 定时器启动时设定的秒数 |
+| `name` | 否 | 附加到定时器的名称 |
+| `area` | 否 | 用于启动定时器的设备所在的区域 |
 
 <details>
-<summary>Slot combinations (6)</summary>
+<summary>槽位组合（6）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None | usable | resume my timer |
+| `default` | 无 | usable | resume my timer |
 | `name_only` | `name` | complete | resume the pizza timer |
 | `area_only` | `area` | complete | resume the kitchen timer |
 | `hours_only` | `start_hours` | complete | resume the 1 hour timer |
@@ -906,24 +906,24 @@ Resumes a paused timer. Handled by the `intent` integration.
 
 ### HassTimerStatus
 
-Reports status of one or more timers. Handled by the `intent` integration.
+报告一个或多个定时器的状态。由 `intent` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `start_hours` | No | Hours the timer was started with |
-| `start_minutes` | No | Minutes the timer was started with |
-| `start_seconds` | No | Seconds the timer was started with |
-| `name` | No | Name attached to the timer |
-| `area` | No | Area of the device used to start the timer |
+| `start_hours` | 否 | 定时器启动时设定的小时数 |
+| `start_minutes` | 否 | 定时器启动时设定的分钟数 |
+| `start_seconds` | 否 | 定时器启动时设定的秒数 |
+| `name` | 否 | 附加到定时器的名称 |
+| `area` | 否 | 用于启动定时器的设备所在的区域 |
 
-Response variables: `timers`, a list of timer objects. Each timer has `is_active` (true when running, false when paused), `name` and `area` (both optional), `total_seconds_left`, `rounded_hours_left`, `rounded_minutes_left`, `rounded_seconds_left`, and the `start_hours`, `start_minutes`, and `start_seconds` the timer was started with.
+响应变量：`timers`，一个定时器对象列表。每个定时器都有 `is_active`（运行时为 true，暂停时为 false）、`name` 和 `area`（两者均为可选）、`total_seconds_left`、`rounded_hours_left`、`rounded_minutes_left`、`rounded_seconds_left`，以及定时器启动时设定的 `start_hours`、`start_minutes` 和 `start_seconds`。
 
 <details>
-<summary>Slot combinations (6)</summary>
+<summary>槽位组合（6）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None | usable | how much time is left on my timer |
+| `default` | 无 | usable | how much time is left on my timer |
 | `name_only` | `name` | complete | how much time is left on the pizza timer |
 | `area_only` | `area` | complete | how much time is left on the kitchen timer |
 | `hours_only` | `start_hours` | complete | how much time is left on the 1 hour timer |
@@ -932,22 +932,22 @@ Response variables: `timers`, a list of timer objects. Each timer has `is_active
 
 </details>
 
-## Vacuums and lawn mowers
+## 吸尘器和割草机
 
 ### HassVacuumStart
 
-Starts a vacuum. Handled by the `vacuum` integration.
+启动一个吸尘器。由 `vacuum` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
-| `floor` | No | Name of a floor |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
+| `floor` | 否 | 楼层的名称 |
 
 <details>
-<summary>Slot combinations (3)</summary>
+<summary>槽位组合（3）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `name_only` | `name` | complete | start rover |
 | `area_only` | `area` | complete | vacuum the kitchen |
@@ -957,17 +957,17 @@ Starts a vacuum. Handled by the `vacuum` integration.
 
 ### HassVacuumReturnToBase
 
-Returns a vacuum to base. Handled by the `vacuum` integration.
+让吸尘器返回基站。由 `vacuum` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | No | Name of an area |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 否 | 区域的名称 |
 
 <details>
-<summary>Slot combinations (2)</summary>
+<summary>槽位组合（2）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
 | `name_only` | `name` | complete | return rover to base |
 | `area_only` | `area` | complete | return kitchen vacuum to base |
@@ -976,19 +976,19 @@ Returns a vacuum to base. Handled by the `vacuum` integration.
 
 ### HassVacuumCleanArea
 
-Sends a vacuum to clean an area. Handled by the `vacuum` integration.
+让吸尘器清扫一个区域。由 `vacuum` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
-| `area` | Yes | Name of area to be cleaned |
+| `name` | 否 | 设备或实体的名称 |
+| `area` | 是 | 要清扫的区域的名称 |
 
 <details>
-<summary>Slot combinations (3)</summary>
+<summary>槽位组合（3）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `context_area` | None (satellite area) | usable | vacuum in here |
+| `context_area` | 无 (satellite area) | usable | vacuum in here |
 | `area_only` | `area` | complete | vacuum the kitchen |
 | `name_area` | `name`, `area` | complete | vacuum the kitchen with rover |
 
@@ -996,50 +996,50 @@ Sends a vacuum to clean an area. Handled by the `vacuum` integration.
 
 ### HassLawnMowerStartMowing
 
-Starts a lawn mower. Handled by the `lawn_mower` integration.
+启动一个割草机。由 `lawn_mower` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
+| `name` | 否 | 设备或实体的名称 |
 
 <details>
-<summary>Slot combinations (2)</summary>
+<summary>槽位组合（2）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None | complete | start mowing |
+| `default` | 无 | complete | start mowing |
 | `name_only` | `name` | complete | start clippy |
 
 </details>
 
 ### HassLawnMowerDock
 
-Sends a lawn mower to dock. Handled by the `lawn_mower` integration.
+让割草机返回充电座。由 `lawn_mower` 集成处理。
 
-| Slot | Required | Description |
+| 槽位 | 必需 | 描述 |
 | --- | --- | --- |
-| `name` | No | Name of a device or entity |
+| `name` | 否 | 设备或实体的名称 |
 
 <details>
-<summary>Slot combinations (2)</summary>
+<summary>槽位组合（2）</summary>
 
-| Combination | Slots | Importance | Example |
+| 组合 | 槽位 | 重要性 | 示例 |
 | --- | --- | --- | --- |
-| `default` | None | complete | stop mowing |
+| `default` | 无 | complete | stop mowing |
 | `name_only` | `name` | complete | return clippy to base |
 
 </details>
 
-## Intents without sentences
+## 没有句子的意图
 
-Home Assistant registers a few more intents that have no sentences in the intents repository. You cannot say them to the built-in conversation agent, but code can still fire them. Some are also offered as tools to conversation agents that use an AI model. Do not add sentences for them to the intents repository: `intents.yaml` does not list them.
+Home Assistant 还注册了另外几个在 intents 仓库中没有句子的意图。你无法对内置对话代理说出它们，但代码仍然可以触发它们。其中一些还作为工具提供给使用 AI 模型的对话代理。不要为它们向 intents 仓库添加句子：`intents.yaml` 中没有列出它们。
 
-| Intent | What it does | Slots | Handled by |
+| 意图 | 作用 | 槽位 | 处理者 |
 | --- | --- | --- | --- |
-| `HassToggle` | Toggles a device or entity | Optional `name`, `area`, `floor`, `domain`, and `device_class` | `intent` |
-| `HassStopMoving` | Stops a moving cover or valve | Optional `name`, `area`, `floor`, `domain`, and `device_class` | `intent` |
-| `HassOpenCover` | Opens a cover. Use `HassTurnOn` instead | Optional `name`, `area`, `floor`, `domain`, and `device_class` | `cover` |
-| `HassCloseCover` | Closes a cover. Use `HassTurnOff` instead | Optional `name`, `area`, `floor`, `domain`, and `device_class` | `cover` |
-| `HassHumidifierSetpoint` | Sets the target humidity | `name` and `humidity` (0 to 100), both required | `humidifier` |
-| `HassHumidifierMode` | Sets the mode of a humidifier | `name` and `mode`, both required | `humidifier` |
-| `HassShoppingListLastItems` | Lists the last five items on the shopping list | None | `shopping_list` |
+| `HassToggle` | 切换一个设备或实体 | 可选的 `name`、`area`、`floor`、`domain` 和 `device_class` | `intent` |
+| `HassStopMoving` | 停止一个正在移动的卷帘或阀门 | 可选的 `name`、`area`、`floor`、`domain` 和 `device_class` | `intent` |
+| `HassOpenCover` | 打开一个卷帘。请改用 `HassTurnOn` | 可选的 `name`、`area`、`floor`、`domain` 和 `device_class` | `cover` |
+| `HassCloseCover` | 关闭一个卷帘。请改用 `HassTurnOff` | 可选的 `name`、`area`、`floor`、`domain` 和 `device_class` | `cover` |
+| `HassHumidifierSetpoint` | 设置目标湿度 | `name` 和 `humidity`（0 到 100），两者均为必需 | `humidifier` |
+| `HassHumidifierMode` | 设置加湿器的模式 | `name` 和 `mode`，两者均为必需 | `humidifier` |
+| `HassShoppingListLastItems` | 列出购物清单上的最后五个条目 | 无 | `shopping_list` |

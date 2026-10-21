@@ -1,86 +1,86 @@
 ---
-title: How Assist understands language
-description: Intents, sentences, slots, lists, and responses. The ideas behind Assist, and how a spoken command becomes an action.
+title: Assist 如何理解语言
+description: 意图、句子、槽位、列表和响应。Assist 背后的理念，以及一句语音指令如何变成一个操作。
 order: 1
-sidebarLabel: How Assist understands
+sidebarLabel: Assist 如何理解
 ---
 
-Before you write your first sentence, it helps to know what happens to it. This page follows a command from the moment someone speaks it to the moment Assist answers.
+在写下你的第一句话之前，先了解这句话会经历什么会很有帮助。本页面将跟踪一条指令，从有人说出它的那一刻，到 Assist 做出回答的那一刻。
 
-## From voice to action
+## 从语音到操作
 
-When you talk to Assist, your command goes through a few steps. Together, they are called the [Assist pipeline](/glossary/assist-pipeline/):
+当你与 Assist 对话时，你的指令会经过几个步骤。这些步骤合称为 [Assist 流水线（pipeline）](/glossary/assist-pipeline/)：
 
-1. **Speech to text** turns the audio into a sentence, like "turn on the kitchen lights".
-2. **Conversation** works out what the sentence means. The built-in [conversation agent](/glossary/conversation-agent/) does that by matching the sentence against the templates in the [intents repository](https://github.com/OHF-Voice/intents). The result is an intent.
-3. **Intent handling** carries out the intent, for example by turning on the lights in the kitchen.
-4. **The response** is rendered from a template in your language, like "Turned on the lights".
-5. **Text to speech** speaks that response.
+1. **语音转文本（speech to text）** 将音频转换为句子，比如“打开厨房的灯”。
+2. **对话（conversation）** 弄清这句话的含义。内置的[对话代理（conversation agent）](/glossary/conversation-agent/)通过将句子与[意图仓库](https://github.com/OHF-Voice/intents)中的模板进行匹配来完成这一步。其结果是一个意图。
+3. **意图处理（intent handling）** 执行该意图，例如打开厨房的灯。
+4. **响应（response）** 根据你所用语言的模板生成，比如“已打开灯”。
+5. **文本转语音（text to speech）** 朗读该响应。
 
-Step 2 and step 4 are where your work comes in. The sentences and responses are in the [intents repository](https://github.com/OHF-Voice/intents). They are published as the `home-assistant-intents` package, which Home Assistant includes.
+第 2 步和第 4 步就是需要你参与的地方。句子和响应位于[意图仓库](https://github.com/OHF-Voice/intents)中。它们以 `home-assistant-intents` 包的形式发布，Home Assistant 会包含这个包。
 
-Integrations can plug in their own engines for some of these steps: a [conversation agent](/core/entities/conversation/), [speech to text](/core/entities/stt/), or [text to speech](/core/entities/tts/). Your sentences are used by the built-in conversation agent.
+集成可以为其中某些步骤接入自己的引擎：[对话代理](/core/entities/conversation/)、[语音转文本](/core/entities/stt/)或[文本转语音](/core/entities/tts/)。你编写的句子由内置的对话代理使用。
 
-You can also type to Assist. Then the speech steps are skipped, but the matching works the same.
+你也可以通过打字与 Assist 交流。此时语音相关的步骤会被跳过，但匹配的工作方式相同。
 
-## Intents
+## 意图
 
-An [intent](/glossary/intent/) is what a sentence means, in a form Home Assistant can act on. "Turn on the kitchen lights", "kitchen lights on", and "switch on the lights in the kitchen" are three sentences with the same intent: `HassTurnOn`, for the lights in the kitchen.
+[意图（intent）](/glossary/intent/)是一句话的含义，以 Home Assistant 可以执行的形式表示。“打开厨房的灯”、“厨房灯开一下”和“把厨房里的灯打开”是三个具有相同意图的句子：`HassTurnOn`，针对厨房的灯。
 
-Intent names start with `Hass`, like `HassTurnOn`, `HassGetState`, or `HassStartTimer`. The list of intents is the same for every language. It is defined in [`intents.yaml`](https://github.com/OHF-Voice/intents/blob/main/intents.yaml), and [Built-in intents](/translate/voice/intents/) describes each of them.
+意图名称以 `Hass` 开头，比如 `HassTurnOn`、`HassGetState` 或 `HassStartTimer`。意图列表对所有语言都是相同的。它定义在 [`intents.yaml`](https://github.com/OHF-Voice/intents/blob/main/intents.yaml) 中，[内置意图](/translate/voice/intents/)对每个意图都有说明。
 
-## Slots
+## 槽位
 
-A slot is a piece of information the intent needs. In "turn on the kitchen lights", there are two:
+槽位（slot）是意图所需的一条信息。在“打开厨房的灯”中，有两个槽位：
 
-- `area` is "kitchen".
-- `domain` is "light", because the word "lights" tells Assist which kind of device you mean.
+- `area` 是“厨房”。
+- `domain` 是“light”，因为“灯”这个词告诉 Assist 你指的是哪类设备。
 
-Some slots are filled with something the user has set up in Home Assistant: `name` (the name of an entity), `area`, and `floor`. Home Assistant provides those while it matches a sentence. Other slots come from lists in the repository, like colors, or from numbers, like a brightness of 50 percent.
+有些槽位由用户在 Home Assistant 中设置的内容填充：`name`（实体的名称）、`area` 和 `floor`。Home Assistant 在匹配句子时会提供这些值。其他槽位来自仓库中的列表，比如颜色，或者来自数字，比如 50% 的亮度。
 
-## Slot combinations
+## 槽位组合
 
-People ask for the same thing in different ways. "Turn on the overhead light" names one entity. "Turn on the lights in the kitchen" names an area and a kind of device. Each set of slots a sentence fills is a slot combination, with its own name:
+人们会用不同的方式请求同一件事。“打开吊灯”指定了一个实体。“打开厨房的灯”指定了一个区域和一类设备。一个句子所填充的每组槽位就是一个槽位组合（slot combination），并有自己的名称：
 
-- `name_only`: "turn on the overhead light"
-- `area_domain`: "turn on the lights in the kitchen"
-- `domain_only`: "turn on the lights in here", where the area is the one of the voice satellite you are talking to
+- `name_only`：“打开吊灯”
+- `area_domain`：“打开厨房的灯”
+- `domain_only`：“把这里的灯打开”，其中区域是你正在对话的语音卫星所在的区域
 
-Sentences and tests are organized per intent and per slot combination. Each slot combination has an importance level that says how much a language needs it, from `required` to `optional`. The [progress overview](https://ohf-voice.github.io/intents/) uses those levels to score each language.
+句子和测试按意图和槽位组合进行组织。每个槽位组合都有一个重要性级别，表示某种语言对它的需求程度，从 `required` 到 `optional`。[进度总览](https://ohf-voice.github.io/intents/)使用这些级别为每种语言评分。
 
-## Sentence templates
+## 句子模板
 
-You do not write every possible sentence. You write templates, which describe many sentences at once:
+你不需要写出每一个可能的句子。你编写的是模板，它们可以同时描述许多句子：
 
 ```text
 (turn | switch) on [the] {name}
 ```
 
-This matches "turn on the overhead light", "switch on overhead light", and every other mix of those words. `( | )` lists alternatives, `[ ]` marks optional words, and `{name}` is a slot. The engine that matches templates is [hassil](https://github.com/OHF-Voice/hassil). [Template sentence syntax](/translate/voice/template-syntax/) has the full reference.
+这个模板可以匹配“turn on the overhead light”、“switch on overhead light”以及这些词的其他所有组合。`( | )` 列出可选项，`[ ]` 标记可选词，`{name}` 是一个槽位。匹配模板的引擎是 [hassil](https://github.com/OHF-Voice/hassil)。[模板句子语法](/translate/voice/template-syntax/)提供了完整的参考。
 
-## Lists and expansion rules
+## 列表和扩展规则
 
-Two tools keep templates short and readable:
+有两个工具可以让模板保持简短易读：
 
-- **Lists** hold the possible values of a slot, like the colors a light can have. A list can also be a range of numbers, or a wildcard that matches any text, like the name of a song.
-- **Expansion rules** are reusable pieces of a template. A rule called `turn` that holds `(turn | switch)` lets you write `<turn> on [the] {name}` in every file.
+- **列表（list）** 保存槽位的可能取值，比如一盏灯可以有的颜色。列表也可以是一个数字范围，或者是一个匹配任意文本的通配符，比如一首歌的名称。
+- **扩展规则（expansion rule）** 是模板中可复用的片段。一个名为 `turn`、内容为 `(turn | switch)` 的规则，让你可以在每个文件中写 `<turn> on [the] {name}`。
 
-Both are defined per language, because the words differ per language.
+两者都是按语言定义的，因为每种语言的用词不同。
 
-## Responses
+## 响应
 
-After Home Assistant handles an intent, Assist answers. The answer comes from a response template in your language, written in [Jinja2](https://jinja.palletsprojects.com/en/latest/templates/). A response can use the values of the slots, and some intents give it more to work with, like the state of the entity you asked about:
+在 Home Assistant 处理完一个意图后，Assist 会做出回答。回答来自你所用语言中的响应模板，使用 [Jinja2](https://jinja.palletsprojects.com/en/latest/templates/) 编写。响应可以使用槽位的值，某些意图还会提供更多信息，比如你所询问实体的状态：
 
 ```yaml
 one: "{{ slots.name | capitalize }} is {{ state.state_with_unit }}"
 ```
 
-Every group of sentences points to the response that fits it. That way, "open the garage door" can answer "Opening", while "turn on the lamp" answers "Turned on the light".
+每组句子都指向适合它的响应。这样，“打开车库门”可以回答“正在打开”，而“打开台灯”则回答“已打开灯”。
 
-## Tests
+## 测试
 
-Every sentence template needs at least one test sentence. A test describes a small home (some areas, some entities), a few sentences, the slots they should fill, and the exact response Assist should give. Tests run on every pull request, so your sentences keep working when someone else changes something. [Test syntax](/translate/voice/test-syntax/) explains how to write them.
+每个句子模板至少需要一个测试句子。测试描述一个小型家庭（一些区域、一些实体）、几个句子、它们应填充的槽位，以及 Assist 应给出的确切响应。测试会在每次拉取请求（pull request）时运行，因此当其他人修改某些内容时，你的句子仍能正常工作。[测试语法](/translate/voice/test-syntax/)说明了如何编写测试。
 
-## Next step
+## 下一步
 
-Ready to try it? [Contribute sentences and responses](/translate/voice/contributing/) walks you through your first change.
+准备好尝试了吗？[贡献句子和响应](/translate/voice/contributing/)将引导你完成第一次修改。

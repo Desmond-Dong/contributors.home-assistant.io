@@ -1,23 +1,23 @@
 ---
-title: Analytics in your integration
-description: For developers, how your integration shows up in analytics, and how to keep devices or entities out of the device database.
+title: 集成中的分析
+description: 面向开发者，介绍你的集成如何出现在分析中，以及如何将设备或实体排除在设备数据库之外。
 order: 4
 ---
 
-Most integrations do not need to do anything for analytics. Home Assistant reports which integrations are used, and, for the device database, collects device information from the device and entity registries. This page is for the cases where you want control over that.
+大多数集成无需为分析做任何事情。Home Assistant 会报告哪些集成正在被使用，并且会为设备数据库从设备与实体注册表中收集设备信息。本页面适用于你希望对此进行控制的场景。
 
-## What is reported about your integration
+## 关于你的集成会报告什么
 
-- **Usage analytics** reports the domain of your integration when it is in use. Custom integrations are reported with their domain and the version from their manifest.
-- **The device database** only includes built-in integrations with an `integration_type` of `device` or `hub` in their manifest. Devices with the entry type `service` are always left out.
+- **使用分析**会在你的集成被使用时报告其域名（domain）。自定义集成会报告其域名以及清单（manifest）中的版本。
+- **设备数据库**仅包含清单中 `integration_type` 为 `device` 或 `hub` 的内置集成。入口类型为 `service` 的设备始终会被排除。
 
-For each device, the snapshot contains the manufacturer, model, model ID, hardware and software version, whether there is a configuration URL, and the device it connects through. For each entity, it contains the domain, original device class, entity category, unit of measurement, whether it has an entity name, and whether its state is assumed. See [How analytics works](/data/how-it-works/#the-device-database).
+对于每个设备，快照包含制造商、型号、型号 ID、硬件和软件版本、是否存在配置 URL，以及它通过哪个设备连接。对于每个实体（entity），它包含域名、原始设备类别、实体类别、计量单位、是否有实体名称，以及其状态（state）是否为假定状态。参见[分析的工作原理](/data/how-it-works/#the-device-database)。
 
-## Leave devices or entities out
+## 将设备或实体排除在外
 
-Sometimes the device information of an integration says nothing about real hardware, or would be misleading in the device database. An integration can then add an `analytics.py` platform, with an `async_modify_analytics` function. Home Assistant calls it with the device IDs and entity IDs of the integration, and uses the answer to filter the snapshot.
+有时，某个集成的设备信息并不能反映真实硬件，或者会在设备数据库中造成误导。此时，集成可以添加一个 `analytics.py` 平台，其中包含一个 `async_modify_analytics` 函数。Home Assistant 会以该集成的设备 ID 和实体 ID 调用此函数，并使用其返回结果来过滤快照。
 
-Leave out the whole integration:
+将整个集成排除在外：
 
 ```python
 """Analytics platform."""
@@ -36,7 +36,7 @@ async def async_modify_analytics(
     return AnalyticsModifications(remove=True)
 ```
 
-Or leave out only some devices or entities, with `DeviceAnalyticsModifications` and `EntityAnalyticsModifications`:
+或者只排除部分设备或实体，使用 `DeviceAnalyticsModifications` 和 `EntityAnalyticsModifications`：
 
 ```python
 """Analytics platform."""
@@ -65,12 +65,12 @@ async def async_modify_analytics(
     return AnalyticsModifications(entities=entities)
 ```
 
-Removing a device also removes its entities.
+移除一个设备也会同时移除其下的实体。
 
-If the function raises an exception or returns something else than `AnalyticsModifications`, Home Assistant leaves out the whole integration, and logs an error.
+如果该函数抛出异常，或返回了 `AnalyticsModifications` 以外的内容，Home Assistant 会将整个集成排除在外，并记录一条错误日志。
 
-## Examples in core
+## 核心中的示例
 
-ESPHome, mobile app, and WLED have an analytics platform. Look at their `analytics.py` in the [core repository](https://github.com/home-assistant/core/tree/dev/homeassistant/components) for real examples.
+ESPHome、移动应用和 WLED 都有分析平台。请查看[核心仓库](https://github.com/home-assistant/core/tree/dev/homeassistant/components)中它们的 `analytics.py` 以获取真实示例。
 
-For everything else about building integrations, see [Core and integrations](/core/).
+关于构建集成的其他所有内容，请参见[核心与集成](/core/)。

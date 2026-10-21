@@ -1,17 +1,17 @@
 ---
-title: Publish a custom integration
-description: What is different when your integration lives in its own repository instead of in core, and what the Marketplace needs from it.
-sidebarLabel: Custom integrations
+title: 发布自定义集成
+description: 当你的集成位于独立仓库而不是 core 中时有什么不同，以及 Marketplace 对它的要求。
+sidebarLabel: 自定义集成
 order: 1
 ---
 
-A [custom integration](/glossary/custom-integration/) is built the same way as an integration in core. Everything in [Building integrations](/core/integrations/) applies: the manifest, config flows, entities, fetching data, and tests. This page only covers what is different when you publish it yourself.
+[自定义集成](/glossary/custom-integration/)的构建方式与 core 中的集成相同。[构建集成](/core/integrations/)中的所有内容都适用：manifest、配置流程、实体（entity）、获取数据和测试。本页只介绍你自己发布时有什么不同。
 
-For a new integration, the Marketplace is the recommended place to start, also when you want it in core one day. See [does it belong in core](/core/integrations/create/#does-it-belong-in-core).
+对于新集成，Marketplace 是推荐的起点，即使你希望有一天它能进入 core 也是如此。参见[它是否属于 core](/core/integrations/create/#does-it-belong-in-core)。
 
-## Put it in its own repository
+## 放在独立的仓库中
 
-One repository holds one integration, in `custom_components/<domain>/`:
+一个仓库只放一个集成，位于 `custom_components/<domain>/`：
 
 ```text
 custom_components/my_integration/__init__.py
@@ -23,22 +23,22 @@ hacs.json
 README.md
 ```
 
-The Marketplace installs the first folder it finds under `custom_components/`, to `custom_components/<domain>/` in the user's configuration folder. Every file the integration needs has to be inside that folder. The [repository structure](/marketplace/reference/repository-structure/#integrations) has the other layouts it accepts.
+Marketplace 会安装它在 `custom_components/` 下找到的第一个文件夹，安装到用户配置文件夹中的 `custom_components/<domain>/`。集成所需的每个文件都必须位于该文件夹内。[仓库结构](/marketplace/reference/repository-structure/#integrations)列出了它接受的其他布局。
 
-## The manifest
+## manifest
 
-A custom integration needs two keys that integrations in core leave out:
+自定义集成需要两个 core 中的集成会省略的键：
 
-- `version`: required. Without a version the loader accepts, the Marketplace refuses the install. Use the same version as the tag of your release.
-- `issue_tracker`: where users report bugs. HACS requires it for the catalog.
+- `version`：必填。如果加载器无法接受版本号，Marketplace 会拒绝安装。使用与你发布标签相同的版本号。
+- `issue_tracker`：用户报告 bug 的地方。HACS 要求目录中的集成提供它。
 
-`documentation` points to your own documentation, like your README. The [manifest reference](/core/integrations/manifest/#custom-integrations-only) has the details.
+`documentation` 指向你自己的文档，比如你的 README。[manifest 参考](/core/integrations/manifest/#custom-integrations-only)中有详细信息。
 
-Only list `requirements` that are not already requirements of Home Assistant itself.
+只列出那些还不是 Home Assistant 本身依赖的 `requirements`。
 
-## Categories
+## 类别
 
-Add `categories` to your manifest: one to three [integration categories](/glossary/integration-category/) that say what your integration is for. A custom integration doesn't need them, but the catalog includes them in the data it publishes for the Marketplace.
+在 manifest 中添加 `categories`：一到三个[集成类别](/glossary/integration-category/)，说明你的集成是做什么的。自定义集成不需要它们，但目录会在为 Marketplace 发布的数据中包含它们。
 
 ```json title="manifest.json"
 {
@@ -46,29 +46,29 @@ Add `categories` to your manifest: one to three [integration categories](/glossa
 }
 ```
 
-Pick them the same way as an integration in core does. [Integration categories](/core/integrations/categories/) has every category, and how to choose. The HACS action checks them: a missing key is a warning, an unknown category fails the check.
+选择方式与 core 中的集成相同。[集成类别](/core/integrations/categories/)列出了所有类别以及如何选择。HACS action 会检查它们：缺少该键是警告，未知类别会导致检查失败。
 
-## Pick a domain that is yours
+## 选择属于你的 domain
 
-The `domain` is the folder name, and what Home Assistant knows your integration by. Pick one that no integration in core uses.
+`domain` 是文件夹名称，也是 Home Assistant 识别你的集成的标识。选择一个 core 中没有集成使用的名称。
 
-A custom integration with the domain of a built-in one replaces it. Home Assistant allows that, but the user loses the updates of the built-in one, and the Marketplace asks the user to confirm before such an install. The catalog does not accept integrations that replace a core integration. Users can still add them from a link.
+使用与内置集成相同 domain 的自定义集成会替换它。Home Assistant 允许这样做，但用户会失去内置集成的更新，并且 Marketplace 会要求用户在安装前确认。目录不接受替换 core 集成的集成。用户仍然可以通过链接添加它们。
 
-Two repositories can not install the same domain. When a user has one installed, the Marketplace refuses the other.
+两个仓库不能安装相同的 domain。当用户已经安装了其中一个时，Marketplace 会拒绝另一个。
 
-## Translations
+## 翻译
 
-Custom integrations do not use `strings.json`, and are not translated on Lokalise. Ship the finished files in `translations/`, with a complete `en.json`. See [translations for custom integrations](/core/integrations/translations/#custom-integrations).
+自定义集成不使用 `strings.json`，也不会在 Lokalise 上翻译。请在 `translations/` 中提供已完成的文件，并包含完整的 `en.json`。参见[自定义集成的翻译](/core/integrations/translations/#custom-integrations)。
 
-## Brand images
+## 品牌图片
 
-Put your icon and logo in a `brand/` folder inside the integration folder. Home Assistant shows them once your integration is installed. The Marketplace also shows them before that: the brands site picks them up from the latest release of every integration in the catalog.
+把你的图标和 logo 放在集成文件夹内的 `brand/` 文件夹中。一旦你的集成被安装，Home Assistant 就会显示它们。在此之前 Marketplace 也会显示它们：brands 网站会从目录中每个集成的最新发布中获取它们。
 
-Do not use Home Assistant branded images. Users would take your integration for an official one. The [brands page](/core/integrations/brands/#brand-images-for-custom-integrations) has the image names and sizes.
+不要使用 Home Assistant 品牌的图片。用户会把你的集成误认为是官方的。[brands 页面](/core/integrations/brands/#brand-images-for-custom-integrations)列出了图片的名称和尺寸。
 
-## Keep user files across updates
+## 在更新时保留用户文件
 
-An update replaces the whole integration folder. If your integration writes files there that the user needs to keep, put them in one subfolder, and name it in `hacs.json`:
+更新会替换整个集成文件夹。如果你的集成在该文件夹中写入了用户需要保留的文件，请把它们放在一个子文件夹中，并在 `hacs.json` 中指定名称：
 
 ```json
 {
@@ -77,39 +77,39 @@ An update replaces the whole integration folder. If your integration writes file
 }
 ```
 
-The Marketplace moves that folder out of the way during an update, and puts it back after.
+Marketplace 会在更新期间把该文件夹移开，更新后再放回原处。
 
-## Restarts
+## 重启
 
-On a first install, an integration with a config flow loads right away, so the user can add it without a restart. An integration set up in YAML needs a restart, and so does every update or removal of an integration that Home Assistant already loaded. The Marketplace creates a repair for that, with a button to restart.
+首次安装时，带有配置流程的集成会立即加载，因此用户无需重启即可添加它。通过 YAML 设置的集成需要重启，Home Assistant 已加载的集成在每次更新或移除时也需要重启。Marketplace 会为此创建一个修复项，并带有重启按钮。
 
-## Link to the setup
+## 链接到设置
 
-Once your integration is installed, a [My link](/glossary/my-link/) can take users straight to its setup. The `config_flow_start` link starts the [config flow](/glossary/config-flow/) of the domain you give it, in the user's own Home Assistant. The [My link creator](https://my.home-assistant.io/create-link/?redirect=config_flow_start) makes the badge for your README:
+一旦你的集成被安装，[My 链接](/glossary/my-link/)可以让用户直接进入它的设置。`config_flow_start` 链接会在用户自己的 Home Assistant 中启动你指定的 domain 的[配置流程](/glossary/config-flow/)。[My 链接创建器](https://my.home-assistant.io/create-link/?redirect=config_flow_start)可以为你的 README 生成徽章：
 
 ```markdown
 [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=my_integration)
 ```
 
-To link to your repository in the Marketplace, so users can install it first, see [the link to your repository](/marketplace/guides/catalog/#the-link-to-your-repository).
+要在 Marketplace 中链接到你的仓库，以便用户先安装它，参见[指向你仓库的链接](/marketplace/guides/catalog/#the-link-to-your-repository)。
 
-## Check it in your repository
+## 在你的仓库中进行检查
 
-Run two GitHub Actions on every push and pull request:
+在每次推送和拉取请求上运行两个 GitHub Actions：
 
-- [hassfest](https://github.com/home-assistant/actions#hassfest) checks your manifest, translations, and other files of your integration.
-- The [HACS action](https://github.com/hacs/action) with `category: "integration"` checks what the catalog needs. See [validation checks](/marketplace/reference/validation/).
+- [hassfest](https://github.com/home-assistant/actions#hassfest) 检查你的 manifest、翻译以及集成的其他文件。
+- 使用 `category: "integration"` 的 [HACS action](https://github.com/hacs/action) 检查目录所需的内容。参见[验证检查](/marketplace/reference/validation/)。
 
-Both have to pass to [get into the catalog](/marketplace/guides/catalog/).
+两者都必须通过才能[进入目录](/marketplace/guides/catalog/)。
 
-## Keep up with Home Assistant
+## 跟上 Home Assistant 的步伐
 
-Changes in core can break a custom integration. Changes to what custom integrations use from core, like helpers, constants, and entity properties, are deprecated for 12 months first, and announced on the [blog](/blog/). The [deprecation policy](/core/development/deprecating/#developer-facing-deprecations) has the details. Test your integration against the [beta](/releases/), and set `homeassistant` in `hacs.json` when a release needs a newer Home Assistant. See [releases and updates](/marketplace/guides/releases/).
+core 中的更改可能会破坏自定义集成。对自定义集成所使用的 core 内容（如辅助元素（helper）、常量和实体属性）的更改，会先被弃用 12 个月，并在[博客](/blog/)上公布。[弃用政策](/core/development/deprecating/#developer-facing-deprecations)中有详细信息。针对[测试版](/releases/)测试你的集成，当某个发布需要更新的 Home Assistant 时，在 `hacs.json` 中设置 `homeassistant`。参见[发布与更新](/marketplace/guides/releases/)。
 
-The [integration quality scale](/core/quality-scale/) has no tiers for custom integrations, but its rules are still a good guide.
+[集成质量分级](/core/quality-scale/)没有针对自定义集成的级别，但它的规则仍然是很好的指南。
 
-## Bring it to core
+## 将它带入 core
 
-Once your integration has matured and has a user base, reach out to the maintainers, for example in the **#core** channel on [Discord](https://www.home-assistant.io/join-chat/), to see whether it should ship built in. [Does it belong in core](/core/integrations/create/#does-it-belong-in-core) lists what core asks for, and every new integration in core needs the [Bronze rules](/core/quality-scale/rules/#bronze) of the quality scale.
+一旦你的集成成熟并拥有用户群，请联系维护者，例如在 [Discord](https://www.home-assistant.io/join-chat/) 上的 **#core** 频道，看看它是否应该内置发布。[它是否属于 core](/core/integrations/create/#does-it-belong-in-core) 列出了 core 的要求，并且 core 中的每个新集成都需要满足质量分级的[青铜（Bronze）规则](/core/quality-scale/rules/#bronze)。
 
-Some differences on this page turn around in core. For example, the brand images go to the [brands repository](/core/integrations/brands/), and the translations come from `strings.json`.
+本页中的一些差异在 core 中会反过来。例如，品牌图片要放到 [brands 仓库](/core/integrations/brands/)中，翻译则来自 `strings.json`。

@@ -1,34 +1,34 @@
 ---
-title: Share services and discover integrations
-description: Offer an MQTT broker or a MySQL database to other apps, use one without asking the user for details, and let Home Assistant set up an integration for your app.
+title: 共享服务并发现集成
+description: 向其他应用提供 MQTT 代理或 MySQL 数据库，无需询问用户即可使用它们，并让 Home Assistant 为你的应用设置相应的集成。
 order: 7
 ---
 
-The Supervisor helps apps find each other and Home Assistant find your app, so users do not have to type host names, ports, and passwords. There are two mechanisms:
+Supervisor 帮助应用相互发现，并帮助 Home Assistant 找到你的应用，这样用户就不必手动输入主机名、端口和密码。有两种机制：
 
-- **Services**: an app that provides a service, like an MQTT broker, registers its connection details. Other apps read them.
-- **Discovery**: an app tells Home Assistant it is running, and Home Assistant offers to set up the matching [integration](/glossary/integration/).
+- **服务（service）**：提供服务的应用（例如 MQTT 代理）会注册其连接详情，其他应用可以读取这些详情。
+- **发现（discovery）**：应用告知 Home Assistant 它正在运行，Home Assistant 会提议为它设置对应的[集成](/glossary/integration/)。
 
-## Services
+## 服务
 
-Two services are supported: `mqtt` and `mysql`. List the ones your app works with in `config.yaml`, with a role:
+支持两种服务：`mqtt` 和 `mysql`。在 `config.yaml` 中列出你的应用可以配合使用的服务，并指定一个角色：
 
 ```yaml
 services:
   - mqtt:want
 ```
 
-| Role | Meaning |
+| 角色 | 含义 |
 | --- | --- |
-| `provide` | Your app provides this service |
-| `want` | Your app can use this service, but works without it |
-| `need` | Your app needs this service to work |
+| `provide` | 你的应用提供此服务 |
+| `want` | 你的应用可以使用此服务，但没有它也能正常工作 |
+| `need` | 你的应用需要此服务才能运行 |
 
-Your app can only read or write a service it lists. Only one app can provide a service at a time.
+你的应用只能读取或写入它所列出的服务。同一时间只能有一个应用提供某项服务。
 
-### Use a service
+### 使用服务
 
-Read the connection details from the Supervisor API, at `GET /services/mqtt`, or with Bashio:
+从 Supervisor API（`GET /services/mqtt`）读取连接详情，或使用 Bashio：
 
 ```bash
 #!/command/with-contenv bashio
@@ -43,18 +43,18 @@ else
 fi
 ```
 
-It is good practice to also offer options for these details, so users can connect to a broker that does not run as an app.
+最佳实践是为这些详情同时提供配置选项，这样用户就可以连接到并非以应用形式运行的代理。
 
-### Provide a service
+### 提供服务
 
-Your app registers its details with `POST /services/mqtt` when it starts, and removes them with `DELETE /services/mqtt` when it no longer provides the service. List the service with `provide` in `config.yaml`: removing a registration needs that role.
+你的应用在启动时通过 `POST /services/mqtt` 注册其详情，并在不再提供该服务时通过 `DELETE /services/mqtt` 移除注册。在 `config.yaml` 中以 `provide` 角色列出该服务：移除注册需要该角色。
 
-| Service | Keys |
+| 服务 | 键 |
 | --- | --- |
-| `mqtt` | `host` and `port` (required), `username`, `password`, `ssl` (default `false`), and `protocol` (`3.1` or `3.1.1`, the default) |
-| `mysql` | `host` and `port` (required), `username`, and `password` |
+| `mqtt` | `host` 和 `port`（必填）、`username`、`password`、`ssl`（默认为 `false`），以及 `protocol`（`3.1` 或 `3.1.1`，默认值） |
+| `mysql` | `host` 和 `port`（必填）、`username` 和 `password` |
 
-With Bashio:
+使用 Bashio：
 
 ```bash
 #!/command/with-contenv bashio
@@ -68,22 +68,22 @@ config=$(bashio::var.json \
 bashio::services.publish "mqtt" "${config}"
 ```
 
-Create a separate user for the apps that use your service, instead of sharing an administrator account. The official Mosquitto broker app does exactly this, and is a good example to read.
+请为使用你服务的应用创建单独的用户，而不是共享一个管理员账户。官方的 Mosquitto 代理应用正是这样做的，是一个很好的参考示例。
 
-## Discovery
+## 发现
 
-Discovery lets your app say "I am here, and this is how to reach me" to Home Assistant. Home Assistant then shows a discovered integration under **Settings** > **Devices & services**, and the user sets it up with one confirmation.
+发现功能让你的应用能够对 Home Assistant 说“我在这里，这是联系我的方式”。随后，Home Assistant 会在 **设置** > **设备与服务** 下显示发现的集成，用户只需一次确认即可完成设置。
 
-### Send a discovery message
+### 发送发现消息
 
-List the integrations your app sends discovery for in `config.yaml`, by their domain:
+在 `config.yaml` 中按域名（domain）列出你的应用会发送发现消息的集成：
 
 ```yaml
 discovery:
   - adguard
 ```
 
-Then, when your app has started, send a message to `POST /discovery`, with the domain as `service` and the connection details in `config`:
+然后，在你的应用启动后，向 `POST /discovery` 发送一条消息，其中 `service` 为域名，`config` 为连接详情：
 
 ```bash
 #!/command/with-contenv bashio
@@ -99,11 +99,11 @@ else
 fi
 ```
 
-The Supervisor rejects a message for a domain that is not in your `discovery` list. The response contains a `uuid`, which you can use to remove the message again with `DELETE /discovery/<uuid>`. Messages of an app are removed when it is uninstalled.
+对于不在你的 `discovery` 列表中的域名，Supervisor 会拒绝该消息。响应中包含一个 `uuid`，你可以使用它通过 `DELETE /discovery/<uuid>` 再次移除该消息。应用被卸载时，其消息也会被移除。
 
-### Receive it in the integration
+### 在集成中接收
 
-On the Home Assistant side, the integration with that domain needs a [config flow](/glossary/config-flow/) step called `hassio`. It receives a `HassioServiceInfo` with the `config` you sent, the `name` and `slug` of your app, and the `uuid` of the message:
+在 Home Assistant 一侧，具有该域名的集成需要一个名为 `hassio` 的[配置流（config flow）](/glossary/config-flow/)步骤。它会接收一个 `HassioServiceInfo`，其中包含你发送的 `config`、你的应用的 `name` 和 `slug`，以及该消息的 `uuid`：
 
 ```python
 async def async_step_hassio(
@@ -115,4 +115,4 @@ async def async_step_hassio(
     return await self.async_step_hassio_confirm()
 ```
 
-Integrations like AdGuard Home, ESPHome, Matter, MQTT, and Z-Wave already have this step. To add discovery to a new integration, see the [Core and integrations](/core/) area.
+AdGuard Home、ESPHome、Matter、MQTT 和 Z-Wave 等集成已经具备此步骤。要为新的集成添加发现功能，请参阅[核心与集成](/core/)部分。

@@ -1,51 +1,51 @@
 ---
-title: Your first translation
-description: Join a translation project, find your language, and translate your first strings. It takes about fifteen minutes.
+title: 你的第一次翻译
+description: 加入一个翻译项目，找到你的语言，并翻译你的第一批字符串。大约需要十五分钟。
 order: 1
-sidebarLabel: Your first contribution
+sidebarLabel: 你的第一次贡献
 ---
 
-This guide gets you from zero to your first translated strings. You do it all in your browser.
+本指南将带你从零开始完成你的第一批翻译字符串。整个过程都在浏览器中进行。
 
-## 1. Pick a project
+## 1. 选择一个项目
 
-Home Assistant's interface text is split over four Lokalise projects. Each link below opens the project and lets you join it:
+Home Assistant 的界面文本分布在四个 Lokalise 项目中。点击下面的链接即可打开项目并加入：
 
-- [Frontend](https://app.lokalise.com/public/3420425759f6d6d241f598.13594006/): the Home Assistant interface itself. Start here if you are not sure.
-- [Backend](https://app.lokalise.com/public/130246255a974bd3b5e8a1.51616605/): text that comes from integrations, like setup steps, entity names, and error messages.
-- [iOS](https://app.lokalise.com/public/834452985a05254348aee2.46389241/): the companion app for iPhone, iPad, Mac, and Apple Watch.
-- [Android](https://app.lokalise.com/public/145814835dd655bc5ab0d0.36753359/): the companion app for Android phones, tablets, and Wear OS.
+- [Frontend](https://app.lokalise.com/public/3420425759f6d6d241f598.13594006/)：Home Assistant 界面本身。如果不确定从哪里开始，就从这里开始。
+- [Backend](https://app.lokalise.com/public/130246255a974bd3b5e8a1.51616605/)：来自集成的文本，例如设置步骤、实体（entity）名称和错误消息。
+- [iOS](https://app.lokalise.com/public/834452985a05254348aee2.46389241/)：适用于 iPhone、iPad、Mac 和 Apple Watch 的伴侣应用。
+- [Android](https://app.lokalise.com/public/145814835dd655bc5ab0d0.36753359/)：适用于 Android 手机、平板和 Wear OS 的伴侣应用。
 
-## 2. Create an account and join
+## 2. 创建账户并加入
 
-Lokalise asks you to create a free account. After that, join the project and pick your language. You can join more projects and languages later. New to the editor? Lokalise explains it in [translate and collaborate](https://docs.lokalise.com/en/collections/2909016-translate-and-collaborate).
+Lokalise 会要求你创建一个免费账户。之后，加入项目并选择你的语言。你以后可以加入更多项目和语言。不熟悉编辑器？Lokalise 在 [translate and collaborate](https://docs.lokalise.com/en/collections/2909016-translate-and-collaborate) 中有说明。
 
-## 3. Find something to translate
+## 3. 找一些可以翻译的内容
 
-Open your language and filter on untranslated strings. If your language is already complete, that is great news, and there is still plenty to do: read through existing translations and improve the ones that feel off. Fresh eyes catch a lot.
+打开你的语言，筛选未翻译的字符串。如果你的语言已经全部翻译完成，那是好消息，但仍然有很多事情可做：通读现有的翻译，改进那些感觉不妥的地方。新鲜的眼光能发现很多问题。
 
-Translate a handful of strings to start. Short ones are a good warm up.
+先翻译几个字符串作为开始。短字符串是很好的热身。
 
 > [!TIP]
-> Not sure what a string means? Look at its key. A key like `component::wled::config::step::user::description` tells you it is the description of the first setup step of the WLED integration. Still unsure? Leave a comment on the string instead of guessing.
+> 不确定某个字符串的含义？看看它的键（key）。像 `component::wled::config::step::user::description` 这样的键告诉你，它是 WLED 集成第一个设置步骤的描述。仍然不确定？在字符串上留下评论，而不是凭猜测翻译。
 
-## 4. Watch out for placeholders
+## 4. 注意占位符
 
-Some strings contain parts between curly brackets, like `{count}`, or between square brackets. Do not translate those names: Home Assistant fills them in while it runs. The exception is a plural or a choice, like `{count, plural, one {# device} other {# devices}}`: keep its keywords, and translate the text inside the inner brackets. [Placeholders and references](/translate/guides/placeholders/) explains how they work.
+有些字符串包含花括号之间的部分，例如 `{count}`，或方括号之间的部分。不要翻译这些名称：Home Assistant 会在运行时填充它们。例外情况是复数或选择形式，例如 `{count, plural, one {# device} other {# devices}}`：保留其关键字，翻译内部括号中的文本。[占位符和引用](/translate/guides/placeholders/)解释了它们的工作原理。
 
-## 5. See your work in Home Assistant
+## 5. 在 Home Assistant 中查看你的成果
 
-Translations are pulled from Lokalise when Home Assistant is built. There is no separate approval step and no pull request: what you save in Lokalise is what a build picks up. When you see it depends on the project:
+Home Assistant 在构建时会从 Lokalise 拉取翻译。没有单独的审批步骤，也没有拉取请求（pull request）：你在 Lokalise 中保存的内容就是构建时会获取的内容。何时能看到取决于项目：
 
-- **Backend**: every build of Home Assistant Core downloads these, so your strings are in the next nightly build, the next beta, and the next release.
-- **Frontend**: the frontend is built and released on its own, and downloads translations at that moment. A nightly frontend build is made every day, and the nightly builds of Home Assistant use it. A beta or release of Home Assistant ships a specific frontend release, so your strings reach it with the first frontend release that is built after you saved them.
+- **Backend**：Home Assistant Core 的每次构建都会下载这些翻译，因此你的字符串会出现在下一个每夜构建（nightly build）、下一个测试版（beta）和下一个正式版本中。
+- **Frontend**：前端是独立构建和发布的，并在那一刻下载翻译。每都会生成一个前端每夜构建，Home Assistant 的每夜构建会使用它。Home Assistant 的测试版或正式版会附带特定的前端版本，因此你的字符串会在你保存之后构建的第一个前端版本中发布。
 
-[How translations work](/translate/how-it-works/#how-translations-get-back) has the details.
+[翻译的工作原理](/translate/how-it-works/#how-translations-get-back)中有详细说明。
 
-The companion apps work a little differently. Android pulls translations at build time too, while the iOS app gets them through a daily pull request in its repository.
+伴侣应用的工作方式略有不同。Android 也在构建时拉取翻译，而 iOS 应用则通过其代码仓库中的每日拉取请求获取翻译。
 
-## What is next
+## 接下来做什么
 
-- Read the [translation rules](/translate/reference/rules/). They are short.
-- Check if there are [guidelines for your language](/translate/reference/languages/), like whether to address people formally or informally.
-- Join another project. The backend project has a lot of strings and often needs help.
+- 阅读[翻译规则](/translate/reference/rules/)。它们很短。
+- 查看是否有[针对你的语言的指南](/translate/reference/languages/)，例如是否使用正式或非正式的称呼。
+- 加入另一个项目。Backend 项目有大量字符串，经常需要帮助。

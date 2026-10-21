@@ -1,31 +1,31 @@
 ---
-title: Contribute your voice
-description: Help the open voice community build speech recognition and voices for your language, by recording or reviewing speech.
+title: 贡献你的声音
+description: 通过录制或审听语音，帮助开放语音社区为你的语言构建语音识别和语音合成。
 order: 6
 ---
 
-Sentences are only one part of a voice assistant. Before Assist can match a sentence, something has to turn your voice into text. And when it answers, something has to turn text into a voice. Both are trained on recordings of people speaking, and for many languages there are not enough of them.
+句子只是语音助手的一部分。在 Assist 能够匹配一个句子之前，需要先将你的语音转换为文本。而当它回答时，又需要将文本转换为语音。这两者都需要通过人们说话的录音来训练，而许多语言的录音还不够多。
 
-You can help, without writing a single line of YAML.
+你无需编写一行 YAML 代码就能提供帮助。
 
-## Speech to text
+## 语音转文本
 
-Speech to text transcribes what you say. To do that well, it needs to learn from recordings with a lot of variety:
+语音转文本（speech to text）会将你说的话转录成文字。要做好这一点，它需要从多样化的录音中学习：
 
-- Many different speakers and accents.
-- Different recording devices and quality levels, typically 16 kHz audio with 16-bit samples.
-- Different places, like quiet and noisy rooms.
+- 众多不同的说话者和口音。
+- 不同的录音设备和质量水平，通常为 16 kHz、16 位采样的音频。
+- 不同的环境，比如安静和嘈杂的房间。
 
-Contribute to [Mozilla Common Voice](https://commonvoice.mozilla.org). It is a free and open dataset of sentences spoken by people around the world. You can record sentences in your language, or help by listening to the recordings of others and validating them.
+欢迎为 [Mozilla Common Voice](https://commonvoice.mozilla.org) 做出贡献。这是一个免费开放的语音数据集，收录了世界各地的人朗读的句子。你可以用你的语言录制句子，也可以通过聆听他人的录音并进行验证来提供帮助。
 
-## Text to speech
+## 文本转语音
 
-Text to speech turns text into a spoken voice. That needs the opposite of speech to text: consistency.
+文本转语音（text to speech）会将文本转换为语音。它需要与语音转文本相反的东西：一致性。
 
-- A single speaker, or the same amount of recordings for each speaker.
-- A high quality recording device, typically 48 kHz with 32-bit samples.
-- A quiet, controlled place, like a soundproof booth.
+- 单一说话者，或者每位说话者的录音数量相同。
+- 高质量的录音设备，通常为 48 kHz、32 位采样。
+- 安静、可控的环境，比如隔音室。
 
-Contribute to [LibriVox](https://librivox.org/), where volunteers record audiobooks of books in the public domain. Your recordings help the open voice community, and everyone gets free audiobooks out of it.
+欢迎为 [LibriVox](https://librivox.org/) 做出贡献，志愿者们在上面录制公有领域书籍的有声读物。你的录音既有助于开放语音社区，也能让所有人免费获得有声读物。
 
-Curious which voices have come from the community so far? The [voice datasets](https://github.com/OHF-Voice/voice-datasets) repository holds the public domain recordings used to train voices for Piper, the local text-to-speech engine of Home Assistant.
+好奇社区目前已经产出了哪些语音？[voice datasets](https://github.com/OHF-Voice/voice-datasets) 仓库保存了用于训练 Piper（Home Assistant 的本地文本转语音引擎）语音的公有领域录音。

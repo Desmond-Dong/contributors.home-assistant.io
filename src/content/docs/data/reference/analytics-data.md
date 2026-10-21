@@ -1,24 +1,24 @@
 ---
-title: What analytics shares
-description: Every field Home Assistant sends when you turn on analytics, per option, with example data.
+title: 分析数据共享的内容
+description: 开启分析（analytics）后，Home Assistant 按选项发送的每个字段，附示例数据。
 order: 1
 ---
 
-Analytics is split into options you turn on separately, in **Settings** > **System** > **Analytics**. Usage and statistical data need basic analytics to be on. This page lists what each option adds to the report. The source of truth is the [analytics integration](https://github.com/home-assistant/core/tree/dev/homeassistant/components/analytics) in core.
+分析（analytics）分为多个选项，可在**设置** > **系统** > **分析**中分别开启。使用情况和统计数据需要开启基本分析。本页面列出了每个选项在报告中添加的内容。最权威的来源是 core 中的[分析集成（integration）](https://github.com/home-assistant/core/tree/dev/homeassistant/components/analytics)。
 
-## Basic analytics
+## 基本分析
 
-Always part of the report, when analytics is on.
+只要开启了分析，就始终包含在报告中。
 
-| Field | What it is |
+| 字段 | 说明 |
 | --- | --- |
-| `uuid` | A random identifier for your installation, made the first time analytics is sent. It is only used to count your installation once. |
-| `version` | The Home Assistant version, like `2026.10.0`. |
-| `installation_type` | The installation type, like `Home Assistant OS` or `Home Assistant Container`. |
-| `supervisor` | Only with the Supervisor: whether the installation is `healthy` and `supported`, and its architecture, `arch`. |
-| `operating_system` | Only on Home Assistant OS: the `board`, and the `version` of the operating system. |
+| `uuid` | 你的安装实例的随机标识符，在首次发送分析数据时生成。它仅用于将你的安装实例只统计一次。 |
+| `version` | Home Assistant 版本，例如 `2026.10.0`。 |
+| `installation_type` | 安装类型，例如 `Home Assistant OS` 或 `Home Assistant Container`。 |
+| `supervisor` | 仅限有 Supervisor 的安装：安装是否 `healthy`（健康）和 `supported`（受支持），以及其架构 `arch`。 |
+| `operating_system` | 仅限 Home Assistant OS：`board`（主板）以及操作系统的 `version`。 |
 
-The receiver adds the `country` based on the IP address. For the United States, it also adds the `region`, which is the state.
+接收方会根据 IP 地址添加 `country`（国家）。对于美国，还会添加 `region`（地区），即所在的州。
 
 ```json
 {
@@ -37,20 +37,20 @@ The receiver adds the `country` based on the IP address. For the United States, 
 }
 ```
 
-## Usage
+## 使用情况
 
-Adds what you use, by name.
+按名称添加你正在使用的内容。
 
-| Field | What it is |
+| 字段 | 说明 |
 | --- | --- |
-| `integrations` | The domains of the built-in integrations you use, like `hue` or `zha`. |
-| `custom_integrations` | The domain and version of each custom integration you use. |
-| `addons` | Only with the Supervisor: for each app, its `slug`, `version`, and whether `protected` mode and `auto_update` are on. |
-| `energy` | Whether the energy dashboard is `configured`. |
-| `recorder` | The database `engine` of the recorder, like `sqlite`, and its `version`. |
-| `certificate` | Whether Home Assistant serves HTTPS with its own certificate. |
+| `integrations` | 你使用的内置集成的域名（domain），例如 `hue` 或 `zha`。 |
+| `custom_integrations` | 你使用的每个自定义集成的域名和版本。 |
+| `addons` | 仅限有 Supervisor 的安装：每个应用的 `slug`、`version`，以及 `protected`（受保护）模式和 `auto_update`（自动更新）是否开启。 |
+| `energy` | 能源仪表盘（dashboard）是否已 `configured`（配置）。 |
+| `recorder` | 记录器（recorder）的数据库 `engine`，例如 `sqlite`，以及其 `version`。 |
+| `certificate` | Home Assistant 是否使用自己的证书提供 HTTPS 服务。 |
 
-An integration counts when it is set up from the UI and not disabled or ignored, when it is configured in YAML, or when it provides entities that are not disabled.
+一个集成在以下情况下会被统计：从用户界面设置且未被禁用或忽略、在 YAML 中配置，或者提供了未被禁用的实体（entity）。
 
 ```json
 {
@@ -72,26 +72,26 @@ An integration counts when it is set up from the UI and not disabled or ignored,
 }
 ```
 
-## Statistical data
+## 统计数据
 
-Adds counts, never names.
+只添加数量，绝不添加名称。
 
-| Field | What it is |
+| 字段 | 说明 |
 | --- | --- |
-| `state_count` | The number of entities. |
-| `automation_count` | The number of automations. |
-| `integration_count` | The number of built-in integrations, counted like under usage. |
-| `addon_count` | Only with the Supervisor: the number of apps. |
-| `user_count` | The number of users, not counting system users. |
+| `state_count` | 实体（entity）的数量。 |
+| `automation_count` | 自动化（automation）的数量。 |
+| `integration_count` | 内置集成的数量，统计方式与使用情况部分相同。 |
+| `addon_count` | 仅限有 Supervisor 的安装：应用的数量。 |
+| `user_count` | 用户的数量，不包括系统用户。 |
 
-## Diagnostics
+## 诊断
 
-Does not add anything to the report. It turns on crash reports to [Sentry](https://sentry.io/) for the Supervisor and the OS Agent. See [How analytics works](/data/how-it-works/#diagnostics).
+不会向报告添加任何内容。它会为 Supervisor 和 OS Agent 开启向 [Sentry](https://sentry.io/) 发送崩溃报告的功能。参见[分析的工作原理](/data/how-it-works/#diagnostics)。
 
-## Devices
+## 设备
 
-Sends a separate snapshot of your devices to the device database, not to the analytics receiver. It does not need basic analytics, but it does need the **Device database** preview feature in **Settings** > **System** > **Labs**. Turning on that feature also turns on this option. See [The device database](/data/how-it-works/#the-device-database) for what it contains.
+将你的设备（device）的单独快照发送到设备数据库，而不是分析接收方。它不需要开启基本分析，但需要在**设置** > **系统** > **实验室**中开启**设备数据库**预览功能。开启该功能也会开启此选项。关于其包含的内容，参见[设备数据库](/data/how-it-works/#the-device-database)。
 
-## How long it is kept
+## 保留时长
 
-The receiver keeps one entry per installation. It rewrites the entry when a report differs from what is stored, and at least every 30 days when nothing changed. An entry that is not rewritten for 60 days is removed.
+接收方为每个安装实例保留一条记录。当报告与已存储的内容不同时会重写该记录，即使没有任何变化，也至少每 30 天重写一次。60 天未被重写的记录将被移除。

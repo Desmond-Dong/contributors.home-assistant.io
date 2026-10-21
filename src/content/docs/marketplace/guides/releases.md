@@ -1,41 +1,41 @@
 ---
-title: Releases and updates
-description: How users get your new versions through the Marketplace, how to publish pre-releases, and how to keep a release from reaching a Home Assistant that is too old for it.
-sidebarLabel: Releases and updates
+title: 发布与更新
+description: 用户如何通过 Marketplace 获取你的新版本、如何发布预发布版本，以及如何防止某个发布版本被推送到过旧的 Home Assistant 上。
+sidebarLabel: 发布与更新
 order: 6
 ---
 
-Users of the Marketplace get your updates under **Settings** > **Updates**, next to the updates of Home Assistant itself. Each installed repository has an update entity, with your release notes. This page explains where those versions come from, so you control what users get.
+Marketplace 的用户可以在 **设置** > **更新** 中获取你的更新，与 Home Assistant 本身的更新并列。每个已安装的仓库都有一个更新实体（entity），其中包含你的发布说明。本页解释这些版本从何而来，以便你控制用户获取的内容。
 
-This applies to integrations, dashboard plugins, themes, and templates. Blueprints have no releases: see [change a blueprint without breaking it](/marketplace/guides/blueprints/#change-it-without-breaking-it).
+这适用于集成（integration）、仪表盘（dashboard）插件、主题和模板。蓝图（blueprint）没有发布版本：请参阅[在不破坏蓝图的情况下修改它](/marketplace/guides/blueprints/#change-it-without-breaking-it)。
 
-## Publish GitHub releases
+## 发布 GitHub release
 
-Your version is the tag of your latest GitHub release. A tag alone is not enough: it has to be a published release.
+你的版本号就是最新 GitHub release 的标签（tag）。仅有标签是不够的：它必须是一个已发布的 release。
 
-Without any release, users get the latest commit of your default branch, and the version they see is a commit hash. That works, but users can not tell a fix from a rewrite. HACS requires releases for templates, and for every repository that wants into the catalog.
+如果没有任何 release，用户将获得你默认分支的最新提交，他们看到的版本号是一个提交哈希。这虽然可行，但用户无法区分一个小修复和一次重写。HACS 要求模板以及所有想进入目录的仓库必须有 release。
 
-For an integration, use the same version in `manifest.json` as in the tag. The Marketplace refuses to install an integration without a `version` in its manifest.
+对于集成，请确保 `manifest.json` 中的版本与标签中的版本一致。Marketplace 拒绝安装清单中没有 `version` 的集成。
 
-## Write release notes
+## 撰写发布说明
 
-The update entity shows the notes of your releases: the body of the GitHub release. That is where users decide whether to update now or later. Say what changed, and put anything the user has to do first, like a changed option or a removed entity, at the top.
+更新实体会显示你的 release 说明：即 GitHub release 的正文。用户正是在这里决定是立即更新还是稍后更新。说明改动了什么，并把用户需要先做的任何事情（例如选项变更或实体被移除）放在最前面。
 
-## How a release reaches users
+## 发布版本如何到达用户
 
-1. You publish a release on GitHub.
-2. The catalog picks it up. The HACS data for the catalog is generated every 4 hours.
-3. The Marketplace reads the catalog every 6 hours, and the update entity shows the new version.
+1. 你在 GitHub 上发布一个 release。
+2. 目录会收录它。目录的 HACS 数据每 4 小时生成一次。
+3. Marketplace 每 6 小时读取一次目录，更新实体随后显示新版本。
 
-So a release can take several hours to show up. Users who added your repository from a link get updates through the GitHub API instead, every 48 hours, and only with a GitHub connection.
+因此，一个 release 可能需要几个小时才会出现。通过链接添加了你仓库的用户则改为通过 GitHub API 获取更新，每 48 小时一次，且仅在连接了 GitHub 的情况下才会获取。
 
-## Pre-releases
+## 预发布版本
 
-Mark a release as a pre-release on GitHub to test it with users who want to. Users only get it when they turn on the **Pre-release** switch of your repository, and only while it is newer than your latest regular release.
+在 GitHub 上将一个 release 标记为预发布版本（pre-release），以便与愿意参与测试的用户一起测试。只有当用户打开你仓库的 **预发布版本** 开关时才会收到它，并且仅在该版本比你的最新正式版本更新时才会收到。
 
-## Require a Home Assistant version
+## 要求特定的 Home Assistant 版本
 
-When a release needs a newer Home Assistant, set `homeassistant` in `hacs.json` in that release:
+当某个 release 需要更新的 Home Assistant 时，请在该 release 的 `hacs.json` 中设置 `homeassistant`：
 
 ```json title="hacs.json"
 {
@@ -44,11 +44,11 @@ When a release needs a newer Home Assistant, set `homeassistant` in `hacs.json` 
 }
 ```
 
-The Marketplace does not offer that release to users on an older Home Assistant. When they install, it shows them earlier versions that work. To allow the betas of a release too, add `b0`, like `"2026.11.0b0"`. This only works for repositories with releases.
+Marketplace 不会向使用较旧 Home Assistant 的用户提供该 release。当他们安装时，会显示可用的较早版本。若要同时允许该版本的 beta 版，请添加 `b0`，例如 `"2026.11.0b0"`。这仅适用于有 release 的仓库。
 
-## Ship a ZIP file
+## 以 ZIP 文件形式发布
 
-An integration can ship as a ZIP file attached to each release, instead of the files in the repository. Set `zip_release` to `true`, and `filename` to the name of the asset:
+集成可以以附加到每个 release 的 ZIP 文件形式发布，而不是使用仓库中的文件。将 `zip_release` 设置为 `true`，并将 `filename` 设置为该资源的名称：
 
 ```json title="hacs.json"
 {
@@ -58,12 +58,12 @@ An integration can ship as a ZIP file attached to each release, instead of the f
 }
 ```
 
-The Marketplace downloads that asset and extracts it into the integration folder. Use this when you build or generate files in your release workflow. HACS supports this for integrations only, and the Marketplace refuses it for templates.
+Marketplace 会下载该资源并将其解压到集成文件夹中。当你在发布工作流中构建或生成文件时，可以使用此方式。HACS 仅对集成支持此功能，Marketplace 拒绝对模板使用此方式。
 
-## Older versions
+## 较旧的版本
 
-Users can install another version than the latest, from the menu of your repository in the Marketplace. They pick from your releases, so keep the old ones.
+用户可以从 Marketplace 中你仓库的菜单安装最新版本以外的其他版本。他们会从你的 release 中选择，因此请保留旧的 release。
 
-## Remove a release safely
+## 安全地移除一个 release
 
-If you delete a release or its tag, users who installed it keep their files. When the Marketplace can not find a version any more on GitHub, it falls back to the version it would install by default.
+如果你删除了一个 release 或其标签，已安装该版本的用户会保留他们的文件。当 Marketplace 在 GitHub 上再也找不到某个版本时，它会回退到默认会安装的版本。

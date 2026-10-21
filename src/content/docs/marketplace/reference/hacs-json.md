@@ -1,10 +1,10 @@
 ---
 title: hacs.json
-description: Every key of the hacs.json file in the root of your repository, what HACS documents for it, and what the Marketplace does with it.
+description: 仓库根目录下 hacs.json 文件中的每个键、HACS 对它的文档说明，以及 Marketplace 如何处理它。
 order: 1
 ---
 
-`hacs.json` describes your repository to the Marketplace and to HACS. It sits in the root of your repository, and every repository needs one: the Marketplace reads it for every version it installs, and can not install or update a repository without it.
+`hacs.json` 向 Marketplace 和 HACS 描述你的仓库。它位于仓库的根目录，每个仓库都需要一个：Marketplace 在安装每个版本时都会读取它，没有它就无法安装或更新仓库。
 
 ```json title="hacs.json"
 {
@@ -14,27 +14,27 @@ order: 1
 }
 ```
 
-## Keys
+## 键
 
-| Key | Type | What it does |
+| 键 | 类型 | 作用 |
 | --- | --- | --- |
-| `name` | string | The name users see. Required by HACS and by the catalog. Without it, the Marketplace shows the `name` from the manifest of an integration, or a name made from your repository name. |
-| `content_in_root` | boolean | Your content is in the root of the repository, instead of in `custom_components/<domain>/` or `themes/`. For a dashboard plugin, the file is then only looked for in the root, not in a release or in `dist`. |
-| `filename` | string | The name of the file to install, for a dashboard plugin or a template. With `zip_release`, the name of the ZIP asset. Required for templates. |
-| `zip_release` | boolean | Install from a ZIP file attached to each release, named by `filename`. HACS supports it for integrations only, the Marketplace refuses it for templates. |
-| `persistent_directory` | string | A folder inside an integration that is kept across updates, as a path relative to the integration folder. Integrations only. |
-| `homeassistant` | string | The minimum Home Assistant version for this release, like `"2026.11.0"`. Add `b0`, like `"2026.11.0b0"`, to allow the betas of that release. Only checked for repositories with releases. |
-| `hide_default_branch` | boolean | HACS does not offer the default branch as a version to install. |
-| `hacs` | string | The minimum HACS version. The Marketplace reads it, but does not compare it. |
-| `country` | string or list | Two-letter country codes ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)), for a repository that only works in some countries. The catalog asks for it in that case. The Marketplace does not use it. |
+| `name` | string | 用户看到的名称。HACS 和目录（catalog）都要求提供。如果没有它，Marketplace 会显示集成的清单（manifest）中的 `name`，或者根据你的仓库名称生成一个名称。 |
+| `content_in_root` | boolean | 你的内容位于仓库根目录，而不是在 `custom_components/<domain>/` 或 `themes/` 中。对于仪表盘（dashboard）插件，此时只会在根目录中查找文件，而不会在发布（release）或 `dist` 中查找。 |
+| `filename` | string | 要安装的文件的名称，适用于仪表盘插件或模板（template）。使用 `zip_release` 时，则是 ZIP 资源的名称。模板必须提供此项。 |
+| `zip_release` | boolean | 从每个发布（release）附带的 ZIP 文件安装，文件名由 `filename` 指定。HACS 仅对集成（integration）支持此功能，Marketplace 拒绝对模板使用它。 |
+| `persistent_directory` | string | 集成内部的一个文件夹，在更新后会被保留，路径相对于集成文件夹。仅适用于集成。 |
+| `homeassistant` | string | 此发布所需的最低 Home Assistant 版本，例如 `"2026.11.0"`。添加 `b0`，例如 `"2026.11.0b0"`，以允许该版本的 beta 版本。仅对有发布（release）的仓库进行检查。 |
+| `hide_default_branch` | boolean | HACS 不会将默认分支作为可安装的版本提供。 |
+| `hacs` | string | 最低 HACS 版本。Marketplace 会读取它，但不会进行比较。 |
+| `country` | string or list | 两位字母的国家代码（[ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)），适用于仅在某些国家/地区可用的仓库。在这种情况下，目录（catalog）会要求提供此项。Marketplace 不使用它。 |
 
-The Marketplace leaves out a key with a value of the wrong type, and logs a warning. Other keys are ignored.
+Marketplace 会忽略类型错误的键，并记录一条警告。其他键会被忽略。
 
-## Versions
+## 版本
 
-Version numbers in `homeassistant` and `hacs` are compared with [AwesomeVersion](https://github.com/ludeeus/awesomeversion), the same library Home Assistant uses. The [AwesomeVersion demo](https://awesomeversion.ludeeus.dev/) shows how two versions compare.
+`homeassistant` 和 `hacs` 中的版本号使用 [AwesomeVersion](https://github.com/ludeeus/awesomeversion) 进行比较，这也是 Home Assistant 使用的同一个库。[AwesomeVersion 演示](https://awesomeversion.ludeeus.dev/)展示了两个版本如何比较。
 
-## Sources
+## 来源
 
-- What the Marketplace reads: `REPOSITORY_MANIFEST_VALUES` in [`utils/validate.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/components/marketplace/utils/validate.py) of the `marketplace` integration in core.
-- What HACS documents: [the hacs.json section](https://hacs.xyz/docs/publish/start#hacsjson) of the HACS publishing documentation.
+- Marketplace 读取的内容：core 中 `marketplace` 集成的 [`utils/validate.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/components/marketplace/utils/validate.py) 中的 `REPOSITORY_MANIFEST_VALUES`。
+- HACS 文档记录的内容：HACS 发布文档中的 [hacs.json 部分](https://hacs.xyz/docs/publish/start#hacsjson)。

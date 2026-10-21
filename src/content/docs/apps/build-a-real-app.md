@@ -1,28 +1,28 @@
 ---
-title: Build a real app
-description: Walk through a complete app, the way experienced app developers set one up. Services with S6 overlay, options with Bashio, translations, documentation, CI, and releases.
+title: 构建一个真实的应用
+description: 完整地走一遍一个应用，看看有经验的应用开发者是如何搭建的。使用 S6 overlay 的服务、使用 Bashio 的选项、翻译、文档、CI 和发布。
 order: 3
 ---
 
-[Your first app](/apps/first-app/) shows how little an app needs. A real app needs more: services that start in the right order and stop the container when they crash, options with validation, logs with levels, documentation, linting, images for every architecture, and releases.
+[你的第一个应用](/apps/first-app/)展示了一个应用最少需要什么。一个真实的应用需要更多：按正确顺序启动、崩溃时停止容器的服务，带校验的选项，带级别的日志，文档，lint 检查，适用于每种架构的镜像，以及发布。
 
-The best way to learn that is to read a real one. [hassio-addons/app-example](https://github.com/hassio-addons/app-example) is the example app of Home Assistant Community Apps, a project that maintains a set of community apps, and [Bashio](/apps/bashio/). It shows a random quote in the log every few seconds. That is not useful by itself, but everything around it is set up the way a maintained app should be. This tutorial walks through it, file by file.
+学习这些最好的方式是阅读一个真实的应用。[hassio-addons/app-example](https://github.com/hassio-addons/app-example) 是 Home Assistant Community Apps 的示例应用，该项目维护着一组社区应用，也是 [Bashio](/apps/bashio/) 的所在项目。它每隔几秒在日志中显示一条随机引言。这本身没什么用，但它周围的一切都按照一个被维护的应用应有的方式搭建。本教程将逐个文件地讲解它。
 
-Open the repository next to this page. You do not need to build anything to follow along, but you can install the example to see it run, and copy it as the start of your own app.
+在阅读本页的同时打开该仓库。你不需要构建任何东西就能跟着学习，但你可以安装这个示例来查看它运行，并把它复制作为你自己应用的起点。
 
-## Try it first
+## 先试一试
 
-The example app is published in the [Home Assistant Community Apps repository](https://github.com/hassio-addons/repository). To install it:
+这个示例应用发布在 [Home Assistant Community Apps 仓库](https://github.com/hassio-addons/repository)中。要安装它：
 
-1. Add the repository: under **Settings** > **Apps**, open the **App store**, and in the top-right menu, select **Repositories**. Add `https://github.com/hassio-addons/repository`.
-2. Find **Example** in the store, and select **Install**.
-3. Select **Start**, then open the **Log** tab.
+1. 添加仓库：在**设置** > **应用**下，打开**应用商店**，在右上角菜单中选择**仓库**。添加 `https://github.com/hassio-addons/repository`。
+2. 在商店中找到 **Example**，选择**安装**。
+3. 选择**启动**，然后打开**日志**选项卡。
 
-You see a banner with the name and version of the app and your system, then a quote every five seconds, and every ten seconds a line from a second service. Change **Seconds between quotes** on the **Configuration** tab, restart the app, and watch the log.
+你会看到一个横幅，显示应用和系统的名称与版本，然后每五秒一条引言，每十秒来自第二个服务的一行日志。在**配置**选项卡上更改**Seconds between quotes**，重启应用，并观察日志。
 
-## 1. The repository
+## 1. 仓库
 
-Home Assistant Community Apps gives every app its own Git repository. A separate repository, the one you just added, lists the released apps for users. The app repository looks like this, leaving out a few files for GitHub like the issue template and code of conduct:
+Home Assistant Community Apps 为每个应用提供独立的 Git 仓库。另一个单独的仓库（就是你刚添加的那个）向用户列出已发布的应用。应用仓库如下所示，省略了一些面向 GitHub 的文件，如 issue 模板和行为准则：
 
 ```text
 app-example/
@@ -50,13 +50,13 @@ app-example/
 └── README.md
 ```
 
-The app itself is the `example` folder. Everything outside it is for the people who work on the app: workflows, linter settings, and the license.
+应用本身是 `example` 文件夹。它之外的一切都是为开发这个应用的人准备的：工作流、linter 设置和许可证。
 
-You do not have to split your apps like this. You can also keep all your apps in one repository, with a `repository.yaml` at the top, so users add that repository directly. [home-assistant/apps-example](https://github.com/home-assistant/apps-example) is set up that way. [Create and share a repository](/apps/guides/repository/) explains that setup. The `example` folder works the same way in both.
+你不必像这样拆分你的应用。你也可以把所有应用放在一个仓库中，在顶层放一个 `repository.yaml`，这样用户直接添加那个仓库即可。[home-assistant/apps-example](https://github.com/home-assistant/apps-example) 就是那样搭建的。[创建并分享仓库](/apps/guides/repository/)解释了那种设置。`example` 文件夹在两种方式中的工作方式相同。
 
-## 2. The configuration
+## 2. 配置
 
-`example/config.yaml` tells the Supervisor what the app is and what the user can set:
+`example/config.yaml` 告诉 Supervisor 这个应用是什么，以及用户可以设置什么：
 
 ```yaml
 ---
@@ -77,18 +77,18 @@ schema:
   seconds_between_quotes: int(1,120)
 ```
 
-A few things to notice:
+需要注意的几点：
 
-- `version: dev` is a placeholder. When a release is published, the tooling of Home Assistant Community Apps writes the real version, and the `image` to pull, into the copy of this file in the app repository users add. In your own repository, put the real version here, and add `image` once you publish images. See [Publish your app](/apps/guides/publishing/).
-- `init: false` is required with the base images, because S6 overlay must be the first process in the container. [Run services with S6 overlay](/apps/guides/s6-overlay/#what-the-base-images-set-up) explains why.
-- The schema does the validation for you. `int(1,120)` means the Supervisor refuses anything outside 1 to 120, so the script never has to check. `list(...)` shows a dropdown.
-- `log_level` is a common convention: users turn on debug logging themselves when something goes wrong, without a new version of your app.
+- `version: dev` 是一个占位符。当发布一个版本时，Home Assistant Community Apps 的工具链会把真实的版本号和要拉取的 `image` 写入用户添加的应用仓库中该文件的副本。在你自己的仓库中，在这里填入真实的版本号，并在你发布镜像后添加 `image`。参见[发布你的应用](/apps/guides/publishing/)。
+- 使用基础镜像时 `init: false` 是必需的，因为 S6 overlay 必须是容器中的第一个进程。[使用 S6 overlay 运行服务](/apps/guides/s6-overlay/#what-the-base-images-set-up)解释了原因。
+- schema 会替你做校验。`int(1,120)` 意味着 Supervisor 会拒绝 1 到 120 之外的任何值，所以脚本永远不需要检查。`list(...)` 会显示一个下拉框。
+- `log_level` 是一个常见的约定：当出现问题时，用户可以自己开启调试日志，而不需要你的应用发布新版本。
 
-Every key is in the [app configuration](/apps/reference/configuration/) reference. Options and their types are in [Add options](/apps/guides/options/).
+每个键都在[应用配置](/apps/reference/configuration/)参考中。选项及其类型在[添加选项](/apps/guides/options/)中。
 
-## 3. The Dockerfile
+## 3. Dockerfile
 
-`example/Dockerfile`, shortened:
+`example/Dockerfile`，已缩短：
 
 ```dockerfile
 ARG BUILD_FROM=ghcr.io/hassio-addons/base:21.0.8
@@ -113,27 +113,27 @@ LABEL \
     io.hass.version=${BUILD_VERSION}
 ```
 
-The full file adds more build arguments and labels: a name, description, build date, Git commit, and the Open Container Initiative labels like `org.opencontainers.image.source`. The build workflow fills those in; the Supervisor only passes `BUILD_ARCH`, `BUILD_VERSION`, and, with a `build.yaml`, `BUILD_FROM` and any build arguments you list under `args:` in that file. It also sets `io.hass.type="app"`. The legacy value of that label is `addon`. See [labels](/apps/guides/dockerfile/#labels).
+完整的文件还添加了更多构建参数和标签：名称、描述、构建日期、Git commit，以及像 `org.opencontainers.image.source` 这样的 Open Container Initiative 标签。构建工作流会填充这些内容；Supervisor 只传递 `BUILD_ARCH`、`BUILD_VERSION`，以及（如果有 `build.yaml` 的话）`BUILD_FROM` 和你在该文件中 `args:` 下列出的任何构建参数。它还会设置 `io.hass.type="app"`。该标签的旧值是 `addon`。参见[标签](/apps/guides/dockerfile/#labels)。
 
-What to take from it:
+从中可以学到：
 
-- **The base image.** The example starts from the base image of Home Assistant Community Apps. Like the [Home Assistant base images](/apps/guides/dockerfile/#base-images), it is Alpine Linux with S6 overlay, Bashio, and Tempio. It adds a startup banner in the log and sets the Bashio log level from a `log_level` option. You can use either.
-- **`build.yaml`.** The example also has a `build.yaml` with the base image per architecture. Its build workflow reads `build_from` from that file. The Supervisor still reads it, but logs that it is deprecated. In your own app, put the base image in the `Dockerfile` with a default for `BUILD_FROM`, as on the first line here, and leave `build.yaml` out. See [build.yaml](/apps/guides/dockerfile/#buildyaml).
-- **Pinned versions.** The base image and every Alpine package have an exact version. Builds are repeatable, and [Renovate](https://docs.renovatebot.com/) opens a pull request when a new version is out. The `.github/renovate.json` of the example has the rules that find these versions in the `Dockerfile`.
-- **`COPY rootfs /`.** All the files of the app live in `rootfs`, in the place they go in the image. No `CMD` and no `ENTRYPOINT`: S6 overlay starts what is in `rootfs`.
-- **hadolint.** The comment `# hadolint ignore=DL3006` silences one rule of the Dockerfile linter that runs in CI, because the base image tag comes from an argument.
+- **基础镜像。** 这个示例从 Home Assistant Community Apps 的基础镜像开始。与 [Home Assistant 基础镜像](/apps/guides/dockerfile/#base-images)一样，它是带有 S6 overlay、Bashio 和 Tempio 的 Alpine Linux。它会在日志中添加一个启动横幅，并根据 `log_level` 选项设置 Bashio 的日志级别。两者你都可以使用。
+- **`build.yaml`。** 这个示例还有一个 `build.yaml`，包含每种架构的基础镜像。它的构建工作流会从该文件读取 `build_from`。Supervisor 仍会读取它，但会记录它已被弃用。在你自己的应用中，把基础镜像放在 `Dockerfile` 中，并为 `BUILD_FROM` 提供默认值，就像这里的第一行那样，并省略 `build.yaml`。参见 [build.yaml](/apps/guides/dockerfile/#buildyaml)。
+- **固定版本。** 基础镜像和每个 Alpine 软件包都有确切的版本。构建是可重复的，并且当有新版本发布时，[Renovate](https://docs.renovatebot.com/) 会打开一个拉取请求。示例的 `.github/renovate.json` 包含在 `Dockerfile` 中查找这些版本的规则。
+- **`COPY rootfs /`。** 应用的所有文件都放在 `rootfs` 中，位于它们在镜像中的位置。没有 `CMD`，也没有 `ENTRYPOINT`：S6 overlay 启动 `rootfs` 中的内容。
+- **hadolint。** 注释 `# hadolint ignore=DL3006` 静默了在 CI 中运行的 Dockerfile linter 的一条规则，因为基础镜像标签来自一个参数。
 
-## 4. Services with S6 overlay
+## 4. 使用 S6 overlay 的服务
 
-`example/rootfs/etc/s6-overlay/` has three services:
+`example/rootfs/etc/s6-overlay/` 有三个服务：
 
-| Service | Type | Depends on | What it does |
+| 服务 | 类型 | 依赖于 | 作用 |
 | --- | --- | --- | --- |
-| `init-example` | oneshot | `base` | Runs once at startup and logs a greeting. In a real app, this is where you write configuration files. |
-| `example1` | longrun | `init-example` | Runs `/usr/bin/example1.sh`, the quote loop. |
-| `example2` | longrun | `example1` | Runs `/usr/bin/example2.sh`, a second loop. |
+| `init-example` | oneshot | `base` | 在启动时运行一次并记录一条问候语。在真实的应用中，这里是你写配置文件的地方。 |
+| `example1` | longrun | `init-example` | 运行 `/usr/bin/example1.sh`，即引言循环。 |
+| `example2` | longrun | `example1` | 运行 `/usr/bin/example2.sh`，第二个循环。 |
 
-The `run` script of a longrun logs a line, then hands over to the program with `exec`:
+longrun 的 `run` 脚本记录一行日志，然后用 `exec` 把控制权交给程序：
 
 ```bash
 #!/command/with-contenv bashio
@@ -144,13 +144,13 @@ bashio::log.info "Starting Example1..."
 exec /usr/bin/example1.sh
 ```
 
-Each longrun has a `finish` script that stops the whole container when the program crashes, so the Supervisor sees the failure. All three are in the `user` bundle, through empty files in `user-bundles.d/user/contents.d/`.
+每个 longrun 都有一个 `finish` 脚本，当程序崩溃时停止整个容器，这样 Supervisor 就能看到故障。这三个服务都在 `user` bundle 中，通过 `user-bundles.d/user/contents.d/` 中的空文件实现。
 
-How the folders, the `type`, `up`, and `finish` files, and the dependencies work is in [Run services with S6 overlay](/apps/guides/s6-overlay/). Read that guide next to the example; it uses this exact layout.
+文件夹、`type`、`up` 和 `finish` 文件以及依赖关系如何工作，请参见[使用 S6 overlay 运行服务](/apps/guides/s6-overlay/)。请结合示例阅读该指南；它使用的正是这种布局。
 
-## 5. Read options with Bashio
+## 5. 使用 Bashio 读取选项
 
-The quote loop in `rootfs/usr/bin/example1.sh` reads its option once, at startup:
+`rootfs/usr/bin/example1.sh` 中的引言循环在启动时读取一次它的选项：
 
 ```bash
 #!/command/with-contenv bashio
@@ -172,9 +172,9 @@ main() {
 main "$@"
 ```
 
-`bashio::config` gets the options from the Supervisor API, which is why the script starts with `with-contenv`: that gives it the token it needs. Options only change when the user saves them and restarts the app, so reading them once is enough.
+`bashio::config` 从 Supervisor API 获取选项，这就是脚本以 `with-contenv` 开头的原因：它为脚本提供了所需的令牌。选项只有在用户保存并重启应用后才会改变，所以读取一次就足够了。
 
-Other functions you use for options:
+其他用于选项的函数：
 
 ```bash
 # Is an optional option set?
@@ -191,13 +191,13 @@ if bashio::config.true 'ssl'; then
 fi
 ```
 
-All of them are in the [Bashio options reference](/apps/bashio/config/).
+所有这些都在 [Bashio 选项参考](/apps/bashio/config/)中。
 
-## 6. Log with levels
+## 6. 带级别的日志
 
-The example logs at different levels. `bashio::log.info` for normal events, `bashio::log.notice` when it falls back to an offline quote, and `bashio::log.trace` at the start of every function, for when someone needs to see everything.
+这个示例以不同的级别记录日志。`bashio::log.info` 用于正常事件，`bashio::log.notice` 用于回退到离线引言时，`bashio::log.trace` 用于每个函数的开头，以便在有人需要查看所有内容时使用。
 
-The user picks the level with the `log_level` option. The community base image applies it before your services start, so `bashio::log.debug` and `bashio::log.trace` stay quiet unless the user asks for them. On a Home Assistant base image, set it yourself at the start of your first service:
+用户通过 `log_level` 选项选择级别。社区基础镜像会在你的服务启动之前应用它，所以除非用户要求，否则 `bashio::log.debug` 和 `bashio::log.trace` 会保持安静。在 Home Assistant 基础镜像上，你需要在第一个服务的开头自己设置：
 
 ```bash
 if bashio::config.has_value 'log_level'; then
@@ -205,7 +205,7 @@ if bashio::config.has_value 'log_level'; then
 fi
 ```
 
-One more thing the example shows. Bashio stops the script when a command fails. The example fetches a quote with `grep`, and `grep` fails when it finds nothing. So the example adds `|| true`, with a comment that says why:
+示例还展示了另一件事。当命令失败时，Bashio 会停止脚本。示例使用 `grep` 获取引言，而 `grep` 在找不到内容时会失败。所以示例添加了 `|| true`，并附上说明原因的注释：
 
 ```bash
 # The page might not contain a quote at all, in which case grep exits
@@ -214,18 +214,18 @@ One more thing the example shows. Bashio stops the script when a command fails. 
 quote=$(grep -e "<dt>" -e "</dd>" <<< "${html}" | ...) || true
 ```
 
-Logging, log levels, and error handling are in the [Bashio logging reference](/apps/bashio/logging/).
+日志记录、日志级别和错误处理都在 [Bashio 日志参考](/apps/bashio/logging/)中。
 
-## 7. Translations and documentation
+## 7. 翻译和文档
 
-What users see of the app, apart from the log:
+除了日志之外，用户看到的应用内容：
 
-- `translations/en.yaml` gives the options a readable name and description on the **Configuration** tab. Without it, the user sees `seconds_between_quotes`.
-- `DOCS.md` is the **Documentation** tab: how to install the app, every option, and where to get help.
-- `icon.png` and `logo.png` show up in the app store and on the app page.
-- `.README.j2` is a template for the `README.md` of the app in the repository users add. The release tooling of Home Assistant Community Apps renders it, with the version and, for the beta and edge channels, a warning. If you keep your apps in one repository, write a plain `README.md` instead.
+- `translations/en.yaml` 在**配置**选项卡上为选项提供可读的名称和描述。没有它，用户会看到 `seconds_between_quotes`。
+- `DOCS.md` 是**文档**选项卡：如何安装应用、每个选项，以及在哪里获取帮助。
+- `icon.png` 和 `logo.png` 显示在应用商店和应用页面上。
+- `.README.j2` 是用户添加的仓库中该应用 `README.md` 的模板。Home Assistant Community Apps 的发布工具链会渲染它，包含版本号，对于 beta 和 edge 频道还会包含一条警告。如果你把应用放在一个仓库中，就写一个普通的 `README.md`。
 
-The translation file of the example:
+示例的翻译文件：
 
 ```yaml
 ---
@@ -240,64 +240,64 @@ configuration:
       app log.
 ```
 
-[Present your app](/apps/guides/presentation/) covers each of these files.
+[展示你的应用](/apps/guides/presentation/)涵盖了这些文件中的每一个。
 
-## 8. Continuous integration
+## 8. 持续集成
 
-Every pull request runs `.github/workflows/ci.yaml`. It calls a shared workflow from [hassio-addons/workflows](https://github.com/hassio-addons/workflows), pinned to a commit. That workflow:
+每个拉取请求都会运行 `.github/workflows/ci.yaml`。它调用来自 [hassio-addons/workflows](https://github.com/hassio-addons/workflows) 的共享工作流，并固定到某个 commit。该工作流：
 
-1. Reads the app information from `config.yaml` and `build.yaml`: the slug, the architectures, and the base image.
-2. Runs the linters, each as its own job:
-   - The app linter, [frenck/action-app-linter](https://github.com/frenck/action-app-linter), which validates `config.yaml` and warns about defaults you can leave out.
-   - [Hadolint](https://github.com/hadolint/hadolint) for the `Dockerfile`.
-   - [ShellCheck](https://www.shellcheck.net/) for the scripts, including the `run` and `finish` files of the S6 services.
-   - yamllint, with the rules in `.yamllint`, and `jq` for every JSON file.
-   - Prettier, for JSON, JavaScript, Markdown, and YAML.
-   - [zizmor](https://github.com/zizmorcore/zizmor), for security problems in the workflows themselves.
-3. Reviews the dependencies that the pull request changes.
-4. Builds the image for every architecture, each on a runner of that architecture, without pushing it.
+1. 从 `config.yaml` 和 `build.yaml` 读取应用信息：slug、架构和基础镜像。
+2. 运行 linter，每个作为独立的任务：
+   - 应用 linter，[frenck/action-app-linter](https://github.com/frenck/action-app-linter)，它校验 `config.yaml` 并警告你可以省略的默认值。
+   - [Hadolint](https://github.com/hadolint/hadolint) 用于 `Dockerfile`。
+   - [ShellCheck](https://www.shellcheck.net/) 用于脚本，包括 S6 服务的 `run` 和 `finish` 文件。
+   - yamllint，使用 `.yamllint` 中的规则，以及用于每个 JSON 文件的 `jq`。
+   - Prettier，用于 JSON、JavaScript、Markdown 和 YAML。
+   - [zizmor](https://github.com/zizmorcore/zizmor)，用于检查工作流本身的安全问题。
+3. 审查拉取请求更改的依赖项。
+4. 为每种架构构建镜像，每种架构在对应架构的 runner 上构建，但不推送。
 
-The `# shellcheck shell=bash` line in every script is for ShellCheck: it does not know the `bashio` interpreter, and that line tells it to check the script as Bash.
+每个脚本中的 `# shellcheck shell=bash` 行是为 ShellCheck 准备的：它不认识 `bashio` 解释器，这一行告诉它把脚本当作 Bash 来检查。
 
-The other workflows keep the repository tidy: `labels.yaml` syncs the labels of the repository with a shared list, `pr-labels.yaml` checks that every pull request has one of the labels that describe a change, like `bugfix` or `new-feature`, and `release-drafter.yaml` keeps a draft of the next release notes up to date.
+其他工作流保持仓库整洁：`labels.yaml` 将仓库的标签与共享列表同步，`pr-labels.yaml` 检查每个拉取请求是否带有描述变更类型的标签之一，如 `bugfix` 或 `new-feature`，`release-drafter.yaml` 保持下一版发布说明草稿的最新状态。
 
 > [!NOTE]
-> The README of hassio-addons/workflows says that these workflows are subject to change and not versioned, and that using them in other projects is possible but not recommended. For your own repository, copy the lint jobs you want, and build and publish with the [builder actions](/apps/guides/publishing/#build-with-github-actions) of Home Assistant.
+> hassio-addons/workflows 的 README 说明这些工作流可能会变更且没有版本化，在其他项目中使用它们是可能的但不被推荐。对于你自己的仓库，复制你想要的 lint 任务，并使用 Home Assistant 的[构建器 actions](/apps/guides/publishing/#build-with-github-actions) 进行构建和发布。
 
-## 9. Releases and versions
+## 9. 发布和版本
 
-`.github/workflows/deploy.yaml` runs on every push to `main`, and when a release is published on GitHub. It runs the same checks as CI first, then builds the image for every architecture, pushes it to the GitHub Container Registry, and combines the images into one multi-architecture image, like `ghcr.io/hassio-addons/example`.
+`.github/workflows/deploy.yaml` 在每次推送到 `main` 时运行，也在 GitHub 上发布 release 时运行。它先运行与 CI 相同的检查，然后为每种架构构建镜像，推送到 GitHub Container Registry，并将这些镜像合并为一个多架构镜像，如 `ghcr.io/hassio-addons/example`。
 
-Which version and channel that becomes depends on what started it:
+它变成哪个版本和频道取决于是什么触发了它：
 
-| Trigger | Version | Channel |
+| 触发方式 | 版本 | 频道 |
 | --- | --- | --- |
-| Push to `main` | The short Git commit, like `6b6b1f1` | edge |
-| Pre-release on GitHub | The tag, lowercase and without a leading `v` | beta |
-| Release on GitHub | The tag, lowercase and without a leading `v` | stable |
+| 推送到 `main` | 短 Git commit，如 `6b6b1f1` | edge |
+| GitHub 上的预发布 | 标签，小写且不带前导 `v` | beta |
+| GitHub 上的正式发布 | 标签，小写且不带前导 `v` | stable |
 
-A stable release goes to the beta channel as well. After the build, the workflow tells the matching app repository of Home Assistant Community Apps about the new version. Its tooling then copies the app files, writes `version` and `image` into `config.yaml`, renders the README, and commits that. Users of that channel get the update.
+稳定版发布也会进入 beta 频道。构建之后，工作流会把新版本告知 Home Assistant Community Apps 对应的应用仓库。其工具链随后复制应用文件，把 `version` 和 `image` 写入 `config.yaml`，渲染 README，并提交这些更改。该频道的用户就会收到更新。
 
-So a release is a GitHub release. Release Drafter keeps the draft of the notes, and publishing it with a tag like `v1.2.0` starts the build. The version follows [Semantic Versioning](https://semver.org/), as the `DOCS.md` of the example explains to users: major for breaking changes, minor for new features, patch for fixes.
+所以一次发布就是一个 GitHub release。Release Drafter 保存说明草稿，用类似 `v1.2.0` 的标签发布它会启动构建。版本遵循[语义化版本](https://semver.org/)，正如示例的 `DOCS.md` 向用户解释的：主版本用于破坏性变更，次版本用于新功能，修订版本用于修复。
 
-That release flow is specific to Home Assistant Community Apps. The rules behind it apply to every app, and are in [Publish your app](/apps/guides/publishing/#versions): publish the image before users can see the new version, and never reuse a version.
+那个发布流程是 Home Assistant Community Apps 特有的。它背后的规则适用于每个应用，在[发布你的应用](/apps/guides/publishing/#versions)中：在用户能看到新版本之前先发布镜像，并且永远不要重复使用一个版本。
 
-## Make it your own
+## 让它成为你自己的
 
-To start your own app from the example:
+要从这个示例开始你自己的应用：
 
-1. Copy the `example` folder into your repository, and rename it after your app.
-2. In `config.yaml`, change `name`, `slug`, `description`, `url`, and the options. Set `version` to a real version.
-3. In the `Dockerfile`, pick your base image: keep the community base image, or use a [Home Assistant base image](/apps/guides/dockerfile/#base-images). Put it in `ARG BUILD_FROM`, and remove `build.yaml`.
-4. Install your software in the `Dockerfile`, and replace the services in `rootfs/etc/s6-overlay/` with your own. Keep the `finish` scripts.
-5. Update `translations/en.yaml`, `DOCS.md`, the icon, and the logo.
-6. Add workflows: the lint jobs you want from the example, and the [builder actions](/apps/guides/publishing/) to build and publish your images.
-7. Test it: copy the folder into `local_apps` on your Home Assistant, or use the devcontainer from [Test your app](/apps/guides/testing/).
+1. 把 `example` 文件夹复制到你的仓库中，并以你的应用命名。
+2. 在 `config.yaml` 中，修改 `name`、`slug`、`description`、`url` 和选项。把 `version` 设置为真实的版本。
+3. 在 `Dockerfile` 中，选择你的基础镜像：保留社区基础镜像，或使用 [Home Assistant 基础镜像](/apps/guides/dockerfile/#base-images)。把它放在 `ARG BUILD_FROM` 中，并删除 `build.yaml`。
+4. 在 `Dockerfile` 中安装你的软件，并把 `rootfs/etc/s6-overlay/` 中的服务替换为你自己的。保留 `finish` 脚本。
+5. 更新 `translations/en.yaml`、`DOCS.md`、图标和 logo。
+6. 添加工作流：从示例中选取你想要的 lint 任务，以及用于构建和发布镜像的[构建器 actions](/apps/guides/publishing/)。
+7. 测试它：把文件夹复制到你 Home Assistant 的 `local_apps` 中，或使用[测试你的应用](/apps/guides/testing/)中的 devcontainer。
 
-## What is next
+## 接下来是什么
 
-- [How apps work](/apps/how-apps-work/): what the Supervisor does with your app, from the repository to a running container. Read it next.
-- [Run services with S6 overlay](/apps/guides/s6-overlay/): everything about the services in `rootfs`.
-- [Bashio reference](/apps/bashio/): every function, from options to the Supervisor API.
-- [Secure your app](/apps/guides/security/): add an AppArmor profile, and ask for as little access as possible.
-- [Add a web interface with ingress](/apps/guides/ingress/): show your app inside Home Assistant.
+- [应用如何工作](/apps/how-apps-work/)：Supervisor 对你的应用做了什么，从仓库到运行中的容器。接下来读它。
+- [使用 S6 overlay 运行服务](/apps/guides/s6-overlay/)：关于 `rootfs` 中服务的一切。
+- [Bashio 参考](/apps/bashio/)：每个函数，从选项到 Supervisor API。
+- [保护你的应用](/apps/guides/security/)：添加 AppArmor 配置文件，并尽可能请求最少的访问权限。
+- [使用 ingress 添加网页界面](/apps/guides/ingress/)：在 Home Assistant 中展示你的应用。

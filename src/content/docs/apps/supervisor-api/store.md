@@ -1,56 +1,56 @@
 ---
-title: Store endpoints
-description: Supervisor API endpoints for the app store, to browse, install, and update apps, and to manage app repositories.
-sidebarLabel: Store
+title: 商店端点
+description: 用于应用商店的 Supervisor API 端点，可浏览、安装和更新应用，并管理应用仓库。
+sidebarLabel: 商店
 order: 2
 ---
 
-The store holds every app the Supervisor knows about, installed or not, from all the repositories that are added. `<app>` is the slug of an app, including the repository prefix, like `core_mosquitto` or `a0d7b954_vscode`.
+商店保存着 Supervisor 已知的所有应用（无论是否已安装），来自所有已添加的仓库。`<app>` 是应用的 slug，包含仓库前缀，例如 `core_mosquitto` 或 `a0d7b954_vscode`。
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/store` | Apps and repositories in the store |
-| `POST` | `/store/reload` | Read all repositories again |
-| `GET` | `/store/addons` | List the apps in the store |
-| `GET` | `/store/addons/<app>` | Details of an app |
-| `GET` | `/store/addons/<app>/<version>` | Details of an app |
-| `GET` | `/store/addons/<app>/availability` | Check if an app can be installed |
-| `POST` | `/store/addons/<app>/install` | Install an app |
-| `POST` | `/store/addons/<app>/update` | Update an app |
-| `GET` | `/store/addons/<app>/icon` | Icon of an app |
-| `GET` | `/store/addons/<app>/logo` | Logo of an app |
-| `GET` | `/store/addons/<app>/changelog` | Changelog of an app |
-| `GET` | `/store/addons/<app>/documentation` | Documentation of an app |
-| `GET` | `/store/repositories` | List the repositories |
-| `POST` | `/store/repositories` | Add a repository |
-| `GET` | `/store/repositories/<repository>` | Details of a repository |
-| `DELETE` | `/store/repositories/<repository>` | Remove a repository |
-| `POST` | `/store/repositories/<repository>/repair` | Reset a broken repository |
+| `GET` | `/store` | 商店中的应用和仓库 |
+| `POST` | `/store/reload` | 重新读取所有仓库 |
+| `GET` | `/store/addons` | 列出商店中的应用 |
+| `GET` | `/store/addons/<app>` | 应用的详细信息 |
+| `GET` | `/store/addons/<app>/<version>` | 应用的详细信息 |
+| `GET` | `/store/addons/<app>/availability` | 检查应用是否可以安装 |
+| `POST` | `/store/addons/<app>/install` | 安装应用 |
+| `POST` | `/store/addons/<app>/update` | 更新应用 |
+| `GET` | `/store/addons/<app>/icon` | 应用的图标 |
+| `GET` | `/store/addons/<app>/logo` | 应用的标志 |
+| `GET` | `/store/addons/<app>/changelog` | 应用的更新日志 |
+| `GET` | `/store/addons/<app>/documentation` | 应用的文档 |
+| `GET` | `/store/repositories` | 列出仓库 |
+| `POST` | `/store/repositories` | 添加仓库 |
+| `GET` | `/store/repositories/<repository>` | 仓库的详细信息 |
+| `DELETE` | `/store/repositories/<repository>` | 移除仓库 |
+| `POST` | `/store/repositories/<repository>/repair` | 重置损坏的仓库 |
 
-## Store
+## 商店
 
 ### `GET /store`
 
-Returns all apps and all repositories in the store.
+返回商店中的所有应用和所有仓库。
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `addons` | list | A list of [store app models](/apps/supervisor-api/models/#store-app) |
-| `repositories` | list | A list of [repository models](/apps/supervisor-api/models/#repository) |
+| `addons` | 列表 | [商店应用模型](/apps/supervisor-api/models/#store-app)的列表 |
+| `repositories` | 列表 | [仓库模型](/apps/supervisor-api/models/#repository)的列表 |
 
 ### `POST /store/reload`
 
-Reads all repositories again: pulls the latest changes of the Git repositories and reads the local apps folder. Use it after you change the files of a local app.
+重新读取所有仓库：拉取 Git 仓库的最新更改并读取本地应用文件夹。在修改本地应用的文件后使用它。
 
-## Apps in the store
+## 商店中的应用
 
 ### `GET /store/addons`
 
-Returns the apps in the store.
+返回商店中的应用。
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `addons` | list | A list of [store app models](/apps/supervisor-api/models/#store-app) |
+| `addons` | 列表 | [商店应用模型](/apps/supervisor-api/models/#store-app)的列表 |
 
 ```json
 {
@@ -81,40 +81,40 @@ Returns the apps in the store.
 
 ### `GET /store/addons/<app>`
 
-Returns the details of an app in the store. The `/store/addons/<app>/<version>` path returns the same: it ignores the version.
+返回商店中某个应用的详细信息。`/store/addons/<app>/<version>` 路径返回相同的内容：它会忽略版本。
 
-All keys of the [store app model](/apps/supervisor-api/models/#store-app), plus:
+包含[商店应用模型](/apps/supervisor-api/models/#store-app)的所有键，外加：
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `apparmor` | string | `disable`, `default`, or `profile` |
-| `auth_api` | boolean | Can check user credentials |
-| `detached` | boolean | `true` if the app is no longer in any repository |
-| `docker_api` | boolean | Has access to the Docker API |
-| `full_access` | boolean | Has full hardware access |
-| `hassio_api` | boolean | Has access to the Supervisor API |
-| `hassio_role` | string | Supervisor API role |
-| `homeassistant_api` | boolean | Has access to the Home Assistant Core API proxy |
-| `host_network` | boolean | Uses the host network |
-| `host_pid` | boolean | Uses the host PID namespace |
-| `ingress` | boolean | Uses ingress |
-| `long_description` | string or null | The content of `README.md` |
-| `rating` | integer | Security rating, from 1 to 8. Higher is safer |
-| `signed` | boolean | Always `false` |
+| `apparmor` | 字符串 | `disable`、`default` 或 `profile` |
+| `auth_api` | 布尔值 | 可以校验用户凭据 |
+| `detached` | 布尔值 | 如果应用已不在任何仓库中，则为 `true` |
+| `docker_api` | 布尔值 | 可以访问 Docker API |
+| `full_access` | 布尔值 | 拥有完整的硬件访问权限 |
+| `hassio_api` | 布尔值 | 可以访问 Supervisor API |
+| `hassio_role` | 字符串 | Supervisor API 角色 |
+| `homeassistant_api` | 布尔值 | 可以访问 Home Assistant Core API 代理 |
+| `host_network` | 布尔值 | 使用主机网络 |
+| `host_pid` | 布尔值 | 使用主机 PID 命名空间 |
+| `ingress` | 布尔值 | 使用 ingress |
+| `long_description` | 字符串或 null | `README.md` 的内容 |
+| `rating` | 整数 | 安全评级，从 1 到 8。数值越高越安全 |
+| `signed` | 布尔值 | 始终为 `false` |
 
 ### `GET /store/addons/<app>/availability`
 
-Checks if the latest version of the app can be installed on this system. Returns success if it can. Returns an error with the reason if it cannot, like an unsupported architecture or machine, or a Home Assistant version that is too old.
+检查应用的最新版本是否可以安装在此系统上。如果可以，返回成功。如果不可以，则返回包含原因的错误，例如不支持的架构或机器，或者 Home Assistant 版本过旧。
 
 ### `POST /store/addons/<app>/install`
 
-Installs the latest version of an app. `POST /store/addons/<app>/install/<version>` does the same: it ignores the version.
+安装应用的最新版本。`POST /store/addons/<app>/install/<version>` 的作用相同：它会忽略版本。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `background` | boolean | No | Return a `job_id` right away instead of waiting for the install to finish. Default `false` |
+| `background` | 布尔值 | 否 | 立即返回 `job_id`，而不是等待安装完成。默认为 `false` |
 
-With `background: true`, the response is:
+当 `background: true` 时，响应为：
 
 ```json
 {
@@ -124,34 +124,34 @@ With `background: true`, the response is:
 
 ### `POST /store/addons/<app>/update`
 
-Updates an installed app to the latest version. `POST /store/addons/<app>/update/<version>` does the same: it ignores the version. An app cannot update itself. Fails while the Supervisor is still starting up or restoring a backup.
+将已安装的应用更新到最新版本。`POST /store/addons/<app>/update/<version>` 的作用相同：它会忽略版本。应用不能更新自身。在 Supervisor 仍在启动或恢复备份期间会失败。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `backup` | boolean | No | Make a backup of the app before the update. Default `false` |
-| `background` | boolean | No | Return a `job_id` right away instead of waiting for the update to finish. Default `false` |
+| `backup` | 布尔值 | 否 | 在更新前为应用创建备份。默认为 `false` |
+| `background` | 布尔值 | 否 | 立即返回 `job_id`，而不是等待更新完成。默认为 `false` |
 
 ### `GET /store/addons/<app>/icon`
 
-Returns the `icon.png` of the app as a PNG image.
+以 PNG 图像的形式返回应用的 `icon.png`。
 
 ### `GET /store/addons/<app>/logo`
 
-Returns the `logo.png` of the app as a PNG image.
+以 PNG 图像的形式返回应用的 `logo.png`。
 
 ### `GET /store/addons/<app>/changelog`
 
-Returns the `CHANGELOG.md` of the app as plain text. When there is none, the response is a short plain text message that says so.
+以纯文本形式返回应用的 `CHANGELOG.md`。如果没有，则响应是一条简短的纯文本消息，说明没有更新日志。
 
 ### `GET /store/addons/<app>/documentation`
 
-Returns the `DOCS.md` of the app as plain text. When there is none, the response is a short plain text message that says so.
+以纯文本形式返回应用的 `DOCS.md`。如果没有，则响应是一条简短的纯文本消息，说明没有文档。
 
-## Repositories
+## 仓库
 
 ### `GET /store/repositories`
 
-Returns all repositories as a list of [repository models](/apps/supervisor-api/models/#repository).
+以[仓库模型](/apps/supervisor-api/models/#repository)列表的形式返回所有仓库。
 
 ```json
 [
@@ -167,11 +167,11 @@ Returns all repositories as a list of [repository models](/apps/supervisor-api/m
 
 ### `POST /store/repositories`
 
-Adds a repository to the store. The Supervisor clones it and reads its apps.
+向商店添加一个仓库。Supervisor 会克隆它并读取其中的应用。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必需 | 描述 |
 | --- | --- | --- | --- |
-| `repository` | string | Yes | Git URL of the repository. Add `#branch` to use another branch than the default one |
+| `repository` | 字符串 | 是 | 仓库的 Git URL。添加 `#branch` 可以使用默认分支以外的其他分支 |
 
 ```json
 {
@@ -181,12 +181,12 @@ Adds a repository to the store. The Supervisor clones it and reads its apps.
 
 ### `GET /store/repositories/<repository>`
 
-Returns one [repository model](/apps/supervisor-api/models/#repository). `<repository>` is the slug of the repository.
+返回一个[仓库模型](/apps/supervisor-api/models/#repository)。`<repository>` 是仓库的 slug。
 
 ### `DELETE /store/repositories/<repository>`
 
-Removes a repository from the store. Fails for the built-in repositories, and while apps from the repository are still installed.
+从商店中移除一个仓库。对于内置仓库，以及当该仓库中的应用仍在安装时，会失败。
 
 ### `POST /store/repositories/<repository>/repair`
 
-Throws away the local copy of a repository and clones it again. Use it when a repository is broken or shows outdated information.
+丢弃仓库的本地副本并重新克隆。当仓库损坏或显示过时信息时使用它。

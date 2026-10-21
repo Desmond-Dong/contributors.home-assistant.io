@@ -1,53 +1,53 @@
 ---
-title: Home Assistant Core endpoints
-description: Supervisor API endpoints to control Home Assistant Core, and the proxy your app uses to reach the Core REST and WebSocket API.
+title: Home Assistant Core 端点
+description: 用于控制 Home Assistant Core 的 Supervisor API 端点，以及您的应用访问 Core REST 和 WebSocket API 所使用的代理。
 sidebarLabel: Home Assistant Core
 order: 4
 ---
 
-There are two kinds of endpoints under `/core`. The first kind controls the Home Assistant Core container: start, stop, update, and its settings. The second kind is a proxy to the API of Home Assistant itself, so your app can read states and call actions without knowing a password or port.
+`/core` 下有两类端点。第一类控制 Home Assistant Core 容器：启动、停止、更新及其设置。第二类是 Home Assistant 自身 API 的代理，这样您的应用无需知道密码或端口即可读取状态并调用操作。
 
-Most of these endpoints are also available under `/homeassistant` instead of `/core`, the older name. The proxy there has no `DELETE`. Use `/core`.
+这些端点中的大多数也可以在 `/homeassistant`（旧名称）下使用，而不是 `/core`。那里的代理没有 `DELETE`。请使用 `/core`。
 
-| Method | Path | Description |
+| 方法 | 路径 | 描述 |
 | --- | --- | --- |
-| `GET` | `/core/info` | Information about Home Assistant Core |
-| `POST` | `/core/options` | Change the Core settings |
-| `POST` | `/core/update` | Update Home Assistant Core |
-| `POST` | `/core/start` | Start Home Assistant Core |
-| `POST` | `/core/stop` | Stop Home Assistant Core |
-| `POST` | `/core/restart` | Restart Home Assistant Core |
-| `POST` | `/core/rebuild` | Rebuild the Core container |
-| `POST` | `/core/check` | Check the configuration |
-| `GET` | `/core/stats` | Resource usage of Core |
-| `GET` | `/core/logs` | Logs of Core, and the other [log endpoints](/apps/supervisor-api/#log-endpoints) |
-| `GET`, `POST`, `DELETE` | `/core/api/<path>` | Proxy to the Home Assistant REST API |
-| `GET` | `/core/api/stream` | Proxy to the event stream |
-| `GET` | `/core/websocket` | Proxy to the Home Assistant WebSocket API |
+| `GET` | `/core/info` | Home Assistant Core 的信息 |
+| `POST` | `/core/options` | 更改 Core 设置 |
+| `POST` | `/core/update` | 更新 Home Assistant Core |
+| `POST` | `/core/start` | 启动 Home Assistant Core |
+| `POST` | `/core/stop` | 停止 Home Assistant Core |
+| `POST` | `/core/restart` | 重启 Home Assistant Core |
+| `POST` | `/core/rebuild` | 重建 Core 容器 |
+| `POST` | `/core/check` | 检查配置 |
+| `GET` | `/core/stats` | Core 的资源使用情况 |
+| `GET` | `/core/logs` | Core 的日志，以及其他[日志端点](/apps/supervisor-api/#log-endpoints) |
+| `GET`, `POST`, `DELETE` | `/core/api/<path>` | Home Assistant REST API 的代理 |
+| `GET` | `/core/api/stream` | 事件流的代理 |
+| `GET` | `/core/websocket` | Home Assistant WebSocket API 的代理 |
 
-## Control Home Assistant Core
+## 控制 Home Assistant Core
 
-To use these, your app needs `hassio_api: true` and the `homeassistant`, `manager`, or `admin` role. `GET /core/info` works with any role.
+要使用这些端点，您的应用需要 `hassio_api: true` 以及 `homeassistant`、`manager` 或 `admin` 角色。`GET /core/info` 在任何角色下都可用。
 
 ### `GET /core/info`
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 | --- | --- | --- |
-| `version` | string | Installed version |
-| `version_latest` | string | Latest available version |
-| `update_available` | boolean | `true` if an update is available |
-| `machine` | string | Machine type, like `generic-x86-64` or `raspberrypi5-64` |
-| `ip_address` | string | IP address of Core on the internal network |
-| `arch` | string | Architecture |
-| `image` | string | Container image |
-| `boot` | boolean | `true` if Core starts at boot |
-| `port` | integer | Port of the Home Assistant web server |
-| `ssl` | boolean | `true` if the web server uses SSL |
-| `watchdog` | boolean | `true` if the watchdog is on |
-| `audio_input` | string or null | Selected audio input device |
-| `audio_output` | string or null | Selected audio output device |
-| `backups_exclude_database` | boolean | `true` if backups leave the database out by default |
-| `duplicate_log_file` | boolean | `true` if Core also writes its log to a file |
+| `version` | string | 已安装的版本 |
+| `version_latest` | string | 可用的最新版本 |
+| `update_available` | boolean | 如果有可用更新则为 `true` |
+| `machine` | string | 机器类型，例如 `generic-x86-64` 或 `raspberrypi5-64` |
+| `ip_address` | string | Core 在内部网络中的 IP 地址 |
+| `arch` | string | 架构 |
+| `image` | string | 容器镜像 |
+| `boot` | boolean | 如果 Core 随系统启动则为 `true` |
+| `port` | integer | Home Assistant Web 服务器的端口 |
+| `ssl` | boolean | 如果 Web 服务器使用 SSL 则为 `true` |
+| `watchdog` | boolean | 如果看门狗（watchdog）已开启则为 `true` |
+| `audio_input` | string or null | 已选择的音频输入设备 |
+| `audio_output` | string or null | 已选择的音频输出设备 |
+| `backups_exclude_database` | boolean | 如果备份默认不包含数据库则为 `true` |
+| `duplicate_log_file` | boolean | 如果 Core 同时将日志写入文件则为 `true` |
 
 ```json
 {
@@ -71,73 +71,73 @@ To use these, your app needs `hassio_api: true` and the `homeassistant`, `manage
 
 ### `POST /core/options`
 
-Send only the keys you want to change.
+只发送您想要更改的键。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必填 | 描述 |
 | --- | --- | --- | --- |
-| `boot` | boolean | No | Start Core at boot |
-| `image` | string or null | No | Use another container image. `null` goes back to the default |
-| `port` | integer | No | Port of the Home Assistant web server |
-| `ssl` | boolean | No | The web server uses SSL |
-| `watchdog` | boolean | No | Turn the watchdog on or off |
-| `refresh_token` | string or null | No | Refresh token the Supervisor uses for Core |
-| `audio_input` | string or null | No | Audio input device |
-| `audio_output` | string or null | No | Audio output device |
-| `backups_exclude_database` | boolean | No | Leave the database out of backups by default |
-| `duplicate_log_file` | boolean | No | Also write the Core log to a file |
+| `boot` | boolean | 否 | 随系统启动 Core |
+| `image` | string or null | 否 | 使用其他容器镜像。`null` 恢复为默认值 |
+| `port` | integer | 否 | Home Assistant Web 服务器的端口 |
+| `ssl` | boolean | 否 | Web 服务器使用 SSL |
+| `watchdog` | boolean | 否 | 开启或关闭看门狗（watchdog） |
+| `refresh_token` | string or null | 否 | Supervisor 用于 Core 的刷新令牌（refresh token） |
+| `audio_input` | string or null | 否 | 音频输入设备 |
+| `audio_output` | string or null | 否 | 音频输出设备 |
+| `backups_exclude_database` | boolean | 否 | 备份默认不包含数据库 |
+| `duplicate_log_file` | boolean | 否 | 同时将 Core 日志写入文件 |
 
 ### `POST /core/update`
 
-Updates Home Assistant Core. Fails while the Supervisor is still starting up or restoring a backup, and while Core runs a database migration.
+更新 Home Assistant Core。在 Supervisor 仍在启动或正在恢复备份期间，以及 Core 正在运行数据库迁移时，此操作会失败。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必填 | 描述 |
 | --- | --- | --- | --- |
-| `version` | string | No | Version to install. Default is the latest version |
-| `backup` | boolean | No | Make a backup before the update. Default `false` |
-| `background` | boolean | No | Return a `job_id` right away instead of waiting. Default `false` |
+| `version` | string | 否 | 要安装的版本。默认为最新版本 |
+| `backup` | boolean | 否 | 在更新前创建备份。默认 `false` |
+| `background` | boolean | 否 | 立即返回 `job_id` 而不是等待。默认 `false` |
 
 ### `POST /core/start`
 
-Starts Home Assistant Core. Like restart and rebuild, it fails while the Supervisor is still starting up or restoring a backup.
+启动 Home Assistant Core。与重启和重建一样，在 Supervisor 仍在启动或正在恢复备份期间，此操作会失败。
 
 ### `POST /core/stop`
 
-Stops Home Assistant Core.
+停止 Home Assistant Core。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必填 | 描述 |
 | --- | --- | --- | --- |
-| `force` | boolean | No | Stop even while Core runs a database migration. Default `false` |
+| `force` | boolean | 否 | 即使 Core 正在运行数据库迁移也停止。默认 `false` |
 
 ### `POST /core/restart`
 
-Restarts Home Assistant Core.
+重启 Home Assistant Core。
 
-| Key | Type | Required | Description |
+| 键 | 类型 | 必填 | 描述 |
 | --- | --- | --- | --- |
-| `safe_mode` | boolean | No | Start in safe mode, with custom integrations turned off. Default `false` |
-| `force` | boolean | No | Restart even while Core runs a database migration. Default `false` |
+| `safe_mode` | boolean | 否 | 以安全模式启动，自定义集成（integration）将被关闭。默认 `false` |
+| `force` | boolean | 否 | 即使 Core 正在运行数据库迁移也重启。默认 `false` |
 
 ### `POST /core/rebuild`
 
-Removes the Core container and creates it again from the same image. Takes the same keys as `POST /core/restart`.
+移除 Core 容器，并使用相同镜像重新创建。接受与 `POST /core/restart` 相同的键。
 
 ### `POST /core/check`
 
-Checks the Home Assistant configuration. Returns success when it is valid, and an error with the output of the check when it is not.
+检查 Home Assistant 配置。配置有效时返回成功，无效时返回包含检查输出的错误。
 
 ### `GET /core/stats`
 
-Returns the resource usage of Home Assistant Core as a [stats model](/apps/supervisor-api/models/#stats). Add the `one_shot` query parameter to get a single quick sample.
+以[统计模型](/apps/supervisor-api/models/#stats)的形式返回 Home Assistant Core 的资源使用情况。添加 `one_shot` 查询参数可获取单次快速采样。
 
-## Home Assistant Core API proxy
+## Home Assistant Core API 代理
 
-The proxy forwards your requests to the REST API and WebSocket API of Home Assistant Core, using your app's token. Your app needs `homeassistant_api: true` in its configuration. It does not need `hassio_api` or a role. See [talk to Home Assistant](/apps/guides/communication/) for how to use it.
+该代理使用您应用的令牌，将您的请求转发到 Home Assistant Core 的 REST API 和 WebSocket API。您的应用需要在配置中设置 `homeassistant_api: true`。它不需要 `hassio_api` 或角色。有关如何使用它，请参阅[与 Home Assistant 通信](/apps/guides/communication/)。
 
-Paths that start with `hassio` are blocked through the proxy.
+以 `hassio` 开头的路径会被代理阻止。
 
 ### `GET /core/api/<path>`
 
-Also `POST` and `DELETE`. Forwards the request to `/api/<path>` on Home Assistant Core, and returns the response of Core as it is. The proxy does not wrap it in the Supervisor envelope.
+也支持 `POST` 和 `DELETE`。将请求转发到 Home Assistant Core 上的 `/api/<path>`，并原样返回 Core 的响应。代理不会将其包装在 Supervisor 信封中。
 
 ```bash
 curl -sSL \
@@ -147,11 +147,11 @@ curl -sSL \
 
 ### `GET /core/api/stream`
 
-Forwards the server-sent event stream of Home Assistant Core.
+转发 Home Assistant Core 的服务器发送事件（server-sent event）流。
 
 ### `GET /core/websocket`
 
-Opens a WebSocket connection to Home Assistant Core. `/core/api/websocket` works too. The handshake is the normal Home Assistant handshake, with your app's token as the access token:
+打开到 Home Assistant Core 的 WebSocket 连接。`/core/api/websocket` 也可以。握手是标准的 Home Assistant 握手，使用您应用的令牌作为访问令牌：
 
 ```json
 {
@@ -160,4 +160,4 @@ Opens a WebSocket connection to Home Assistant Core. `/core/api/websocket` works
 }
 ```
 
-After `auth_ok`, you use the WebSocket API as usual. Commands that start with `supervisor/` or `hassio/` are refused.
+在 `auth_ok` 之后，您可以照常使用 WebSocket API。以 `supervisor/` 或 `hassio/` 开头的命令会被拒绝。

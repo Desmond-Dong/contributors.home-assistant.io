@@ -1,17 +1,17 @@
 ---
-title: Publish a theme
-description: Write a theme file, choose the variables to set, support light and dark mode, test it, and package it for the Marketplace.
-sidebarLabel: Themes
+title: 发布主题
+description: 编写主题文件、选择要设置的变量、支持浅色和深色模式、进行测试，并打包以供 Marketplace 使用。
+sidebarLabel: 主题
 order: 3
 ---
 
-A [theme](/glossary/theme/) is a YAML file with colors, and some sizes, for the Home Assistant interface. Users pick a theme in their profile, or set one on a single dashboard view or card. Making one needs no programming: YAML, and an eye for what looks good in both light and dark.
+[主题（theme）](/glossary/theme/)是一个 YAML 文件，包含 Home Assistant 界面的颜色和一些尺寸。用户可以在自己的个人资料中选择主题，也可以为单个仪表盘视图或卡片设置主题。制作主题不需要编程知识：只需要 YAML，以及一双能看出什么在浅色和深色下都好看的眼睛。
 
-How the frontend applies themes, from the side of the code, is in [Theming and design tokens](/frontend/architecture/theming/). This page is for the person writing the theme.
+关于前端如何从代码层面应用主题，请参阅[主题与设计令牌（Theming and design tokens）](/frontend/architecture/theming/)。本页面面向编写主题的人。
 
-## The theme file
+## 主题文件
 
-A theme file is a mapping. The key is the name of the theme, as users see it in their profile. Under it are the variables, without the `--` that CSS puts in front of them:
+主题文件是一个映射（mapping）。键是主题的名称，也就是用户在个人资料中看到的名称。其下是各个变量，但不带 CSS 中变量前面的 `--`：
 
 ```yaml title="themes/nordic.yaml"
 Nordic:
@@ -23,58 +23,58 @@ Nordic:
   ha-card-border-radius: "16px"
 ```
 
-Quote every value. In YAML, `#` starts a comment, so an unquoted color is lost, and the frontend expects every value to be a string anyway.
+每个值都要加引号。在 YAML 中，`#` 会开始一段注释，所以不加引号的颜色会丢失，而且前端本来就要求每个值都是字符串。
 
-One file can hold more than one theme, each under its own name. Home Assistant reads the files from the `themes` folder of the user's configuration through this line in `configuration.yaml`, which it adds itself when it creates the file:
+一个文件可以包含多个主题，每个主题都在自己的名称之下。Home Assistant 通过 `configuration.yaml` 中的这一行从用户配置的 `themes` 文件夹读取这些文件，这一行是它在创建该文件时自动添加的：
 
 ```yaml title="configuration.yaml"
 frontend:
   themes: !include_dir_merge_named themes
 ```
 
-Users who removed that line, or whose configuration is older, need to add it back. Say so in your README: it is the first thing to check when your theme does not show up.
+删除了这一行的用户，或者配置较旧的用户，需要把它加回来。请在你的 README 中说明这一点：当你的主题没有显示时，这是首先要检查的事情。
 
-## Which variables to set
+## 要设置哪些变量
 
-The frontend has two layers of variables, and a good theme sets both.
+前端有两层变量，一个好的主题会同时设置这两层。
 
-### The classic variables
+### 经典变量
 
-Most themes set the variables below. They are defined in the frontend in `src/resources/theme/color/color.globals.ts`, and many components use them. The [default values](https://github.com/home-assistant/frontend/blob/dev/src/resources/theme/color/color.globals.ts) are a good start: copy the ones you want to change.
+大多数主题会设置以下变量。它们在前端的 `src/resources/theme/color/color.globals.ts` 中定义，许多组件都会使用它们。[默认值](https://github.com/home-assistant/frontend/blob/dev/src/resources/theme/color/color.globals.ts)是一个很好的起点：把你想修改的复制过来。
 
-| Variable | What it is for |
+| 变量 | 用途 |
 | --- | --- |
-| `primary-color` | The main accent color. Other variables, like `sidebar-selected-icon-color`, default to it. |
-| `accent-color` | A second accent color |
-| `primary-background-color` | The background of the pages |
-| `secondary-background-color` | A second background, for surfaces that stand apart from the page |
-| `card-background-color` | Cards. `sidebar-background-color` and `ha-card-background` default to it. |
-| `primary-text-color` | Most text |
-| `secondary-text-color` | Less important text, like descriptions |
-| `text-primary-color` | Text on top of `primary-color` |
-| `divider-color` | Lines between items |
-| `error-color`, `warning-color`, `success-color`, `info-color` | Status messages and alerts |
-| `sidebar-background-color`, `sidebar-text-color`, `sidebar-icon-color`, `sidebar-selected-icon-color`, `sidebar-selected-text-color` | The sidebar |
-| `app-header-background-color`, `app-header-text-color` | The header at the top of dashboards and other pages |
-| `state-icon-color` | Icons of entities |
+| `primary-color` | 主强调色。其他变量（如 `sidebar-selected-icon-color`）默认使用它。 |
+| `accent-color` | 第二强调色 |
+| `primary-background-color` | 页面的背景 |
+| `secondary-background-color` | 第二背景，用于与页面区分开来的表面 |
+| `card-background-color` | 卡片。`sidebar-background-color` 和 `ha-card-background` 默认使用它。 |
+| `primary-text-color` | 大部分文本 |
+| `secondary-text-color` | 次要文本，比如描述 |
+| `text-primary-color` | 位于 `primary-color` 之上的文本 |
+| `divider-color` | 项目之间的分隔线 |
+| `error-color`, `warning-color`, `success-color`, `info-color` | 状态消息和提醒 |
+| `sidebar-background-color`, `sidebar-text-color`, `sidebar-icon-color`, `sidebar-selected-icon-color`, `sidebar-selected-text-color` | 侧边栏 |
+| `app-header-background-color`, `app-header-text-color` | 仪表盘和其他页面顶部的页眉 |
+| `state-icon-color` | 实体（entity）的图标 |
 
-Cards have variables of their own, from `ha-card`, the container of the built-in cards:
+卡片有自己的变量，来自内置卡片的容器 `ha-card`：
 
-| Variable | What it changes |
+| 变量 | 它改变什么 |
 | --- | --- |
-| `ha-card-background` | The background of cards. Falls back to `card-background-color`. |
-| `ha-card-border-radius` | The roundness of the corners |
-| `ha-card-border-width`, `ha-card-border-color` | The border |
-| `ha-card-box-shadow` | The shadow. None by default. |
-| `ha-card-header-color`, `ha-card-header-font-size` | The title of a card |
+| `ha-card-background` | 卡片的背景。回退到 `card-background-color`。 |
+| `ha-card-border-radius` | 圆角的圆度 |
+| `ha-card-border-width`, `ha-card-border-color` | 边框 |
+| `ha-card-box-shadow` | 阴影。默认没有。 |
+| `ha-card-header-color`, `ha-card-header-font-size` | 卡片的标题 |
 
-The colors of entity states have variables too, like `state-light-active-color` or `state-lock-locked-color`. The full list is in the same file.
+实体状态的颜色也有变量，比如 `state-light-active-color` 或 `state-lock-locked-color`。完整列表在同一个文件中。
 
-### The design tokens
+### 设计令牌
 
-Newer components use [design tokens](/glossary/design-token/), with names that start with `ha-`. Their colors do not come from `primary-color`. A switch, for example, gets its color from `ha-color-fill-primary-normal-resting`, which points to `ha-color-primary-90`, a step of the primary palette. So a theme that only sets `primary-color` leaves those components in the default blue.
+较新的组件使用[设计令牌（design token）](/glossary/design-token/)，其名称以 `ha-` 开头。它们的颜色并不来自 `primary-color`。例如，一个开关的颜色来自 `ha-color-fill-primary-normal-resting`，它指向 `ha-color-primary-90`，即主色板中的一级。因此，只设置 `primary-color` 的主题会让这些组件保持默认的蓝色。
 
-To give them your color too, set the primary palette: eleven steps, from `ha-color-primary-05` (the darkest) to `ha-color-primary-95` (the lightest).
+要让它们也使用你的颜色，请设置主色板：十一个层级，从 `ha-color-primary-05`（最暗）到 `ha-color-primary-95`（最亮）。
 
 ```yaml title="themes/nordic.yaml"
 Nordic:
@@ -92,13 +92,13 @@ Nordic:
   ha-color-primary-95: "#eff3f8"
 ```
 
-`ha-color-primary-40` is the value of `primary-color` in the default theme, so start there. The semantic tokens, like `ha-color-fill-primary-normal-resting`, pick other steps for dark mode by themselves. The tokens and their default values are on the [color](/design/foundations/color/) page of the Design area.
+`ha-color-primary-40` 是默认主题中 `primary-color` 的值，所以从这里开始。语义令牌（semantic token），比如 `ha-color-fill-primary-normal-resting`，会自行在深色模式下选择其他层级。这些令牌及其默认值在 Design 区域的[颜色（color）](/design/foundations/color/)页面上。
 
-The default theme does this for users: when a user picks their own primary color in their profile, the frontend calculates the palette from it. A custom theme gets no such help, and has to set the palette itself.
+默认主题会为用户做这件事：当用户在个人资料中选择自己的主色时，前端会根据它计算出整个色板。自定义主题得不到这样的帮助，必须自己设置色板。
 
-### RGB variants
+### RGB 变体
 
-Some components need a color with transparency, and use an RGB variant of the variable, like `rgb-primary-color`. When you set a variable to a hex color, like `"#5e81ac"`, the frontend creates its RGB variant for you. For a color in any other format, like `rgb(94, 129, 172)`, set the RGB variant yourself, as three numbers:
+有些组件需要带透明度的颜色，会使用变量的 RGB 变体，比如 `rgb-primary-color`。当你把一个变量设置为十六进制颜色（如 `"#5e81ac"`）时，前端会自动为它创建 RGB 变体。对于其他格式的颜色，比如 `rgb(94, 129, 172)`，你需要自己设置 RGB 变体，用三个数字表示：
 
 ```yaml
 Nordic:
@@ -106,13 +106,13 @@ Nordic:
   rgb-primary-color: "94, 129, 172"
 ```
 
-### Variables change
+### 变量会变化
 
-The frontend makes no promise about which variables stay. A variable can be renamed, or stop being used, in any release. Test your theme with every beta.
+前端不承诺哪些变量会一直保留。变量可能会在任何版本中被重命名或停止使用。请用每个 beta 版本测试你的主题。
 
-## Light and dark
+## 浅色和深色
 
-A theme can have different values for light and dark mode, under `modes`:
+主题可以在 `modes` 之下为浅色和深色模式设置不同的值：
 
 ```yaml title="themes/nordic.yaml"
 Nordic:
@@ -129,25 +129,25 @@ Nordic:
       primary-text-color: "#eceff4"
 ```
 
-The variables outside `modes` apply in both. `modes` needs at least one of `light` or `dark`. What the frontend does with it:
+`modes` 之外的变量在两种模式下都适用。`modes` 至少需要 `light` 或 `dark` 中的一个。前端对它的处理方式：
 
-- With both `light` and `dark`, the theme follows the setting of the user, or of their device.
-- With only `dark`, the theme is always dark. With no `dark`, or no `modes` at all, the theme is always light.
-- In dark mode, the frontend first applies its own dark colors, then your variables, then your `dark` values. You only have to set what you want different.
+- 同时有 `light` 和 `dark` 时，主题会跟随用户或其设备的设置。
+- 只有 `dark` 时，主题始终是深色。没有 `dark`，或者完全没有 `modes` 时，主题始终是浅色。
+- 在深色模式下，前端先应用它自己的深色配色，然后是你的变量，最后是你的 `dark` 值。你只需要设置你想改变的部分。
 
-## Test it
+## 测试
 
-1. Copy your theme file into the `themes` folder of your configuration, next to `configuration.yaml`.
-2. Run the `frontend.reload_themes` action, or restart Home Assistant. A theme with an error does not load, and the log says why.
-3. In your profile, select your theme. Switch between light and dark there too, if your theme has both.
-4. Go through the places users see most: a dashboard with several kinds of cards, a more-info dialog, the settings pages, and a form with inputs.
-5. Check that text is readable on every background. The [accessibility](/design/foundations/accessibility/) page has the contrast ratios the built-in theme meets, and what to aim for.
+1. 把你的主题文件复制到配置的 `themes` 文件夹中，与 `configuration.yaml` 放在一起。
+2. 运行 `frontend.reload_themes` 动作，或者重启 Home Assistant。有错误的主题不会加载，日志中会说明原因。
+3. 在你的个人资料中选择你的主题。如果你的主题同时支持浅色和深色，也在那里切换一下。
+4. 浏览用户最常看到的地方：一个包含多种卡片的仪表盘、一个更多信息对话框、设置页面，以及一个带输入框的表单。
+5. 检查文本在每个背景上都清晰可读。[无障碍（accessibility）](/design/foundations/accessibility/)页面列出了内置主题所满足的对比度，以及应该达到的目标。
 
-Check it on a phone too: the narrow layout shows the header and the sidebar differently.
+也要在手机上检查：窄屏布局对页眉和侧边栏的显示方式不同。
 
-## Package it
+## 打包
 
-Put the file in a `themes` folder in your repository:
+把文件放在你仓库的 `themes` 文件夹中：
 
 ```text
 themes/nordic.yaml
@@ -155,9 +155,9 @@ hacs.json
 README.md
 ```
 
-The Marketplace installs everything in your `themes` folder to `themes/<name of your theme file>/` in the user's configuration, and reloads the themes. Before it calls the install done, it checks every YAML file it installed:
+Marketplace 会把你 `themes` 文件夹中的所有内容安装到用户配置的 `themes/<name of your theme file>/` 中，并重新加载主题。在它宣布安装完成之前，它会检查它安装的每个 YAML 文件：
 
-- It has to be valid YAML without tags. `!include`, `!secret`, and other tags are refused: a theme is served to every user, and a tag could pull in any file.
-- It has to pass the same validation as themes in `configuration.yaml`. A broken theme would stop Home Assistant from loading its configuration at the next start.
+- 必须是不带标签（tag）的有效 YAML。`!include`、`!secret` 和其他标签都会被拒绝：主题会提供给每个用户，而标签可能拉取任意文件。
+- 必须通过与 `configuration.yaml` 中主题相同的校验。一个损坏的主题会导致 Home Assistant 在下次启动时无法加载其配置。
 
-Put screenshots in your README, in light and dark: the catalog checks that the README of a theme has images. The [repository structure](/marketplace/reference/repository-structure/#themes) has the details, and the [HACS action](https://github.com/hacs/action) with `category: "theme"` checks it.
+把截图放在你的 README 中，包括浅色和深色：目录会检查主题的 README 中是否有图片。[仓库结构（repository structure）](/marketplace/reference/repository-structure/#themes)中有详细说明，带有 `category: "theme"` 的 [HACS action](https://github.com/hacs/action) 会对此进行检查。

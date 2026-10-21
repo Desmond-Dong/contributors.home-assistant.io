@@ -1,74 +1,74 @@
 ---
-title: The data model
-description: Events, states, context, and actions, the building blocks of everything Home Assistant records.
+title: 数据模型
+description: 事件、状态、上下文和动作，是 Home Assistant 记录的一切的基础构件。
 order: 2
 ---
 
-Home Assistant does a lot, but underneath it is built on a small and simple data model: events, states, and context. Once you know those, the data in the database makes sense.
+Home Assistant 功能繁多，但其底层建立在一个小巧简单的数据模型之上：事件、状态和上下文。了解了这些，数据库中的数据就一目了然了。
 
-## Events
+## 事件
 
-Home Assistant is event driven. Everything that happens is an event: a light turns on, a motion sensor detects motion, an automation is triggered. Every event has a type, some data, a time, and a context.
+Home Assistant 是事件驱动的。发生的一切都是事件：一盏灯被打开、一个运动传感器检测到运动、一个自动化被触发。每个事件都有一个类型、一些数据、一个时间和一个上下文。
 
-A few built-in events you will see a lot:
+你会经常看到的一些内置事件：
 
-| Event type | Fired when | Data |
+| 事件类型 | 触发时机 | 数据 |
 | --- | --- | --- |
-| `state_changed` | The state of an entity changes. | `entity_id`, `old_state`, and `new_state`. When `old_state` is missing, the entity is new. When `new_state` is missing, the entity was removed. |
-| `call_service` | An action is performed, like `light.turn_on`. | `domain`, the action as `service`, and its data as `service_data`. |
-| `automation_triggered` | An automation is triggered. | `name` and `entity_id` of the automation. |
-| `script_started` | A script starts running. | `name` and `entity_id` of the script. |
-| `service_registered` | An integration registers a new action. | `domain`, and the action as `service`. |
-| `homeassistant_start` and `homeassistant_stop` | Home Assistant starts and stops. | Nothing. |
+| `state_changed` | 实体（entity）的状态发生变化。 | `entity_id`、`old_state` 和 `new_state`。当缺少 `old_state` 时，表示该实体是新出现的。当缺少 `new_state` 时，表示该实体已被移除。 |
+| `call_service` | 执行了一个动作（action），例如 `light.turn_on`。 | `domain`、以 `service` 表示的动作，以及以 `service_data` 表示的数据。 |
+| `automation_triggered` | 一个自动化（automation）被触发。 | 自动化的 `name` 和 `entity_id`。 |
+| `script_started` | 一个脚本开始运行。 | 脚本的 `name` 和 `entity_id`。 |
+| `service_registered` | 一个集成（integration）注册了新的动作。 | `domain`，以及以 `service` 表示的动作。 |
+| `homeassistant_start` 和 `homeassistant_stop` | Home Assistant 启动和停止。 | 无。 |
 
-The event names and fields still use the old word "service" for what is now called an [action](/glossary/action/).
+事件名称和字段中仍然使用旧词 "service" 来指代现在所谓的[动作](/glossary/action/)。
 
-Do not rely on `homeassistant_stop` to find out when Home Assistant stopped: if it is not shut down cleanly, the event is never fired. The `recorder_runs` table is more reliable. See [Database schema](/data/reference/database-schema/#recorder-runs).
+不要依赖 `homeassistant_stop` 来判断 Home Assistant 何时停止：如果没有正常关机，该事件将永远不会被触发。`recorder_runs` 表更可靠。参见[数据库模式](/data/reference/database-schema/#recorder-runs)。
 
-## States
+## 状态
 
-Every [entity](/glossary/entity/) has a [state](/glossary/state/). A state has:
+每个[实体](/glossary/entity/)都有一个[状态](/glossary/state/)。一个状态包含：
 
-- The entity ID, in the format `<domain>.<object_id>`, like `light.kitchen`. The domain tells you what kind of entity it is, and which attributes to expect.
-- The state itself, like `on`, or `21.5`.
-- Attributes that describe it further, like the brightness and color of a light.
-- Timestamps: `last_changed`, `last_updated`, and `last_reported`.
+- 实体 ID，格式为 `<domain>.<object_id>`，例如 `light.kitchen`。域（domain）告诉你它是什么类型的实体，以及应该有哪些属性。
+- 状态本身，例如 `on` 或 `21.5`。
+- 进一步描述它的属性，例如一盏灯的亮度和颜色。
+- 时间戳：`last_changed`、`last_updated` 和 `last_reported`。
 
-The three timestamps mean different things:
+这三个时间戳的含义各不相同：
 
-- `last_changed` changes only when the state value changes. A light turning on changes it. A light changing color does not.
-- `last_updated` changes when the state value or any attribute changes. A light turning on, and a light changing color, both change it.
-- `last_reported` changes every time the integration reports the state, even when nothing changed at all.
+- `last_changed` 仅在状态值发生变化时更新。一盏灯被打开会改变它；一盏灯改变颜色则不会。
+- `last_updated` 在状态值或任何属性发生变化时更新。一盏灯被打开，以及一盏灯改变颜色，都会改变它。
+- `last_reported` 在集成每次上报状态时更新，即使什么都没有变化。
 
-With `last_changed` you can tell how long a light has been on. With `last_updated`, how long it has had its current color.
+通过 `last_changed`，你可以知道一盏灯已经开了多久。通过 `last_updated`，你可以知道它保持当前颜色多久了。
 
-## Context
+## 上下文
 
-Context ties events and states together. Whenever something starts a change, like a person in the UI, an automation, or a device, a new context is created. Every event and state change that follows from it carries that context. So you can always trace a change back to what caused it.
+上下文将事件和状态联系在一起。每当有东西发起一个变更时，例如 UI 中的人、一个自动化或一个设备，就会创建一个新的上下文。由它引发的每个事件和状态变更都携带该上下文。因此，你总能将一个变更追溯到它的起因。
 
-A context has three fields:
+一个上下文有三个字段：
 
-| Field | What it is |
+| 字段 | 含义 |
 | --- | --- |
-| `id` | The unique ID of the context. |
-| `user_id` | The user who started the change, if Home Assistant knows it. Mostly filled when the change came from the UI. |
-| `parent_id` | The context that caused this one. An automation creates its own context, even when its trigger had one, and points to the trigger's context here. That keeps the actions of an automation separate from the permissions of the user who triggered it. |
+| `id` | 上下文的唯一 ID。 |
+| `user_id` | 发起变更的用户（如果 Home Assistant 知道的话）。通常在变更来自 UI 时才会填充。 |
+| `parent_id` | 导致此上下文的父上下文。一个自动化会创建自己的上下文，即使它的触发器已经有一个上下文，并在这里指向触发器的上下文。这样可以将自动化的动作与触发它的用户的权限分离开来。 |
 
-For example, when Paulus comes home:
+例如，当 Paulus 回到家时：
 
-1. `device_tracker.paulus_phone` changes from `not_home` to `home`.
-2. The automation "Paulus is home" is triggered, and fires `automation_triggered` with a new context, with the context of step 1 as its parent.
-3. The automation performs `light.turn_on`, which fires `call_service` with the context of step 2.
-4. `light.living_room` turns on, and its new state carries the context of step 2 as well.
+1. `device_tracker.paulus_phone` 从 `not_home` 变为 `home`。
+2. 自动化 "Paulus is home" 被触发，并带着一个新的上下文触发 `automation_triggered` 事件，该上下文以步骤 1 的上下文作为父上下文。
+3. 该自动化执行 `light.turn_on`，并以步骤 2 的上下文触发 `call_service` 事件。
+4. `light.living_room` 被打开，其新状态同样携带步骤 2 的上下文。
 
-The logbook uses this to show what caused a change. Not every trigger creates a context yet, and there is no built-in way to look up the original cause of a context in automations or templates.
+日志簿（logbook）利用这一点来显示是什么导致了变更。目前并非每个触发器都会创建上下文，而且也没有内置的方法可以在自动化或模板中查找某个上下文的最初起因。
 
-## Actions
+## 动作
 
-Integrations offer actions, like `light.turn_on` or `notify.send_message`. An action is identified by its domain and name, and takes data that says what to do, like which light to turn on.
+集成提供动作，例如 `light.turn_on` 或 `notify.send_message`。一个动作由其域和名称标识，并接受说明要做什么的数据，例如要打开哪盏灯。
 
-Actions are not stored in a table of their own. You can find which actions exist from the `service_registered` events, and which ones were performed from the `call_service` events.
+动作不会存储在单独的表中。你可以从 `service_registered` 事件中找到存在哪些动作，从 `call_service` 事件中找到执行了哪些动作。
 
-## Where it is stored
+## 存储位置
 
-The [recorder](/glossary/recorder/) writes events and states to the database. The [Database schema](/data/reference/database-schema/) explains the tables, and [Statistics](/data/reference/statistics/) explains the summaries Home Assistant keeps for the long term.
+[记录器](/glossary/recorder/)（recorder）将事件和状态写入数据库。[数据库模式](/data/reference/database-schema/)解释了各个表，[统计信息](/data/reference/statistics/)解释了 Home Assistant 为长期保存而保留的汇总数据。
