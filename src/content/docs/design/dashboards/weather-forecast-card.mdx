@@ -1,6 +1,6 @@
 ---
-title: Weather forecast card
-description: The weather forecast card shows the current weather and the forecast for the coming days or hours, from a weather entity.
+title: 天气预报卡片
+description: 天气预报卡片显示当前天气以及来自天气实体（entity）的未来几天或几小时的预报。
 sidebarGroup: Information
 ---
 
@@ -10,57 +10,57 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 400px" data-props='{"config": {"type": "weather-forecast", "entity": "weather.home", "forecast_type": "daily"}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The weather forecast card shows a weather entity. The top part has the current condition, with an icon, the temperature, and one more value, like the highest and lowest temperature of today. The bottom part has the forecast: one column per day or per hour, with an icon and the temperature.
+天气预报卡片显示一个天气实体。顶部显示当前天气状况，包括一个图标、温度以及另一个数值，例如今天的最高和最低温度。底部显示预报：每天或每小时一列，带有图标和温度。
 
-Use it once on a dashboard, where people look for the weather. For the outdoor temperature alone, a [tile card](/design/dashboards/tile-card/) of the weather entity or of a temperature sensor takes less room. For the temperature over the last day, use the [history graph card](/design/dashboards/history-graph-card/).
+在仪表盘（dashboard）上使用一次，放在人们查看天气的位置。如果只需要室外温度，使用天气实体或温度传感器的[瓷砖卡片（tile card）](/design/dashboards/tile-card/)占用的空间更少。要查看过去一天的温度，请使用[历史图表卡片（history graph card）](/design/dashboards/history-graph-card/)。
 
-### Daily or hourly
+### 每日或每小时
 
-`forecast_type` sets which forecast the card shows: `daily`, `hourly`, or `twice_daily` (day and night). Which ones are available depends on the weather service. The card editor only offers the types the entity supports.
+`forecast_type` 设置卡片显示哪种预报：`daily`、`hourly` 或 `twice_daily`（白天和夜间）。可用的类型取决于天气服务。卡片编辑器只提供该实体支持的类型。
 
 <Demo hass>
   <hui-card style="width: 400px" data-props='{"config": {"type": "weather-forecast", "entity": "weather.home", "forecast_type": "hourly"}}'></hui-card>
 </Demo>
 
-`forecast_slots` sets how many days or hours the card shows, 5 by default.
+`forecast_slots` 设置卡片显示多少天或多少小时，默认为 5。
 
-### Current weather or forecast only
+### 仅显示当前天气或仅显示预报
 
-`show_current: false` leaves out the current weather, and `show_forecast: false` leaves out the forecast. A card with one of the two is shorter. Use the forecast only version next to a card that already shows the current temperature.
+`show_current: false` 会省略当前天气，`show_forecast: false` 会省略预报。只包含其中之一的卡片会更矮。当旁边的卡片已经显示当前温度时，可以使用仅显示预报的版本。
 
 <Demo hass>
   <hui-card style="width: 400px" data-props='{"config": {"type": "weather-forecast", "entity": "weather.home", "forecast_type": "daily", "show_current": false}}'></hui-card>
   <hui-card style="width: 400px" data-props='{"config": {"type": "weather-forecast", "entity": "weather.home", "show_forecast": false}}'></hui-card>
 </Demo>
 
-### Narrow cards
+### 窄卡片
 
-The card adapts to its width. As it gets narrower, the current weather gets a smaller icon and smaller type, and at the narrowest sizes the name and the extra value disappear. When the card is short, the forecast becomes compact too. So the card works in half a section, but shows more at full width.
+卡片会根据自身宽度进行调整。随着宽度变窄，当前天气会使用更小的图标和更小的字号，在最窄的尺寸下名称和额外数值会消失。当卡片较矮时，预报也会变得紧凑。因此该卡片可以在半个区块中使用，但在全宽时能显示更多内容。
 
 <Demo hass>
   <hui-card style="width: 260px" data-props='{"config": {"type": "weather-forecast", "entity": "weather.home", "forecast_type": "daily", "forecast_slots": 3}}'></hui-card>
 </Demo>
 
-### Content
+### 内容
 
-- The name defaults to the name of the weather entity, which is often the name of the home. Change it only when you show more than one location.
-- `secondary_info_attribute` sets the value under the temperature, like `humidity` or `wind_speed`. By default, it's the highest and lowest temperature of the day, or the precipitation, or the humidity, whichever the entity has first.
-- `round_temperature: true` drops the decimals. Most forecasts aren't precise enough for them anyway.
+- 名称默认为天气实体的名称，通常就是家的名称。只有在显示多个位置时才需要修改它。
+- `secondary_info_attribute` 设置温度下方的数值，例如 `humidity` 或 `wind_speed`。默认情况下，它是当天的最高和最低温度、降水量或湿度，取决于实体首先拥有哪一项。
+- `round_temperature: true` 会去掉小数。反正大多数预报的精度也不足以体现小数。
 
-## Configuration
+## 配置
 
-- `entity` (string, required): the weather entity to show.
-- `name` (string): the name to show. Defaults to the name of the entity.
-- `forecast_type` (string): `daily`, `hourly`, or `twice_daily`.
-- `show_current` (boolean): shows the current weather. Defaults to `true`.
-- `show_forecast` (boolean): shows the forecast. Defaults to `true`.
-- `forecast_slots` (number): how many days or hours the forecast shows. Defaults to `5`.
-- `secondary_info_attribute` (string): the attribute to show under the temperature.
-- `round_temperature` (boolean): rounds temperatures to whole numbers. Defaults to `false`.
-- `theme` (string): a theme for this card only.
-- `tap_action`, `hold_action`, `double_tap_action` (action): what happens when you select, hold, or double tap the card. Selecting it opens the more-info dialog by default.
+- `entity`（字符串，必填）：要显示的天气实体。
+- `name`（字符串）：要显示的名称。默认为实体的名称。
+- `forecast_type`（字符串）：`daily`、`hourly` 或 `twice_daily`。
+- `show_current`（布尔值）：显示当前天气。默认为 `true`。
+- `show_forecast`（布尔值）：显示预报。默认为 `true`。
+- `forecast_slots`（数字）：预报显示多少天或多少小时。默认为 `5`。
+- `secondary_info_attribute`（字符串）：显示在温度下方的属性。
+- `round_temperature`（布尔值）：将温度四舍五入为整数。默认为 `false`。
+- `theme`（字符串）：仅用于此卡片的主题。
+- `tap_action`、`hold_action`、`double_tap_action`（动作）：选择、长按或双击卡片时发生的事情。默认情况下，选择卡片会打开更多信息对话框。
 
 ```yaml
 type: weather-forecast
@@ -69,12 +69,12 @@ forecast_type: hourly
 show_current: false
 ```
 
-## In code
+## 代码实现
 
-The card lives in `src/panels/lovelace/cards/hui-weather-forecast-card.ts`, and the element is `<hui-weather-forecast-card>`. It subscribes to the forecast with the `weather/subscribe_forecast` WebSocket command, so the forecast updates on its own. The helpers for weather, like the icons and the formatting of attributes, live in `src/data/weather.ts`.
+该卡片位于 `src/panels/lovelace/cards/hui-weather-forecast-card.ts`，元素为 `<hui-weather-forecast-card>`。它通过 `weather/subscribe_forecast` WebSocket 命令订阅预报，因此预报会自动更新。天气相关的辅助功能（如图标和属性格式化）位于 `src/data/weather.ts`。
 
-A `ResizeController` measures the card, and adds classes like `narrow`, `very-narrow`, and `short`. The styles use those classes, not media queries, because the width of a card has nothing to do with the width of the screen.
+一个 `ResizeController` 会测量卡片，并添加诸如 `narrow`、`very-narrow` 和 `short` 之类的类。样式使用这些类而不是媒体查询，因为卡片的宽度与屏幕宽度无关。
 
-In the sections view, the card takes the full width of a section. Its height depends on what it shows: one row, plus one for the current weather, plus one for the forecast, plus one more for a daily forecast.
+在区块视图中，卡片占据区块的整个宽度。它的高度取决于显示的内容：一行，加上当前天气的一行，加上预报的一行，如果是每日预报则再加一行。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-weather-forecast-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-weather-forecast-card.ts)

@@ -1,82 +1,82 @@
 ---
-title: Forms and validation
-description: How Home Assistant collects input, marks what is required, and shows what is wrong, so people can fix it.
+title: 表单与校验
+description: Home Assistant 如何收集输入、标明必填项并显示错误，以便用户进行修正。
 order: 1
 ---
 
 import Demo from "../../../../components/docs/Demo.astro";
 import DoDont from "../../../../components/docs/DoDont.astro";
 
-Forms are everywhere in Home Assistant: setting up an integration, editing an automation, changing the settings of an entity. They all follow the same pattern, so people know where to look for the label, the hint, and the problem.
+表单在 Home Assistant 中无处不在：设置集成（integration）、编辑自动化（automation）、更改实体（entity）的设置。它们都遵循相同的模式，因此用户知道在哪里可以找到标签、提示和问题所在。
 
-## When to use
+## 何时使用
 
-Use this pattern whenever you ask people for one or more values. For a single setting that takes effect right away, like turning a feature on or off, a [switch](/design/components/switch/) on its own is enough.
+每当需要用户输入一个或多个值时，都可以使用此模式。对于立即生效的单一设置，例如开启或关闭某个功能，单独使用一个[开关（switch）](/design/components/switch/)就足够了。
 
-## How it works
+## 工作原理
 
-Most forms in the frontend are built with the [form](/design/components/form/) component. You describe the fields, and it picks the right control for each value through a [selector](/design/components/selector/): a text field for a name, a picker for an entity, a switch for a yes or no. Setup and options dialogs of integrations are rendered the same way. That is why they all look and behave alike.
+前端的大多数表单都是使用 [form](/design/components/form/) 组件构建的。你只需描述字段，它会通过[选择器（selector）](/design/components/selector/)为每个值选择合适的控件：名称用文本框，实体用选择器，是或否用开关。集成的设置和选项对话框也以同样的方式渲染。这就是它们外观和行为都一致的原因。
 
 <Demo hass layout="stack">
   <ha-form data-props='{"schema": [{"name": "Name", "required": true, "selector": {"text": {}}}, {"name": "Light", "selector": {"entity": {"filter": {"domain": "light"}}}}, {"name": "Notify me", "selector": {"boolean": {}}}], "data": {"Name": "Hallway"}}'></ha-form>
 </Demo>
 
-### Labels and helper text
+### 标签与辅助文本
 
-- Every field has a visible label. A placeholder is not a label: it disappears as soon as someone starts typing.
-- When a field needs explaining, add helper text. It sits below the field. In `ha-form`, it comes from `computeHelper`.
-- Use the established field layout and the shared components, not a raw input or a control you built yourself.
+- 每个字段都有一个可见的标签。占位符不是标签：一旦用户开始输入，它就会消失。
+- 当某个字段需要解释时，请添加辅助文本。它位于字段下方。在 `ha-form` 中，它来自 `computeHelper`。
+- 使用既定的字段布局和共享组件，而不是原始输入框或你自己构建的控件。
 
-<DoDont doText="A label that stays visible, with a hint below the field." dontText="Only a placeholder. It is gone as soon as someone types.">
+<DoDont doText="标签保持可见，字段下方有提示。" dontText="只有占位符。一旦用户输入，它就消失了。">
   <ha-input slot="do" label="Host" hint="The IP address or hostname of the device"></ha-input>
   <ha-input slot="dont" placeholder="Host"></ha-input>
 </DoDont>
 
-### Required and optional
+### 必填与可选
 
-- A required field shows a `*` after its label.
-- Make fields optional when that makes sense, and give them a sensible default. A good default helps, without getting in the way of people who want something else.
+- 必填字段会在其标签后显示一个 `*`。
+- 在合理的情况下，应将字段设为可选，并为它们提供合理的默认值。好的默认值会有所帮助，同时不会妨碍想要其他设置的用户。
 
-### Validation
+### 校验
 
-A field is checked when the form is submitted. A [text input](/design/components/input/) with `auto-validate` is checked as soon as people leave the field instead.
+字段会在表单提交时进行检查。带有 `auto-validate` 的[文本输入框（text input）](/design/components/input/)则会在用户离开该字段时立即进行检查。
 
-When a value is not valid:
+当某个值无效时：
 
-- The field is marked as invalid, and its validation message takes the place of the helper text.
-- In `ha-form`, an error about one field shows right above that field. An error about the whole form, like a failed connection, shows at the top.
-- Focus moves to the first field with a problem, so keyboard and screen reader users land right on it.
+- 该字段会被标记为无效，其校验消息会取代辅助文本。
+- 在 `ha-form` 中，关于单个字段的错误会显示在该字段的正上方。关于整个表单的错误（例如连接失败）则显示在顶部。
+- 焦点会移动到第一个有问题的字段，这样键盘和屏幕阅读器用户就能直接定位到它。
 
 <Demo hass layout="stack">
   <ha-form data-props='{"schema": [{"name": "Host", "required": true, "selector": {"text": {}}}, {"name": "Port", "selector": {"number": {"min": 1, "max": 65535, "mode": "box"}}}], "data": {"Host": "192.168.1.200", "Port": 8080}, "error": {"base": "Could not connect to the device.", "Host": "No device answers on this address."}}'></ha-form>
 </Demo>
 
-Errors are shown as an [alert](/design/components/alert/), so they have an icon and text, not only a red color. For how to word them, see [Messages](/design/ui-text/messages/).
+错误以[警告框（alert）](/design/components/alert/)的形式显示，因此它们带有图标和文本，而不仅仅是红色。关于如何措辞，请参阅[消息](/design/ui-text/messages/)。
 
-### Forms in dialogs
+### 对话框中的表单
 
-- The form gets focus when the dialog opens: give it the `autofocus` attribute.
-- The main action, like **Save**, sits at the bottom right, next to **Cancel**.
-- Once someone has changed something, the dialog does not close with Escape or by selecting outside of it. See [Confirmations and undo](/design/patterns/confirmations/).
+- 对话框打开时表单会获得焦点：请为其添加 `autofocus` 属性。
+- 主要操作（如**保存**）位于右下角，紧邻**取消**。
+- 一旦用户进行了更改，对话框就不会因按 Escape 键或点击对话框外部而关闭。请参阅[确认与撤销](/design/patterns/confirmations/)。
 
-### Passwords
+### 密码
 
-Form markup should not make password managers mistake a field for something it is not.
+表单标记不应让密码管理器将某个字段误认为是其他类型的字段。
 
-## Accessibility
+## 无障碍
 
-- The label of a field is its accessible name. Keep it, also when space is tight.
-- An invalid [text input](/design/components/input/) sets `aria-invalid`, and its validation message is announced.
-- See [Labels and accessible names](/design/foundations/accessibility/#labels-and-accessible-names) for the WCAG side.
+- 字段的标签就是它的可访问名称（accessible name）。即使空间紧张，也要保留它。
+- 无效的[文本输入框](/design/components/input/)会设置 `aria-invalid`，并且其校验消息会被播报。
+- WCAG 相关内容请参阅[标签与可访问名称](/design/foundations/accessibility/#labels-and-accessible-names)。
 
-## Components
+## 组件
 
-- [Form](/design/components/form/) and [selector](/design/components/selector/)
-- [Text input](/design/components/input/) and [textarea](/design/components/textarea/)
-- [Switch](/design/components/switch/), [select box](/design/components/select-box/), and [select menu](/design/components/select-menu/)
-- [Entity picker](/design/components/entity-picker/), [device picker](/design/components/device-picker/), and [area picker](/design/components/area-picker/)
-- [Alert](/design/components/alert/), for errors and warnings
+- [Form](/design/components/form/) 和 [selector](/design/components/selector/)
+- [文本输入框](/design/components/input/) 和 [textarea](/design/components/textarea/)
+- [开关](/design/components/switch/)、[选择框](/design/components/select-box/) 和 [下拉菜单](/design/components/select-menu/)
+- [实体选择器](/design/components/entity-picker/)、[设备选择器](/design/components/device-picker/) 和 [区域选择器](/design/components/area-picker/)
+- [警告框](/design/components/alert/)，用于错误和警告
 
-## In code
+## 代码实现
 
-Use `ha-form` with a schema. `computeLabel`, `computeHelper`, and `computeError` turn names and error keys into translated text. Set `error` to an object keyed by field name, with `base` for the form as a whole. `warning` works the same way, without `base`. The [form](/design/components/form/) page has the details.
+将 `ha-form` 与 schema 一起使用。`computeLabel`、`computeHelper` 和 `computeError` 会将名称和错误键转换为翻译后的文本。将 `error` 设置为一个以字段名为键的对象，其中 `base` 用于整个表单。`warning` 的工作方式相同，但没有 `base`。详情请参阅 [form](/design/components/form/) 页面。

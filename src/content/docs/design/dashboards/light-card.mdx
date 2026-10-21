@@ -1,6 +1,6 @@
 ---
-title: Light card
-description: The light card shows one light as a big round button, with a ring around it to set the brightness.
+title: 灯光卡片
+description: 灯光卡片将一盏灯显示为一个大的圆形按钮，周围有一个用于设置亮度的圆环。
 sidebarGroup: Controls
 ---
 
@@ -11,37 +11,37 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 300px" data-props='{"config": {"type": "light", "entity": "light.kitchen_ceiling"}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The light card is a big control for one light. The middle is a button with the icon of the light, and a ring around it sets the brightness. Below the button, you see the brightness and the name. Selecting the button toggles the light, holding it opens the more-info dialog. The menu button in the corner also opens the more-info dialog.
+灯光卡片是针对一盏灯的大型控件。中间是一个带有灯的图标的按钮，周围的圆环用于设置亮度。按钮下方显示亮度和名称。点按按钮可切换灯的开关状态，长按会打开更多信息对话框。角落的菜单按钮也会打开更多信息对话框。
 
-The icon takes the color of the light, and gets brighter or dimmer with it. A light that is off is gray. When you drag the ring, the brightness shows in the middle of the card while you move.
+图标会采用灯光的颜色，并随灯光变亮或变暗。关闭的灯显示为灰色。拖动圆环时，移动过程中亮度会显示在卡片中间。
 
-Use the light card when one light is the main thing on a dashboard or in a section, like a wall tablet next to a door. For most lights, a [tile card](/design/dashboards/tile-card/) with the brightness feature fits better: it takes a quarter of the room, and sits nicely next to the other lights in the same area.
+当一盏灯是仪表盘（dashboard）或某个分区中的主要内容时，可以使用灯光卡片，例如门旁的壁挂平板。对于大多数灯，带有亮度功能的[瓷砖卡片（tile card）](/design/dashboards/tile-card/)更合适：它只占用四分之一的空间，并且可以与同一区域（area）中的其他灯很好地并排放置。
 
 <Demo hass>
   <hui-card style="width: 340px" data-props='{"config": {"type": "tile", "entity": "light.living_room_lamp", "features": [{"type": "light-brightness"}]}}'></hui-card>
 </Demo>
 
-### Lights without brightness
+### 不支持亮度的灯
 
-A light that can only turn on and off has no ring. The card still shows the button and the name, so it does not jump around when you swap the entity. For a light like that, a tile card or a [button card](/design/dashboards/button-card/) says the same in less room.
+只能开和关的灯没有圆环。卡片仍会显示按钮和名称，因此在更换实体（entity）时不会发生跳动。对于这样的灯，瓷砖卡片或[按钮卡片（button card）](/design/dashboards/button-card/)能用更少的空间表达相同的内容。
 
-### Content
+### 内容
 
-- Keep the name short. It sits under the button, in the middle of the card, and a long name wraps or gets cut off.
-- Only set an icon when the default icon of the light does not say what it is, like a floor lamp or a light strip.
-- Keep the default actions. People expect a tap to switch the light, and the ring to dim it.
+- 名称要简短。它位于按钮下方、卡片中间，名称过长会换行或被截断。
+- 仅在灯的默认图标无法说明其类型时才设置图标，例如落地灯或灯带。
+- 保留默认操作。人们期望点按可以切换灯的开关，拖动圆环可以调节亮度。
 
-## Configuration
+## 配置
 
-- `entity` (string, required): the light to show. Only entities of the `light` domain work.
-- `name` (string): the name to show. Defaults to the name of the entity.
-- `icon` (string): the icon in the button. Defaults to the icon of the entity.
-- `theme` (string): a theme to apply to this card only.
-- `tap_action` (action): what happens when you select the button. Defaults to `toggle`.
-- `hold_action` (action): what happens when you hold the button. Defaults to `more-info`.
-- `double_tap_action` (action): what happens when you double tap the button. Defaults to `none`.
+- `entity`（字符串，必填）：要显示的灯。仅支持 `light` 域的实体。
+- `name`（字符串）：要显示的名称。默认为实体的名称。
+- `icon`（字符串）：按钮中的图标。默认为实体的图标。
+- `theme`（字符串）：仅应用于此卡片的主题。
+- `tap_action`（操作）：点按按钮时发生的操作。默认为 `toggle`。
+- `hold_action`（操作）：长按按钮时发生的操作。默认为 `more-info`。
+- `double_tap_action`（操作）：双击按钮时发生的操作。默认为 `none`。
 
 ```yaml
 type: light
@@ -50,10 +50,10 @@ name: "Reading lamp"
 icon: "mdi:floor-lamp"
 ```
 
-## In code
+## 代码位置
 
-The card lives in `src/panels/lovelace/cards/hui-light-card.ts`, and the element is `<hui-light-card>`. The ring is the [`<ha-control-circular-slider>`](/design/components/controls/), the same control the thermostat card uses, in `start` mode from 1 to 100 percent. It only shows when the light supports brightness. Setting the brightness calls `light.turn_on` with `brightness_pct`.
+该卡片位于 `src/panels/lovelace/cards/hui-light-card.ts`，元素为 `<hui-light-card>`。圆环是 [`<ha-control-circular-slider>`](/design/components/controls/)，与恒温器卡片使用的控件相同，处于 `start` 模式，范围为 1 到 100 百分比。它仅在灯支持亮度时显示。设置亮度会调用带有 `brightness_pct` 的 `light.turn_on`。
 
-The card has no grid options of its own, so in the sections view it takes the full width of the section and as much height as it needs.
+该卡片没有自己的网格选项，因此在分区视图中它会占据分区的全部宽度，并根据需要占用高度。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-light-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-light-card.ts)

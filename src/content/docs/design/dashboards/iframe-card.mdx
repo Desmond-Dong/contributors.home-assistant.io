@@ -1,6 +1,6 @@
 ---
-title: Webpage card
-description: The webpage card embeds another web page in the dashboard, in an iframe.
+title: 网页卡片
+description: 网页卡片通过 iframe 在仪表盘中嵌入另一个网页。
 sidebarGroup: Media and pictures
 ---
 
@@ -10,50 +10,50 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 100%" data-props='{"config": {"type": "iframe", "url": "https://www.home-assistant.io", "aspect_ratio": "50%"}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The webpage card shows another web page inside the dashboard. In the card picker it is called **Webpage**, and in YAML its type is `iframe`, because that is what it is: an iframe in a card.
+网页卡片在仪表盘（dashboard）中显示另一个网页。在卡片选择器中它被称为**网页**，在 YAML 中其类型为 `iframe`，因为它本质上就是：卡片中的一个 iframe。
 
-Use it for things Home Assistant has no card for, but that live on a web page: a local weather radar, a dashboard of another system on the network, or the status page of a device. Prefer a real card whenever there is one. A card follows the theme, the language, and the state of Home Assistant. An embedded page does none of that, and it scrolls on its own, inside the dashboard.
+将它用于 Home Assistant 没有对应卡片、但存在于网页上的内容：本地天气雷达、网络上另一个系统的仪表盘，或某个设备的状态页面。只要有真正的卡片可用，就优先使用卡片。卡片会遵循 Home Assistant 的主题、语言和状态。而嵌入的页面则不会，并且它会在仪表盘内部自行滚动。
 
-The card has no padding and no title by default. The page fills it from edge to edge, with the rounded corners of the card.
+默认情况下，该卡片没有内边距，也没有标题。页面会填满整个卡片，直到边缘，并带有卡片的圆角。
 
-### Title
+### 标题
 
-With `title`, the card gets a header above the page. Use it when the page itself does not make clear what it is.
+使用 `title` 后，卡片会在页面上方显示一个标题栏。当页面本身无法清楚表明其内容时，可以使用它。
 
 <Demo hass>
   <hui-card style="width: 420px" data-props='{"config": {"type": "iframe", "title": "Home Assistant", "url": "https://www.home-assistant.io", "aspect_ratio": "75%"}}'></hui-card>
 </Demo>
 
-### Aspect ratio
+### 宽高比
 
-Outside the sections view, the height of the card comes from `aspect_ratio`: the height as a percentage of the width, like `50%`, or a ratio, like `16:9`. Without it, the card is half as high as it is wide. In the sections view, the grid decides the size instead, and the aspect ratio is ignored.
+在分区视图（sections view）之外，卡片的高度由 `aspect_ratio` 决定：即高度占宽度的百分比，例如 `50%`，或者一个比例，例如 `16:9`。如果不设置，卡片的高度为其宽度的一半。在分区视图中，大小由网格决定，宽高比会被忽略。
 
-### Hide background
+### 隐藏背景
 
-With `hide_background`, the card has no background, border, or shadow. Use it for a page that has its own background, so it looks like part of the dashboard rather than a page in a box.
+使用 `hide_background` 后，卡片将没有背景、边框和阴影。适用于自带背景的页面，这样它看起来就像是仪表盘的一部分，而不是框在盒子里的一个页面。
 
-### Things that can go wrong
+### 可能出现的问题
 
-Not every page can be embedded. Many websites tell browsers not to show them in an iframe, and then the card stays empty. There is nothing the card can do about that.
+并非所有页面都可以被嵌入。许多网站会告诉浏览器不要在 iframe 中显示它们，此时卡片将保持空白。对此卡片无能为力。
 
-When Home Assistant is served over HTTPS, the page must use HTTPS as well. Browsers block the mix, so instead of an empty card, the card shows an error that explains why.
+当 Home Assistant 通过 HTTPS 提供服务时，页面也必须使用 HTTPS。浏览器会阻止混合内容，因此卡片不会显示为空白，而是显示一个说明原因的错误。
 
-### Content
+### 内容
 
-- Pick a page that works at the size of a card, ideally one made to be embedded.
-- Remember that the page runs inside Home Assistant. Only embed pages you trust.
+- 选择一个在卡片尺寸下能正常显示的页面，最好是为嵌入而设计的页面。
+- 请记住，该页面运行在 Home Assistant 内部。只嵌入你信任的页面。
 
-## Configuration
+## 配置
 
-- `url` (string, required): the address of the page to show.
-- `title` (string): a title above the page.
-- `aspect_ratio` (string): the height of the card, as a percentage of the width or as a ratio. Defaults to `50%`. Ignored in the sections view and the panel view.
-- `hide_background` (boolean): removes the background, border, and shadow of the card. Defaults to `false`.
-- `allow` (string): the permissions policy of the iframe, like `fullscreen; camera`. Defaults to `fullscreen`.
-- `allow_open_top_navigation` (boolean): lets a link in the page, selected by the user, open in the whole window. Defaults to `false`.
-- `disable_sandbox` (boolean): removes the sandbox of the iframe. Defaults to `false`.
+- `url`（字符串，必填）：要显示的页面的地址。
+- `title`（字符串）：页面上方的标题。
+- `aspect_ratio`（字符串）：卡片的高度，以宽度百分比或比例表示。默认为 `50%`。在分区视图和面板视图中会被忽略。
+- `hide_background`（布尔值）：移除卡片的背景、边框和阴影。默认为 `false`。
+- `allow`（字符串）：iframe 的权限策略，例如 `fullscreen; camera`。默认为 `fullscreen`。
+- `allow_open_top_navigation`（布尔值）：允许页面中由用户点击的链接在整个窗口中打开。默认为 `false`。
+- `disable_sandbox`（布尔值）：移除 iframe 的沙箱。默认为 `false`。
 
 ```yaml
 type: iframe
@@ -61,12 +61,12 @@ url: "https://www.home-assistant.io"
 aspect_ratio: "75%"
 ```
 
-## In code
+## 代码实现
 
-The card lives in `src/panels/lovelace/cards/hui-iframe-card.ts`, and the element is `<hui-iframe-card>`. It renders an `<iframe>` inside an `<ha-card>`. The aspect ratio becomes a `padding-top` on the wrapper, with the iframe positioned absolutely on top.
+该卡片位于 `src/panels/lovelace/cards/hui-iframe-card.ts`，元素为 `<hui-iframe-card>`。它在 `<ha-card>` 内部渲染一个 `<iframe>`。宽高比会转换为包裹容器上的 `padding-top`，iframe 则以绝对定位的方式覆盖在其上。
 
-The iframe is sandboxed by default, with the permissions in `IFRAME_SANDBOX` from `src/util/iframe.ts`: forms, pop-ups, scripts, and the same origin among them. The card throws `Invalid URL` for addresses that sanitize to `about:blank`, like `javascript:` URLs, because the sandbox keeps the same origin.
+iframe 默认是沙箱化的，权限来自 `src/util/iframe.ts` 中的 `IFRAME_SANDBOX`：其中包括表单、弹窗、脚本以及同源。对于会被清理为 `about:blank` 的地址（例如 `javascript:` URL），卡片会抛出 `Invalid URL`，因为沙箱会保持同源。
 
-In the sections view, the card takes the full width and 4 rows, and can shrink to 3 columns and 2 rows.
+在分区视图中，卡片占据全宽和 4 行，并且可以缩小到 3 列 2 行。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-iframe-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-iframe-card.ts)

@@ -1,6 +1,6 @@
 ---
-title: Select menu
-description: A compact dropdown for picking one option, like the preset of a fan or the mode of a thermostat.
+title: 选择菜单
+description: 一种紧凑的下拉菜单，用于选择一个选项，例如风扇的预设模式或恒温器的模式。
 sidebarGroup: Showing values
 ---
 
@@ -14,44 +14,44 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   <ha-control-select-menu label="Oscillate" value="false" data-props='{"options": [{"value": "true", "label": "On", "iconPath": "M6 14H9L5 18L1 14H4C4 11.3 5.7 6.6 11 6.1V8.1C7.6 8.6 6 11.9 6 14M20 14C20 11.3 18.3 6.6 13 6.1V8.1C16.4 8.7 18 11.9 18 14H15L19 18L23 14H20Z"}, {"value": "false", "label": "Off", "iconPath": "M13 8.1V6.1C18.3 6.6 20 11.4 20 14H23L20.1 16.9L17.2 14H18C18 11.9 16.4 8.6 13 8.1M7.8 7.1L2.4 1.7L1.1 3L6.3 8.2C4.7 10 4 12.4 4 14H1L5 18L9 14H6C6 12.7 6.6 11 7.9 9.7L20.9 22.7L22.2 21.4L9.3 8.7L7.8 7.1M11 6.1L9.5 6.4L11 7.8V6.1Z"}]}' style="width: 160px"></ha-control-select-menu>
 </Demo>
 
-## Overview
+## 概述
 
-The select menu is a button that shows a setting and its current value. Selecting it opens a menu with the options. It belongs to the [controls](/design/components/controls/) family: the same rounded, tinted look, made for operating a device rather than filling in a form.
+选择菜单是一个按钮，用于显示某个设置及其当前值。点击它会打开一个包含各选项的菜单。它属于[控件（controls）](/design/components/controls/)家族：同样采用圆角、着色的外观，专为操作设备而非填写表单而设计。
 
-You find it in two places:
+它出现在两个地方：
 
-- In the **more-info dialogs**, below the main control, for the secondary settings of a device. Like the preset, direction, and oscillation of a fan, or the fan and swing mode of a thermostat. Several of them sit next to each other in a row, each 120 to 160 pixels wide.
-- In the **features of the tile card**, as the dropdown style of a mode feature. There it spans the full width of the card.
+- 在**更多信息对话框**中，位于主控件下方，用于设备的次要设置。例如风扇的预设模式、风向和摆动，或恒温器的风扇和扫风模式。多个选择菜单并排显示在一行中，每个宽度为 120 到 160 像素。
+- 在**磁贴卡片（tile card）的功能**中，作为模式功能的下拉菜单样式。在那里它会横跨卡片的整个宽度。
 
-## When to use
+## 何时使用
 
-Use a select menu for:
+在以下情况使用选择菜单：
 
-- A setting of a device with more options than fit in a row
-- A setting people change less often
+- 设备的某个设置选项较多，一行放不下
+- 用户不常更改的设置
 
-Don't use a select menu for:
+不要在以下情况使用选择菜单：
 
-- A handful of options that people switch between all the time. Use a control select, which shows all options at once, see [controls](/design/components/controls/).
-- Forms and settings. Use a regular select instead.
-- A list of actions. Use a [dropdown](/design/components/dropdown/).
+- 用户频繁切换的少量选项。请使用控件选择器（control select），它会同时显示所有选项，参见[控件](/design/components/controls/)。
+- 表单和设置页面。请改用普通的选择器。
+- 操作列表。请使用[下拉菜单（dropdown）](/design/components/dropdown/)。
 
-## Anatomy
+## 结构剖析
 
-1. **Container**: the rounded button with a tinted background
-2. **Icon**: the icon of the selected option, or a default icon for the setting
-3. **Label**: the name of the setting, in small text
-4. **Value**: the label of the selected option, below the label
-5. **Arrow**: optional, a dropdown arrow at the end
-6. **Menu**: the list of options that opens below the button, each with its own icon. The selected option is highlighted.
+1. **容器**：带有着色背景的圆角按钮
+2. **图标**：所选选项的图标，或该设置的默认图标
+3. **标签**：设置的名称，以小号文字显示
+4. **值**：所选选项的标签，位于标签下方
+5. **箭头**：可选，位于末尾的下拉箭头
+6. **菜单**：在按钮下方打开的选项列表，每个选项都有自己的图标。所选选项会高亮显示。
 
-## Variants
+## 变体
 
-### Label and value
+### 标签和值
 
-The default. The label names the setting, the value below it shows the current choice.
+默认样式。标签显示设置的名称，其下方的值显示当前的选择。
 
-When there is no value, the label is shown on its own, at the size of the value.
+当没有值时，标签会单独显示，并使用值的大小。
 
 <Demo>
   <ha-control-select-menu label="Swing mode" data-props='{"options": [{"value": "off", "label": "Off"}, {"value": "vertical", "label": "Vertical"}, {"value": "horizontal", "label": "Horizontal"}]}' style="width: 160px">
@@ -59,9 +59,9 @@ When there is no value, the label is shown on its own, at the size of the value.
   </ha-control-select-menu>
 </Demo>
 
-### In a tile card feature
+### 在磁贴卡片功能中
 
-In a tile card, the select menu hides its label and shows an arrow. The card already says what the feature is about, so only the value is shown, with an arrow at the end that says it opens a menu. The height follows the feature, 42 pixels.
+在磁贴卡片中，选择菜单会隐藏其标签并显示一个箭头。卡片已经说明了该功能的用途，因此只显示值，末尾的箭头表示点击会打开菜单。高度跟随功能，为 42 像素。
 
 <Demo layout="stack">
   <ha-control-select-menu label="Fan mode" value="medium" hide-label show-arrow data-props='{"options": [{"value": "low", "label": "Low"}, {"value": "medium", "label": "Medium"}, {"value": "high", "label": "High"}]}' style="display: block; width: 320px; --control-select-menu-height: 42px">
@@ -69,13 +69,13 @@ In a tile card, the select menu hides its label and shows an arrow. The card alr
   </ha-control-select-menu>
 </Demo>
 
-## Behavior
+## 行为
 
-- **Hover**: the tint of the background changes to a darker neutral color.
-- **Focus**: keyboard focus shows a 2px ring around the button, in the secondary text color.
-- **Open**: selecting the button opens the menu below it. The menu is at least as wide as the button.
-- **Selected**: in the menu, the selected option is shown in medium weight and the primary color, on a light primary background.
-- **Disabled**: the button shows its text in the disabled color, and does not open. The more-info dialogs disable it while the entity is unavailable.
+- **悬停**：背景的色调变为更深的中性色。
+- **聚焦**：键盘聚焦时，按钮周围会显示一个 2px 的圆环，颜色为次要文字颜色。
+- **打开**：点击按钮会在其下方打开菜单。菜单的宽度至少与按钮相同。
+- **选中**：在菜单中，所选选项以中等字重和主色显示，背景为浅色主色背景。
+- **禁用**：按钮的文字以禁用颜色显示，且无法打开。当实体（entity）不可用时，更多信息对话框会将其禁用。
 
 <Demo>
   <ha-control-select-menu label="Preset" value="eco" disabled data-props='{"options": [{"value": "eco", "label": "Eco"}]}' style="width: 160px">
@@ -83,37 +83,37 @@ In a tile card, the select menu hides its label and shows an arrow. The card alr
   </ha-control-select-menu>
 </Demo>
 
-Selecting an option does not change the value on its own. The page sets the new value, usually after the entity has changed.
+选择一个选项本身不会改变值。由页面来设置新值，通常是在实体发生变化之后。
 
-Long labels and values are cut off with an ellipsis. The icon at the start shows the icon of the selected option when it has one. Otherwise it shows a default icon for the setting.
+过长的标签和值会以省略号截断。起始处的图标会显示所选选项的图标（如果有的话）。否则会显示该设置的默认图标。
 
-## Specs
+## 规格
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Height | 48px | `--control-select-menu-height` |
-| Padding | 6px top and bottom, 10px left and right | `--control-select-menu-padding` |
-| Corner radius | 12px | `--ha-border-radius-lg`, through `--control-select-menu-border-radius` |
-| Gap between icon, text, and arrow | 10px | None |
-| Icon size | 20px | `--mdc-icon-size` |
-| Label size | 12px, letter spacing 0.4px | `--ha-font-size-s` |
-| Value size | 14px | `--ha-font-size-m` |
-| Font weight | 400 | `--ha-font-weight-normal` |
-| Line height | 1.4 | None |
-| Transition | 180ms, ease-in-out | None |
-| Height of a menu option | At least 40px | `--ha-space-10` |
+| 高度 | 48px | `--control-select-menu-height` |
+| 内边距 | 上下 6px，左右 10px | `--control-select-menu-padding` |
+| 圆角半径 | 12px | `--ha-border-radius-lg`，通过 `--control-select-menu-border-radius` |
+| 图标、文字和箭头之间的间距 | 10px | 无 |
+| 图标大小 | 20px | `--mdc-icon-size` |
+| 标签大小 | 12px，字间距 0.4px | `--ha-font-size-s` |
+| 值大小 | 14px | `--ha-font-size-m` |
+| 字重 | 400 | `--ha-font-weight-normal` |
+| 行高 | 1.4 | 无 |
+| 过渡 | 180ms，ease-in-out | 无 |
+| 菜单选项的高度 | 至少 40px | `--ha-space-10` |
 
-| State | Background | Text |
+| 状态 | 背景 | 文字 |
 | --- | --- | --- |
-| Resting | `--disabled-color` at 20% opacity | `--primary-text-color` |
-| Hover | `--ha-color-on-neutral-quiet` at 20% opacity | `--primary-text-color` |
-| Focus | Resting background, with a 2px ring in `--secondary-text-color` | `--primary-text-color` |
-| Disabled | `--disabled-color` at 20% opacity | `--disabled-color` |
-| Selected option in the menu | `--ha-color-fill-primary-quiet-resting`, `--ha-color-fill-primary-quiet-hover` on hover | `--primary-color` |
+| 静止 | `--disabled-color`，20% 不透明度 | `--primary-text-color` |
+| 悬停 | `--ha-color-on-neutral-quiet`，20% 不透明度 | `--primary-text-color` |
+| 聚焦 | 静止背景，带有一个 2px 的 `--secondary-text-color` 圆环 | `--primary-text-color` |
+| 禁用 | `--disabled-color`，20% 不透明度 | `--disabled-color` |
+| 菜单中的选中选项 | `--ha-color-fill-primary-quiet-resting`，悬停时为 `--ha-color-fill-primary-quiet-hover` | `--primary-color` |
 
-## Guidelines
+## 准则
 
-<DoDont doText="Keep the label and the value short." dontText="Use long text that gets cut off in a narrow button.">
+<DoDont doText="保持标签和值简短。" dontText="使用会在狭窄按钮中被截断的长文本。">
   <ha-control-select-menu slot="do" label="Preset" value="eco" data-props='{"options": [{"value": "eco", "label": "Eco"}]}' style="width: 160px">
     <ha-svg-icon slot="icon" path="M8 13C6.14 13 4.59 14.28 4.14 16H2V18H4.14C4.59 19.72 6.14 21 8 21S11.41 19.72 11.86 18H22V16H11.86C11.41 14.28 9.86 13 8 13M8 19C6.9 19 6 18.1 6 17C6 15.9 6.9 15 8 15S10 15.9 10 17C10 18.1 9.1 19 8 19M19.86 6C19.41 4.28 17.86 3 16 3S12.59 4.28 12.14 6H2V8H12.14C12.59 9.72 14.14 11 16 11S19.41 9.72 19.86 8H22V6H19.86M16 9C14.9 9 14 8.1 14 7C14 5.9 14.9 5 16 5S18 5.9 18 7C18 8.1 17.1 9 16 9Z"></ha-svg-icon>
   </ha-control-select-menu>
@@ -122,51 +122,51 @@ Long labels and values are cut off with an ellipsis. The icon at the start shows
   </ha-control-select-menu>
 </DoDont>
 
-- Only hide the label where the surroundings already name the setting, like the tile card does.
+- 仅在周围环境已经说明了设置名称的情况下才隐藏标签，例如磁贴卡片。
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-The button opens a [dropdown](/design/components/dropdown/), and the menu follows its keyboard behavior:
+该按钮会打开一个[下拉菜单](/design/components/dropdown/)，菜单遵循其键盘行为：
 
-| Key | Action |
+| 按键 | 操作 |
 | --- | --- |
-| <kbd>Tab</kbd> | Moves focus to the button. A disabled select menu is skipped. |
-| <kbd>Enter</kbd> or <kbd>Space</kbd> | Opens the menu. In the menu, selects the focused option. |
-| <kbd>Arrow down</kbd> and <kbd>Arrow up</kbd> | Moves to the next or previous option. |
-| <kbd>Home</kbd> and <kbd>End</kbd> | Moves to the first or last option. |
-| A letter | Moves to the first option that starts with the typed text. |
-| <kbd>Escape</kbd> | Closes the menu, and moves focus back to the button. |
+| <kbd>Tab</kbd> | 将焦点移至按钮。禁用的选择菜单会被跳过。 |
+| <kbd>Enter</kbd> 或 <kbd>Space</kbd> | 打开菜单。在菜单中，选中当前聚焦的选项。 |
+| <kbd>Arrow down</kbd> 和 <kbd>Arrow up</kbd> | 移动到下一个或上一个选项。 |
+| <kbd>Home</kbd> 和 <kbd>End</kbd> | 移动到第一个或最后一个选项。 |
+| 字母键 | 移动到第一个以所输入文字开头的选项。 |
+| <kbd>Escape</kbd> | 关闭菜单，并将焦点移回按钮。 |
 
-### Focus
+### 聚焦
 
-Keyboard focus shows a 2px ring around the button, in the secondary text color.
+键盘聚焦时，按钮周围会显示一个 2px 的圆环，颜色为次要文字颜色。
 
-### Target size
+### 目标大小
 
-The button is 48px high. Its width is set by the page, 120 to 160 pixels in the more-info dialogs.
+按钮高度为 48px。其宽度由页面设置，在更多信息对话框中为 120 到 160 像素。
 
-### Screen readers
+### 屏幕阅读器
 
-The button is announced with its label and value, and as a button that opens a menu. Without the label, only the value is announced. The options are announced as menu items. The selected option looks selected, but is not announced as selected.
+按钮会连同其标签和值一起播报，并被识别为一个打开菜单的按钮。没有标签时，只播报值。各选项会被播报为菜单项。所选选项在视觉上显示为选中状态，但不会被播报为已选中。
 
-### In the code
+### 在代码中
 
-- The button is a native `<button>`, with `aria-haspopup="menu"` and `aria-expanded` set by the dropdown.
-- The accessible name is the text inside the button: the label and the value. With `hide-label`, the label is not rendered at all, so screen readers only get the value.
-- SVG icons are hidden from screen readers.
-- The menu has the role `menu`, and each option has the role `menuitem`. The selected option is only marked visually.
+- 该按钮是一个原生 `<button>`，带有 `aria-haspopup="menu"`，`aria-expanded` 由下拉菜单设置。
+- 无障碍名称是按钮内的文字：标签和值。使用 `hide-label` 时，标签完全不会被渲染，因此屏幕阅读器只能获取到值。
+- SVG 图标对屏幕阅读器隐藏。
+- 菜单具有 `menu` 角色，每个选项具有 `menuitem` 角色。所选选项仅在视觉上进行标记。
 
-## Related
+## 相关内容
 
-- [Controls](/design/components/controls/): the family the select menu belongs to
-- [Dropdown](/design/components/dropdown/): the menu it opens
-- [Tile card](/design/dashboards/tile-card/): where it shows up as a feature
+- [控件](/design/components/controls/)：选择菜单所属的家族
+- [下拉菜单](/design/components/dropdown/)：它打开的菜单
+- [磁贴卡片](/design/dashboards/tile-card/)：它作为功能出现的地方
 
-## In code
+## 代码实现
 
-The element is `<ha-control-select-menu>`. The menu is an [`ha-dropdown`](/design/components/dropdown/), opened below the button, and at least as wide as the button.
+该元素是 `<ha-control-select-menu>`。菜单是一个 [`ha-dropdown`](/design/components/dropdown/)，在按钮下方打开，宽度至少与按钮相同。
 
 ```ts
 html`<ha-control-select-menu
@@ -182,41 +182,41 @@ html`<ha-control-select-menu
 </ha-control-select-menu>`
 ```
 
-The component does not change its own value when an option is selected. It fires `wa-select`, and you set `value` from there, usually after the entity has changed. That is also why the demos on this page keep their value.
+该组件在选中选项时不会自行更改其值。它会触发 `wa-select` 事件，由你在那里设置 `value`，通常是在实体发生变化之后。这也是本页上的演示保持其值不变的原因。
 
-### Attributes
+### 属性（Attributes）
 
-- `label`: the name of the setting.
-- `value`: the `value` of the selected option.
-- `hide-label`: shows only the value, without the label.
-- `show-arrow`: shows a dropdown arrow at the end.
-- `disabled`: disables the select menu. It does not open.
+- `label`：设置的名称。
+- `value`：所选选项的 `value`。
+- `hide-label`：只显示值，不显示标签。
+- `show-arrow`：在末尾显示一个下拉箭头。
+- `disabled`：禁用选择菜单。它将无法打开。
 
-### Properties
+### 特性（Properties）
 
-These can only be set as properties:
+这些只能作为特性设置：
 
-- `options`: an array of options. Each has a `value` and a `label`, and optionally an icon: `iconPath` for SVG path data, or `icon` for an icon name like `mdi:fan`.
-- `renderIcon`: a function that returns the icon for a value. Used for options without `iconPath` or `icon`, in the menu and on the button.
+- `options`：选项数组。每个选项包含一个 `value` 和一个 `label`，还可以选择包含一个图标：`iconPath` 用于 SVG 路径数据，或 `icon` 用于图标名称（如 `mdi:fan`）。
+- `renderIcon`：一个为值返回图标的函数。用于没有 `iconPath` 或 `icon` 的选项，在菜单和按钮上均适用。
 
-### Slots
+### 插槽（Slots）
 
-- `icon`: the icon on the button, when the selected option has no icon of its own.
+- `icon`：按钮上的图标，当所选选项没有自己的图标时使用。
 
-### Events
+### 事件
 
-- `wa-select`: an option was selected. `detail.item.value` is its `value`.
+- `wa-select`：选中了一个选项。`detail.item.value` 是其 `value`。
 
-### Styling
+### 样式
 
-- `--control-select-menu-height`: defaults to `48px`.
-- `--control-select-menu-padding`: defaults to `6px 10px`.
-- `--control-select-menu-border-radius`: defaults to `var(--ha-border-radius-lg)`.
-- `--control-select-menu-background-color`: defaults to `var(--disabled-color)`.
-- `--control-select-menu-background-opacity`: defaults to `0.2`.
-- `--control-select-menu-focus-color`: the focus ring. Defaults to `var(--secondary-text-color)`.
-- `--mdc-icon-size`: the icon size. Defaults to `20px`.
+- `--control-select-menu-height`：默认为 `48px`。
+- `--control-select-menu-padding`：默认为 `6px 10px`。
+- `--control-select-menu-border-radius`：默认为 `var(--ha-border-radius-lg)`。
+- `--control-select-menu-background-color`：默认为 `var(--disabled-color)`。
+- `--control-select-menu-background-opacity`：默认为 `0.2`。
+- `--control-select-menu-focus-color`：聚焦圆环。默认为 `var(--secondary-text-color)`。
+- `--mdc-icon-size`：图标大小。默认为 `20px`。
 
-The element is `inline-block`, and as wide as its content. Set a `width`, or `display: block` to fill the container, like the tile card features do.
+该元素是 `inline-block`，宽度与其内容相同。可以设置 `width`，或使用 `display: block` 来填满容器，就像磁贴卡片功能那样。
 
-Source: [`src/components/ha-control-select-menu.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-select-menu.ts)
+源码：[`src/components/ha-control-select-menu.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-select-menu.ts)

@@ -1,6 +1,6 @@
 ---
-title: Timer
-description: The more-info view of a timer helper, with a live countdown, a duration field, and buttons to start, pause, and cancel.
+title: 定时器
+description: 定时器辅助元素（helper）的更多信息视图，包含实时倒计时、时长输入框，以及启动、暂停和取消按钮。
 sidebarGroup: Helpers
 ---
 
@@ -11,29 +11,29 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="timer.tea"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 显示内容
 
-The state at the top of a timer is the countdown. While the timer runs, it ticks down live, like **22:52**. When it is paused, the state is added, like **22:52 (Paused)**. When it is idle, it shows **Idle**.
+定时器顶部的状态是倒计时。定时器运行时，它会实时递减，例如 **22:52**。暂停时，状态会附加说明，例如 **22:52 (Paused)**。空闲时，则显示 **Idle**。
 
-Below it is a duration field, with hours, minutes, and seconds. It starts at the duration the timer is set up with, and stays there while the timer runs, so it doesn't jump around with the countdown. Change it to start the timer for a different time.
+其下方是一个时长输入框，包含小时、分钟和秒。它初始为定时器设置好的时长，并在定时器运行期间保持不变，因此不会随倒计时跳动。修改它即可让定时器以不同的时间启动。
 
-Below the field, a row of text [buttons](/design/components/button/) holds the actions. Which ones show depends on the state:
+输入框下方是一排文本[按钮](/design/components/button/)，用于放置各项操作。显示哪些按钮取决于状态：
 
-- **Idle**: **Start**, to start the timer with the duration in the field.
-- **Active**: **Set**, to restart with the duration in the field, **Pause**, **Cancel**, and **Finish**.
-- **Paused**: **Set**, **Start** to continue, **Cancel**, and **Finish**.
+- **Idle（空闲）**：**Start（启动）**，以输入框中的时长启动定时器。
+- **Active（活动）**：**Set（设置）**，以输入框中的时长重新启动，以及 **Pause（暂停）**、**Cancel（取消）** 和 **Finish（结束）**。
+- **Paused（已暂停）**：**Set（设置）**、**Start（启动）**（用于继续）、**Cancel（取消）** 和 **Finish（结束）**。
 
-The laundry timer is running, so it gets **Set**, **Pause**, **Cancel**, and **Finish**. The tea timer is idle, so it only gets **Start**.
+洗衣定时器正在运行，因此它显示 **Set（设置）**、**Pause（暂停）**、**Cancel（取消）** 和 **Finish（结束）**。茶定时器处于空闲状态，因此只显示 **Start（启动）**。
 
-## Design notes
+## 设计说明
 
-- The actions are plain text buttons, not big controls. A timer is about the time, so the countdown and the field get the attention.
-- When the timer finishes while the dialog is open, the countdown pulses twice, so you notice even when you are not looking at the numbers.
-- Timers can have presets, a row of fixed durations below the actions to start the timer with one tap. Those come from the entity settings, and are not part of these demos.
-- The duration you enter can be longer than the duration the timer is set up with.
+- 这些操作是纯文本按钮，而不是大型控件。定时器的核心是时间，因此倒计时和输入框才是视觉焦点。
+- 当对话框打开时定时器结束，倒计时会闪烁两次，即使你没有盯着数字也能注意到。
+- 定时器可以有预设，即操作下方的一排固定时长，一键即可启动定时器。这些预设来自实体（entity）设置，不包含在这些演示中。
+- 你输入的时长可以长于定时器设置好的时长。
 
-## In code
+## 代码实现
 
-The view is `more-info-timer` in `src/dialogs/more-info/controls/more-info-timer.ts`. The presets are `ha-more-info-timer-presets` in `src/dialogs/more-info/components/timers/`. The countdown text comes from `computeDisplayTimer` in `src/data/timer.ts`.
+该视图是 `src/dialogs/more-info/controls/more-info-timer.ts` 中的 `more-info-timer`。预设是 `src/dialogs/more-info/components/timers/` 中的 `ha-more-info-timer-presets`。倒计时文本来自 `src/data/timer.ts` 中的 `computeDisplayTimer`。
 
 Source: [`more-info-timer.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-timer.ts)

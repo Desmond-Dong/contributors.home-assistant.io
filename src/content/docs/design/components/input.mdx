@@ -1,6 +1,6 @@
 ---
-title: Text input
-description: Text inputs let people enter a single line of text, like a name, a number, or a password.
+title: 文本输入框
+description: 文本输入框让人们输入单行文本，例如名称、数字或密码。
 sidebarGroup: Input
 ---
 
@@ -12,42 +12,42 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   <ha-input label="Email" type="email" placeholder="you@example.com"></ha-input>
 </Demo>
 
-## Overview
+## 概述
 
-A text input lets people type a short value on a single line: a name, an address, a number, or a password. Its type tells the browser what kind of value to expect, which gives people the right keyboard on their phone, the right picker for a date or time, and basic validation for free.
+文本输入框让人们在一行内输入一个简短的值：名称、地址、数字或密码。它的类型会告诉浏览器期望什么样的值，从而在手机上显示正确的键盘、为日期或时间提供正确的选择器，并免费获得基本的校验。
 
-## When to use
+## 何时使用
 
-Use a text input for:
+在以下情况使用文本输入框：
 
-- A short value that people type, like a name, an email address, or a port
-- A number, a date, a time, a web address, or a password
+- 人们需要输入的简短值，例如名称、电子邮件地址或端口
+- 数字、日期、时间、网址或密码
 
-Don't use a text input for:
+不要在以下情况使用文本输入框：
 
-- Text that can run over several lines, like a description. Use a [textarea](/design/components/textarea/).
-- A value from a known set. Let people pick it, with a [select box](/design/components/select-box/) or a [picker](/design/components/entity-picker/).
-- A value in a range, where the exact number matters less than the position. Use a [slider](/design/components/slider/).
+- 可能跨越多行的文本，例如描述。请使用 [textarea](/design/components/textarea/)。
+- 来自已知集合的值。让人们通过 [select box](/design/components/select-box/) 或 [picker](/design/components/entity-picker/) 来选择。
+- 一个范围内的值，此时具体数字不如位置重要。请使用 [slider](/design/components/slider/)。
 
-## Anatomy
+## 结构
 
-1. **Container**: the field, filled with a line at the bottom, or outlined
-2. **Label**: names the value. It sits inside the field, and moves up when the field has focus or a value.
-3. **Start**: optional content before the value, like an icon or a prefix
-4. **Value**: the native input where people type
-5. **Clear button**: optional, shows when the field has a value
-6. **Password toggle**: optional, reveals or hides a password
-7. **End**: optional content after the value, like a unit
-8. **Hint**: optional help text below the field, replaced by the validation message when the value is invalid
+1. **容器**：输入框，底部带一条线的填充样式，或描边样式
+2. **标签**：为值命名。它位于输入框内部，当输入框获得焦点或有值时会上移。
+3. **起始区**：值之前的可选内容，例如图标或前缀
+4. **值**：人们输入内容的原生输入框
+5. **清除按钮**：可选，当输入框有值时显示
+6. **密码切换按钮**：可选，显示或隐藏密码
+7. **结束区**：值之后的可选内容，例如单位
+8. **提示**：输入框下方的可选帮助文本，当值无效时会被校验消息替换
 
-## Variants
+## 变体
 
-### Appearance
+### 外观
 
-There are two appearances:
+有两种外观：
 
-- **Material** is the default: a filled field with a line at the bottom. Use it in forms, dialogs, and settings.
-- **Outlined** has a border all around, and becomes compact when it has no label. The frontend uses it mostly for search and filter fields in toolbars, lists, and tables, where a filled field would be too heavy.
+- **Material** 是默认样式：底部带一条线的填充输入框。在表单、对话框和设置中使用。
+- **Outlined** 四周有边框，在没有标签时会变得紧凑。前端主要在工具栏、列表和表格中的搜索和筛选字段使用它，因为在这些地方填充式输入框会显得过于厚重。
 
 <Demo layout="stack">
   <ha-input label="Material" value="Living room"></ha-input>
@@ -55,9 +55,9 @@ There are two appearances:
   <ha-input appearance="outlined" placeholder="Search devices"></ha-input>
 </Demo>
 
-### Type
+### 类型
 
-Pick the type that matches the value: a number field for numbers, an email field for email addresses, a URL field for web addresses, and a password field for anything secret. Give a password field the button that shows the password, so people can check what they typed.
+选择与值匹配的类型：数字用 number 字段，电子邮件地址用 email 字段，网址用 URL 字段，任何机密内容用 password 字段。为密码字段提供显示密码的按钮，让人们可以检查自己输入的内容。
 
 <Demo layout="stack">
   <ha-input label="Volume" type="number" value="42"></ha-input>
@@ -66,17 +66,17 @@ Pick the type that matches the value: a number field for numbers, an email field
   <ha-input label="Date" type="date"></ha-input>
 </Demo>
 
-### Hint
+### 提示
 
-Use the hint for extra context that helps people fill in the field, like the expected format or where to find the value. Keep it to a single sentence.
+使用提示来提供帮助人们填写输入框的额外上下文，例如期望的格式或在哪里可以找到该值。保持为一句话。
 
 <Demo layout="stack">
   <ha-input label="Port" type="number" value="8123" hint="The port Home Assistant listens on."></ha-input>
 </Demo>
 
-### Prefix and suffix
+### 前缀和后缀
 
-Put short text or an icon before or after the value. A unit after the value is the most common use: seconds, percent, or kilograms. It saves people from guessing what the number means, and keeps the unit out of the value itself.
+在值之前或之后放置简短的文本或图标。值之后的单位是最常见的用法：秒、百分比或千克。这让人们不必猜测数字的含义，同时使单位不包含在值本身中。
 
 <Demo layout="stack">
   <ha-input label="Delay" type="number" value="30">
@@ -87,24 +87,24 @@ Put short text or an icon before or after the value. A unit after the value is t
   </ha-input>
 </Demo>
 
-### Clear button
+### 清除按钮
 
-Add a clear button when people often want to start over, like in a search field. It shows as soon as there is a value.
+当人们经常想要重新开始时（例如在搜索框中），添加清除按钮。只要输入框有值，它就会显示。
 
 <Demo layout="stack">
   <ha-input label="Filter" value="kitchen" with-clear></ha-input>
 </Demo>
 
-## Behavior
+## 行为
 
-- **Empty**: the label sits inside the field, at the size of the text.
-- **Hover**: the material field changes to the hover background. The outlined field changes its border color.
-- **Focus**: the material field gets a thicker line at the bottom in the primary color, and the label turns the primary color. The outlined field gets a border in the primary color.
-- **Filled**: once the field has a value or focus, the label moves up and gets smaller. With a placeholder, a date, or a color type, the label is always up.
-- **Required**: the label gets a `*` marker. The field must have a value for the form to be valid.
-- **Disabled**: the material field gets the disabled background, the field and the label are dimmed to half their opacity, and the value can't be changed or focused.
-- **Read-only**: shows a value that people can read and copy, but not change.
-- **Invalid**: the label and the line at the bottom turn to the danger color, and the validation message takes the place of the hint. A field becomes invalid when the code marks it invalid, when a form check finds the value invalid, or, for a field that checks itself, when it loses focus. It turns valid again as soon as people type a valid value.
+- **空**：标签位于输入框内部，大小与文本相同。
+- **悬停**：material 输入框变为悬停背景色。outlined 输入框改变其边框颜色。
+- **聚焦**：material 输入框底部的线变粗并变为主色调，标签变为主色调。outlined 输入框的边框变为主色调。
+- **已填写**：一旦输入框有值或获得焦点，标签就会上移并变小。使用 placeholder、date 或 color 类型时，标签始终处于上移状态。
+- **必填**：标签会带有一个 `*` 标记。输入框必须有值，表单才有效。
+- **禁用**：material 输入框使用禁用背景色，输入框和标签的不透明度减半，值无法更改或聚焦。
+- **只读**：显示一个人们可以阅读和复制但不能更改的值。
+- **无效**：标签和底部的线变为危险色，校验消息取代提示。当代码将输入框标记为无效、表单检查发现值无效，或者（对于自校验的输入框）失去焦点时，输入框变为无效。一旦人们输入了有效的值，它就会立即恢复为有效。
 
 <Demo layout="stack">
   <ha-input label="Name" required></ha-input>
@@ -113,130 +113,130 @@ Add a clear button when people often want to start over, like in a search field.
   <ha-input label="Port" value="99999" invalid validation-message="Enter a port between 1 and 65535."></ha-input>
 </Demo>
 
-Pressing <kbd>Enter</kbd> in the field submits the form it is in.
+在输入框中按下 <kbd>Enter</kbd> 会提交其所在的表单。
 
-## Specs
+## 规格
 
-### Size
+### 尺寸
 
-| Property | Material | Outlined with label | Outlined without label |
+| 属性 | Material | 带标签的 Outlined | 不带标签的 Outlined |
 | --- | --- | --- | --- |
-| Field height | 56px | 56px | 32px |
-| Padding left and right | 16px (`--ha-space-4`) | 16px (`--ha-space-4`) | 8px (`--ha-space-2`) |
-| Corner radius | 4px at the top (`--ha-border-radius-sm`), 0 at the bottom (`--ha-border-radius-square`) | 8px (`--ha-border-radius-md`) | 8px (`--ha-border-radius-md`) |
-| Border | 1px line at the bottom, 2px with focus | 1px all around | 1px all around |
-| Space below the component | 8px (`--ha-space-2`), through `--ha-input-padding-bottom` | None | None |
-| Clear and password buttons | 48px | 48px | 24px, with an 18px icon |
+| 输入框高度 | 56px | 56px | 32px |
+| 左右内边距 | 16px (`--ha-space-4`) | 16px (`--ha-space-4`) | 8px (`--ha-space-2`) |
+| 圆角半径 | 顶部 4px (`--ha-border-radius-sm`)，底部 0 (`--ha-border-radius-square`) | 8px (`--ha-border-radius-md`) | 8px (`--ha-border-radius-md`) |
+| 边框 | 底部 1px 线，聚焦时 2px | 四周 1px | 四周 1px |
+| 组件下方间距 | 8px (`--ha-space-2`)，通过 `--ha-input-padding-bottom` | 无 | 无 |
+| 清除和密码按钮 | 48px | 48px | 24px，带 18px 图标 |
 
-### Type
+### 字体
 
-| Part | Size | Token |
+| 部分 | 尺寸 | Token |
 | --- | --- | --- |
-| Label, inside the field | 14px | `--ha-font-size-m` |
-| Label, moved up | 10px | `--ha-font-size-xs` |
-| Space above the label | 20px, 12px when moved up | `--ha-space-5`, `--ha-space-3` |
-| Space above the value | 12px, none without a label | `--ha-space-3` |
-| Hint and validation message | 12px | `--ha-font-size-s` |
-| Hint minimum height | 20px | `--ha-space-5` |
-| Hint indent | 12px | `--ha-space-3` |
+| 标签，位于输入框内 | 14px | `--ha-font-size-m` |
+| 标签，上移后 | 10px | `--ha-font-size-xs` |
+| 标签上方间距 | 20px，上移后 12px | `--ha-space-5`, `--ha-space-3` |
+| 值上方间距 | 12px，无标签时为无 | `--ha-space-3` |
+| 提示和校验消息 | 12px | `--ha-font-size-s` |
+| 提示最小高度 | 20px | `--ha-space-5` |
+| 提示缩进 | 12px | `--ha-space-3` |
 
-The label has a weight of 400 (`--ha-font-weight-normal`) and a line height of 1.2 (`--ha-line-height-condensed`). Changes in color, border, and label position take 150ms.
+标签的字重为 400（`--ha-font-weight-normal`），行高为 1.2（`--ha-line-height-condensed`）。颜色、边框和标签位置的变化耗时 150ms。
 
-### Color
+### 颜色
 
-| Part | State | Token |
+| 部分 | 状态 | Token |
 | --- | --- | --- |
-| Material background | Resting | `--ha-color-form-background` |
-| Material background | Hover | `--ha-color-form-background-hover` |
-| Material background | Disabled | `--ha-color-form-background-disabled` |
-| Outlined background | All | `--card-background-color` |
-| Material line at the bottom | Resting | `--ha-color-border-neutral-loud` |
-| Material line at the bottom | Focus | `--primary-color` |
-| Material line at the bottom | Invalid | `--ha-color-border-danger-normal` |
-| Outlined border | Resting | `--ha-color-border-neutral-quiet` |
-| Outlined border | Hover | `--ha-color-border-neutral-normal` |
-| Outlined border | Focus | `--primary-color` |
-| Label | Resting | `--secondary-text-color` |
-| Label | Focus, material | `--primary-color` |
-| Label | Invalid | `--ha-color-fill-danger-loud-resting` |
-| Placeholder | All | `--ha-color-neutral-60` |
-| Hint | All | `--ha-color-text-secondary` |
-| Validation message | Invalid | `--ha-color-on-danger-quiet` |
-| End slot | All | `--ha-color-text-secondary` |
+| Material 背景 | 静止 | `--ha-color-form-background` |
+| Material 背景 | 悬停 | `--ha-color-form-background-hover` |
+| Material 背景 | 禁用 | `--ha-color-form-background-disabled` |
+| Outlined 背景 | 全部 | `--card-background-color` |
+| Material 底部的线 | 静止 | `--ha-color-border-neutral-loud` |
+| Material 底部的线 | 聚焦 | `--primary-color` |
+| Material 底部的线 | 无效 | `--ha-color-border-danger-normal` |
+| Outlined 边框 | 静止 | `--ha-color-border-neutral-quiet` |
+| Outlined 边框 | 悬停 | `--ha-color-border-neutral-normal` |
+| Outlined 边框 | 聚焦 | `--primary-color` |
+| 标签 | 静止 | `--secondary-text-color` |
+| 标签 | 聚焦，material | `--primary-color` |
+| 标签 | 无效 | `--ha-color-fill-danger-loud-resting` |
+| Placeholder | 全部 | `--ha-color-neutral-60` |
+| 提示 | 全部 | `--ha-color-text-secondary` |
+| 校验消息 | 无效 | `--ha-color-on-danger-quiet` |
+| 结束区插槽 | 全部 | `--ha-color-text-secondary` |
 
-## Guidelines
+## 指南
 
-<DoDont doText="Always give an input a short label." dontText="Use a placeholder as the label. It disappears as soon as someone types.">
+<DoDont doText="始终为输入框提供一个简短的标签。" dontText="将 placeholder 用作标签。一旦有人输入内容它就会消失。">
   <ha-input slot="do" label="Email" type="email" placeholder="you@example.com"></ha-input>
   <ha-input slot="dont" type="email" placeholder="Email"></ha-input>
 </DoDont>
 
-<DoDont doText="Say what is wrong, and how to fix it." dontText="Only say that the value is wrong.">
+<DoDont doText="说明哪里出错了，以及如何修复。" dontText="只说值是错误的。">
   <ha-input slot="do" label="Port" value="99999" invalid validation-message="Enter a port between 1 and 65535."></ha-input>
   <ha-input slot="dont" label="Port" value="99999" invalid validation-message="Invalid value."></ha-input>
 </DoDont>
 
-<DoDont doText="Put the unit after the value." dontText="Make people type the unit in the value.">
+<DoDont doText="将单位放在值之后。" dontText="让人们把单位输入到值中。">
   <ha-input slot="do" label="Delay" type="number" value="30"><span slot="end">s</span></ha-input>
   <ha-input slot="dont" label="Delay" value="30 seconds"></ha-input>
 </DoDont>
 
-<DoDont doText="Mark the fields that are required." dontText="Mark the fields that are optional.">
+<DoDont doText="标记必填的字段。" dontText="标记可选的字段。">
   <ha-input slot="do" label="Name" required></ha-input>
   <ha-input slot="dont" label="Name (optional)"></ha-input>
 </DoDont>
 
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-| Key | Action |
+| 按键 | 操作 |
 | --- | --- |
-| <kbd>Tab</kbd> | Moves focus to the field, then to the clear button and the password toggle when they are there. A disabled field is skipped. |
-| <kbd>Enter</kbd> | Submits the form the field is in. On the clear button or the password toggle, selects that button. |
-| <kbd>Space</kbd> | On the clear button or the password toggle, selects that button. |
+| <kbd>Tab</kbd> | 将焦点移到输入框，然后（如果存在）移到清除按钮和密码切换按钮。禁用的输入框会被跳过。 |
+| <kbd>Enter</kbd> | 提交输入框所在的表单。在清除按钮或密码切换按钮上，则选中该按钮。 |
+| <kbd>Space</kbd> | 在清除按钮或密码切换按钮上，选中该按钮。 |
 
-Number, date, and time fields keep the keyboard behavior of the browser for those types.
+number、date 和 time 字段保留浏览器针对这些类型的键盘行为。
 
-### Focus
+### 焦点
 
-Focus shows as the primary color on the line at the bottom (material) or on the border (outlined), instead of a separate focus ring.
+焦点显示为底部线（material）或边框（outlined）上的主色调，而不是单独的焦点环。
 
-### Target size
+### 目标尺寸
 
-The material field, and an outlined field with a label, are 56px high. An outlined field without a label is 32px high, and its buttons are 24px.
+material 输入框和带标签的 outlined 输入框高度为 56px。不带标签的 outlined 输入框高度为 32px，其按钮为 24px。
 
-### Screen readers
+### 屏幕阅读器
 
-A screen reader announces the field with its label, and reads the hint as its description. When the field turns invalid, the validation message is announced. Required, disabled, and read only are announced as well. The clear button is announced as "Clear", and the password button as "Show password" or "Hide password", in the language of the user. A field without a label has only its placeholder to describe it, so always give it a label.
+屏幕阅读器会连同标签一起播报输入框，并将提示作为其描述朗读。当输入框变为无效时，会播报校验消息。必填、禁用和只读状态也会被播报。清除按钮会被播报为“Clear”，密码按钮会被播报为“Show password”或“Hide password”，使用用户的语言。没有标签的输入框只有 placeholder 来描述它，因此请始终为其提供标签。
 
-### In the code
+### 在代码中
 
-- Focus is delegated to the native input inside the component.
-- The label is a native `<label>` connected to the input, so it is the accessible name.
-- Without a label, the `<label>` is empty and hidden from assistive technology. The placeholder is then the only text that describes the input.
-- The hint and the validation message are connected to the input with `aria-describedby`, so screen readers read them as the description.
-- The validation message is in a live region, and gets the role `alert` while the field is invalid, so screen readers announce it when it appears.
-- Required, disabled, and read-only are set on the native input, so assistive technology gets them as is.
-- The clear button and the password toggle get translated labels as their accessible names.
+- 焦点被委托给组件内部的原生输入框。
+- 标签是一个连接到输入框的原生 `<label>`，因此它是可访问名称。
+- 没有标签时，`<label>` 为空并对辅助技术隐藏。此时 placeholder 是描述输入框的唯一文本。
+- 提示和校验消息通过 `aria-describedby` 连接到输入框，因此屏幕阅读器会将它们作为描述朗读。
+- 校验消息位于一个 live region 中，并在输入框无效时获得 `alert` 角色，因此屏幕阅读器会在它出现时播报。
+- 必填、禁用和只读设置在原生输入框上，因此辅助技术会按原样获取它们。
+- 清除按钮和密码切换按钮使用翻译后的标签作为其可访问名称。
 
-## Related
+## 相关内容
 
-- [Textarea](/design/components/textarea/): text over several lines
-- [Form](/design/components/form/): builds inputs from a schema
-- [Selector](/design/components/selector/): the text and number selectors show this input
-- [UI text](/design/ui-text/): how to write labels, hints, and errors
+- [Textarea](/design/components/textarea/)：跨多行的文本
+- [Form](/design/components/form/)：根据 schema 构建输入框
+- [Selector](/design/components/selector/)：文本和数字选择器会显示此输入框
+- [UI text](/design/ui-text/)：如何编写标签、提示和错误信息
 
-The frontend has a few inputs built on top of this one, for specific jobs. Use them instead of rebuilding the same thing:
+前端有几个基于此输入框构建的输入框，用于特定任务。请使用它们，而不是重新构建相同的功能：
 
-- `<ha-input-search>`: a search field with a magnifying glass icon, a clear button, and a localized placeholder.
-- `<ha-input-copy>`: a read-only value with a copy button, and optional masking for secrets, like a token.
-- `<ha-input-multi>`: a list of text inputs, for entering several values, like a list of URLs.
+- `<ha-input-search>`：一个搜索框，带放大镜图标、清除按钮和本地化的 placeholder。
+- `<ha-input-copy>`：一个只读值，带复制按钮，并可选地对机密内容（如 token）进行遮蔽。
+- `<ha-input-multi>`：一组文本输入框，用于输入多个值，例如一组 URL。
 
-## In code
+## 代码中
 
-The element is `<ha-input>`. It is based on the [Web Awesome input](https://webawesome.com/docs/components/input/).
+该元素是 `<ha-input>`。它基于 [Web Awesome input](https://webawesome.com/docs/components/input/)。
 
 ```html
 <ha-input label="Name" value="Living room"></ha-input>
@@ -247,52 +247,52 @@ The element is `<ha-input>`. It is based on the [Web Awesome input](https://weba
 </ha-input>
 ```
 
-### Attributes
+### 属性
 
-- `label`: the label.
-- `value`: the current value, as a string.
-- `type`: `text` (default), `number`, `password`, `email`, `url`, `tel`, `search`, `date`, `datetime-local`, `time`, or `color`.
-- `appearance`: `material` (default) or `outlined`.
-- `hint`: help text below the input.
-- `placeholder`: text shown while the input is empty.
-- `required`: makes the field required, and adds a marker after the label.
-- `disabled`: disables the input.
-- `readonly`: makes the input read-only.
-- `invalid`: marks the input as invalid.
-- `validation-message`: the message shown when the input is invalid. Without it, the browser's own message is shown.
-- `auto-validate`: validates the input when it loses focus, instead of waiting for the form to be submitted.
-- `pattern`: a regular expression the value must match.
-- `minlength` and `maxlength`: the minimum and maximum length of the value.
-- `min`, `max`, and `step`: limits and granularity for number, date, and time inputs.
-- `with-clear`: shows a clear button when the input has a value.
-- `password-toggle`: shows a button to reveal or hide a password.
-- `password-visible`: shows the password as plain text.
-- `without-spin-buttons`: hides the browser's up and down buttons on number inputs.
-- `inset-label`: keeps the label inside the field, even with content in the `start` slot.
-- `input-id`: the `id` of the native input inside the component, for linking it to something outside.
-- `name`, `autocomplete`, `autocapitalize`, `autocorrect`, `autofocus`, `spellcheck`, `inputmode`, and `enterkeyhint`: passed to the native input, and work the same as on a regular `<input>`.
+- `label`：标签。
+- `value`：当前值，字符串形式。
+- `type`：`text`（默认）、`number`、`password`、`email`、`url`、`tel`、`search`、`date`、`datetime-local`、`time` 或 `color`。
+- `appearance`：`material`（默认）或 `outlined`。
+- `hint`：输入框下方的帮助文本。
+- `placeholder`：输入框为空时显示的文本。
+- `required`：将字段设为必填，并在标签后添加标记。
+- `disabled`：禁用输入框。
+- `readonly`：将输入框设为只读。
+- `invalid`：将输入框标记为无效。
+- `validation-message`：输入框无效时显示的消息。未设置时，显示浏览器自带的消息。
+- `auto-validate`：在输入框失去焦点时进行校验，而不是等待表单提交。
+- `pattern`：值必须匹配的正则表达式。
+- `minlength` 和 `maxlength`：值的最小和最大长度。
+- `min`、`max` 和 `step`：number、date 和 time 输入框的限制和步进粒度。
+- `with-clear`：当输入框有值时显示清除按钮。
+- `password-toggle`：显示一个用于显示或隐藏密码的按钮。
+- `password-visible`：以纯文本形式显示密码。
+- `without-spin-buttons`：隐藏浏览器在 number 输入框上的上下按钮。
+- `inset-label`：将标签保留在输入框内部，即使 `start` 插槽中有内容。
+- `input-id`：组件内部原生输入框的 `id`，用于将其与外部的元素关联。
+- `name`、`autocomplete`、`autocapitalize`、`autocorrect`、`autofocus`、`spellcheck`、`inputmode` 和 `enterkeyhint`：传递给原生输入框，工作方式与普通 `<input>` 相同。
 
-### Slots
+### 插槽
 
-- `start`: content before the value, like an icon or a prefix.
-- `end`: content after the value, like a unit.
-- `label`: a label with markup. Content in this slot replaces the text of the `label` attribute, including the required marker.
-- `hint`: a hint with markup, like a link. Only used when the `hint` attribute is not set.
-- `clear-button`: replaces the clear button.
-- `password-toggle-button`: replaces the button that reveals the password.
+- `start`：值之前的内容，例如图标或前缀。
+- `end`：值之后的内容，例如单位。
+- `label`：带标记的标签。此插槽中的内容会替换 `label` 属性的文本，包括必填标记。
+- `hint`：带标记的提示，例如链接。仅在未设置 `hint` 属性时使用。
+- `clear-button`：替换清除按钮。
+- `password-toggle-button`：替换显示密码的按钮。
 
-### Events
+### 事件
 
-- `input`: fires on every change to the value, while people type.
-- `change`: fires when the value is committed, like when the input loses focus.
+- `input`：在人们输入时，值的每次变化都会触发。
+- `change`：在值被提交时触发，例如输入框失去焦点时。
 
-Read the new value from `value` on the element.
+从元素的 `value` 读取新值。
 
-### Styling
+### 样式
 
-- `--ha-input-padding-top`: the space above the input.
-- `--ha-input-padding-bottom`: the space below the input. Defaults to `var(--ha-space-2)` for the material appearance.
-- `--ha-input-text-align`: the alignment of the value. Defaults to `start`.
-- `--ha-input-required-marker`: the marker after the label of a required field. Defaults to `"*"`.
+- `--ha-input-padding-top`：输入框上方的间距。
+- `--ha-input-padding-bottom`：输入框下方的间距。material 外观默认为 `var(--ha-space-2)`。
+- `--ha-input-text-align`：值的对齐方式。默认为 `start`。
+- `--ha-input-required-marker`：必填字段标签后的标记。默认为 `"*"`。
 
 Source: [`src/components/input/ha-input.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/input/ha-input.ts)

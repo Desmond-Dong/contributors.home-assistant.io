@@ -1,18 +1,18 @@
 ---
-title: Color
-description: The color palettes of Home Assistant, and the semantic tokens built on top of them.
+title: 颜色
+description: Home Assistant 的调色板，以及构建在其之上的语义化令牌（semantic tokens）。
 order: 1
 ---
 
 import ColorPalette from "../../../../components/docs/ColorPalette.astro";
 
-Home Assistant uses two layers of color tokens:
+Home Assistant 使用两层颜色令牌（color tokens）：
 
-1. **Core tokens** are the raw palettes below. Do not use them directly in components.
-2. **Semantic tokens** describe a purpose, like `--ha-color-text-primary` or `--ha-color-fill-primary-loud-resting`. They point to core tokens, and switch automatically in dark mode.
+1. **核心令牌（core tokens）** 是下方的原始调色板。请勿在组件中直接使用它们。
+2. **语义化令牌（semantic tokens）** 描述一种用途，例如 `--ha-color-text-primary` 或 `--ha-color-fill-primary-loud-resting`。它们指向核心令牌，并会在深色模式下自动切换。
 
 > [!TIP]
-> Reach for a semantic token first. If none fits, that is a conversation for the design team, not a reason to use a core token.
+> 请优先使用语义化令牌。如果没有合适的令牌，那应该与设计团队讨论，而不是使用核心令牌的理由。
 
 ## Primary
 
@@ -22,16 +22,16 @@ Home Assistant uses two layers of color tokens:
 
 <ColorPalette palette="neutral" />
 
-## Status colors
+## 状态颜色
 
-### Green
+### 绿色
 
 <ColorPalette palette="green" />
 
-### Orange
+### 橙色
 
 <ColorPalette palette="orange" />
 
-### Red
+### 红色
 
 <ColorPalette palette="red" />

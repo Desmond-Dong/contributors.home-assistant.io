@@ -1,6 +1,6 @@
 ---
-title: Bar
-description: A bar shows how much of something is used, as a filled share of a horizontal track.
+title: 条形图（Bar）
+description: 条形图显示某物的使用量，以水平轨道上填充部分的比例表示。
 sidebarGroup: Showing values
 ---
 
@@ -11,30 +11,30 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   <ha-bar value="42"></ha-bar>
 </Demo>
 
-## Overview
+## 概述
 
-A bar shows a level against a known maximum, as a filled share of a horizontal track. It reads well in settings rows and lists, next to the number it represents.
+条形图（bar）相对于已知的最大值显示某个级别，以水平轨道上填充部分的比例表示。它在设置行和列表中、紧挨着它所代表的数字时，阅读效果很好。
 
-## When to use
+## 何时使用
 
-Use a bar for:
+在以下情况使用条形图：
 
-- A level against a known maximum, like CPU or memory usage of an app
-- How full something is, like a disk
+- 相对于已知最大值的级别，例如应用的 CPU 或内存使用率
+- 某物的充满程度，例如磁盘
 
-Don't use a bar for:
+不要在以下情况使用条形图：
 
-- Showing that something is loading, without a known percentage. Use a [spinner](/design/components/spinner/).
-- A sensor value on a dashboard. Use a [gauge](/design/components/gauge/).
+- 显示某物正在加载，但没有已知的百分比。请使用 [spinner](/design/components/spinner/)。
+- 仪表盘（dashboard）上的传感器数值。请使用 [gauge](/design/components/gauge/)。
 
-## Anatomy
+## 结构
 
-1. **Track**: the full width background, which stands for the whole range
-2. **Fill**: the part of the track that stands for the value, starting at the start of the track
+1. **轨道（Track）**：整个宽度的背景，代表整个范围
+2. **填充（Fill）**：轨道中代表数值的部分，从轨道的起点开始
 
-## Variants
+## 变体
 
-The bar has no variants of its own. To show warning and critical levels, change the color of the fill when the value crosses a threshold, so problems stand out. The frontend switches the fill to the warning color past a first threshold, and to the error color past a second one. Pick thresholds that fit the data: system metrics switch at 50 and 85 percent, disk usage at 85 and 95 percent. Below the first threshold, both use the success color.
+条形图本身没有变体。要显示警告和严重级别，请在数值超过阈值时更改填充的颜色，使问题更加醒目。前端在超过第一个阈值时将填充切换为警告颜色，超过第二个阈值时切换为错误颜色。请选择适合数据的阈值：系统指标在 50% 和 85% 时切换，磁盘使用率在 85% 和 95% 时切换。低于第一个阈值时，两者都使用成功颜色。
 
 <Demo layout="stack">
   <ha-bar value="35"></ha-bar>
@@ -42,27 +42,27 @@ The bar has no variants of its own. To show warning and critical levels, change 
   <ha-bar value="92" style="--ha-bar-primary-color: var(--error-color)"></ha-bar>
 </Demo>
 
-## Behavior
+## 行为
 
-- The bar is not interactive. It has no hover, focus, pressed, or disabled state.
-- The fill is the value as a share of the range from the minimum to the maximum, rounded to one decimal. Values outside the range are clamped, so the fill never goes past the ends of the track.
-- The bar takes the full width of its container.
+- 条形图不可交互。它没有悬停、聚焦、按下或禁用状态。
+- 填充是数值占最小值到最大值范围的比例，四舍五入到一位小数。超出范围的数值会被钳制，因此填充绝不会超出轨道的两端。
+- 条形图占据其容器的全部宽度。
 
-## Specs
+## 规格
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Height | 12px | None |
-| Width | 100% of the container | None |
-| Corner radius | 4px | `--ha-border-radius-sm`, through `--ha-bar-border-radius` |
-| Track color | `#e5e5e5` in the light theme, `#282828` in the dark theme | `--secondary-background-color`, through `--ha-bar-background-color` |
-| Fill color | The primary color | `--primary-color`, through `--ha-bar-primary-color` |
+| 高度 | 12px | 无 |
+| 宽度 | 容器的 100% | 无 |
+| 圆角半径 | 4px | `--ha-border-radius-sm`，通过 `--ha-bar-border-radius` |
+| 轨道颜色 | 浅色主题中为 `#e5e5e5`，深色主题中为 `#282828` | `--secondary-background-color`，通过 `--ha-bar-background-color` |
+| 填充颜色 | 主颜色 | `--primary-color`，通过 `--ha-bar-primary-color` |
 
-## Guidelines
+## 指南
 
-A bar on its own is imprecise. Always put the value next to it, like **42 %**, or a sentence like **12 GB used of 64 GB**.
+单独的条形图并不精确。请始终在旁边显示数值，例如 **42 %**，或类似 **12 GB used of 64 GB** 的句子。
 
-<DoDont doText="Show the number next to the bar." dontText="Show the bar without its value.">
+<DoDont doText="在条形图旁边显示数字。" dontText="显示没有数值的条形图。">
   <Fragment slot="do">
     <span>42 %</span>
     <ha-bar value="42" style="display: block; width: 100%"></ha-bar>
@@ -70,47 +70,47 @@ A bar on its own is imprecise. Always put the value next to it, like **42 %**, o
   <ha-bar slot="dont" value="42" style="display: block; width: 100%"></ha-bar>
 </DoDont>
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-The bar does not take focus, and has no keyboard interaction.
+条形图不获取焦点，也没有键盘交互。
 
-### Screen readers
+### 屏幕阅读器
 
-Screen readers get nothing from the bar, so the value next to it is the only way for them to know the level. Color alone does not tell anyone that a value is in the warning or critical range either. The number next to the bar does.
+屏幕阅读器无法从条形图中获取任何信息，因此旁边的数值是它们了解级别的唯一途径。仅凭颜色也无法让任何人知道某个数值处于警告或严重范围。条形图旁边的数字可以。
 
-### In the code
+### 在代码中
 
-The bar is an SVG without a role, a label, or a value for assistive technology.
+条形图是一个没有 role、标签或辅助技术可用数值的 SVG。
 
-## Related
+## 相关
 
-- [Gauge](/design/components/gauge/): a value on a dashboard
-- [Spinner](/design/components/spinner/): something is loading
-- [Color](/design/foundations/color/): the warning and error colors
+- [Gauge](/design/components/gauge/)：仪表盘上的数值
+- [Spinner](/design/components/spinner/)：某物正在加载
+- [Color](/design/foundations/color/)：警告和错误颜色
 
-## In code
+## 在代码中
 
-The element is `<ha-bar>`. It takes the full width of its container.
+该元素是 `<ha-bar>`。它占据其容器的全部宽度。
 
 ```html
 <ha-bar value="42"></ha-bar>
 <ha-bar min="-10" max="40" value="21"></ha-bar>
 ```
 
-### Attributes
+### 属性
 
-- `value`: the current value. Values outside the range are clamped.
-- `min`: the start of the range. Defaults to `0`.
-- `max`: the end of the range. Defaults to `100`.
+- `value`：当前数值。超出范围的数值会被钳制。
+- `min`：范围的起点。默认为 `0`。
+- `max`：范围的终点。默认为 `100`。
 
-### Styling
+### 样式
 
-- `--ha-bar-primary-color`: the filled part. Defaults to `var(--primary-color)`.
-- `--ha-bar-background-color`: the track. Defaults to `var(--secondary-background-color)`.
-- `--ha-bar-border-radius`: the corner radius. Defaults to `var(--ha-border-radius-sm)`.
+- `--ha-bar-primary-color`：填充部分。默认为 `var(--primary-color)`。
+- `--ha-bar-background-color`：轨道。默认为 `var(--secondary-background-color)`。
+- `--ha-bar-border-radius`：圆角半径。默认为 `var(--ha-border-radius-sm)`。
 
-The height is fixed at 12 pixels.
+高度固定为 12 像素。
 
 Source: [`src/components/ha-bar.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-bar.ts)

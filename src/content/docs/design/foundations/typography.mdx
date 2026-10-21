@@ -1,31 +1,31 @@
 ---
-title: Typography
-description: The type scale and font weights of the Home Assistant interface.
+title: 排版
+description: Home Assistant 界面的字号比例和字重。
 order: 2
 ---
 
 import TokenScale from "../../../../components/docs/TokenScale.astro";
 
-The interface uses Roboto. Text sizes come from a fixed scale, so text across the interface lines up and feels consistent.
+界面使用 Roboto。文本大小来自固定的比例（scale），因此整个界面的文本能够对齐并保持一致。
 
-## Type scale
+## 字号比例
 
-Every size is a token. Use the token, not the pixel value: the scale can be adjusted as a whole, for example to make all text a little larger.
+每个大小都是一个令牌（token）。请使用令牌，而不是像素值：整个比例可以作为一个整体进行调整，例如让所有文本都稍微变大一点。
 
 <TokenScale scale="font-size" />
 
-## Weights
+## 字重
 
-- **Normal** (`--ha-font-weight-normal`, 400) for body text.
-- **Medium** (`--ha-font-weight-medium`, 500) for actions, like button labels.
-- **Bold** (`--ha-font-weight-bold`, 700) for headings.
-- **Light** (`--ha-font-weight-light`, 300) is available, but rarely the right choice in the interface.
+- **Normal**（`--ha-font-weight-normal`，400）用于正文文本。
+- **Medium**（`--ha-font-weight-medium`，500）用于操作项，例如按钮标签。
+- **Bold**（`--ha-font-weight-bold`，700）用于标题。
+- **Light**（`--ha-font-weight-light`，300）可以使用，但在界面中很少是合适的选择。
 
-## Line height
+## 行高
 
-- **Condensed** (`--ha-line-height-condensed`, 1.2) for headings and single lines.
-- **Normal** (`--ha-line-height-normal`, 1.6) for running text.
-- **Expanded** (`--ha-line-height-expanded`, 2) for text that needs extra room.
+- **Condensed**（`--ha-line-height-condensed`，1.2）用于标题和单行文本。
+- **Normal**（`--ha-line-height-normal`，1.6）用于连续文本。
+- **Expanded**（`--ha-line-height-expanded`，2）用于需要额外空间的文本。
 
 > [!NOTE]
-> The Home Assistant websites, like this one, use Figtree. The app itself uses Roboto.
+> Home Assistant 的网站（包括本站）使用 Figtree。应用本身使用 Roboto。

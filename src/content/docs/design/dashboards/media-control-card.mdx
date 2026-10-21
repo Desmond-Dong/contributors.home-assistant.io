@@ -1,6 +1,6 @@
 ---
-title: Media control card
-description: The media control card shows what a media player is playing, with the artwork, the controls, and the progress.
+title: 媒体控制卡片
+description: 媒体控制卡片显示媒体播放器正在播放的内容，包括封面图片、控制按钮和播放进度。
 sidebarGroup: Controls
 ---
 
@@ -10,51 +10,51 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 400px" data-props='{"config": {"type": "media-control", "entity": "media_player.living_room_speaker"}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The media control card shows one media player. At the top are the icon and the name of the player, then the title and the artist of what is playing, then the controls, like play, pause, and next track. When the player knows the length and the position, a progress bar runs along the bottom. The buttons that show depend on what the player supports, like the buttons to browse media or to turn the player off.
+媒体控制卡片显示一个媒体播放器。顶部是播放器的图标和名称，然后是正在播放内容的标题和艺术家，接着是控制按钮，例如播放、暂停和下一曲。当播放器知道时长和播放位置时，底部会显示一条进度条。显示哪些按钮取决于播放器支持的功能，例如浏览媒体或关闭播放器的按钮。
 
-The card takes its colors from the artwork. The image sits on the right, and the background picks up the main color of the image, with the text in a color that stays readable on it. Without artwork, the card uses the primary color. When the player is off, the card is gray, and only the power button stays.
+卡片的颜色取自封面图片。图片位于右侧，背景采用图片的主色调，文字则使用在背景上保持可读的颜色。没有封面图片时，卡片使用主色调。当播放器处于关闭状态时，卡片呈灰色，只保留电源按钮。
 
 <Demo hass>
   <hui-card style="width: 400px" data-props='{"config": {"type": "media-control", "entity": "media_player.living_room_tv"}}'></hui-card>
 </Demo>
 
-Use the media control card when what is playing is worth the room, like for the speaker in the living room. For a player that people mostly turn on and off, or only change the volume of, a [tile card](/design/dashboards/tile-card/) with the playback or the volume feature is smaller.
+当正在播放的内容值得占据空间时，可以使用媒体控制卡片，例如客厅的音箱。对于人们主要只是开关或只调节音量的播放器，带有播放或音量功能的[磁贴卡片（tile card）](/design/dashboards/tile-card/)会更小巧。
 
 <Demo hass>
   <hui-card style="width: 340px" data-props='{"config": {"type": "tile", "entity": "media_player.living_room_speaker", "features": [{"type": "media-player-playback"}]}}'></hui-card>
 </Demo>
 
-### Narrow cards
+### 窄卡片
 
-The card measures its own width, and drops what does not fit. Below 350 pixels, the progress bar goes. Below 300 pixels, the controls go too, while something is playing. Keep this in mind when you put the card in a narrow column or in a grid.
+卡片会测量自身的宽度，并舍弃放不下的内容。宽度低于 350 像素时，进度条会消失。宽度低于 300 像素时，在正在播放内容的情况下，控制按钮也会消失。将卡片放在窄列或网格中时，请记住这一点。
 
 <Demo hass>
   <hui-card style="width: 320px" data-props='{"config": {"type": "media-control", "entity": "media_player.living_room_speaker"}}'></hui-card>
   <hui-card style="width: 280px" data-props='{"config": {"type": "media-control", "entity": "media_player.living_room_speaker"}}'></hui-card>
 </Demo>
 
-### Content
+### 内容
 
-- The title and the artist come from the player. A title that does not fit scrolls when you hover over it.
-- Keep the name of the player short. It shares the top row with the menu button.
+- 标题和艺术家信息来自播放器。放不下的标题会在鼠标悬停时滚动显示。
+- 播放器的名称请保持简短。它与菜单按钮共用顶部一行。
 
-## Configuration
+## 配置
 
-- `entity` (string, required): the media player to show. Only entities of the `media_player` domain work.
-- `name` (string): the name to show. Defaults to the name of the entity.
-- `theme` (string): a theme to apply to this card only.
+- `entity`（字符串，必填）：要显示的媒体播放器。仅支持 `media_player` 域的实体（entity）。
+- `name`（字符串）：要显示的名称。默认为实体的名称。
+- `theme`（字符串）：仅应用于此卡片的主题。
 
 ```yaml
 type: media-control
 entity: media_player.living_room_speaker
 ```
 
-## In code
+## 代码实现
 
-The card lives in `src/panels/lovelace/cards/hui-media-control-card.ts`, and the element is `<hui-media-control-card>`. The controls come from `computeMediaControls` in `src/data/media-player.ts`, which the more-info dialog uses too, so the card and the dialog offer the same buttons. The colors come from `extractColors` in `src/common/image/extract_color.ts`, which picks them from the artwork.
+该卡片位于 `src/panels/lovelace/cards/hui-media-control-card.ts`，元素为 `<hui-media-control-card>`。控制按钮来自 `src/data/media-player.ts` 中的 `computeMediaControls`，更多信息弹窗也使用它，因此卡片和弹窗提供相同的按钮。颜色来自 `src/common/image/extract_color.ts` 中的 `extractColors`，它从封面图片中提取颜色。
 
-The card watches its own size with a `ResizeObserver`, and sets the narrow and very narrow layouts from it. The progress bar is an [`<ha-slider>`](/design/components/slider/), kept up to date while the media plays.
+卡片使用 `ResizeObserver` 监测自身大小，并据此设置窄和极窄布局。进度条是一个 [`<ha-slider>`](/design/components/slider/)，在媒体播放期间保持更新。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-media-control-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-media-control-card.ts)

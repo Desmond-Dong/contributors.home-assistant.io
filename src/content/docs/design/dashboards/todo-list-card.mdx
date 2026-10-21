@@ -1,6 +1,6 @@
 ---
-title: To-do list card
-description: The to-do list card shows the items of a to-do list, to check them off, add new ones, and reorder them.
+title: 待办事项列表卡片
+description: 待办事项列表卡片显示待办事项列表中的条目，可以勾选完成、添加新条目以及重新排序。
 sidebarGroup: Controls
 ---
 
@@ -10,42 +10,42 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 360px" data-props='{"config": {"type": "todo-list", "entity": "todo.shopping_list"}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The to-do list card shows one to-do list, like the shopping list. At the top is a field to add an item. Below it, the items are grouped: the items still to do under **Active**, and the done ones under **Completed**. Items without a status get their own group. Each item has a checkbox. Selecting the item opens it to edit, with its description and due date.
+待办事项列表卡片显示一个待办事项列表，例如购物清单。顶部是一个用于添加条目的输入框。下方按分组显示条目：待完成的条目显示在**进行中**下，已完成的条目显示在**已完成**下。没有状态的条目会有自己的分组。每个条目都有一个复选框。选中条目即可打开进行编辑，包括其描述和截止日期。
 
-The menu next to a group header holds the actions for that group, like reordering the active items, or clearing all completed ones. What the card offers depends on the list: a list that can't create or move items shows no field to add them, and no option to reorder.
+分组标题旁边的菜单包含该分组的操作，例如对进行中的条目重新排序，或清除所有已完成的条目。卡片提供的功能取决于列表本身：无法创建或移动条目的列表不会显示添加条目的输入框，也没有重新排序的选项。
 
-Use the to-do list card for a list people work with every day, like groceries or chores. To only show how many items are left, a [tile card](/design/dashboards/tile-card/) of the to-do entity is enough. Its state is the number of items still to do.
+待办事项列表卡片适合用于人们每天都会使用的列表，例如购物清单或家务清单。如果只想显示还剩多少条目，使用待办事项实体（entity）的[磁贴卡片](/design/dashboards/tile-card/)就足够了。它的状态就是尚未完成的条目数量。
 
-### Hide what's done
+### 隐藏已完成项
 
-With `hide_completed: true`, the card only shows what's left to do. Use it for a list that grows long, like a shopping list that is never cleared. With `hide_create: true`, the field to add items goes away, for a list that is read on a wall tablet more than it is edited.
+设置 `hide_completed: true` 后，卡片只显示尚未完成的条目。适用于会不断变长的列表，例如从不清理的购物清单。设置 `hide_create: true` 后，添加条目的输入框会消失，适用于在壁挂平板上更多是查看而非编辑的列表。
 
 <Demo hass>
   <hui-card style="width: 360px" data-props='{"config": {"type": "todo-list", "entity": "todo.shopping_list", "hide_completed": true, "hide_create": true}}'></hui-card>
 </Demo>
 
-### Order
+### 排序
 
-By default, the items keep the order of the list, which people can change by dragging. With `display_order`, you sort them by name or by due date instead. Use `due_date_period` to only show the items that are due in a period, like today, or this week.
+默认情况下，条目保持列表中的顺序，人们可以通过拖拽来改变顺序。使用 `display_order` 可以改为按名称或截止日期排序。使用 `due_date_period` 可以只显示在某个时间段内到期的条目，例如今天或本周。
 
-### Content
+### 内容
 
-- Set a `title` when the dashboard has more than one list. The name of the list does not show on the card by itself.
-- For a list that has a clear owner or place, put the card in the matching section, so people find it where they expect it.
+- 当仪表盘（dashboard）中有多个列表时，请设置 `title`。列表的名称本身不会显示在卡片上。
+- 对于有明确归属者或位置的列表，请将卡片放在对应的分区中，这样人们就能在预期的位置找到它。
 
-## Configuration
+## 配置
 
-- `entity` (string, required): the to-do list to show. Only entities of the `todo` domain work.
-- `title` (string): a title above the list.
-- `hide_completed` (boolean): hides the completed items. Defaults to `false`.
-- `hide_create` (boolean): hides the field to add items. Defaults to `false`.
-- `hide_section_headers` (boolean): hides the **Active** and **Completed** headers. Defaults to `false`.
-- `display_order` (string): `none`, `alpha_asc`, `alpha_desc`, `duedate_asc`, or `duedate_desc`. Defaults to `none`, the order of the list.
-- `due_date_period` (period): only shows items that are due in this period, like today or the next 7 days.
-- `item_tap_action` (string): what happens when you select an item: `edit` or `toggle`. Defaults to `edit`.
-- `theme` (string): a theme to apply to this card only.
+- `entity`（字符串，必填）：要显示的待办事项列表。仅支持 `todo` 域（domain）的实体。
+- `title`（字符串）：列表上方的标题。
+- `hide_completed`（布尔值）：隐藏已完成的条目。默认为 `false`。
+- `hide_create`（布尔值）：隐藏添加条目的输入框。默认为 `false`。
+- `hide_section_headers`（布尔值）：隐藏**进行中**和**已完成**标题。默认为 `false`。
+- `display_order`（字符串）：`none`、`alpha_asc`、`alpha_desc`、`duedate_asc` 或 `duedate_desc`。默认为 `none`，即列表的顺序。
+- `due_date_period`（时间段）：只显示在此时间段内到期的条目，例如今天或未来 7 天。
+- `item_tap_action`（字符串）：选中条目时的操作：`edit` 或 `toggle`。默认为 `edit`。
+- `theme`（字符串）：仅应用于此卡片的主题。
 
 ```yaml
 type: todo-list
@@ -55,10 +55,10 @@ hide_completed: true
 display_order: "alpha_asc"
 ```
 
-## In code
+## 代码实现
 
-The card lives in `src/panels/lovelace/cards/hui-todo-list-card.ts`, and the element is `<hui-todo-list-card>`. It subscribes to the items of the list with `subscribeItems` from `src/data/todo.ts`, so changes from other places show up right away. Reordering uses `<ha-sortable>`, and editing an item opens the to-do item dialog from `src/panels/todo/`.
+该卡片位于 `src/panels/lovelace/cards/hui-todo-list-card.ts`，元素为 `<hui-todo-list-card>`。它通过 `src/data/todo.ts` 中的 `subscribeItems` 订阅列表的条目，因此来自其他地方的更改会立即显示出来。重新排序使用 `<ha-sortable>`，编辑条目会打开 `src/panels/todo/` 中的待办事项对话框。
 
-Which controls show depends on the supported features of the entity, like `CREATE_TODO_ITEM` and `MOVE_TODO_ITEM` in `src/data/todo.ts`.
+显示哪些控件取决于实体支持的功能，例如 `src/data/todo.ts` 中的 `CREATE_TODO_ITEM` 和 `MOVE_TODO_ITEM`。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-todo-list-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-todo-list-card.ts)

@@ -1,6 +1,6 @@
 ---
-title: Marquee text
-description: Marquee text slowly scrolls a single line back and forth when it is too long to fit.
+title: 跑马灯文本
+description: 当单行文本过长无法完整显示时，跑马灯文本（Marquee text）会将其缓慢地来回滚动。
 sidebarGroup: Layout and content
 ---
 
@@ -11,90 +11,90 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   <ha-marquee-text style="width: 220px">Bohemian Rhapsody (Remastered 2011), Queen, A Night at the Opera</ha-marquee-text>
 </Demo>
 
-## Overview
+## 概述
 
-Marquee text keeps a single line readable in a fixed space, by scrolling it left until the end is visible, pausing, and scrolling back. Text that fits does not move.
+跑马灯文本通过将单行文本向左滚动直到末尾可见、暂停后再滚动回来，使其在固定空间内保持可读。能够完整显示的文本不会移动。
 
-## When to use
+## 何时使用
 
-Use marquee text for:
+在以下情况使用跑马灯文本：
 
-- Text that changes on its own and that people only glance at, like the title of the song that is playing in the media player dialog, or the date lines of the clock card
+- 会自行变化、且人们只会瞥一眼的文本，例如媒体播放器对话框中正在播放的歌曲标题，或时钟卡片上的日期行
 
-Don't use marquee text for:
+不要在以下情况使用跑马灯文本：
 
-- Labels, buttons, or anything people need to read to get a task done
-- Most other text. Moving text is harder to read and distracting, so it is the exception. Let text wrap, or cut it off with an ellipsis and show the full text somewhere else.
-- A long text of several lines. Use [faded](/design/components/faded/) content.
+- 标签、按钮或任何人们需要阅读才能完成任务的文本
+- 大多数其他文本。移动的文本更难阅读且容易分散注意力，因此它只是特例。让文本换行，或用省略号截断并在其他地方显示完整文本。
+- 多行的长文本。请使用 [faded](/design/components/faded/) 内容。
 
-## Anatomy
+## 结构
 
-1. **Container**: takes the full width available, and clips the text
-2. **Text**: the single line, which moves inside the container
+1. **容器**：占据全部可用宽度，并裁剪文本
+2. **文本**：单行文本，在容器内移动
 
-## Variants
+## 变体
 
-### Pause on hover
+### 悬停时暂停
 
-Marquee text can pause while the pointer is over it, so people can stop the text to read it. It also pauses while the text is touched.
+跑马灯文本可以在指针悬停在其上时暂停，以便人们停下文本来阅读。在触摸文本时也会暂停。
 
 <Demo>
   <ha-marquee-text pause-on-hover style="width: 220px">Hover over me to pause this long line of text</ha-marquee-text>
 </Demo>
 
-## Behavior
+## 行为
 
-- **Fits**: text that fits in the container does not move.
-- **Too long**: the text scrolls left at 15 pixels per second (on a 60 Hz screen) until its end is visible, pauses for 1 second, scrolls back to the start, pauses again, and repeats.
-- **Hover**: when pausing is on, the text stops while the pointer is over it, or while it is touched, and continues when the pointer leaves or the touch ends. Without it, hover has no effect.
-- The text can't be selected, and does not react to the pointer itself.
+- **能完整显示**：能在容器内完整显示的文本不会移动。
+- **过长**：文本以每秒 15 像素的速度向左滚动（在 60 Hz 屏幕上），直到其末尾可见，暂停 1 秒，滚动回起点，再次暂停，然后重复。
+- **悬停**：启用暂停功能时，当指针悬停在文本上或触摸文本时，文本会停止，当指针离开或触摸结束时继续滚动。未启用时，悬停没有任何效果。
+- 文本无法被选中，也不会对指针本身做出反应。
 
-## Specs
+## 规格
 
-| Property | Value |
+| 属性 | 值 |
 | --- | --- |
-| Width | 100% of its container |
-| Speed | 15 pixels per second by default. The component moves the text by a sixtieth of the speed each frame, so on a screen faster than 60 Hz it scrolls faster. |
-| Pause at each end | 1000ms by default |
-| Font size | 1em, the size of the text around it |
-| Wrapping | None, the text stays on one line |
+| 宽度 | 其容器的 100% |
+| 速度 | 默认每秒 15 像素。组件每帧移动文本速度的六十分之一，因此在快于 60 Hz 的屏幕上滚动得更快。 |
+| 两端暂停时间 | 默认 1000 毫秒 |
+| 字体大小 | 1em，即周围文本的大小 |
+| 换行 | 无，文本保持单行 |
 
-The component sets no colors of its own. The text keeps the color of the page around it.
+组件自身不设置任何颜色。文本保持其周围页面的颜色。
 
-## Guidelines
+## 指南
 
-<DoDont doText="Turn on pause on hover, so people can stop the text to read it." dontText="Leave the text moving with no way to stop it.">
+<DoDont doText="开启悬停时暂停，以便人们停下文本来阅读。" dontText="让文本一直移动而无法停止。">
   <ha-marquee-text slot="do" pause-on-hover style="width: 220px">Bohemian Rhapsody (Remastered 2011), Queen, A Night at the Opera</ha-marquee-text>
   <ha-marquee-text slot="dont" style="width: 220px">Bohemian Rhapsody (Remastered 2011), Queen, A Night at the Opera</ha-marquee-text>
 </DoDont>
 
-Every use in the frontend pauses on hover, and so should yours.
+前端中的每一处使用都会在悬停时暂停，你的使用也应如此。
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-Marquee text is not focusable, and has no keyboard interaction. Pausing only works with a pointer or touch.
+跑马灯文本不可聚焦，也没有键盘交互。暂停功能只能通过指针或触摸使用。
 
-### Motion
+### 动效
 
-The scrolling does not look at the reduced motion setting of the system. It keeps moving for people who asked for less motion. This is one more reason to keep it for text that people only glance at.
+滚动不会遵循系统的减弱动态效果设置。对于要求减少动效的人，它仍会继续移动。这也是将其仅用于人们只会瞥一眼的文本的另一个原因。
 
-### Screen readers
+### 屏幕阅读器
 
-Screen readers read the full text, not only the part that is visible.
+屏幕阅读器会读取完整文本，而不仅仅是可见的部分。
 
-### In the code
+### 在代码中
 
-The component has no role. The text in the default slot is part of the page.
+该组件没有角色（role）。默认插槽中的文本是页面的一部分。
 
-## Related
+## 相关
 
-- [Faded](/design/components/faded/): long text of several lines, cut off and faded out
+- [Faded](/design/components/faded/)：多行的长文本，被截断并淡出
 
-## In code
+## 在代码中
 
-The element is `<ha-marquee-text>`. It takes the full width of its container, so constrain it with the layout or a width.
+该元素是 `<ha-marquee-text>`。它会占据其容器的全部宽度，因此请通过布局或宽度来约束它。
 
 ```html
 <ha-marquee-text pause-on-hover>
@@ -102,16 +102,16 @@ The element is `<ha-marquee-text>`. It takes the full width of its container, so
 </ha-marquee-text>
 ```
 
-The component measures the text once, when it first renders. If the text changes later and becomes longer or shorter, the scroll distance is not measured again.
+组件在首次渲染时测量一次文本。如果文本之后发生变化而变长或变短，滚动距离不会重新测量。
 
-### Attributes
+### 属性
 
-- `speed`: the scroll speed in pixels per second. Defaults to `15`.
-- `pause-duration`: how long to pause at each end, in milliseconds. Defaults to `1000`.
-- `pause-on-hover`: pauses the scrolling while the pointer is over the text, or while it is touched. Off by default.
+- `speed`：滚动速度，以每秒像素为单位。默认为 `15`。
+- `pause-duration`：在每一端暂停的时长，以毫秒为单位。默认为 `1000`。
+- `pause-on-hover`：当指针悬停在文本上或触摸文本时暂停滚动。默认关闭。
 
-### Slots
+### 插槽
 
-- Default: the text. Keep it to plain text on one line.
+- 默认：文本。保持为单行的纯文本。
 
 Source: [`src/components/ha-marquee-text.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-marquee-text.ts)

@@ -1,6 +1,6 @@
 ---
-title: Humidifier card
-description: The humidifier card shows a humidifier or dehumidifier as a dial, to read the humidity and set the target.
+title: 加湿器卡片
+description: 加湿器卡片以表盘形式显示加湿器或除湿器，用于查看湿度并设置目标湿度。
 sidebarGroup: Controls
 ---
 
@@ -10,42 +10,42 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 340px" data-props='{"config": {"type": "humidifier", "entity": "humidifier.bedroom_humidifier"}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The humidifier card is the sibling of the [thermostat card](/design/dashboards/thermostat-card/), for humidity. The ring shows the target humidity, and you drag it, or use the minus and plus buttons, to change it. The big number in the middle is the target, with the current humidity and what the device is doing, like **Humidifying**, around it. The menu button in the corner opens the more-info dialog.
+加湿器卡片是[温控器卡片](/design/dashboards/thermostat-card/)的姊妹卡片，用于湿度。圆环显示目标湿度，你可以拖动它，或使用减号和加号按钮来更改。中间的大数字是目标值，周围显示当前湿度以及设备正在执行的操作，例如**加湿中**。角落的菜单按钮会打开更多信息对话框。
 
-The dial takes the color of what the device does, like blue while it humidifies. When the device is off, the dial is gray.
+表盘会采用设备当前操作对应的颜色，例如加湿时为蓝色。当设备关闭时，表盘为灰色。
 
-Use the humidifier card when the humidity is the main thing in a section, like in a bedroom or a basement. When it's one of many things in a room, a [tile card](/design/dashboards/tile-card/) with the target humidity feature takes one row instead of five.
+当湿度是某个区域的主要内容时，例如在卧室或地下室，可以使用加湿器卡片。当它只是房间中众多内容之一时，带有目标湿度功能的[瓷砖卡片](/design/dashboards/tile-card/)只需一行而不是五行。
 
-### Current humidity first
+### 当前湿度优先
 
-With `show_current_as_primary: true`, the big number is the current humidity, and the target moves to the smaller line.
+设置 `show_current_as_primary: true` 后，大数字显示当前湿度，目标湿度移到较小的那一行。
 
 <Demo hass>
   <hui-card style="width: 340px" data-props='{"config": {"type": "humidifier", "entity": "humidifier.bedroom_humidifier", "show_current_as_primary": true}}'></hui-card>
 </Demo>
 
-### Features
+### 功能
 
-The humidifier card takes features below the dial. The dial has no button to turn the device on or off, so when you add the card in the dashboard editor, it comes with the toggle feature. The modes feature is the other good fit.
+加湿器卡片可以在表盘下方添加功能（feature）。表盘本身没有打开或关闭设备的按钮，因此在仪表盘编辑器中添加此卡片时，会自带开关功能。模式功能是另一个合适的选择。
 
 <Demo hass>
   <hui-card style="width: 340px" data-props='{"config": {"type": "humidifier", "entity": "humidifier.bedroom_humidifier", "features": [{"type": "humidifier-toggle"}, {"type": "humidifier-modes", "style": "icons"}]}}'></hui-card>
 </Demo>
 
-### Content
+### 内容
 
-- Keep the name short, or leave it out when the section already says which room it is.
-- Add the toggle feature. Without it, turning the device off takes a trip to the more-info dialog.
+- 名称保持简短，如果所在区域已经说明了是哪个房间，可以省略名称。
+- 添加开关功能。否则，关闭设备需要前往更多信息对话框。
 
-## Configuration
+## 配置
 
-- `entity` (string, required): the entity to show. Only entities of the `humidifier` domain work.
-- `name` (string): the name to show. Defaults to the name of the entity.
-- `show_current_as_primary` (boolean): shows the current humidity as the big number, and the target below it. Defaults to `false`.
-- `theme` (string): a theme to apply to this card only.
-- `features` (list): the features to show below the dial, each with a `type`.
+- `entity`（字符串，必填）：要显示的实体（entity）。仅支持 `humidifier` 域的实体。
+- `name`（字符串）：要显示的名称。默认为实体的名称。
+- `show_current_as_primary`（布尔值）：将当前湿度显示为大数字，目标湿度显示在其下方。默认为 `false`。
+- `theme`（字符串）：仅应用于此卡片的主题。
+- `features`（列表）：在表盘下方显示的功能，每个功能都有一个 `type`。
 
 ```yaml
 type: humidifier
@@ -56,10 +56,10 @@ features:
     style: "icons"
 ```
 
-## In code
+## 代码位置
 
-The card lives in `src/panels/lovelace/cards/hui-humidifier-card.ts`, and the element is `<hui-humidifier-card>`. Like the thermostat card, it reuses the control of the more-info dialog, `<ha-state-control-humidifier-humidity>`, which is built on the [`<ha-control-circular-slider>`](/design/components/controls/).
+该卡片位于 `src/panels/lovelace/cards/hui-humidifier-card.ts`，元素为 `<hui-humidifier-card>`。与温控器卡片一样，它复用了更多信息对话框的控件 `<ha-state-control-humidifier-humidity>`，该控件基于 [`<ha-control-circular-slider>`](/design/components/controls/) 构建。
 
-The features render with `<hui-card-features>`. In the sections view, the card takes 12 columns and 5 rows, and can shrink to 6 columns and 2 rows. Features add rows on top of that.
+这些功能通过 `<hui-card-features>` 渲染。在区域视图中，该卡片占 12 列 5 行，并且可以缩小到 6 列 2 行。功能会在此基础上增加行数。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-humidifier-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-humidifier-card.ts)

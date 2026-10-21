@@ -1,7 +1,7 @@
 ---
-title: Valve
-description: The more-info view of a water or gas valve, with an open and close switch, buttons, or a position slider.
-sidebarGroup: Openings and security
+title: 阀门
+description: 水阀或气阀的更多信息视图，包含开和关的开关、按钮或位置滑块。
+sidebarGroup: 开口与安全
 ---
 
 import Demo from "../../../../components/docs/Demo.astro";
@@ -10,26 +10,26 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="valve.garden_irrigation"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 显示内容
 
-A valve works a lot like a [cover](/design/more-info/cover/), and its view follows the same rules. The main control depends on what the valve supports:
+阀门（valve）的工作方式与[卷帘（cover）](/design/more-info/cover/)非常相似，其视图遵循相同的规则。主要控件取决于阀门支持的功能：
 
-- **Open and close only**: a big vertical [control switch](/design/components/controls/), with the icon of an open and a closed valve. The garden irrigation above works like that.
-- **Stop**: a valve that can also stop halfway gets a column of [control buttons](/design/components/controls/) for **Open**, **Stop**, and **Close** instead.
-- **Position**: a valve that can be set to a position gets a tall vertical [control slider](/design/components/controls/).
+- **仅支持开和关**：一个大的垂直[控制开关](/design/components/controls/)，带有打开和关闭阀门的图标。上面的花园灌溉阀门就是这样工作的。
+- **停止**：能够中途停止的阀门会改为显示一列[控制按钮](/design/components/controls/)，分别为**打开**、**停止**和**关闭**。
+- **位置**：可以设置位置的阀门会显示一个高大的垂直[控制滑块](/design/components/controls/)。
 
-A valve that supports a position and buttons gets both, with two round buttons below the main control to switch between the position mode and the button mode.
+同时支持位置和按钮的阀门会两者都显示，在主控件下方有两个圆形按钮，用于在位置模式和按钮模式之间切换。
 
-The state at the top combines the state and the position, like **Open · 40%**, and leaves the position out when there is nothing to add.
+顶部的状态将状态和位置组合在一起，例如**打开 · 40%**，当没有可附加的信息时则省略位置。
 
-## Design notes
+## 设计说明
 
-- The icons follow the device class of the valve, like water or gas.
-- A valve has no tilt, so there is no cross of buttons like covers have.
-- Valves that support a position can show favorite positions below the controls. Those come from the entity settings, and are not part of these demos.
+- 图标遵循阀门的设备类型（device class），例如水或气。
+- 阀门没有倾斜功能，因此没有像卷帘那样的十字形按钮。
+- 支持位置的阀门可以在控件下方显示常用位置。这些位置来自实体（entity）设置，不属于这些演示的一部分。
 
-## In code
+## 代码实现
 
-The view is `more-info-valve` in `src/dialogs/more-info/controls/more-info-valve.ts`. The main controls are in `src/state-control/valve/`: `ha-state-control-valve-toggle`, `ha-state-control-valve-buttons`, and `ha-state-control-valve-position`. The favorite positions are in `src/dialogs/more-info/components/valves/`. The `ValveEntityFeature` enum is in `src/data/valve.ts`.
+该视图是 `src/dialogs/more-info/controls/more-info-valve.ts` 中的 `more-info-valve`。主要控件位于 `src/state-control/valve/` 中：`ha-state-control-valve-toggle`、`ha-state-control-valve-buttons` 和 `ha-state-control-valve-position`。常用位置位于 `src/dialogs/more-info/components/valves/` 中。`ValveEntityFeature` 枚举位于 `src/data/valve.ts` 中。
 
-Source: [`more-info-valve.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-valve.ts)
+源码：[`more-info-valve.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-valve.ts)

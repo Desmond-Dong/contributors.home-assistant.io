@@ -1,6 +1,6 @@
 ---
-title: Faded
-description: Faded content shows the start of a long text, and fades out the rest until people select it.
+title: 渐隐（Faded）
+description: 渐隐内容显示长文本的开头，其余部分淡出，直到用户选择它为止。
 sidebarGroup: Layout and content
 ---
 
@@ -10,117 +10,117 @@ import DoDont from "../../../../components/docs/DoDont.astro";
 <Demo layout="stack">
   <ha-faded>
     <div>
-      <p>This release brings a new energy dashboard, faster startup, and a long list of fixes. The automation editor now shows which triggers fired last, so you can see at a glance why an automation ran.</p>
-      <p>Several integrations got new entities, and some older options moved from YAML to the user interface. Check the backward-incompatible changes before you update, especially if you use custom templates for your dashboards.</p>
-      <p>Thanks to everyone who tested the beta, reported issues, and translated the new strings.</p>
+      <p>本次发布带来了新的能源仪表盘、更快的启动速度，以及一长串修复。自动化编辑器现在会显示最后触发了哪些触发器，让你一眼就能看出自动化为什么运行。</p>
+      <p>多个集成新增了实体，一些较旧的选项从 YAML 迁移到了用户界面。更新前请查看不向后兼容的变更，尤其是当你为仪表盘使用自定义模板时。</p>
+      <p>感谢所有测试 beta 版、报告问题并翻译新字符串的人。</p>
     </div>
   </ha-faded>
 </Demo>
 
-## Overview
+## 概述
 
-Faded content shows the first lines of a long text, and fades the rest out at the bottom. Selecting anywhere on the text shows all of it. The first lines tell people whether they want to read on.
+渐隐内容显示长文本的前几行，其余部分在底部淡出。点击文本的任意位置即可显示全部内容。前几行能让用户判断是否想继续阅读。
 
-## When to use
+## 何时使用
 
-Use faded content for:
+在以下情况使用渐隐内容：
 
-- Text that is optional reading, like release notes or a long description
+- 可选阅读的文本，例如发行说明或较长的描述
 
-Don't use faded content for:
+不要在以下情况使用渐隐内容：
 
-- Anything people need, like a warning or an action. Keep it outside the fade.
-- Content that needs to be opened and closed by everyone, including keyboard users. Use an [expansion panel](/design/components/expansion-panel/).
-- A single line that is too long. Use [marquee text](/design/components/marquee-text/), or let it wrap.
+- 用户需要的任何内容，例如警告或操作。请将其放在渐隐区域之外。
+- 所有人（包括键盘用户）都需要展开和收起的内容。请使用[展开面板（expansion panel）](/design/components/expansion-panel/)。
+- 单行过长的文本。请使用[跑马灯文本（marquee text）](/design/components/marquee-text/)，或让其换行。
 
-## Anatomy
+## 结构
 
-1. **Container**: cuts the content off at the faded height, and receives the selection that opens it
-2. **Content**: the elements in the default slot
-3. **Fade**: a mask over the container that goes from fully visible to transparent toward the bottom
+1. **容器（Container）**：在渐隐高度处裁剪内容，并接收打开它的选择操作
+2. **内容（Content）**：默认插槽中的元素
+3. **渐隐（Fade）**：覆盖在容器上的遮罩，从完全可见渐变到底部透明
 
-## Variants
+## 变体
 
-### Height
+### 高度
 
-By default, the content is cut off at 102 pixels. The height can be changed.
+默认情况下，内容在 102 像素处被裁剪。高度可以更改。
 
 <Demo layout="stack">
   <ha-faded faded-height="48">
     <div>
-      <p>The front door sensor reports open and closed, and the battery level. It updates within a second of the door moving, and checks in every hour when nothing happens.</p>
-      <p>Mount it on the door frame, with the magnet on the door itself, no more than a centimeter apart.</p>
-      <p>The battery lasts about two years, and its level shows up as a separate sensor.</p>
+      <p>前门传感器报告门的开合状态和电池电量。它在门移动后一秒内更新，并在没有动静时每小时签到一次。</p>
+      <p>将其安装在门框上，磁铁安装在门本身上，两者间距不超过一厘米。</p>
+      <p>电池续航约两年，其电量显示为一个单独的传感器。</p>
     </div>
   </ha-faded>
 </Demo>
 
-## Behavior
+## 行为
 
-- **Faded**: the content is cut off at the faded height, the bottom fades out, and the pointer turns into a hand.
-- **Open**: selecting anywhere on the content shows all of it. Once it is open, it stays open. There is no way to collapse it again.
-- **Short content**: when the content is at most 50 pixels taller than the faded height, it is shown in full right away. Hiding only a line or two would cost people a tap, and save almost no room.
+- **渐隐（Faded）**：内容在渐隐高度处被裁剪，底部淡出，指针变为手形。
+- **展开（Open）**：点击内容的任意位置即可显示全部内容。一旦展开，就会保持展开状态。无法再次收起。
+- **短内容（Short content）**：当内容比渐隐高度高出不超过 50 像素时，会直接完整显示。只隐藏一两行会让用户多点击一次，却几乎不节省空间。
 
-<Demo caption="Short content is shown in full.">
+<Demo caption="短内容会完整显示。">
   <ha-faded>
-    <div>This update only fixes a few small bugs.</div>
+    <div>本次更新只修复了几个小 bug。</div>
   </ha-faded>
 </Demo>
 
-## Specs
+## 规格
 
-| Property | Value |
+| 属性 | 值 |
 | --- | --- |
-| Faded height | 102px by default |
-| Shown in full when content is at most | The faded height plus 50px |
-| Fade | Linear gradient from top to bottom: fully visible down to 25% of the height, then fading to transparent at the bottom |
-| Pointer while faded | `pointer` |
-| Pointer when open | `default` |
+| 渐隐高度 | 默认 102px |
+| 内容最多高出多少时完整显示 | 渐隐高度加 50px |
+| 渐隐 | 自上而下的线性渐变：到高度 25% 处完全可见，然后在底部渐变为透明 |
+| 渐隐时的指针 | `pointer` |
+| 展开时的指针 | `default` |
 
-The component sets no colors, spacing, or type of its own. The content keeps the styles of the page around it.
+该组件自身不设置任何颜色、间距或字体。内容保留其周围页面的样式。
 
-## Guidelines
+## 指南
 
-<DoDont doText="Put optional reading behind the fade." dontText="Hide a warning or an action people need behind the fade.">
+<DoDont doText="将可选阅读的内容放在渐隐区域之后。" dontText="将用户需要的警告或操作隐藏在渐隐区域之后。">
   <ha-faded slot="do" faded-height="48">
     <div>
-      <p>This release brings a new energy dashboard, faster startup, and a long list of fixes.</p>
-      <p>Several integrations got new entities, and some older options moved from YAML to the user interface.</p>
-      <p>Thanks to everyone who tested the beta, reported issues, and translated the new strings.</p>
+      <p>本次发布带来了新的能源仪表盘、更快的启动速度，以及一长串修复。</p>
+      <p>多个集成新增了实体，一些较旧的选项从 YAML 迁移到了用户界面。</p>
+      <p>感谢所有测试 beta 版、报告问题并翻译新字符串的人。</p>
     </div>
   </ha-faded>
   <ha-faded slot="dont" faded-height="48">
     <div>
-      <p>This release brings a new energy dashboard, faster startup, and a long list of fixes.</p>
-      <p>Several integrations got new entities, and some older options moved from YAML to the user interface.</p>
-      <p>Back up your configuration before you update. This update can't be undone.</p>
+      <p>本次发布带来了新的能源仪表盘、更快的启动速度，以及一长串修复。</p>
+      <p>多个集成新增了实体，一些较旧的选项从 YAML 迁移到了用户界面。</p>
+      <p>更新前请备份你的配置。本次更新无法撤销。</p>
     </div>
   </ha-faded>
 </DoDont>
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-Faded content has no keyboard interaction. It only opens with a pointer or touch, so keyboard users can't open it. That is one more reason to keep what people need out of the faded part.
+渐隐内容没有键盘交互。它只能通过指针或触摸打开，因此键盘用户无法打开它。这是将用户需要的内容放在渐隐区域之外的另一个原因。
 
-### Screen readers
+### 屏幕阅读器
 
-Screen readers can read the full text, even while it is faded. They don't hear that there is more, or that it can be opened.
+屏幕阅读器可以读取完整文本，即使它处于渐隐状态。它们不会听到还有更多内容，也不会听到它可以被展开。
 
-### In the code
+### 在代码中
 
-- The container has no role, is not focusable, and has no expanded or collapsed state.
-- The hidden part is only clipped and masked. It stays in the page.
+- 容器没有 role，不可聚焦，也没有展开或收起状态。
+- 隐藏部分只是被裁剪和遮罩。它仍保留在页面中。
 
-## Related
+## 相关内容
 
-- [Expansion panel](/design/components/expansion-panel/): content that everyone can open and close
-- [Marquee text](/design/components/marquee-text/): a single line that is too long to fit
+- [展开面板（Expansion panel）](/design/components/expansion-panel/)：所有人都可以展开和收起的内容
+- [跑马灯文本（Marquee text）](/design/components/marquee-text/)：单行过长无法容纳的文本
 
-## In code
+## 代码中
 
-The element is `<ha-faded>`.
+该元素是 `<ha-faded>`。
 
 ```html
 <ha-faded faded-height="80">
@@ -128,16 +128,16 @@ The element is `<ha-faded>`.
 </ha-faded>
 ```
 
-Wrap the content in an element. The height is measured from the elements in the slot, and plain text has no element to measure. Plain text directly in `<ha-faded>` always fades, even when it is short.
+将内容包裹在一个元素中。高度是根据插槽中的元素测量的，而纯文本没有可供测量的元素。直接放在 `<ha-faded>` 中的纯文本总是会渐隐，即使内容很短。
 
-The height is measured once, when the component first renders. For content that renders later, like markdown, `ha-markdown` fires a `content-resize` event when it is done, and the component measures again.
+高度只在组件首次渲染时测量一次。对于稍后渲染的内容（例如 markdown），`ha-markdown` 会在完成后触发 `content-resize` 事件，组件会再次测量。
 
-### Attributes
+### 属性
 
-- `faded-height`: the height in pixels where the content is cut off. Defaults to `102`.
+- `faded-height`：内容被裁剪处的高度（像素）。默认为 `102`。
 
-### Slots
+### 插槽
 
-- Default: the content.
+- 默认：内容。
 
-Source: [`src/components/ha-faded.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-faded.ts)
+来源：[`src/components/ha-faded.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-faded.ts)

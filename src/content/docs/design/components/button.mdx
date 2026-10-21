@@ -1,6 +1,6 @@
 ---
-title: Button
-description: Buttons start an action, like saving a form or opening a dialog.
+title: 按钮
+description: 按钮用于启动一个操作，例如保存表单或打开对话框。
 sidebarGroup: Actions
 ---
 
@@ -14,57 +14,57 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   <ha-button appearance="plain">Cancel</ha-button>
 </Demo>
 
-## Overview
+## 概述
 
-A button starts an action: something happens when you select it, like saving a form, opening a dialog, or deleting an item. Its appearance tells how important the action is, and its color tells what kind of action it is.
+按钮用于启动一个操作：当你选择它时会发生某些事情，例如保存表单、打开对话框或删除条目。它的外观表明该操作的重要程度，它的颜色表明该操作属于哪种类型。
 
-## When to use
+## 何时使用
 
-Use a button for:
+在以下情况使用按钮：
 
-- An action that changes something, like **Save**, **Delete**, or **Enable**
-- Confirming or dismissing a [dialog](/design/components/dialog/)
-- Opening a dialog or a menu
+- 会改变某些内容的操作，例如**保存**、**删除**或**启用**
+- 确认或关闭[对话框](/design/components/dialog/)
+- 打开对话框或菜单
 
-Don't use a button for:
+不要在以下情况使用按钮：
 
-- Going somewhere else. Use a link instead.
-- An action that takes a while and needs to show how it went. Use a [progress button](/design/components/progress-button/).
-- A list of actions. Put them in a [dropdown](/design/components/dropdown/).
-- Turning a setting on or off. Use a [switch](/design/components/switch/).
+- 前往其他地方。请改用链接。
+- 需要较长时间且需要展示进展的操作。请使用[进度按钮](/design/components/progress-button/)。
+- 一组操作。请将它们放入[下拉菜单](/design/components/dropdown/)中。
+- 开启或关闭某个设置。请使用[开关](/design/components/switch/)。
 
-## Anatomy
+## 结构
 
-1. **Container**: the background, border, and corner radius
-2. **Start**: optional content before the label, usually an icon
-3. **Label**: the text of the button
-4. **End**: optional content after the label, usually an icon
-5. **Spinner**: replaces the start, label, and end while the button is loading
+1. **容器**：背景、边框和圆角
+2. **起始**：标签之前的可选内容，通常是一个图标
+3. **标签**：按钮的文本
+4. **结束**：标签之后的可选内容，通常是一个图标
+5. **加载指示器**：在按钮加载时替换起始、标签和结束
 
-## Variants
+## 变体
 
-### Appearance
+### 外观
 
-A button has four appearances. They set how much attention it draws:
+按钮有四种外观。它们决定了按钮吸引注意力的程度：
 
-- **Accent** is the default, with the loudest fill.
-- **Filled** has a softer fill. Use it when an action needs emphasis.
-- **Outlined** has no fill, only a border.
-- **Plain** has no fill and no border, and draws the least attention. Use it for cancel and dismiss actions.
+- **Accent** 是默认外观，填充最醒目。
+- **Filled** 填充较柔和。当某个操作需要强调时使用它。
+- **Outlined** 没有填充，只有边框。
+- **Plain** 没有填充也没有边框，最不引人注意。用于取消和关闭操作。
 
-<Demo caption="Accent for the main action, plain for the way out.">
+<Demo caption="主要操作使用 accent，退出途径使用 plain。">
   <ha-button appearance="plain">Cancel</ha-button>
   <ha-button>Save</ha-button>
 </Demo>
 
-### Variant
+### 变体
 
-The variant sets the color, and with it the meaning:
+变体决定了颜色，以及随之而来的含义：
 
-- **Brand** is the default, for most actions.
-- **Danger** is for destructive actions, like deleting something.
-- **Warning** and **success** are for actions that relate to a warning or a success state.
-- **Neutral** is for actions that should not carry any meaning through color.
+- **Brand** 是默认变体，用于大多数操作。
+- **Danger** 用于破坏性操作，例如删除某些内容。
+- **Warning** 和 **success** 用于与警告或成功状态相关的操作。
+- **Neutral** 用于不应通过颜色传达任何含义的操作。
 
 <Demo>
   <ha-button>Brand</ha-button>
@@ -74,9 +74,9 @@ The variant sets the color, and with it the meaning:
   <ha-button variant="neutral">Neutral</ha-button>
 </Demo>
 
-### Size
+### 尺寸
 
-Buttons come in four sizes: extra small, small, medium, and large. Medium is the default.
+按钮有四种尺寸：超小、小、中和大。中是默认尺寸。
 
 <Demo>
   <ha-button size="xs">Extra small</ha-button>
@@ -85,14 +85,14 @@ Buttons come in four sizes: extra small, small, medium, and large. Medium is the
   <ha-button size="l">Large</ha-button>
 </Demo>
 
-## Behavior
+## 行为
 
-- **Enabled**: the resting state, with the colors of its appearance and variant.
-- **Hover**: on devices with a pointer that can hover, the background changes to the hover fill of the variant. The color change takes 150 ms.
-- **Focus**: keyboard focus shows a 2px solid focus ring, 2px outside the button.
-- **Pressed**: while pressed, the background changes to the active fill of the variant.
-- **Disabled**: the button uses the disabled colors, can't be selected, and is skipped when you move through the page with the keyboard.
-- **Loading**: a spinner replaces the label and icons. The button keeps its size, and selecting it does nothing.
+- **启用**：静止状态，使用其外观和变体对应的颜色。
+- **悬停**：在具有可悬停指针的设备上，背景会变为该变体的悬停填充色。颜色变化耗时 150 毫秒。
+- **聚焦**：键盘聚焦时显示 2px 实线聚焦环，位于按钮外侧 2px 处。
+- **按下**：按下期间，背景会变为该变体的激活填充色。
+- **禁用**：按钮使用禁用颜色，无法被选择，并且在用键盘在页面上移动时会被跳过。
+- **加载中**：加载指示器替换标签和图标。按钮保持其尺寸，选择它不会有任何效果。
 
 <Demo>
   <ha-button loading>Saving</ha-button>
@@ -100,64 +100,64 @@ Buttons come in four sizes: extra small, small, medium, and large. Medium is the
   <ha-button appearance="outlined" disabled>Disabled</ha-button>
 </Demo>
 
-Long labels wrap to a new line. When a label can't wrap, it is cut off with an ellipsis.
+过长的标签会换行。当标签无法换行时，会以省略号截断。
 
-## Specs
+## 规格
 
-### Size
+### 尺寸
 
-| Size | Height | Padding left and right | Font size |
+| 尺寸 | 高度 | 左右内边距 | 字体大小 |
 | --- | --- | --- | --- |
-| Extra small | 24px | 8px (`--ha-space-2`) | 14px (`--ha-font-size-m`) |
-| Small | 32px | 12px (`--ha-space-3`) | 14px (`--ha-font-size-m`) |
-| Medium | 40px | 16px (`--ha-space-4`) | 14px (`--ha-font-size-m`) |
-| Large | 48px | 16px (`--ha-space-4`) | 16px (`--ha-font-size-l`) |
+| 超小 | 24px | 8px (`--ha-space-2`) | 14px (`--ha-font-size-m`) |
+| 小 | 32px | 12px (`--ha-space-3`) | 14px (`--ha-font-size-m`) |
+| 中 | 40px | 16px (`--ha-space-4`) | 14px (`--ha-font-size-m`) |
+| 大 | 48px | 16px (`--ha-space-4`) | 16px (`--ha-font-size-l`) |
 
-The height can be changed with `--ha-button-height`. In code there is also an extra large size, but it has no style of its own and looks the same as medium.
+高度可以通过 `--ha-button-height` 更改。在代码中还有一个超大尺寸，但它没有自己的样式，外观与中等尺寸相同。
 
-### Shape and content
+### 形状与内容
 
-| Property | Value | Token |
+| 属性 | 值 | 令牌 |
 | --- | --- | --- |
-| Corner radius | 9999px, fully rounded | `--ha-border-radius-pill`, through `--ha-button-border-radius` |
-| Border width | 1px | `--ha-border-width-sm` |
-| Font weight | 500 | `--ha-font-weight-medium` |
-| Padding next to a start or end icon | 8px | `--ha-space-2` |
-| Gap between icon and label | 4px | `--ha-space-1` |
-| Label padding top and bottom | 4px | `--ha-space-1` |
-| Icon size in extra small | 16px | `--mdc-icon-size` |
-| Focus ring | 2px solid, 2px offset | `--ha-color-focus` |
-| Hover transition | 150ms, ease-out | `--ha-animation-duration-fast` |
+| 圆角半径 | 9999px，完全圆角 | `--ha-border-radius-pill`，通过 `--ha-button-border-radius` |
+| 边框宽度 | 1px | `--ha-border-width-sm` |
+| 字体粗细 | 500 | `--ha-font-weight-medium` |
+| 起始或结束图标旁边的内边距 | 8px | `--ha-space-2` |
+| 图标与标签之间的间距 | 4px | `--ha-space-1` |
+| 标签上下内边距 | 4px | `--ha-space-1` |
+| 超小尺寸下的图标大小 | 16px | `--mdc-icon-size` |
+| 聚焦环 | 2px 实线，偏移 2px | `--ha-color-focus` |
+| 悬停过渡 | 150ms，ease-out | `--ha-animation-duration-fast` |
 
-### Color
+### 颜色
 
-The tokens below are for the brand variant. The other variants use the same tokens with `neutral`, `success`, `warning`, or `danger` in place of `primary`.
+以下令牌适用于 brand 变体。其他变体使用相同的令牌，只是将 `primary` 替换为 `neutral`、`success`、`warning` 或 `danger`。
 
-| Appearance | State | Background | Text | Border |
+| 外观 | 状态 | 背景 | 文本 | 边框 |
 | --- | --- | --- | --- | --- |
-| Accent | Resting | `--ha-color-fill-primary-loud-resting` | `--ha-color-on-primary-loud` | Transparent |
-| Accent | Hover | `--ha-color-fill-primary-loud-hover` | `--ha-color-on-primary-loud` | Transparent |
-| Accent | Pressed | `--ha-color-fill-primary-loud-active` | `--ha-color-on-primary-loud` | Transparent |
-| Accent | Disabled | `--ha-color-fill-disabled-loud-resting` | `--ha-color-on-disabled-loud` | Transparent |
-| Filled | Resting | `--ha-color-fill-primary-normal-resting` | `--ha-color-on-primary-normal` | Transparent |
-| Filled | Hover | `--ha-color-fill-primary-normal-hover` | `--ha-color-on-primary-normal` | Transparent |
-| Filled | Pressed | `--ha-color-fill-primary-normal-active` | `--ha-color-on-primary-normal` | Transparent |
-| Filled | Disabled | `--ha-color-fill-disabled-normal-resting` | `--ha-color-on-disabled-normal` | Transparent |
-| Outlined | Resting | Transparent | `--ha-color-on-primary-quiet` | `--ha-color-border-primary-loud` |
-| Outlined | Hover | `--ha-color-fill-primary-quiet-hover` | `--ha-color-on-primary-quiet` | `--ha-color-border-primary-loud` |
-| Outlined | Disabled | Transparent | `--ha-color-on-disabled-quiet` | `--ha-color-on-disabled-quiet` |
-| Plain | Resting | Transparent | `--ha-color-on-primary-normal` | Transparent |
-| Plain | Hover | `--ha-color-fill-primary-quiet-hover` | `--ha-color-on-primary-normal` | Transparent |
-| Plain | Pressed | `--ha-color-fill-primary-quiet-active` | `--ha-color-on-primary-quiet` | Transparent |
-| Plain | Disabled | Transparent | `--ha-color-on-disabled-quiet` | Transparent |
+| Accent | 静止 | `--ha-color-fill-primary-loud-resting` | `--ha-color-on-primary-loud` | 透明 |
+| Accent | 悬停 | `--ha-color-fill-primary-loud-hover` | `--ha-color-on-primary-loud` | 透明 |
+| Accent | 按下 | `--ha-color-fill-primary-loud-active` | `--ha-color-on-primary-loud` | 透明 |
+| Accent | 禁用 | `--ha-color-fill-disabled-loud-resting` | `--ha-color-on-disabled-loud` | 透明 |
+| Filled | 静止 | `--ha-color-fill-primary-normal-resting` | `--ha-color-on-primary-normal` | 透明 |
+| Filled | 悬停 | `--ha-color-fill-primary-normal-hover` | `--ha-color-on-primary-normal` | 透明 |
+| Filled | 按下 | `--ha-color-fill-primary-normal-active` | `--ha-color-on-primary-normal` | 透明 |
+| Filled | 禁用 | `--ha-color-fill-disabled-normal-resting` | `--ha-color-on-disabled-normal` | 透明 |
+| Outlined | 静止 | 透明 | `--ha-color-on-primary-quiet` | `--ha-color-border-primary-loud` |
+| Outlined | 悬停 | `--ha-color-fill-primary-quiet-hover` | `--ha-color-on-primary-quiet` | `--ha-color-border-primary-loud` |
+| Outlined | 禁用 | 透明 | `--ha-color-on-disabled-quiet` | `--ha-color-on-disabled-quiet` |
+| Plain | 静止 | 透明 | `--ha-color-on-primary-normal` | 透明 |
+| Plain | 悬停 | `--ha-color-fill-primary-quiet-hover` | `--ha-color-on-primary-normal` | 透明 |
+| Plain | 按下 | `--ha-color-fill-primary-quiet-active` | `--ha-color-on-primary-quiet` | 透明 |
+| Plain | 禁用 | 透明 | `--ha-color-on-disabled-quiet` | 透明 |
 
-The neutral plain button is the one exception: pressed, it uses `--ha-color-fill-neutral-normal-active`. A disabled button made disabled through its attribute is also dimmed to 50% opacity as a whole, by the Web Awesome base style.
+中性 plain 按钮是唯一的例外：按下时，它使用 `--ha-color-fill-neutral-normal-active`。通过属性禁用的按钮还会被 Web Awesome 基础样式整体调暗至 50% 不透明度。
 
-## Guidelines
+## 指南
 
-### Emphasis
+### 强调
 
-<DoDont doText="Use a plain button to cancel or dismiss." dontText="Give the way out as much weight as the main action.">
+<DoDont doText="使用 plain 按钮来取消或关闭。" dontText="给退出途径与主要操作同等的分量。">
   <Fragment slot="do">
     <ha-button appearance="plain">Cancel</ha-button>
     <ha-button>Save</ha-button>
@@ -168,7 +168,7 @@ The neutral plain button is the one exception: pressed, it uses `--ha-color-fill
   </Fragment>
 </DoDont>
 
-<DoDont doText="Use the danger variant for destructive actions." dontText="Use the brand color for an action that deletes something.">
+<DoDont doText="对破坏性操作使用 danger 变体。" dontText="对删除某些内容的操作使用 brand 颜色。">
   <Fragment slot="do">
     <ha-button appearance="plain">Cancel</ha-button>
     <ha-button variant="danger">Delete</ha-button>
@@ -179,9 +179,9 @@ The neutral plain button is the one exception: pressed, it uses `--ha-color-fill
   </Fragment>
 </DoDont>
 
-### Labels
+### 标签
 
-<DoDont doText="Say what happens when you select the button." dontText="Use a label that could mean anything.">
+<DoDont doText="说明选择按钮后会发生什么。" dontText="使用含义模糊的标签。">
   <ha-button slot="do">Save</ha-button>
   <Fragment slot="dont">
     <ha-button>OK</ha-button>
@@ -189,66 +189,66 @@ The neutral plain button is the one exception: pressed, it uses `--ha-color-fill
   </Fragment>
 </DoDont>
 
-<DoDont doText="Use sentence case." dontText="Capitalize every word.">
+<DoDont doText="使用句首大写。" dontText="每个单词都首字母大写。">
   <ha-button slot="do">Create automation</ha-button>
   <ha-button slot="dont">Create Automation</ha-button>
 </DoDont>
 
-<DoDont doText="Use remove for things you can add back, like a card on a dashboard." dontText="Use delete for something that isn't gone for good.">
+<DoDont doText="对可以重新添加的内容使用 remove，例如仪表盘上的卡片。" dontText="对并非永久消失的内容使用 delete。">
   <ha-button slot="do" appearance="filled">Remove from dashboard</ha-button>
   <ha-button slot="dont" appearance="filled">Delete from dashboard</ha-button>
 </DoDont>
 
-See [UI text](/design/ui-text/) and [remove, delete, add, or create](/design/ui-text/remove-delete/) for more.
+更多信息请参阅 [UI 文本](/design/ui-text/)和 [remove、delete、add 或 create](/design/ui-text/remove-delete/)。
 
-### Icons
+### 图标
 
-Avoid icons in extra small buttons. At 24px the label carries the meaning on its own, and a 16px icon next to it adds noise without adding information. Use an icon only when the button needs to be recognized at a glance in a dense layout, and only a common one that people recognize by its shape alone, like close, add, or settings.
+避免在超小按钮中使用图标。在 24px 的尺寸下，标签本身已足以传达含义，旁边的 16px 图标只会增加噪音而不增加信息。仅当按钮需要在密集布局中一眼被识别时才使用图标，并且只使用人们仅凭形状就能认出的常见图标，例如关闭、添加或设置。
 
-<DoDont doText="Let the label speak in an extra small button." dontText="Add a detailed icon to an extra small button.">
+<DoDont doText="让标签在超小按钮中传达含义。" dontText="在超小按钮中添加细节图标。">
   <ha-button slot="do" size="xs">Delete</ha-button>
   <ha-button slot="dont" size="xs"><ha-svg-icon slot="start" path="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"></ha-svg-icon>Delete</ha-button>
 </DoDont>
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-| Key | Action |
+| 按键 | 操作 |
 | --- | --- |
-| <kbd>Tab</kbd> | Moves focus to the button, and away from it. A disabled button is skipped. |
-| <kbd>Enter</kbd> or <kbd>Space</kbd> | Selects the button. Does nothing while it is loading. |
+| <kbd>Tab</kbd> | 将焦点移至按钮，以及从按钮移开。禁用的按钮会被跳过。 |
+| <kbd>Enter</kbd> 或 <kbd>Space</kbd> | 选择按钮。加载期间无任何效果。 |
 
-### Focus
+### 焦点
 
-The focus ring only shows for keyboard focus, not when you select the button with a mouse or touch.
+聚焦环仅在键盘聚焦时显示，用鼠标或触摸选择按钮时不会显示。
 
-### Target size
+### 目标尺寸
 
-The height is 24px for extra small, 32px for small, 40px for medium, and 48px for large. The width follows the label, plus the padding.
+超小尺寸高度为 24px，小尺寸为 32px，中尺寸为 40px，大尺寸为 48px。宽度随标签而定，再加上内边距。
 
-### Screen readers
+### 屏幕阅读器
 
-A screen reader announces a button with its label. A button with only an icon has no text to announce, so it needs a name in code. While it loads, the button is announced as busy. A disabled button is announced as disabled.
+屏幕阅读器会连同其标签一起播报按钮。仅有图标的按钮没有可播报的文本，因此需要在代码中为其指定名称。加载期间，按钮会被播报为忙碌。禁用的按钮会被播报为已禁用。
 
-### In the code
+### 在代码中
 
-- Focus is delegated to the native `<button>` inside the component, so calling `focus()` on `<ha-button>` focuses the button. The focus ring uses `:focus-visible`.
-- The role is `button`. The accessible name is the label text. Set `aria-label` on `<ha-button>` to give it another name: it is passed on to the native button.
-- A button with only an icon and no text needs an `aria-label`.
-- While loading, the button has `aria-busy="true"`.
-- A disabled button is a native disabled `<button>`.
+- 焦点被委托给组件内部的原生 `<button>`，因此在 `<ha-button>` 上调用 `focus()` 会聚焦该按钮。聚焦环使用 `:focus-visible`。
+- 角色是 `button`。可访问名称是标签文本。在 `<ha-button>` 上设置 `aria-label` 可以为它指定另一个名称：它会被传递给原生按钮。
+- 仅有图标而没有文本的按钮需要 `aria-label`。
+- 加载期间，按钮具有 `aria-busy="true"`。
+- 禁用的按钮是一个原生禁用的 `<button>`。
 
-## Related
+## 相关内容
 
-- [Progress button](/design/components/progress-button/): a button that shows the result of its action
-- [Dropdown](/design/components/dropdown/): a button that opens a menu of actions
-- [Dialog](/design/components/dialog/): where most button pairs live
-- [UI text](/design/ui-text/): how to write labels
+- [进度按钮](/design/components/progress-button/)：展示其操作结果的按钮
+- [下拉菜单](/design/components/dropdown/)：打开操作菜单的按钮
+- [对话框](/design/components/dialog/)：大多数按钮对所在之处
+- [UI 文本](/design/ui-text/)：如何编写标签
 
-## In code
+## 在代码中
 
-The element is `<ha-button>`. It is based on the [Web Awesome button](https://webawesome.com/docs/components/button/).
+该元素是 `<ha-button>`。它基于 [Web Awesome 按钮](https://webawesome.com/docs/components/button/)。
 
 ```html
 <ha-button>Save</ha-button>
@@ -257,25 +257,25 @@ The element is `<ha-button>`. It is based on the [Web Awesome button](https://we
 <ha-button size="s">Small</ha-button>
 ```
 
-In a dialog, put the main action in the `primaryAction` slot and the secondary action in the `secondaryAction` slot of `ha-dialog-footer`.
+在对话框中，将主要操作放入 `ha-dialog-footer` 的 `primaryAction` 插槽，将次要操作放入 `secondaryAction` 插槽。
 
-### Attributes
+### 属性
 
-- `appearance`: `accent` (default), `filled`, `outlined`, or `plain`.
-- `variant`: `brand` (default), `neutral`, `success`, `warning`, or `danger`.
-- `size`: `xs`, `s`, `m` (default), or `l`. The value `xl` is accepted as well, and looks the same as `m`.
-- `loading`: shows a loading indicator instead of the label, and blocks selecting the button.
-- `disabled`: disables the button.
+- `appearance`：`accent`（默认）、`filled`、`outlined` 或 `plain`。
+- `variant`：`brand`（默认）、`neutral`、`success`、`warning` 或 `danger`。
+- `size`：`xs`、`s`、`m`（默认）或 `l`。也接受 `xl` 值，外观与 `m` 相同。
+- `loading`：显示加载指示器而不是标签，并阻止选择按钮。
+- `disabled`：禁用按钮。
 
-### Slots
+### 插槽
 
-- Default: the label.
-- `start`: content before the label, usually an icon.
-- `end`: content after the label, usually an icon.
+- 默认：标签。
+- `start`：标签之前的内容，通常是一个图标。
+- `end`：标签之后的内容，通常是一个图标。
 
-### Styling
+### 样式
 
-- `--ha-button-height`: the height of the button.
-- `--ha-button-border-radius`: the corner radius. Defaults to `var(--ha-border-radius-pill)`.
+- `--ha-button-height`：按钮的高度。
+- `--ha-button-border-radius`：圆角半径。默认为 `var(--ha-border-radius-pill)`。
 
-Source: [`src/components/ha-button.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-button.ts)
+来源：[`src/components/ha-button.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-button.ts)

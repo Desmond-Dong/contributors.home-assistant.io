@@ -1,6 +1,6 @@
 ---
-title: Update
-description: The more-info view of an update entity, with the versions, the release notes, and buttons to skip or install.
+title: 更新
+description: 更新实体（entity）的更多信息视图，包含版本、发行说明以及跳过或安装按钮。
 sidebarGroup: Appliances
 ---
 
@@ -11,31 +11,31 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="update.desk_plug_firmware"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 显示内容
 
-An update is something to read before you act, so this view is a short page, not a control. It doesn't have the newer design with a large state. It starts with the state row, like **Update available** or **Up-to-date**, and the dialog uses the full height of the screen, to leave room for the release notes.
+更新是你在操作之前需要先阅读的内容，因此这个视图是一个简短的页面，而不是一个控制界面。它没有采用带大号状态的新设计。它以状态行开始，例如**有可用更新**或**已是最新版本**，并且对话框使用屏幕的全部高度，以便为发行说明留出空间。
 
-From top to bottom:
+从上到下依次为：
 
-- **Title**: the name of what gets updated, like **Home Assistant Core**.
-- **Versions**: the installed version and the latest version.
-- **Release announcement**: a link, when the update has one.
-- **Release notes**: the full notes, when the integration can provide them. Otherwise, a short release summary, when there is one.
-- **Backup**: for updates that support it, an option to create a backup before updating.
-- **Actions**: **Skip** and **Update** at the bottom.
+- **标题**：被更新对象的名称，例如 **Home Assistant Core**。
+- **版本**：已安装的版本和最新版本。
+- **发布公告**：一个链接（当更新有发布公告时显示）。
+- **发行说明**：完整的说明（当集成（integration）能够提供时显示）。否则，显示简短的更新摘要（如果有）。
+- **备份**：对于支持备份的更新，提供在更新前创建备份的选项。
+- **操作**：底部的**跳过**和**更新**按钮。
 
-The Home Assistant Core update has a new version, with release notes. The desk plug firmware is up to date, so **Skip** and **Update** are disabled.
+Home Assistant Core 更新有一个新版本，并带有发行说明。桌面插头固件已是最新版本，因此**跳过**和**更新**按钮处于禁用状态。
 
-## Design notes
+## 设计说明
 
-- While an update installs, a progress bar shows above the title. It fills up when the integration reports the progress, and moves back and forth when it doesn't.
-- **Skip** turns into **Clear skipped** when you skipped a version and there is nothing else to install, so you can undo it.
-- **Update** shows a spinner while the update installs. It is disabled when there is nothing new, but stays available for a version you skipped, so you can still install it later.
-- The **Update** button only shows when the update can be installed from Home Assistant. Some updates can only be read about.
-- Release notes load after the dialog opens, with a spinner while they load.
+- 当更新正在安装时，标题上方会显示一个进度条。当集成报告进度时，进度条会填充；当集成不报告进度时，进度条会来回移动。
+- 当你跳过了一个版本且没有其他可安装的内容时，**跳过**会变为**清除跳过**，以便你可以撤销跳过操作。
+- **更新**按钮在更新安装期间会显示加载动画。当没有新内容时它处于禁用状态，但对于你跳过的版本仍然可用，以便你以后仍可安装。
+- **更新**按钮仅在该更新可以从 Home Assistant 安装时显示。有些更新只能阅读了解。
+- 发行说明在对话框打开后加载，加载期间会显示加载动画。
 
-## In code
+## 代码实现
 
-The view is `more-info-update` in `src/dialogs/more-info/controls/more-info-update.ts`. The backup option is `ha-more-info-update-backup` in `src/dialogs/more-info/components/update/`. The state row at the top is `state-card-update` in `src/state-summary/`. The `UpdateEntityFeature` enum and helpers like `updateIsInstalling` are in `src/data/update.ts`.
+该视图是 `src/dialogs/more-info/controls/more-info-update.ts` 中的 `more-info-update`。备份选项是 `src/dialogs/more-info/components/update/` 中的 `ha-more-info-update-backup`。顶部的状态行是 `src/state-summary/` 中的 `state-card-update`。`UpdateEntityFeature` 枚举以及 `updateIsInstalling` 等辅助函数位于 `src/data/update.ts` 中。
 
 Source: [`more-info-update.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-update.ts)

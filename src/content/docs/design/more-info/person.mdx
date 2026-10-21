@@ -1,6 +1,6 @@
 ---
-title: Person
-description: The more-info view of a person, with where they are on a map.
+title: 人员
+description: 人员的更多信息视图，在地图上显示其所在位置。
 sidebarGroup: Information
 ---
 
@@ -11,23 +11,23 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="person.sam"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 显示内容
 
-The question you have about a person is "where are they?". The view answers it with a map. At the top is the state row, with the zone the person is in, like **Home** or **Work**. Below it, a map zooms in on where the person is, with a marker showing their initial or picture.
+关于一个人，你想知道的问题是“他们在哪里？”。该视图用地图来回答这个问题。顶部是状态行，显示该人员所在的地理位置区域（zone），例如**家**或**公司**。其下方是一张地图，放大显示该人员所在的位置，并用一个标记显示其姓名首字母或照片。
 
-Alex is at home, tracked by a phone. Sam is at work.
+Alex 在家，由手机追踪。Sam 在公司。
 
-For administrators, a **Create zone from current location** button below the map turns the spot where the person is into a new zone. It is not part of these demos.
+对于管理员，地图下方有一个**从当前位置创建地理位置区域**按钮，可将该人员所在的位置转换为新的地理位置区域。该按钮不包含在这些演示中。
 
-## Design notes
+## 设计说明
 
-- The map only shows when the location of the person is known: from their own coordinates, or else from the zone they are in. A person without either gets just the state row.
-- **Create zone from current location** only shows when the person has coordinates of their own, since a zone needs a spot to start from.
-- The map fits itself around the person, so you don't need to zoom or pan to find them.
-- The state is the name of the zone, not the coordinates. People think in places, like **Home** or **Work**.
+- 只有当人员的位置已知时才显示地图：位置来自其自身的坐标，或来自其所在的地理位置区域。两者都没有的人员则只显示状态行。
+- **从当前位置创建地理位置区域**仅在人员拥有自身坐标时显示，因为地理位置区域需要一个起始位置。
+- 地图会自动围绕该人员调整显示范围，因此你无需缩放或平移即可找到他们。
+- 状态显示的是地理位置区域的名称，而不是坐标。人们习惯以地点来思考，例如**家**或**公司**。
 
-## In code
+## 代码实现
 
-The view is `more-info-person` in `src/dialogs/more-info/controls/more-info-person.ts`. The map is `ha-map` from `src/components/map/`. The person domain has no newer more-info design, so the dialog also shows the state row at the top.
+该视图是 `src/dialogs/more-info/controls/more-info-person.ts` 中的 `more-info-person`。地图是来自 `src/components/map/` 的 `ha-map`。人员（person）域没有更新的更多信息设计，因此对话框顶部仍显示状态行。
 
-Source: [`more-info-person.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-person.ts)
+来源：[`more-info-person.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-person.ts)

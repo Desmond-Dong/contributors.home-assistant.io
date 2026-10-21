@@ -1,6 +1,6 @@
 ---
-title: Entity filter card
-description: The entity filter card shows only the entities from a list that match a filter, like the lights that are on. It wraps another card, the entities card by default.
+title: 实体筛选卡片
+description: 实体筛选卡片只显示列表中符合筛选条件的实体，例如已打开的灯。它会包装另一张卡片，默认为实体卡片。
 sidebarGroup: Entity cards
 ---
 
@@ -10,42 +10,42 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 380px" data-props='{"config": {"type": "entity-filter", "entities": ["light.living_room_lamp", "light.hallway", "light.kitchen_ceiling"], "conditions": [{"condition": "state", "state": "on"}], "card": {"title": "Lights on"}}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The entity filter card takes a list of entities, and only shows the ones that match its filter. When the state changes, the list changes with it. Use it for questions with a changing answer: which lights are on, which doors are open, which rooms run dry.
+实体筛选卡片（entity filter card）接受一个实体（entity）列表，只显示符合筛选条件的那些实体。当状态（state）发生变化时，列表也会随之变化。可以用它来回答那些答案会变化的问题：哪些灯开着，哪些门开着，哪些房间缺水。
 
-It does not show anything itself. It hands the matching entities to another card, an [entities card](/design/dashboards/entities-card/) unless you pick another one, like a [glance card](/design/dashboards/glance-card/). Anything you put in `card` goes to that card, like a `title`.
+它本身不显示任何内容，而是把匹配的实体交给另一张卡片，默认是[实体卡片](/design/dashboards/entities-card/)，除非你选择其他卡片，例如[概览卡片](/design/dashboards/glance-card/)。你放在 `card` 中的任何内容都会传递给那张卡片，比如 `title`。
 
 <Demo hass>
   <hui-card style="width: 400px" data-props='{"config": {"type": "entity-filter", "entities": ["sensor.living_room_humidity", "sensor.outdoor_humidity", "sensor.monstera_moisture"], "conditions": [{"condition": "numeric_state", "below": 50}], "card": {"type": "glance", "title": "Running dry"}}}'></hui-card>
 </Demo>
 
-To show or hide a whole card based on a state, use the [conditional card](/design/dashboards/conditional-card/), or the visibility options of the card itself in the sections view.
+要根据状态显示或隐藏整张卡片，请使用[条件卡片](/design/dashboards/conditional-card/)，或在分区视图中使用卡片自身的可见性选项。
 
-### Conditions
+### 条件
 
-Each entity in the list is checked against `conditions`, and shows when all of them are met. The conditions are the same as the visibility conditions of cards, without the entity: the card fills it in for each entity. A `state` condition checks the state, a `numeric_state` condition checks a number with `above` and `below`.
+列表中的每个实体都会与 `conditions` 进行比对，只有全部满足时才会显示。这些条件与卡片的可见性条件相同，只是不包含实体：卡片会为每个实体自动填入。`state` 条件检查状态，`numeric_state` 条件使用 `above` 和 `below` 检查数值。
 
-An entity can have its own `conditions`, which replace those of the card for that entity.
+实体可以拥有自己的 `conditions`，它会替换该实体的卡片条件。
 
-The older `state_filter` option still works: a list of states, or of mappings with an `operator`, a `value`, and an optional `attribute`. An entity shows when it matches any of them. A card can't have both `conditions` and `state_filter`.
+较旧的 `state_filter` 选项仍然可用：它是一个状态列表，或由 `operator`、`value` 和可选的 `attribute` 组成的映射列表。只要实体匹配其中任意一项就会显示。一张卡片不能同时使用 `conditions` 和 `state_filter`。
 
-### When nothing matches
+### 没有匹配项时
 
-When no entity matches, the card shows the wrapped card without rows. Set `show_empty: false` to hide the card instead. That is often what you want: a "Lights on" card with nothing in it adds noise.
+当没有实体匹配时，卡片会显示不带行的被包装卡片。设置 `show_empty: false` 可以改为隐藏卡片。这通常正是你想要的效果：一张空无一物的“Lights on”卡片只会增加视觉噪音。
 
-### Content
+### 内容
 
-- Give the wrapped card a title that says what the filter means, like "Open windows". Without one, people see a list and have to guess why these entities are in it.
-- List every entity that could match. The card only filters; it does not find entities for you.
+- 给被包装的卡片起一个能说明筛选含义的标题，例如“Open windows”。没有标题的话，人们只会看到一个列表，还得猜测这些实体为什么会出现在里面。
+- 列出所有可能匹配的实体。这张卡片只负责筛选，不会替你查找实体。
 
-## Configuration
+## 配置
 
-- `entities` (list, required): the entities to filter. Each is an entity ID, or a mapping with an `entity`, its own `conditions` or `state_filter`, and the options of the wrapped card for that entity, like `name`.
-- `conditions` (list): the conditions an entity must meet to show. Required, unless you use `state_filter`.
-- `state_filter` (list): the older way to filter, on state or attribute values.
-- `card` (mapping): the card that shows the matching entities. Defaults to an entities card.
-- `show_empty` (boolean): shows the card when no entity matches. Defaults to `true`.
+- `entities`（列表，必填）：要筛选的实体。每一项是一个实体 ID，或是一个包含 `entity`、它自己的 `conditions` 或 `state_filter`，以及该实体在被包装卡片中的选项（如 `name`）的映射。
+- `conditions`（列表）：实体必须满足才能显示的条件。必填，除非你使用 `state_filter`。
+- `state_filter`（列表）：较旧的筛选方式，基于状态或属性值。
+- `card`（映射）：显示匹配实体的卡片。默认为实体卡片。
+- `show_empty`（布尔值）：在没有实体匹配时是否显示卡片。默认为 `true`。
 
 ```yaml
 type: entity-filter
@@ -61,10 +61,10 @@ card:
   title: "Lights on"
 ```
 
-## In code
+## 代码实现
 
-The card lives in `src/panels/lovelace/cards/hui-entity-filter-card.ts`, and the element is `<hui-entity-filter-card>`. It renders a `<hui-card>` with the wrapped card, and gives it a new `entities` list whenever the matching entities change. Conditions are checked with `checkConditionsMet`, and the older state filters with `evaluateStateFilter` in `src/panels/lovelace/common/evaluate-filter.ts`.
+该卡片位于 `src/panels/lovelace/cards/hui-entity-filter-card.ts`，元素为 `<hui-entity-filter-card>`。它渲染一个包含被包装卡片的 `<hui-card>`，并在匹配的实体发生变化时为其提供新的 `entities` 列表。条件通过 `checkConditionsMet` 检查，较旧的状态筛选通过 `src/panels/lovelace/common/evaluate-filter.ts` 中的 `evaluateStateFilter` 处理。
 
-When the card hides itself because nothing matches, it fires `card-visibility-changed`, so the section can close the gap.
+当卡片因为没有匹配项而隐藏自身时，会触发 `card-visibility-changed`，以便分区可以填补空缺。
 
 [Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-entity-filter-card.ts)

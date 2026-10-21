@@ -1,6 +1,6 @@
 ---
-title: Form
-description: ha-form renders a complete form from a schema, with the right field for each value, and gives back the data.
+title: 表单
+description: ha-form 根据模式（schema）渲染一个完整的表单，为每个值选择合适的字段，并返回数据。
 sidebarGroup: Forms
 ---
 
@@ -11,159 +11,159 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   <ha-form data-props='{"schema": [{"name": "Host", "required": true, "selector": {"text": {}}}, {"name": "Port", "selector": {"number": {"min": 1, "max": 65535, "mode": "box"}}}, {"name": "Use SSL", "selector": {"boolean": {}}}], "data": {"Host": "192.168.1.20", "Port": 8080, "Use SSL": false}}'></ha-form>
 </Demo>
 
-## Overview
+## 概述
 
-The form component turns a schema into a form. The schema is a list of fields. Each field has a name, and says what kind of value it holds. The form picks the right control for each field, lays them out, and reports the data back as one object, keyed by the field names.
+表单组件将模式（schema）转换为表单。模式是一个字段列表。每个字段都有一个名称，并说明它保存什么类型的值。表单为每个字段选择合适的控件，进行布局，并将数据作为一个以字段名称为键的对象整体返回。
 
-You find it all over Home Assistant: in the config flows of integrations, in the options of helpers, in the visual editors of dashboard cards, and in the settings of automations and scripts. The forms of config flows come straight from the integration, as a schema the backend sends. The frontend renders them with the same component.
+它在 Home Assistant 中随处可见：在集成的配置流程中、在辅助元素（helper）的选项中、在仪表盘卡片的可视化编辑器中，以及在自动化和脚本的设置中。配置流程的表单直接来自集成，是后端发送的模式。前端使用同一个组件来渲染它们。
 
-The demos on this page use readable names, like **Host**, because the name is the label when there is nothing else. In real code, names are keys like `host`, and the labels come from translations. See [labels and helpers](#labels-and-helpers).
+本页的演示使用了易读的名称，例如 **Host**，因为在没有其他内容时，名称就是标签。在实际代码中，名称是像 `host` 这样的键，而标签来自翻译。参见[标签和辅助文本](#labels-and-helpers)。
 
-## When to use
+## 何时使用
 
-Use the form for:
+在以下情况使用表单：
 
-- A form with more than a field or two. You write less code, and your form looks and behaves like every other form in Home Assistant: same spacing, same controls, same validation.
-- Settings that are saved together, like the options of a helper or the editor of a card
+- 超过一两个字段的表单。你写的代码更少，而且你的表单在外观和行为上都与 Home Assistant 中的其他表单一致：相同的间距、相同的控件、相同的校验。
+- 一起保存的设置，例如辅助元素的选项或卡片的编辑器
 
-Don't use the form for:
+在以下情况不要使用表单：
 
-- A single control that does its own thing, like a switch that applies a setting right away. Use that component directly, like a [switch](/design/components/switch/) or an [input](/design/components/input/).
+- 单个独立运作的控件，例如立即应用设置的开关。直接使用那个组件，例如[开关](/design/components/switch/)或[输入框](/design/components/input/)。
 
-## Anatomy
+## 结构
 
-1. **Form error**: an error about the whole form, at the top
-2. **Field error or warning**: an [alert](/design/components/alert/) right above the field it is about
-3. **Field**: the control for one value, with its label and helper. Most fields are a [selector](/design/components/selector/).
-4. **Grid**: optional, fields next to each other
-5. **Expandable section**: optional, fields under a header that opens and closes
+1. **表单错误**：关于整个表单的错误，位于顶部
+2. **字段错误或警告**：位于相关字段正上方的[警告提示](/design/components/alert/)
+3. **字段**：一个值的控件，带有其标签和辅助文本。大多数字段是一个[选择器](/design/components/selector/)。
+4. **网格**：可选，字段并排显示
+5. **可展开区块**：可选，位于可开合的标题下的字段
 
-## Variants
+## 变体
 
-### Fields are selectors
+### 字段即选择器
 
-Almost every field in the frontend is a selector: a short description of the value, like "an entity from the light domain" or "a number between 0 and 100". The selector picks the control. These are the same selectors integrations use for the fields of their actions, and blueprints use for their inputs. The [selector](/design/components/selector/) page lists them all, with a demo of each.
+前端中几乎每个字段都是一个选择器（selector）：对值的简短描述，例如“来自 light 域的一个实体”或“0 到 100 之间的一个数字”。选择器决定使用哪个控件。这些选择器与集成在其动作字段中使用的选择器相同，也与蓝图（blueprint）在其输入中使用的选择器相同。[选择器](/design/components/selector/)页面列出了所有选择器，并附有各自的演示。
 
 <Demo hass layout="stack">
   <ha-form data-props='{"schema": [{"name": "Light", "selector": {"entity": {"filter": {"domain": "light"}}}}, {"name": "Brightness", "selector": {"number": {"min": 0, "max": 100, "unit_of_measurement": "%"}}}, {"name": "Transition", "selector": {"duration": {}}}], "data": {"Light": "light.living_room_lamp", "Brightness": 70}}'></ha-form>
 </Demo>
 
-### Required fields and defaults
+### 必填字段和默认值
 
-A required field gets a required marker, and an empty value fails validation. A default is the value when people leave the field empty. For a field that is not required, the default shows as the placeholder.
+必填字段会显示必填标记，空值将无法通过校验。默认值是人们将字段留空时的值。对于非必填字段，默认值会显示为占位符。
 
 <Demo hass layout="stack">
   <ha-form data-props='{"schema": [{"name": "Name", "required": true, "selector": {"text": {}}}, {"name": "Scan interval", "default": 30, "selector": {"number": {"min": 5, "max": 3600, "mode": "box", "unit_of_measurement": "seconds"}}}], "data": {}}'></ha-form>
 </Demo>
 
-### Labels and helpers
+### 标签和辅助文本
 
-Every field gets a label, and can get help text below it. Both come from the translations. Without a translated label, the form shows the name of the field. That is fine for a quick test, but not for people: names are keys like `scan_interval`, and they are not translated. The values inside a field, like the options of a select, are translated too.
+每个字段都有一个标签，并且可以在其下方显示帮助文本。两者都来自翻译。如果没有翻译的标签，表单会显示字段的名称。这对于快速测试没问题，但对用户来说并不合适：名称是像 `scan_interval` 这样的键，而且没有被翻译。字段内部的值，例如下拉选择的选项，也会被翻译。
 
-### Grids
+### 网格
 
-A grid puts fields next to each other. Use it for short fields that belong together, like a minimum and a maximum. The columns are at least 200 pixels wide, and wrap to new rows when there is no room, so a grid stacks on a phone.
+网格将字段并排显示。用于属于一起的短字段，例如最小值和最大值。列的宽度至少为 200 像素，在没有空间时会换行到新的一行，因此网格在手机上会堆叠显示。
 
 <Demo hass layout="stack">
   <ha-form data-props='{"schema": [{"name": "", "type": "grid", "schema": [{"name": "Minimum", "selector": {"number": {"mode": "box"}}}, {"name": "Maximum", "selector": {"number": {"mode": "box"}}}]}, {"name": "Step", "selector": {"number": {"mode": "box"}}}], "data": {"Minimum": 0, "Maximum": 100, "Step": 1}}'></ha-form>
 </Demo>
 
-### Expandable sections
+### 可展开区块
 
-An expandable section groups fields under a header that people can open and close. Use it to keep a long form calm: put the fields most people need at the top, and tuck the rest away, like advanced options or the interactions of a card.
+可展开区块将字段分组在一个用户可以打开和关闭的标题下。用它来让长表单保持清爽：把大多数人需要的字段放在顶部，把其余的收起来，例如高级选项或卡片的交互功能。
 
 <Demo hass layout="stack">
   <ha-form data-props='{"schema": [{"name": "Name", "selector": {"text": {}}}, {"name": "advanced", "type": "expandable", "flatten": true, "title": "Advanced options", "schema": [{"name": "Scan interval", "selector": {"number": {"min": 5, "max": 3600, "mode": "box", "unit_of_measurement": "seconds"}}}, {"name": "Debug logging", "selector": {"boolean": {}}}]}], "data": {"Name": "Living room"}}'></ha-form>
 </Demo>
 
-The header text is the title of the section, or, without one, its translated label. A section can have an icon in front of the header. Sections start closed, unless they are set to start open. The help text of the section shows as a description at the top of its content. The card editors use these sections a lot, with an icon, like **Content** and **Interactions**.
+标题文本是区块的标题，如果没有标题，则使用其翻译后的标签。区块可以在标题前显示一个图标。区块默认是关闭的，除非被设置为默认展开。区块的帮助文本会作为描述显示在其内容的顶部。卡片编辑器大量使用这些区块，并带有图标，例如 **Content** 和 **Interactions**。
 
-### Fields on a condition
+### 条件字段
 
-Some fields only matter when another field has a certain value. Such a field is only shown when its condition matches. Here, the username and password only show once authentication is turned on:
+有些字段只有在另一个字段具有某个特定值时才有意义。这样的字段只有在其条件匹配时才会显示。在这里，用户名和密码只有在开启身份验证后才会显示：
 
 <Demo hass layout="stack">
   <ha-form data-props='{"schema": [{"name": "Use authentication", "selector": {"boolean": {}}}, {"name": "Username", "visible": {"field": "Use authentication", "value": true}, "selector": {"text": {}}}, {"name": "Password", "visible": {"field": "Use authentication", "value": true}, "selector": {"text": {"type": "password"}}}], "data": {"Use authentication": false}}'></ha-form>
 </Demo>
 
-### Other field types
+### 其他字段类型
 
-Before selectors, the form had its own field types, and it still renders them. You mostly see them in config flows, where the backend still sends them. In new forms, use selectors.
+在选择器出现之前，表单有自己的字段类型，现在仍然可以渲染它们。你主要在配置流程中看到它们，后端仍在发送这些类型。在新表单中，请使用选择器。
 
 <Demo hass layout="stack">
   <ha-form data-props='{"schema": [{"name": "Name", "type": "string"}, {"name": "Port", "type": "integer"}, {"name": "Mode", "type": "select", "options": [["auto", "Automatic"], ["manual", "Manual"]]}, {"name": "Enabled", "type": "boolean"}], "data": {"Name": "Living room", "Mode": "auto", "Enabled": true}}'></ha-form>
 </Demo>
 
-The full list of types is under [other field types](#other-field-types-in-code), in the code section.
+完整的类型列表见[代码部分](#other-field-types-in-code)中的[其他字段类型](#other-field-types-in-code)。
 
-## Behavior
+## 行为
 
-- **Changes**: every change in any field updates the data of the form, and reports all of it at once.
-- **Errors**: a form error shows at the top, in an error alert. An error for a field shows in an error alert right above that field. A list of errors shows as a bulleted list in the alert.
-- **Warnings**: a warning for a field shows in a warning alert right above that field, when the field has no error. There are no warnings for the whole form.
-- **Validation**: checking the form checks every visible field, and moves focus to the first field that is not valid.
-- **Hidden fields**: a field whose condition does not match is not rendered, and is skipped when the form is checked. Its value no longer counts for the conditions of other fields.
-- **Disabled**: a disabled form disables all its fields. A single field can be disabled too.
+- **更改**：任何字段中的每次更改都会更新表单的数据，并一次性报告全部数据。
+- **错误**：表单错误显示在顶部的错误提示中。字段错误显示在该字段正上方的错误提示中。错误列表会在提示中以项目符号列表的形式显示。
+- **警告**：字段的警告在该字段没有错误时，显示在该字段正上方的警告提示中。没有针对整个表单的警告。
+- **校验**：检查表单会检查每个可见字段，并将焦点移动到第一个无效的字段。
+- **隐藏字段**：条件不匹配的字段不会被渲染，并且在检查表单时会被跳过。它的值不再计入其他字段的条件。
+- **禁用**：禁用的表单会禁用其所有字段。单个字段也可以被禁用。
 
 <Demo hass layout="stack">
   <ha-form data-props='{"schema": [{"name": "Host", "required": true, "selector": {"text": {}}}, {"name": "Port", "selector": {"number": {"min": 1, "max": 65535, "mode": "box"}}}], "data": {"Host": "192.168.1.200", "Port": 8080}, "error": {"base": "Could not connect to the device.", "Host": "No device answers on this address."}}'></ha-form>
 </Demo>
 
-## Specs
+## 规格
 
-The form only sets the spacing between its parts. Each field has the specs of its own component.
+表单只设置其各部分之间的间距。每个字段具有其自身组件的规格。
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Space between fields | 24px | None |
-| Space between a field alert and its field | 4px | None |
-| Grid column gap | 8px | `--ha-space-2` |
-| Grid row gap | 24px | `--ha-space-6` |
-| Grid minimum column width | 200px | `--form-grid-min-width` |
-| Grid columns | As many as fit | `--form-grid-column-count` |
-| Expandable section | Outlined [expansion panel](/design/components/expansion-panel/), 8px corner radius | `--ha-border-radius-md` |
-| Expandable section content padding | 12px | None |
-| Space below a section description | 24px | None |
-| Section icon color | Secondary text color | `--secondary-text-color` |
+| 字段之间的间距 | 24px | 无 |
+| 字段提示与字段之间的间距 | 4px | 无 |
+| 网格列间距 | 8px | `--ha-space-2` |
+| 网格行间距 | 24px | `--ha-space-6` |
+| 网格最小列宽 | 200px | `--form-grid-min-width` |
+| 网格列数 | 能容纳多少就多少 | `--form-grid-column-count` |
+| 可展开区块 | 带边框的[展开面板](/design/components/expansion-panel/)，8px 圆角 | `--ha-border-radius-md` |
+| 可展开区块内容内边距 | 12px | 无 |
+| 区块描述下方的间距 | 24px | 无 |
+| 区块图标颜色 | 次要文本颜色 | `--secondary-text-color` |
 
-## Guidelines
+## 指南
 
-- Make fields optional when that makes sense, and give them a sensible default. A good default helps people, without getting in the way of those who want something else.
-- Give every field a proper label, helper text where it helps, and clear validation feedback. See [UI text](/design/ui-text/) for the words.
+- 在合理的情况下将字段设为可选，并为它们提供合理的默认值。好的默认值能帮助用户，又不会妨碍想要其他设置的用户。
+- 为每个字段提供合适的标签、在有帮助的地方提供辅助文本，以及清晰的校验反馈。措辞请参见 [UI 文本](/design/ui-text/)。
 
-<DoDont hass doText="Say what went wrong, and what people can do about it." dontText="Show a vague error that leaves people guessing.">
+<DoDont hass doText="说明出了什么问题，以及人们可以如何处理。" dontText="显示让人摸不着头脑的模糊错误。">
   <ha-form slot="do" data-props='{"schema": [{"name": "Host", "required": true, "selector": {"text": {}}}], "data": {"Host": "192.168.1.200"}, "error": {"Host": "No device answers on this address. Check that the device is turned on."}}'></ha-form>
   <ha-form slot="dont" data-props='{"schema": [{"name": "Host", "required": true, "selector": {"text": {}}}], "data": {"Host": "192.168.1.200"}, "error": {"Host": "Invalid input."}}'></ha-form>
 </DoDont>
 
-## Accessibility
+## 无障碍
 
-### Keyboard and focus
+### 键盘和焦点
 
-The form adds no keys of its own: each field handles its own keyboard input. <kbd>Tab</kbd> moves through the fields in the order of the schema. Focusing the form focuses its first field. Checking the form moves focus to the first field that is not valid.
+表单不添加自己的按键：每个字段自行处理其键盘输入。<kbd>Tab</kbd> 按照模式的顺序在字段之间移动。聚焦表单会聚焦其第一个字段。检查表单会将焦点移动到第一个无效的字段。
 
-### Screen readers
+### 屏幕阅读器
 
-Each field is announced by its own label, as described on the page of its component. Errors and warnings that appear on a form that is already open are read out right away by most screen readers, but they are not linked to their field. The header of an expandable section is announced as a heading.
+每个字段都通过其自身的标签进行播报，如其组件页面所述。在已打开的表单上出现的错误和警告会被大多数屏幕阅读器立即读出，但它们没有与其字段关联。可展开区块的标题会作为标题（heading）播报。
 
-### In the code
+### 在代码中
 
-- The form delegates focus, so focusing `<ha-form>` focuses its first field.
-- The form is not a `<form>` element and has no role of its own.
-- Each field gets its label from `computeLabel`, and the field component turns it into the accessible name. See the page of each component for how.
-- Errors and warnings are alerts with the role `alert`. When they appear on a form that is already open, most screen readers read them out right away. They are not connected to their field with `aria-describedby`.
-- The header of an expandable section has the role `heading`, at level 3 by default.
+- 表单会委托焦点，因此聚焦 `<ha-form>` 会聚焦其第一个字段。
+- 表单不是 `<form>` 元素，也没有自己的角色（role）。
+- 每个字段通过 `computeLabel` 获取其标签，字段组件将其转换为可访问名称。具体方式请参见各组件的页面。
+- 错误和警告是带有 `alert` 角色的提示。当它们出现在已打开的表单上时，大多数屏幕阅读器会立即读出。它们没有通过 `aria-describedby` 与其字段关联。
+- 可展开区块的标题具有 `heading` 角色，默认为第 3 级。
 
-## Related
+## 相关内容
 
-- [Selector](/design/components/selector/): the fields of a form
-- [Expansion panel](/design/components/expansion-panel/): the base of expandable sections
-- [Alert](/design/components/alert/): how errors and warnings show
-- [UI text](/design/ui-text/): how to write labels, helpers, and errors
+- [选择器](/design/components/selector/)：表单的字段
+- [展开面板](/design/components/expansion-panel/)：可展开区块的基础
+- [警告提示](/design/components/alert/)：错误和警告的显示方式
+- [UI 文本](/design/ui-text/)：如何编写标签、辅助文本和错误信息
 
-## In code
+## 在代码中
 
-The element is `<ha-form>`. The schema, the data, and the functions can only be set from code, as properties.
+该元素是 `<ha-form>`。模式、数据和函数只能通过代码以属性（property）的形式设置。
 
 ```ts
 const SCHEMA = [
@@ -185,51 +185,51 @@ html`
 `;
 ```
 
-In HTML on this site, the properties go in `data-props`, as JSON:
+在本站的 HTML 中，属性放在 `data-props` 中，以 JSON 形式表示：
 
 ```html
 <ha-form data-props='{"schema": [{"name": "Host", "selector": {"text": {}}}], "data": {}}'></ha-form>
 ```
 
-### Fields
+### 字段
 
-A field looks like this:
+一个字段看起来像这样：
 
 ```js
 { name: "brightness", selector: { number: { min: 0, max: 100, unit_of_measurement: "%" } } }
 ```
 
-Every field can also have:
+每个字段还可以有：
 
-- `required`: the field needs a value. It gets a required marker, and empty values fail validation.
-- `default`: the value when people leave the field empty. For a field that is not required, the default shows as the placeholder.
-- `disabled`: shows the field, but people can't change it.
-- `description`: an object with a `suggested_value`, which is filled in when the form opens, and a `suffix`, shown at the end of the older text and number fields.
-- `visible`: when to show the field. See [conditions](#conditions).
-- `context`: passes the value of another field to this one. See [context](#context).
+- `required`：该字段需要一个值。它会显示必填标记，空值将无法通过校验。
+- `default`：人们将字段留空时的值。对于非必填字段，默认值会显示为占位符。
+- `disabled`：显示该字段，但用户无法更改它。
+- `description`：一个对象，包含 `suggested_value`（在表单打开时填入）和 `suffix`（显示在较旧的文本和数字字段的末尾）。
+- `visible`：何时显示该字段。参见[条件](#conditions)。
+- `context`：将另一个字段的值传递给该字段。参见[上下文](#context)。
 
-### Labels, helpers, and values
+### 标签、辅助文本和值
 
-In real code, pass `computeLabel`. It gets the schema of each field, and returns the label. Most forms look the name up in the translations:
+在实际代码中，传入 `computeLabel`。它接收每个字段的模式，并返回标签。大多数表单会在翻译中查找名称：
 
 ```ts
 private _computeLabel = (schema: SchemaUnion<typeof SCHEMA>) =>
   this.hass.localize(`ui.panel.config.my_feature.fields.${schema.name}`);
 ```
 
-`computeHelper` works the same, and returns the help text below a field. Return nothing for fields that don't need help.
+`computeHelper` 的工作方式相同，返回字段下方的帮助文本。对于不需要帮助的字段，返回空即可。
 
-For the values inside a field, like the options of a select, pass `localizeValue`. Selectors with a `translation_key` look up their option labels through it.
+对于字段内部的值，例如下拉选择的选项，传入 `localizeValue`。带有 `translation_key` 的选择器会通过它查找其选项标签。
 
-### Errors and warnings
+### 错误和警告
 
-Set `error` to show what went wrong. It is an object, keyed by field name. The key `base` is for errors about the whole form, like a failed connection.
+设置 `error` 来显示出了什么问题。它是一个以字段名称为键的对象。键 `base` 用于关于整个表单的错误，例如连接失败。
 
-Error messages are shown as they are, unless you pass `computeError`. Config flows send translation keys as errors, and use `computeError` to turn them into text.
+错误消息按原样显示，除非你传入 `computeError`。配置流程将翻译键作为错误发送，并使用 `computeError` 将它们转换为文本。
 
-`warning` works the same, with a warning instead of an error, and `computeWarning` to turn it into text. It has no `base`.
+`warning` 的工作方式相同，只是用警告代替错误，并使用 `computeWarning` 将其转换为文本。它没有 `base`。
 
-### Grids
+### 网格
 
 ```js
 {
@@ -242,15 +242,15 @@ Error messages are shown as they are, unless you pass `computeError`. Config flo
 }
 ```
 
-With an empty name, the fields of the grid write to the data of the form itself. With a name, they write to a nested object under that name, unless you set `flatten: true`. Set `column_min_width` to change the minimum column width.
+名称为空时，网格的字段直接写入表单本身的数据。有名称时，它们写入该名称下的嵌套对象，除非你设置了 `flatten: true`。设置 `column_min_width` 可以更改最小列宽。
 
-### Expandable sections
+### 可展开区块
 
-A section has `type: "expandable"` and its own `schema`. Add an `icon` or an `iconPath` for an icon in front of the header. Set `expanded: true` to open a section from the start. Like grids, the fields of a section write to a nested object, unless you set `flatten: true`. Set `headingLevel` to change the heading level of the header, which is 3 by default.
+区块具有 `type: "expandable"` 和自己的 `schema`。添加 `icon` 或 `iconPath` 可以在标题前显示图标。设置 `expanded: true` 可以让区块从一开始就展开。与网格一样，区块的字段写入嵌套对象，除非你设置了 `flatten: true`。设置 `headingLevel` 可以更改标题的标题级别，默认为 3。
 
-### Conditions
+### 条件
 
-Set `visible` on a field to show it only on a condition. It can be `true` or `false`, a condition, or a list of conditions that must all match.
+在字段上设置 `visible`，使其仅在满足条件时显示。它可以是 `true` 或 `false`、一个条件，或者一个必须全部匹配的条件列表。
 
 ```js
 {
@@ -260,63 +260,63 @@ Set `visible` on a field to show it only on a condition. It can be `true` or `fa
 }
 ```
 
-A condition compares a `field` with a `value`. The `operator` defaults to `eq`, and can also be `not_eq`, `in`, `not_in` (with a list of values), `exists`, or `not_exists`. To combine conditions, use `condition: "and"`, `"or"`, or `"not"`, with a list of `conditions`.
+条件将一个 `field` 与一个 `value` 进行比较。`operator` 默认为 `eq`，也可以是 `not_eq`、`in`、`not_in`（带一个值列表）、`exists` 或 `not_exists`。要组合条件，请使用 `condition: "and"`、`"or"` 或 `"not"`，并带一个 `conditions` 列表。
 
-### Context
+### 上下文
 
-Some selectors need another value to work: the state selector needs to know which entity to list the states of. Set `context` on the field, to map a context key of the selector to the name of another field. The state selector, for example, reads the entity from the `filter_entity` key:
+有些选择器需要另一个值才能工作：状态选择器需要知道要列出哪个实体的状态。在字段上设置 `context`，将选择器的上下文键映射到另一个字段的名称。例如，状态选择器从 `filter_entity` 键读取实体：
 
 ```js
 { name: "state", selector: { state: {} }, context: { filter_entity: "entity" } }
 ```
 
-### Other field types in code
+### 代码中的其他字段类型
 
-- `string`: a text field. With `format` set to `email` or `url`, it uses that input type. Fields with a name that contains `password`, `secret`, or `token` are masked.
-- `integer`: a whole number. With both `valueMin` and `valueMax`, it shows a slider.
-- `float`: a decimal number.
-- `boolean`: a checkbox.
-- `select`: one option out of a list of value and label pairs.
-- `multi_select`: several options, as checkboxes, or as a dropdown when the list is long.
-- `positive_time_period_dict`: a duration in hours, minutes, and seconds.
-- `constant`: shows the label and a fixed `value`, as text.
+- `string`：文本字段。当 `format` 设置为 `email` 或 `url` 时，它使用相应的输入类型。名称包含 `password`、`secret` 或 `token` 的字段会被遮蔽。
+- `integer`：整数。同时具有 `valueMin` 和 `valueMax` 时，它会显示为滑块。
+- `float`：小数。
+- `boolean`：复选框。
+- `select`：从值和标签对的列表中选择一个选项。
+- `multi_select`：多个选项，以复选框形式显示，列表较长时以下拉形式显示。
+- `positive_time_period_dict`：以小时、分钟和秒表示的时长。
+- `constant`：以文本形式显示标签和固定的 `value`。
 
-The types `grid`, `expandable`, `optional_actions`, and `divider` are for layout. `optional_actions` hides its fields behind an add button, so people only add the ones they need. `divider` draws a line between fields.
+类型 `grid`、`expandable`、`optional_actions` 和 `divider` 用于布局。`optional_actions` 将其字段隐藏在一个添加按钮后面，因此用户只添加他们需要的字段。`divider` 在字段之间绘制一条分隔线。
 
-### Properties
+### 属性
 
-These can only be set from code:
+这些只能通过代码设置：
 
-- `schema`: the list of fields. Required.
-- `data`: the values, as an object keyed by field name.
-- `hass`: the Home Assistant object. Most selectors need it.
-- `error`: errors to show, keyed by field name, with `base` for the whole form.
-- `warning`: warnings to show, keyed by field name.
-- `computeLabel`: a function that gets the schema of a field and the data, and returns the label.
-- `computeHelper`: a function that gets the schema of a field, and returns the help text.
-- `computeError`: a function that gets an error and the schema, and returns the text to show.
-- `computeWarning`: the same, for warnings.
-- `localizeValue`: a function that gets a translation key, and returns the text. Selectors use it for the labels of their options.
-- `context`: values passed to every selector in the form, merged with the context of each field.
+- `schema`：字段列表。必填。
+- `data`：值，以字段名称为键的对象。
+- `hass`：Home Assistant 对象。大多数选择器都需要它。
+- `error`：要显示的错误，以字段名称为键，`base` 用于整个表单。
+- `warning`：要显示的警告，以字段名称为键。
+- `computeLabel`：一个函数，接收字段的模式和数据，返回标签。
+- `computeHelper`：一个函数，接收字段的模式，返回帮助文本。
+- `computeError`：一个函数，接收错误和模式，返回要显示的文本。
+- `computeWarning`：同上，用于警告。
+- `localizeValue`：一个函数，接收翻译键，返回文本。选择器用它来获取其选项的标签。
+- `context`：传递给表单中每个选择器的值，与每个字段的上下文合并。
 
-### Attributes
+### 特性（Attributes）
 
-- `disabled`: disables all fields.
-- `narrow`: tells the selectors the form is on a narrow screen.
+- `disabled`：禁用所有字段。
+- `narrow`：告知选择器表单处于窄屏上。
 
-### Methods
+### 方法
 
-- `reportValidity()`: checks every visible field, focuses the first invalid one, and returns `true` when the form is valid. Call it before you save.
+- `reportValidity()`：检查每个可见字段，聚焦第一个无效字段，并在表单有效时返回 `true`。在保存之前调用它。
 
-### Events
+### 事件
 
-- `value-changed`: fires on every change in any field. `event.detail.value` holds all the data of the form, not only the changed field. The form updates its own `data` as well.
+- `value-changed`：在任何字段的每次更改时触发。`event.detail.value` 包含表单的全部数据，而不仅仅是被更改的字段。表单也会更新自己的 `data`。
 
-### Styling
+### 样式
 
-- `--form-grid-column-count`: the number of columns in a grid. By default, as many as fit.
-- `--form-grid-min-width`: the minimum width of a grid column. Defaults to `200px`.
+- `--form-grid-column-count`：网格中的列数。默认为能容纳多少就多少。
+- `--form-grid-min-width`：网格列的最小宽度。默认为 `200px`。
 
-The wrapper around the fields is exposed as the `root` part.
+字段周围的包装元素作为 `root` 部分暴露。
 
-Source: [`src/components/ha-form/ha-form.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-form/ha-form.ts)
+来源：[`src/components/ha-form/ha-form.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-form/ha-form.ts)

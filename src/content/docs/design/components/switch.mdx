@@ -1,6 +1,6 @@
 ---
-title: Switch
-description: Switches turn a single setting on or off.
+title: 开关
+description: 开关用于将单个设置打开或关闭。
 sidebarGroup: Input
 ---
 
@@ -13,138 +13,138 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-switch disabled></ha-switch>
 </Demo>
 
-## Overview
+## 概述
 
-A switch turns a single setting on or off, like starting an app on boot, or enabling automatic updates. People should be able to read the state from the switch alone, so the setting needs to make sense as on or off.
+开关（switch）用于将单个设置打开或关闭，例如开机自启动应用，或启用自动更新。用户应该仅通过开关就能读出状态，因此该设置必须能明确地表示“开”或“关”。
 
-## When to use
+## 何时使用
 
-Use a switch for:
+在以下情况使用开关：
 
-- A setting with two states: on and off
-- A setting that applies right away, which is how most switches in Home Assistant work
+- 具有两种状态的设置：开和关
+- 立即生效的设置，这也是 Home Assistant 中大多数开关的工作方式
 
-Don't use a switch for:
+不要在以下情况使用开关：
 
-- A choice between two or more options that are not on and off. Use a [select box](/design/components/select-box/) or another selection component.
-- Picking several items from a list. Use a checkbox.
-- Running an action, like restarting something. Use a [button](/design/components/button/).
-- Controlling a device on a dashboard or in the more info dialog. The frontend has the larger `<ha-control-switch>` for that, see [controls](/design/components/controls/).
+- 在两个或多个非“开/关”选项之间做选择。请使用[选择框](/design/components/select-box/)或其他选择组件。
+- 从列表中选取多个项目。请使用复选框。
+- 执行操作，例如重启某物。请使用[按钮](/design/components/button/)。
+- 在仪表盘（dashboard）或更多信息对话框中控制设备。前端为此提供了更大的 `<ha-control-switch>`，参见[控件](/design/components/controls/)。
 
-## Anatomy
+## 结构
 
-1. **Track**: the rounded background that shows whether the switch is on
-2. **Thumb**: the circle that moves to the end when the switch is on, and back to the start when it is off
-3. **Label**: optional text next to the switch
-4. **Hint**: optional help text below the switch
+1. **轨道（Track）**：显示开关是否处于打开状态的圆角背景
+2. **滑块（Thumb）**：开关打开时移动到末端的圆形，关闭时移回起点
+3. **标签（Label）**：开关旁边的可选文本
+4. **提示（Hint）**：开关下方的可选帮助文本
 
-## Variants
+## 变体
 
-The switch has no variants. It can carry its own label, or sit in a settings row that does the labeling.
+开关没有变体。它可以自带标签，也可以放在负责标注的设置行中。
 
-### Without a label
+### 不带标签
 
-In the frontend, most switches sit at the end of a settings row, with the name of the setting and a short description on the left. The row does the labeling, so the switch itself has no text.
+在前端中，大多数开关位于设置行的末尾，设置的名称和简短描述在左侧。由该行负责标注，因此开关本身没有文本。
 
-### With a label
+### 带标签
 
-You can also put the label in the switch itself, as its content. Then selecting the label toggles the switch too.
+你也可以将标签作为开关自身的内容。这样，点击标签也会切换开关。
 
 <Demo layout="stack">
   <ha-switch checked>Start on boot</ha-switch>
   <ha-switch>Automatic updates</ha-switch>
 </Demo>
 
-## Behavior
+## 行为
 
-- **Off**: the thumb sits at the start of the track, and the track uses the quiet neutral fill.
-- **On**: the thumb sits at the end of the track, and the track uses the primary color.
-- **Hover**: the track and thumb change to their hover colors. Keyboard focus uses the same colors.
-- **Focus**: keyboard focus shows a 2px solid focus ring around the track, 2px outside it.
-- **Disabled**: the track and thumb are dimmed to 30% opacity, and a label turns to the disabled text color. The label itself is not dimmed, so it stays readable.
-- **Required**: a required switch must be on for the form to be valid. Its label gets a `*` marker.
+- **关**：滑块位于轨道起点，轨道使用安静的中性填充色。
+- **开**：滑块位于轨道末端，轨道使用主色。
+- **悬停**：轨道和滑块变为各自的悬停颜色。键盘焦点使用相同的颜色。
+- **焦点**：键盘焦点会在轨道周围显示 2px 实线焦点环，位于轨道外侧 2px 处。
+- **禁用**：轨道和滑块变暗至 30% 不透明度，标签变为禁用文本颜色。标签本身不会变暗，因此仍保持可读。
+- **必填**：必填的开关必须处于打开状态，表单才有效。其标签会带有一个 `*` 标记。
 
-The thumb slides from one end to the other in 150ms. In a right to left language, on and off are mirrored: on is at the left.
+滑块在 150ms 内从一端滑动到另一端。在从右到左的语言中，开和关是镜像的：开在左侧。
 
-A switch suggests the change happens right away. If the change only takes effect after a **Save**, make that clear, for example by keeping the switch in a form with an obvious save button.
+开关暗示更改会立即生效。如果更改只有在点击**保存**后才生效，请明确说明，例如将开关保留在带有明显保存按钮的表单中。
 
-A switch can also give a light vibration when it is toggled, on devices that support it.
+在支持振动的设备上，开关在切换时也可以产生轻微振动。
 
 <Demo>
   <ha-switch checked disabled>Start on boot</ha-switch>
   <ha-switch disabled>Automatic updates</ha-switch>
 </Demo>
 
-## Specs
+## 规格
 
-| Property | Value | Token |
+| 属性 | 值 | 令牌 |
 | --- | --- | --- |
-| Track height | 24px | `--ha-switch-size` |
-| Track width | 48px | `--ha-switch-width` |
-| Track corner radius | Fully rounded, equal to the track height | None |
-| Thumb size | 18px | `--ha-switch-thumb-size` |
-| Thumb shadow | Small shadow | `--ha-box-shadow-s`, through `--ha-switch-thumb-box-shadow` |
-| Border width of track and thumb | 1px | `--ha-border-width-sm` |
-| Space between switch and label | 0.5em | None |
-| Touch target | At least 40px by 40px | `--ha-switch-min-touch-size` |
-| Disabled opacity of track and thumb | 0.3 | `--ha-switch-disabled-opacity` |
-| Focus ring | 2px solid, 2px offset | `--ha-color-focus` |
-| Thumb animation | 150ms, ease | `--ha-animation-duration-fast` |
+| 轨道高度 | 24px | `--ha-switch-size` |
+| 轨道宽度 | 48px | `--ha-switch-width` |
+| 轨道圆角半径 | 完全圆角，等于轨道高度 | 无 |
+| 滑块大小 | 18px | `--ha-switch-thumb-size` |
+| 滑块阴影 | 小阴影 | `--ha-box-shadow-s`，通过 `--ha-switch-thumb-box-shadow` |
+| 轨道和滑块的边框宽度 | 1px | `--ha-border-width-sm` |
+| 开关与标签之间的间距 | 0.5em | 无 |
+| 触摸目标 | 至少 40px × 40px | `--ha-switch-min-touch-size` |
+| 轨道和滑块禁用时的不透明度 | 0.3 | `--ha-switch-disabled-opacity` |
+| 焦点环 | 2px 实线，偏移 2px | `--ha-color-focus` |
+| 滑块动画 | 150ms，ease | `--ha-animation-duration-fast` |
 
-| State | Track | Track border | Thumb and thumb border |
+| 状态 | 轨道 | 轨道边框 | 滑块及滑块边框 |
 | --- | --- | --- | --- |
-| Off | `--ha-color-fill-disabled-quiet-resting` | `--ha-color-border-neutral-normal` | `--ha-color-on-neutral-normal` |
-| Off, hover or focus | `--ha-color-fill-disabled-quiet-hover` | `--ha-color-border-neutral-normal` | `--ha-color-on-neutral-normal` |
-| On | `--ha-color-fill-primary-normal-resting` | `--ha-color-border-primary-loud` | `--ha-color-on-primary-normal` |
-| On, hover or focus | `--ha-color-fill-primary-normal-hover` | `--ha-color-border-primary-loud` | `--ha-color-on-primary-normal` |
+| 关 | `--ha-color-fill-disabled-quiet-resting` | `--ha-color-border-neutral-normal` | `--ha-color-on-neutral-normal` |
+| 关，悬停或焦点 | `--ha-color-fill-disabled-quiet-hover` | `--ha-color-border-neutral-normal` | `--ha-color-on-neutral-normal` |
+| 开 | `--ha-color-fill-primary-normal-resting` | `--ha-color-border-primary-loud` | `--ha-color-on-primary-normal` |
+| 开，悬停或焦点 | `--ha-color-fill-primary-normal-hover` | `--ha-color-border-primary-loud` | `--ha-color-on-primary-normal` |
 
-Each of these colors can be overridden with a `--ha-switch-*` property, see [styling](#styling).
+这些颜色中的每一个都可以通过 `--ha-switch-*` 属性覆盖，参见[样式](#styling)。
 
-## Guidelines
+## 指南
 
-- Only let the switch vibrate when the change applies right away. Don't do it when people still have to save.
+- 仅当更改立即生效时才让开关振动。如果用户还需要保存，就不要振动。
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-| Key | Action |
+| 按键 | 操作 |
 | --- | --- |
-| <kbd>Tab</kbd> | Moves focus to the switch, and away from it. A disabled switch is skipped. |
-| <kbd>Space</kbd> | Toggles the switch. |
-| <kbd>Arrow right</kbd> | Turns the switch on. In a right to left language, it turns it off. |
-| <kbd>Arrow left</kbd> | Turns the switch off. In a right to left language, it turns it on. |
+| <kbd>Tab</kbd> | 将焦点移动到开关，或从开关移走。禁用的开关会被跳过。 |
+| <kbd>Space</kbd> | 切换开关。 |
+| <kbd>Arrow right</kbd> | 打开开关。在从右到左的语言中，它会关闭开关。 |
+| <kbd>Arrow left</kbd> | 关闭开关。在从右到左的语言中，它会打开开关。 |
 
-### Focus
+### 焦点
 
-The focus ring shows around the track, and only when you use a keyboard.
+焦点环显示在轨道周围，且仅在使用键盘时显示。
 
-### Target size
+### 目标大小
 
-The track is 48px by 24px. An invisible area around it makes the touch target at least 40px by 40px.
+轨道为 48px × 24px。其周围一个不可见区域使触摸目标至少为 40px × 40px。
 
-### Screen readers
+### 屏幕阅读器
 
-A screen reader announces a switch, its label, and whether it is on or off. The hint is read as its description. A switch without a label of its own, like one at the end of a settings row, needs a name in code, see below.
+屏幕阅读器会播报开关、其标签，以及它是开还是关。提示会作为其描述被朗读。没有自带标签的开关（例如位于设置行末尾的开关）需要在代码中提供名称，见下文。
 
-### In the code
+### 在代码中
 
-- Focus is delegated to a native checkbox inside the component.
-- The native checkbox has the role `switch`, and `aria-checked` set to `true` or `false`.
-- The text in the default slot is the accessible name, because it sits in the same `<label>` as the checkbox.
-- Without text in the default slot, the switch has no name of its own. The `title` attribute is passed on to the checkbox, and is then the only name it has.
-- The hint is connected to the checkbox with `aria-describedby`.
+- 焦点被委托给组件内部的原生复选框。
+- 原生复选框具有 `switch` 角色，并且 `aria-checked` 被设置为 `true` 或 `false`。
+- 默认插槽中的文本是无障碍名称，因为它与复选框位于同一个 `<label>` 中。
+- 如果默认插槽中没有文本，开关就没有自己的名称。`title` 属性会被传递给复选框，成为它唯一的名称。
+- 提示通过 `aria-describedby` 连接到复选框。
 
-## Related
+## 相关内容
 
-- [Controls](/design/components/controls/): the larger switch for devices on dashboards
-- [Select box](/design/components/select-box/): a choice between options
-- [Button](/design/components/button/): an action instead of a setting
-- [Selector](/design/components/selector/): the boolean selector shows a switch
+- [控件](/design/components/controls/)：用于仪表盘上设备的更大开关
+- [选择框](/design/components/select-box/)：在选项之间做选择
+- [按钮](/design/components/button/)：执行操作而非设置
+- [选择器](/design/components/selector/)：布尔选择器会显示一个开关
 
-## In code
+## 在代码中
 
-The element is `<ha-switch>`. It is based on the [Web Awesome switch](https://webawesome.com/docs/components/switch/).
+该元素是 `<ha-switch>`。它基于 [Web Awesome 开关](https://webawesome.com/docs/components/switch/)。
 
 ```html
 <ha-switch checked></ha-switch>
@@ -152,41 +152,41 @@ The element is `<ha-switch>`. It is based on the [Web Awesome switch](https://we
 <ha-switch haptic>Start on boot</ha-switch>
 ```
 
-### Attributes
+### 属性
 
-- `checked`: turns the switch on.
-- `disabled`: disables the switch.
-- `required`: makes the switch required: it must be on for the form to be valid.
-- `haptic`: gives a light vibration when the switch is toggled. Only use it when the change applies right away.
-- `hint`: help text below the switch.
-- `name` and `value`: submitted with a form, like on a native checkbox.
+- `checked`：打开开关。
+- `disabled`：禁用开关。
+- `required`：将开关设为必填：必须处于打开状态，表单才有效。
+- `haptic`：在开关切换时产生轻微振动。仅当更改立即生效时才使用。
+- `hint`：开关下方的帮助文本。
+- `name` 和 `value`：随表单一起提交，类似于原生复选框。
 
-### Slots
+### 插槽
 
-- Default: the label.
-- `hint`: a hint with markup. Content in this slot replaces the text of the `hint` attribute.
+- 默认：标签。
+- `hint`：带标记的提示。此插槽中的内容会替换 `hint` 属性的文本。
 
-### Events
+### 事件
 
-- `change`: fires when the switch is toggled. Read the new state from `checked` on the element.
-- `input`: fires when the switch receives input.
+- `change`：在开关被切换时触发。从元素上的 `checked` 读取新状态。
+- `input`：在开关接收输入时触发。
 
-### Styling
+### 样式
 
-The default colors follow the theme, so in most cases you don't need these.
+默认颜色遵循主题，因此在大多数情况下你不需要这些。
 
-- `--ha-switch-size`: the height of the track. Defaults to `24px`.
-- `--ha-switch-width`: the width of the track. Defaults to `48px`.
-- `--ha-switch-thumb-size`: the size of the thumb. Defaults to `18px`.
-- `--ha-switch-thumb-box-shadow`: the shadow of the thumb. Defaults to `var(--ha-box-shadow-s)`.
-- `--ha-switch-disabled-opacity`: the opacity of the switch when disabled. Defaults to `0.3`.
-- `--ha-switch-min-touch-size`: the minimum size of the touch target around the switch. Defaults to `40px`.
-- `--ha-switch-required-marker`: the marker after the label of a required switch. Defaults to `"*"`.
-- `--ha-switch-required-marker-offset`: the space before the required marker. Defaults to `0.1rem`.
+- `--ha-switch-size`：轨道的高度。默认为 `24px`。
+- `--ha-switch-width`：轨道的宽度。默认为 `48px`。
+- `--ha-switch-thumb-size`：滑块的大小。默认为 `18px`。
+- `--ha-switch-thumb-box-shadow`：滑块的阴影。默认为 `var(--ha-box-shadow-s)`。
+- `--ha-switch-disabled-opacity`：开关禁用时的不透明度。默认为 `0.3`。
+- `--ha-switch-min-touch-size`：开关周围触摸目标的最小大小。默认为 `40px`。
+- `--ha-switch-required-marker`：必填开关标签后的标记。默认为 `"*"`。
+- `--ha-switch-required-marker-offset`：必填标记前的间距。默认为 `0.1rem`。
 
-Colors of the track, thumb, and border. Each has a `-hover` version for when the pointer is over the switch, except `--ha-switch-border-color`:
+轨道、滑块和边框的颜色。每种颜色都有一个 `-hover` 版本，用于指针悬停在开关上时，`--ha-switch-border-color` 除外：
 
-- Off: `--ha-switch-background-color`, `--ha-switch-border-color`, `--ha-switch-thumb-background-color`, and `--ha-switch-thumb-border-color`.
-- On: `--ha-switch-checked-background-color`, `--ha-switch-checked-border-color`, `--ha-switch-checked-thumb-background-color`, and `--ha-switch-checked-thumb-border-color`.
+- 关：`--ha-switch-background-color`、`--ha-switch-border-color`、`--ha-switch-thumb-background-color` 和 `--ha-switch-thumb-border-color`。
+- 开：`--ha-switch-checked-background-color`、`--ha-switch-checked-border-color`、`--ha-switch-checked-thumb-background-color` 和 `--ha-switch-checked-thumb-border-color`。
 
-Source: [`src/components/ha-switch.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-switch.ts)
+源码：[`src/components/ha-switch.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-switch.ts)

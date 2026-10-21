@@ -1,6 +1,6 @@
 ---
-title: Alarm control panel
-description: The more-info view of an alarm system, with a vertical selector for its arming modes.
+title: 防盗报警控制面板
+description: 报警系统的更多信息视图，带有用于选择布防模式的垂直选择器。
 sidebarGroup: Openings and security
 ---
 
@@ -10,28 +10,28 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="alarm_control_panel.home_alarm"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 显示内容
 
-An alarm is always in exactly one mode, so the main control is a tall vertical [control select](/design/components/controls/): one button per mode, stacked, with the current one highlighted. Each mode has an icon and a short label, like **Home**, **Away**, **Night**, and **Disarmed**.
+报警系统始终处于且仅处于一种模式，因此主要控件是一个高大的垂直[选择控件](/design/components/controls/)：每种模式对应一个按钮，垂直堆叠，当前模式高亮显示。每种模式都有一个图标和一个简短标签，例如**在家**（Home）、**外出**（Away）、**夜间**（Night）和**已撤防**（Disarmed）。
 
-**Disarmed** is always there. The other modes only show when the alarm supports them:
+**已撤防**始终显示。其他模式仅在报警系统支持时才会显示：
 
-- **Home**, **Away**, and **Night**.
-- **Vacation**.
-- **Custom**, for a custom bypass.
+- **在家**、**外出**和**夜间**。
+- **度假**（Vacation）。
+- **自定义**（Custom），用于自定义旁路。
 
-The alarm above supports home, away, and night, so it gets four buttons. The selector grows with the number of modes.
+上方的报警系统支持在家、外出和夜间模式，因此它有四个按钮。选择器会随着模式数量的增加而变高。
 
-When the alarm is arming, pending, or triggered, there is no mode to pick. The selector makes room for a large icon of the state, with a **Disarm** button below it.
+当报警系统正在布防、等待或已触发时，没有可选择的模式。选择器会腾出空间显示一个大的状态图标，下方有一个**撤防**（Disarm）按钮。
 
-## Design notes
+## 设计说明
 
-- The selected mode takes the color of the state, so a disarmed alarm looks calm and an armed one stands out.
-- When the alarm needs a code, Home Assistant asks for it in a separate dialog before it changes mode. For arming, it only asks when the alarm says a code is needed to arm. For disarming, it always asks when the alarm has a code. A code stored in the entity settings skips that question.
-- The selection moves to the new mode right away. When the change fails, for example because the code was wrong, it moves back.
+- 所选模式采用状态的颜色，因此已撤防的报警系统看起来平静，而已布防的则醒目突出。
+- 当报警系统需要密码时，Home Assistant 会在更改模式前通过单独的对话框要求输入密码。对于布防，仅在报警系统声明布防需要密码时才会询问。对于撤防，只要报警系统设置了密码就一定会询问。实体（entity）设置中已存储的密码会跳过该询问。
+- 选择会立即切换到新模式。当更改失败时（例如密码错误），会切换回原模式。
 
-## In code
+## 代码实现
 
-The view is `more-info-alarm_control_panel` in `src/dialogs/more-info/controls/more-info-alarm_control_panel.ts`. The mode selector is `ha-state-control-alarm_control_panel-modes` in `src/state-control/alarm_control_panel/`. The modes, their icons, and the `AlarmControlPanelEntityFeature` enum are in `src/data/alarm_control_panel.ts`.
+该视图是 `src/dialogs/more-info/controls/more-info-alarm_control_panel.ts` 中的 `more-info-alarm_control_panel`。模式选择器是 `src/state-control/alarm_control_panel/` 中的 `ha-state-control-alarm_control_panel-modes`。模式、它们的图标以及 `AlarmControlPanelEntityFeature` 枚举位于 `src/data/alarm_control_panel.ts` 中。
 
-Source: [`more-info-alarm_control_panel.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-alarm_control_panel.ts)
+源码：[`more-info-alarm_control_panel.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-alarm_control_panel.ts)

@@ -1,84 +1,84 @@
 ---
-title: Tip
-description: A tip is a short, optional hint, like a keyboard shortcut or a pointer to more help, centered below the content it belongs to.
+title: 提示
+description: 提示（tip）是一条简短的、可选的提示信息，比如键盘快捷键或指向更多帮助的指引，居中显示在其所属内容的下方。
 sidebarGroup: Feedback and status
 ---
 
-## Overview
+## 概述
 
-A tip is a single line of help that people can safely ignore. It starts with a lightbulb icon and the word **Tip!**, followed by the hint in a lighter color. You find tips at the bottom of the **Settings** page, at the bottom of the search dialog, and in the dialog to create a new automation, where a tip points to where you can find more blueprints.
+提示是单行的帮助信息，用户可以放心地忽略它。它以一个灯泡图标和 **Tip!** 一词开头，后面是以较浅颜色显示的提示内容。你可以在 **Settings**（设置）页面底部、搜索对话框底部，以及创建新自动化的对话框中找到提示，其中一条提示会指引你在哪里可以找到更多蓝图。
 
-It needs the translations of Home Assistant to show its prefix, so there is no live demo here.
+它需要 Home Assistant 的翻译才能显示其前缀，因此这里没有实时演示。
 
-## When to use
+## 何时使用
 
-Use a tip for:
+在以下情况使用提示：
 
-- A shortcut that makes something faster, like a keyboard shortcut
-- A pointer to more help or more content, like the community or the blueprint exchange
+- 能让操作更快捷的快捷方式，比如键盘快捷键
+- 指向更多帮助或更多内容的指引，比如社区或蓝图交换平台
 
-Don't use a tip for:
+不要在以下情况使用提示：
 
-- Something people need to know to finish the task. Put it in the text, or use an [alert](/design/components/alert/).
-- A warning or an error. Use an [alert](/design/components/alert/).
-- A hint about one field. Use the helper text of the field.
+- 完成任务所必须了解的信息。请将其放在正文中，或使用[警告框](/design/components/alert/)。
+- 警告或错误信息。请使用[警告框](/design/components/alert/)。
+- 针对某个字段的提示。请使用该字段的辅助文本。
 
-## Anatomy
+## 结构
 
-1. **Icon**: a lightbulb
-2. **Prefix**: the word **Tip!**, in a medium weight, translated
-3. **Text**: the hint, in the secondary text color. It can contain a link or a button.
+1. **图标**：一个灯泡
+2. **前缀**：**Tip!** 一词，中等字重，经过翻译
+3. **文本**：提示内容，使用次要文本颜色。其中可以包含链接或按钮。
 
-The whole tip is centered.
+整个提示居中显示。
 
-## Variants
+## 变体
 
-There is one tip. What changes is the content: plain text, or text with a link or a button in it.
+提示只有一种。变化的是内容：纯文本，或包含链接或按钮的文本。
 
-On the **Settings** page, the frontend picks a random tip each time. Tips about keyboard shortcuts are left out on narrow screens.
+在 **Settings** 页面上，前端每次会随机选择一条提示。在窄屏幕上，关于键盘快捷键的提示会被排除。
 
-## Behavior
+## 行为
 
-A tip does nothing by itself. A link or a button inside it works as usual.
+提示本身不执行任何操作。其中的链接或按钮照常工作。
 
-## Specs
+## 规格
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Alignment | Centered | None |
-| Prefix weight | 500 | `--ha-font-weight-medium` |
-| Text color | Secondary text color | `--secondary-text-color` |
-| Space between prefix and text | 2px | None |
+| 对齐方式 | 居中 | None |
+| 前缀字重 | 500 | `--ha-font-weight-medium` |
+| 文本颜色 | 次要文本颜色 | `--secondary-text-color` |
+| 前缀与文本之间的间距 | 2px | None |
 
-The icon has the default icon size of 24px (`--mdc-icon-size`). The text follows the size of the surrounding text.
+图标使用默认图标大小 24px（`--mdc-icon-size`）。文本的大小跟随周围文本。
 
-## Guidelines
+## 指南
 
-- Put it at the end of the content, where it doesn't get in the way. That is where the frontend puts its tips: below the cards on the **Settings** page, in the footer of the search dialog, and below the list of blueprints.
+- 将其放在内容的末尾，不碍事的位置。前端也是这样放置提示的：**Settings** 页面上卡片下方、搜索对话框的页脚，以及蓝图列表下方。
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-A tip has no keyboard behavior of its own. A link or button inside it is in the tab order, like anywhere else.
+提示本身没有键盘行为。其中的链接或按钮会像其他地方一样进入 Tab 键顺序。
 
-### Screen readers
+### 屏幕阅读器
 
-Screen readers read the prefix and the text, as regular text. The icon is decorative.
+屏幕阅读器会将前缀和文本作为普通文本朗读。图标仅起装饰作用。
 
-### In the code
+### 在代码中
 
-The tip has no role. The icon is an `ha-svg-icon`. Write the text so it reads well after "Tip!".
+提示没有角色（role）。图标是一个 `ha-svg-icon`。撰写文本时，应确保它在 "Tip!" 之后读起来通顺。
 
-## Related
+## 相关内容
 
-- [Alert](/design/components/alert/): for information that people need
-- [Tooltip](/design/components/tooltip/): a short hint on hover or focus
-- [UI text](/design/ui-text/): how to write the hint
+- [警告框](/design/components/alert/)：用于用户必须了解的信息
+- [工具提示](/design/components/tooltip/)：悬停或聚焦时显示的简短提示
+- [UI 文本](/design/ui-text/)：如何撰写提示内容
 
-## In code
+## 在代码中
 
-The element is `<ha-tip>`. Put the hint in its default slot:
+该元素是 `<ha-tip>`。将提示内容放入其默认插槽（slot）：
 
 ```html
 <ha-tip>
@@ -86,10 +86,10 @@ The element is `<ha-tip>`. Put the hint in its default slot:
 </ha-tip>
 ```
 
-The prefix comes from the translation key `ui.panel.config.tips.tip`.
+前缀来自翻译键 `ui.panel.config.tips.tip`。
 
-### Slots
+### 插槽
 
-- Default: the text of the tip.
+- 默认：提示的文本。
 
 Source: [`src/components/ha-tip.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-tip.ts)

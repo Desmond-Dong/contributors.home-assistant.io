@@ -1,37 +1,37 @@
 ---
-title: Buttons and labels
-description: The words on buttons, in dialog titles, and next to fields. Short, in sentence case, and saying what happens.
+title: 按钮和标签
+description: 按钮上、对话框标题中以及字段旁边的文字。简短、使用句首大写，并说明会发生什么。
 order: 1
 ---
 
-Buttons, titles, and labels are the text people read most. Often they are the only text people read. Get these right, and the rest of the screen needs less explaining.
+按钮、标题和标签是人们阅读最多的文字。通常它们是人们唯一会读的文字。把这些写对了，屏幕上的其他内容就不需要太多解释。
 
-## Buttons
+## 按钮
 
-- **Say what happens.** The label is the action: **Save**, **Delete**, **Enable**, **Restart**. A confirmation button that says **Delete** needs no explanation. One that says **OK** makes people read the whole dialog to find out.
-- **Keep it short.** Like the examples above: one clear verb, sometimes with the thing it acts on.
-- **Use sentence case.** **Create new automation**, not **Create New Automation**.
-- **Match the action.** **Delete** for something that is gone for good, **Remove** for something that can come back. See [Remove, delete, add, or create](/design/ui-text/remove-delete/).
-- **Keep the label on small buttons.** On the smallest button size, the label carries the meaning. Skip the icon there, unless it is a common one that people recognize by its shape alone, like close, add, or settings.
+- **说明会发生什么。** 标签就是操作本身：**保存**、**删除**、**启用**、**重启**。一个写着**删除**的确认按钮无需解释。而一个写着**确定**的按钮会让人不得不读完整个对话框才能弄清楚。
+- **保持简短。** 就像上面的例子：一个清晰的动词，有时加上它作用的对象。
+- **使用句首大写。** **创建新自动化**，而不是**创建 新 自动化**。
+- **与操作匹配。** 对于永久消失的内容用**删除**，对于可以恢复的内容用**移除**。参见[移除、删除、添加或创建](/design/ui-text/remove-delete/)。
+- **小按钮上保留文字标签。** 在最小的按钮尺寸上，文字承载着含义。此时请省略图标，除非它是人们仅凭形状就能认出的常见图标，比如关闭、添加或设置。
 
-The [button](/design/components/button/) page covers which kind of button to use.
+[按钮](/design/components/button/)页面介绍了应使用哪种按钮。
 
-## Icon buttons
+## 图标按钮
 
-A button with only an icon still needs a label. It is the name screen readers announce, and the tooltip people see on hover. Write it like any other button label: **Close**, **Edit**, **Menu**.
+只有图标的按钮仍然需要标签。它是屏幕阅读器朗读的名称，也是人们悬停时看到的工具提示。像写其他按钮标签一样来写它：**关闭**、**编辑**、**菜单**。
 
-## Dialog titles
+## 对话框标题
 
-- Always give a dialog a title. People mainly read the title and the buttons, so put the most important information in those two.
-- For a confirmation, ask the question: **Delete dashboard?**
-- Avoid content that people entered, like a name, in the title. A long name can make the title unreadable. Put it in the description instead.
+- 始终为对话框提供标题。人们主要阅读标题和按钮，所以要把最重要的信息放在这两处。
+- 对于确认对话框，提出问题：**删除仪表盘？**
+- 避免在标题中使用人们输入的内容，比如名称。过长的名称会让标题变得难以阅读。请把它放在描述中。
 
-## Field labels and helper text
+## 字段标签和辅助文本
 
-- Every field has a label that says what goes in it: **Name**, **Host**, **Scan interval**.
-- Don't use a placeholder as the label. It disappears as soon as people type.
-- When a field needs explaining, add helper text below it.
+- 每个字段都有一个说明其中应填入什么内容的标签：**名称**、**主机**、**扫描间隔**。
+- 不要把占位符当作标签使用。一旦人们开始输入，它就会消失。
+- 当某个字段需要解释时，在它下方添加辅助文本。
 
-## Accessibility
+## 无障碍
 
-What people see and what a screen reader says should match. When a button shows text, its accessible name contains that same text, so people who use voice control can say what they see. See [Accessibility](/design/foundations/accessibility/#labels-and-accessible-names).
+人们看到的文字和屏幕阅读器朗读的内容应当一致。当按钮显示文字时，它的无障碍名称（accessible name）应包含相同的文字，这样使用语音控制的人就能说出他们看到的内容。参见[无障碍](/design/foundations/accessibility/#labels-and-accessible-names)。

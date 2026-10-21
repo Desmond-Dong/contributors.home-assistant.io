@@ -1,6 +1,6 @@
 ---
-title: Glance card
-description: The glance card shows the state of several entities side by side, each as a name, an icon, and a state. It is an overview you read in one look.
+title: 概览卡片（Glance card）
+description: 概览卡片并排显示多个实体的状态，每个实体包括名称、图标和状态。它是一眼就能读完的概览。
 sidebarGroup: Entity cards
 ---
 
@@ -10,63 +10,63 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 400px" data-props='{"config": {"type": "glance", "entities": ["binary_sensor.front_door", "lock.front_door", "binary_sensor.hallway_motion", "light.hallway"]}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The glance card puts a handful of entities in columns: the name on top, the icon in the middle, and the state below. It answers one question in one look, like "is the house closed?" or "who is home?".
+概览卡片将若干实体排成多列：名称在上方，图标在中间，状态在下方。它一眼就能回答一个问题，比如“房子关好了吗？”或“谁在家？”。
 
-The glance card has no controls. Selecting an entity opens its more-info dialog, and so does holding it. When people need to operate the entities, use [tile cards](/design/dashboards/tile-card/) or the [entities card](/design/dashboards/entities-card/). For one value that matters, use the [entity card](/design/dashboards/entity-card/).
+概览卡片没有控件。选中一个实体会打开其更多信息对话框，长按也是如此。当人们需要操作实体时，请使用[磁贴卡片（tile card）](/design/dashboards/tile-card/)或[实体卡片（entities card）](/design/dashboards/entities-card/)。对于单个重要的值，请使用[实体卡片（entity card）](/design/dashboards/entity-card/)。
 
-### Columns
+### 列数
 
-The card fits up to five entities in a row, and wraps the rest to the next row. Set `columns` to pick the number yourself. Fewer columns give longer names more room.
+卡片每行最多容纳五个实体，其余的换到下一行。设置 `columns` 可以自行指定列数。列数越少，较长的名称就有更多空间。
 
 <Demo hass>
   <hui-card style="width: 400px" data-props='{"config": {"type": "glance", "title": "Climate", "columns": 3, "entities": ["sensor.living_room_temperature", "sensor.living_room_humidity", "sensor.monstera_temperature", "sensor.outdoor_temperature", "sensor.outdoor_humidity"]}}'></hui-card>
 </Demo>
 
-### Showing less
+### 显示更少的内容
 
-Use `show_name`, `show_icon`, and `show_state` to hide a part for all entities. A row of icons with their states, without names, works well when the icons say enough, like doors and windows.
+使用 `show_name`、`show_icon` 和 `show_state` 可以为所有实体隐藏某一部分。当图标本身已经足够说明问题（比如门窗）时，一行不带名称、只带状态的图标效果很好。
 
 <Demo hass>
   <hui-card style="width: 400px" data-props='{"config": {"type": "glance", "show_name": false, "entities": ["binary_sensor.front_door", "binary_sensor.kitchen_window", "cover.garage_door", "lock.front_door"]}}'></hui-card>
 </Demo>
 
-### Last changed
+### 上次更改
 
-With `show_last_changed: true` on an entity, it shows how long ago the state changed, instead of the state itself. Use it for things like a door, where "when" is often more interesting than "what".
+在实体上设置 `show_last_changed: true` 后，将显示状态在多久之前发生了更改，而不是状态本身。适用于门之类的对象，因为“什么时候”往往比“是什么”更值得关注。
 
 <Demo hass>
   <hui-card style="width: 400px" data-props='{"config": {"type": "glance", "entities": [{"entity": "binary_sensor.front_door", "show_last_changed": true}, {"entity": "binary_sensor.hallway_motion", "show_last_changed": true}, "person.alex", "person.sam"]}}'></hui-card>
 </Demo>
 
-### Content
+### 内容
 
-- Keep names to a word or two. Each column is narrow, and a long name gets cut off.
-- Group entities that answer the same question. A card that mixes batteries, doors, and the weather is not something you read at a glance.
-- Use a `title` when the entities alone don't make the question clear.
+- 名称保持在一两个词以内。每列都很窄，名称过长会被截断。
+- 将回答同一问题的实体分组在一起。一张混合了电池、门和天气的卡片，不是一眼就能读懂的。
+- 当实体本身不足以说明问题时，使用 `title`。
 
-## Configuration
+## 配置
 
-- `entities` (list, required): the entities to show. Each is an entity ID, or a mapping with an `entity` and options.
-- `title` (string): the title in the header of the card.
-- `columns` (number): the number of columns. Defaults to the number of entities, up to five.
-- `show_name` (boolean): shows the names. Defaults to `true`.
-- `show_icon` (boolean): shows the icons. Defaults to `true`.
-- `show_state` (boolean): shows the states. Defaults to `true`.
-- `color` (string): how to color the icons. Defaults to `state`, the color of the state. Use `none` for the default icon color.
-- `theme` (string): the theme to use for this card.
+- `entities`（列表，必填）：要显示的实体。每个条目可以是实体 ID，也可以是包含 `entity` 和选项的映射。
+- `title`（字符串）：卡片标题栏中的标题。
+- `columns`（数字）：列数。默认为实体数量，最多五个。
+- `show_name`（布尔值）：显示名称。默认为 `true`。
+- `show_icon`（布尔值）：显示图标。默认为 `true`。
+- `show_state`（布尔值）：显示状态。默认为 `true`。
+- `color`（字符串）：图标的着色方式。默认为 `state`，即状态的颜色。使用 `none` 表示默认图标颜色。
+- `theme`（字符串）：此卡片使用的主题。
 
-The options of an entity:
+实体的选项：
 
-- `entity` (string, required): the entity to show.
-- `name` (string): the name to show. Defaults to the name of the entity.
-- `icon` (string): the icon to show. Defaults to the icon of the entity.
-- `image` (string): a picture to show instead of the icon.
-- `show_state` (boolean): shows the state of this entity. Defaults to `true`.
-- `show_last_changed` (boolean): shows the time since the last change instead of the state. Defaults to `false`.
-- `color` (string): the color of the icon. Overrides the color of the card.
-- `tap_action`, `hold_action`, `double_tap_action` (action): what happens when you select, hold, or double tap the entity. Selecting and holding open the more-info dialog by default.
+- `entity`（字符串，必填）：要显示的实体。
+- `name`（字符串）：要显示的名称。默认为实体的名称。
+- `icon`（字符串）：要显示的图标。默认为实体的图标。
+- `image`（字符串）：代替图标显示的图片。
+- `show_state`（布尔值）：显示此实体的状态。默认为 `true`。
+- `show_last_changed`（布尔值）：显示距上次更改的时间，而不是状态。默认为 `false`。
+- `color`（字符串）：图标的颜色。会覆盖卡片的颜色。
+- `tap_action`、`hold_action`、`double_tap_action`（动作）：选中、长按或双击实体时发生的事情。默认情况下，选中和长按会打开更多信息对话框。
 
 ```yaml
 type: glance
@@ -79,8 +79,8 @@ entities:
     name: "Outside"
 ```
 
-## In code
+## 代码位置
 
-The card lives in `src/panels/lovelace/cards/hui-glance-card.ts`, and the element is `<hui-glance-card>`. The width of a column is set with the `--glance-column-width` custom property, worked out from `columns`. The icon is a `<state-badge>`.
+该卡片位于 `src/panels/lovelace/cards/hui-glance-card.ts`，元素为 `<hui-glance-card>`。列宽通过 `--glance-column-width` 自定义属性设置，由 `columns` 计算得出。图标是一个 `<state-badge>`。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-glance-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-glance-card.ts)

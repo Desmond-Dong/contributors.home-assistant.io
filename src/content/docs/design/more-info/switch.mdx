@@ -1,6 +1,6 @@
 ---
-title: Switch
-description: The more-info view of a switch, a toggle helper, or a siren, built around one big on and off switch.
+title: 开关
+description: 开关（switch）、切换辅助元素（toggle helper）或警报器（siren）的更多信息视图，围绕一个大的开/关切换开关构建。
 sidebarGroup: Appliances
 ---
 
@@ -11,26 +11,26 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="input_boolean.guest_mode"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 它显示什么
 
-A switch does one thing: on or off. Its view is the simplest of the newer views: the state at the top, and one big vertical [control switch](/design/components/controls/) below it, with on at the top. It uses a power icon for on, and a crossed out power icon for off.
+开关只做一件事：开或关。它的视图是较新视图中最简单的一个：顶部显示状态，下方是一个大的竖直[控制开关](/design/components/controls/)，开在顶部。它使用电源图标表示开，使用带斜线的电源图标表示关。
 
-The desk plug is a switch, and it is on. The guest mode is a toggle helper (`input_boolean`), and it is off. Both get the same view.
+桌面插座是一个开关，它处于开启状态。访客模式是一个切换辅助元素（`input_boolean`），它处于关闭状态。两者显示相同的视图。
 
-## Sirens
+## 警报器
 
-A siren gets the same view, with a speaker icon for on and a muted speaker for off. When the siren supports tones, a volume, or a duration, a **More controls** button below the switch opens a view where you pick the tone, volume, and duration, and turn the siren on or off with them.
+警报器使用相同的视图，用扬声器图标表示开，用静音扬声器表示关。当警报器支持音调、音量或持续时间时，切换开关下方的**更多控制**按钮会打开一个视图，您可以在其中选择音调、音量和持续时间，并用它们开启或关闭警报器。
 
-The fake home has no siren, so there is no demo of it here.
+示例之家没有警报器，所以这里没有它的演示。
 
-## Design notes
+## 设计说明
 
-- The switch takes the color of the state, so you see from across the room whether something is on.
-- When the integration can't know the real state (an assumed state), the switch becomes two separate buttons, one for on and one for off, so you can always send both commands.
-- Lights without brightness and fans without speed use this same switch as their main control, with their own icons.
+- 开关采用状态的颜色，这样您从房间另一头就能看出某样东西是否开启。
+- 当集成无法得知真实状态（假定状态）时，开关会变成两个独立的按钮，一个用于开，一个用于关，这样您始终可以发送这两种命令。
+- 没有亮度调节的灯和没有风速调节的风扇也使用这个相同的开关作为它们的主要控制，并使用各自的图标。
 
-## In code
+## 代码层面
 
-The views are `more-info-switch`, `more-info-input_boolean`, and `more-info-siren`, in `src/dialogs/more-info/controls/`. They share `ha-state-control-toggle` from `src/state-control/ha-state-control-toggle.ts`, and pass it the icons for on and off. The advanced siren controls are in `src/dialogs/more-info/components/siren/`, and the `SirenEntityFeature` enum is in `src/data/feature/siren_entity_feature.ts`.
+这些视图是 `more-info-switch`、`more-info-input_boolean` 和 `more-info-siren`，位于 `src/dialogs/more-info/controls/` 中。它们共享来自 `src/state-control/ha-state-control-toggle.ts` 的 `ha-state-control-toggle`，并向其传递开和关的图标。高级警报器控件位于 `src/dialogs/more-info/components/siren/` 中，`SirenEntityFeature` 枚举位于 `src/data/feature/siren_entity_feature.ts` 中。
 
-Source: [`more-info-switch.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-switch.ts)
+源码：[`more-info-switch.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-switch.ts)

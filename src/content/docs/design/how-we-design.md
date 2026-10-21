@@ -1,54 +1,54 @@
 ---
-title: How we design
-description: Where design work happens, how an idea becomes part of Home Assistant, who decides, and how research shapes it.
+title: 我们如何进行设计
+description: 设计工作在哪里进行，一个想法如何成为 Home Assistant 的一部分，由谁决定，以及研究如何塑造设计。
 order: 2
 ---
 
-Design at Home Assistant happens in the open. Proposals, feedback, research, and decisions are public, and anyone can join in: designers, researchers, writers, accessibility experts, and developers. This page shows where that happens, and how an idea travels from a first thought to something people use every day.
+Home Assistant 的设计工作在公开环境中进行。提案、反馈、研究和决策都是公开的，任何人都可以参与：设计师、研究员、撰稿人、无障碍专家和开发者。本页介绍这些工作在哪里进行，以及一个想法如何从最初的念头演变为人们每天使用的东西。
 
-## Where design happens
+## 设计在哪里进行
 
-### UX design discussions
+### UX 设计讨论
 
-The [UX design repository](https://github.com/OpenHomeFoundation/ux-design) of the [Open Home Foundation](/glossary/open-home-foundation/) is the home of design work, for Home Assistant and the other projects of the foundation. Its [discussions](https://github.com/OpenHomeFoundation/ux-design/discussions) are where proposals are shared, reviewed, and decided on. Pick the category that fits what you have:
+[Open Home Foundation](/glossary/open-home-foundation/) 的 [UX 设计仓库](https://github.com/OpenHomeFoundation/ux-design) 是设计工作的家园，既服务于 Home Assistant，也服务于基金会的其他项目。它的[讨论区](https://github.com/OpenHomeFoundation/ux-design/discussions)是提案被分享、评审和决定的地方。请选择适合你内容的分类：
 
-- **Ideation**: early ideas, problems, and possible improvements, before there is a concrete design.
-- **Design review**: designs or work in progress that you want feedback on.
-- **Design system**: shared components, patterns, tokens, and guidelines.
-- **Accessibility**: inclusive design, accessibility issues, and improvements.
-- **UX research and insights**: user research, usability findings, analytics, and other evidence for design decisions.
-- **UX strategy and vision**: the long term direction of the experience across the foundation.
+- **Ideation（构思）**：早期的想法、问题和可能的改进，尚无具体设计。
+- **Design review（设计评审）**：你希望获得反馈的设计或进行中的工作。
+- **Design system（设计系统）**：共享的组件、模式、令牌（token）和指南。
+- **Accessibility（无障碍）**：包容性设计、无障碍问题和改进。
+- **UX research and insights（UX 研究与洞察）**：用户研究、可用性发现、分析数据，以及支持设计决策的其他证据。
+- **UX strategy and vision（UX 战略与愿景）**：整个基金会体验的长期方向。
 
-The [project board](https://github.com/orgs/OpenHomeFoundation/projects/7) lists the design tasks that are active and planned.
+[项目看板](https://github.com/orgs/OpenHomeFoundation/projects/7)列出了正在进行和已规划的设计任务。
 
 ### Discord
 
-The **#designers** channel on the [Home Assistant Discord](https://www.home-assistant.io/join-chat-design) is for quick questions and early feedback. Product and UX discussions happen in **#product-and-ux**. Can't see the channel? Pick the right role under **Channels & Roles**.
+[Home Assistant Discord](https://www.home-assistant.io/join-chat-design) 上的 **#designers** 频道用于快速提问和早期反馈。产品和 UX 讨论在 **#product-and-ux** 中进行。看不到这些频道？请在 **Channels & Roles** 下选择合适的角色。
 
 ### Figma
 
-The [Home Assistant Design Kit](https://www.figma.com/design/2WGI8IDGyxINjSV6NRvPur/Home-Assistant-Design-Kit) on Figma has the components and styles of the interface. Mockups that start from it stay close to what can be built.
+Figma 上的 [Home Assistant Design Kit](https://www.figma.com/design/2WGI8IDGyxINjSV6NRvPur/Home-Assistant-Design-Kit) 包含界面的组件和样式。基于它制作的模型（mockup）会与实际可构建的效果保持一致。
 
-### The frontend repository
+### 前端仓库
 
-The [frontend repository](https://github.com/home-assistant/frontend) is where designs become code. Concrete problems in the interface are issues there, with the [`UX`](https://github.com/home-assistant/frontend/labels/UX) or [`Accessibility`](https://github.com/home-assistant/frontend/labels/Accessibility) label. Pull requests that need input from the design team get the [`Needs UX`](https://github.com/home-assistant/frontend/labels/Needs%20UX) label.
+[前端仓库](https://github.com/home-assistant/frontend)是设计变成代码的地方。界面中的具体问题会作为那里的 issue 提出，并带有 [`UX`](https://github.com/home-assistant/frontend/labels/UX) 或 [`Accessibility`](https://github.com/home-assistant/frontend/labels/Accessibility) 标签。需要设计团队提供意见的拉取请求（pull request）会带有 [`Needs UX`](https://github.com/home-assistant/frontend/labels/Needs%20UX) 标签。
 
-## From idea to implementation
+## 从想法到实现
 
-Design work follows these steps:
+设计工作遵循以下步骤：
 
-1. **Idea.** Someone notices a problem or has an idea. Start in the **Ideation** category, or check the project board for a task that is already planned.
-2. **Discussion.** The idea is discussed in the open, with feedback and research from others.
-3. **Proposal.** A concrete design, with mockups or a prototype. Share it in **Design review**, early, and ask for feedback. You don't need a finished design to start.
-4. **Review.** Designers, developers, and users react to the proposal, and it changes based on what they say.
-5. **Decision.** The direction is settled. Major decisions are summarized and linked to the board item they belong to.
-6. **Implementation.** The design is built, usually in the frontend, and the matching page in this area is updated. The discussion links to the pull requests that implement it.
+1. **想法。** 有人注意到一个问题或产生一个想法。可以在 **Ideation** 分类中发起，或者查看项目看板上已规划的任务。
+2. **讨论。** 想法在公开环境中讨论，并获得他人的反馈和研究支持。
+3. **提案。** 一个具体的设计，附带模型或原型。尽早分享到 **Design review** 中并征求反馈。你不需要先完成设计才能开始。
+4. **评审。** 设计师、开发者和用户对提案作出回应，提案根据他们的意见进行修改。
+5. **决定。** 方向确定下来。重大决策会被总结，并链接到所属的看板条目。
+6. **实现。** 设计被构建出来，通常在前端完成，同时更新本区域中对应的页面。讨论中会链接到实现它的拉取请求。
 
-Before you design something new, check the [components](/design/components/) and [patterns](/design/patterns/). Consistency is part of good design.
+在设计新东西之前，请先查看[组件](/design/components/)和[模式](/design/patterns/)。一致性是良好设计的一部分。
 
-## Write a proposal
+## 撰写提案
 
-Proposals in the **Design review** category usually follow the same outline. Start from this:
+**Design review** 分类中的提案通常遵循相同的大纲。可以从这个模板开始：
 
 ```markdown
 ## Problem
@@ -69,44 +69,44 @@ What you are unsure about, and want feedback on.
 The board item, related discussions, and issues.
 ```
 
-Lead with the problem. A clear problem keeps the discussion focused, and often makes the solution obvious. Link your discussion to the board item it belongs to, if there is one.
+以问题为先。清晰的问题能让讨论保持聚焦，并且往往能让解决方案显而易见。如果存在对应的看板条目，请将你的讨论链接到它。
 
-## Who decides
+## 由谁决定
 
-Proposals are reviewed in the UX design discussions, and that is where the direction of a design is settled. Major decisions are summarized there and linked to the board item they belong to.
+提案在 UX 设计讨论区中评审，设计的方向也是在那里确定的。重大决策会在那里被总结，并链接到所属的看板条目。
 
-For code, the frontend reviewers decide. A fix that keeps the established experience normally stays with them. A new card, badge, screen, or interaction pattern is a design decision as much as a code change. When its direction is not settled yet, a reviewer adds the `Needs UX` label and asks the design team for input. Discussing a bigger idea before you write the code saves a rewrite. See [Review and release](/frontend/development/review-and-release/) for how frontend review works.
+对于代码，由前端评审者决定。保持既有体验的修复通常由他们处理。而新的卡片、徽章、屏幕或交互模式既是代码变更，也是设计决策。当其方向尚未确定时，评审者会添加 `Needs UX` 标签并请设计团队提供意见。在编写代码之前先讨论较大的想法，可以避免返工。有关前端评审的工作方式，请参阅[评审与发布](/frontend/development/review-and-release/)。
 
-### Where a component is specified
+### 组件在哪里定义
 
-The Design area on this site is the reference for design guidance: how [components](/design/components/) look and behave, when to use them, their specs, and their accessibility. The same goes for the [foundations](/design/foundations/), the [patterns](/design/patterns/), and the [brand](/brand/). This area replaces design.home-assistant.io.
+本网站的设计（Design）区域是设计指南的参考：[组件](/design/components/)的外观和行为、使用时机、规格以及无障碍特性。[基础（foundations）](/design/foundations/)、[模式](/design/patterns/)和[品牌](/brand/)也是如此。本区域取代了 design.home-assistant.io。
 
-To change a component:
+要修改一个组件：
 
-1. Start with a discussion in the **Design system** category, and settle the direction there.
-2. Open a pull request in the [frontend repository](https://github.com/home-assistant/frontend) that changes the component.
-3. Open a pull request to [this site](https://github.com/home-assistant/contributors.home-assistant.io) that updates the page of the component.
+1. 先在 **Design system** 分类中发起讨论，并在那里确定方向。
+2. 在[前端仓库](https://github.com/home-assistant/frontend)中打开一个修改该组件的拉取请求。
+3. 在[本网站](https://github.com/home-assistant/contributors.home-assistant.io)中打开一个更新该组件页面的拉取请求。
 
-Found a page that no longer matches the component? One of the two needs a fix. Open an issue or a pull request on this site, or start a discussion when you are not sure which one is right.
+发现某个页面与组件不再一致？两者之一需要修复。在本网站上打开一个 issue 或拉取请求，如果不确定哪个是正确的，就发起一个讨论。
 
-## Research
+## 研究
 
-Research keeps design decisions based on what people actually do, not on what the people building Home Assistant assume. The [user research repository](https://github.com/OpenHomeFoundation/user-research) of the Open Home Foundation is the home of that work, and is open to community researchers too.
+研究让设计决策基于人们的实际行为，而不是 Home Assistant 构建者的假设。Open Home Foundation 的[用户研究仓库](https://github.com/OpenHomeFoundation/user-research)是这项工作的家园，也对社区研究者开放。
 
-### Methods
+### 方法
 
-- **User tests.** Before the configuration menu was reorganized into **Settings**, a prototype made in Figma was tested online for ten days, with six questions and three tasks. Anyone could join, and people were recruited on the [forum](https://community.home-assistant.io/), Reddit, and Twitter. 915 people took part and left 407 comments. The conclusions included adding a search bar, and renaming **Configuration** to **Settings**.
-- **Surveys.** The 2024 community survey had over 8,600 responses. The anonymized dataset and the questions are published as [open data](https://github.com/OpenHomeFoundation/user-research/tree/main/community-survey24), under CC BY 4.0, for anyone to use.
-- **Studies.** The repository also holds a privacy study, with its paper and poster.
+- **用户测试。** 在配置菜单被重组为 **Settings** 之前，一个用 Figma 制作的原型在线测试了十天，包含六个问题和三个任务。任何人都可以参加，参与者通过[论坛](https://community.home-assistant.io/)、Reddit 和 Twitter 招募。915 人参与并留下了 407 条评论。结论包括添加搜索栏，以及将 **Configuration** 重命名为 **Settings**。
+- **调查。** 2024 年社区调查收到了超过 8,600 份回复。匿名数据集和问题以[开放数据](https://github.com/OpenHomeFoundation/user-research/tree/main/community-survey24)的形式发布，采用 CC BY 4.0 许可，供任何人使用。
+- **研究。** 该仓库还包含一项隐私研究，附有其论文和海报。
 
-Research shows up in the product. For example, research kept showing that people open the dashboard editor with a device or an entity in mind, not a type of card. That is why the dialog to add a card now starts from your devices and entities.
+研究体现在产品中。例如，研究不断表明，人们打开仪表盘编辑器时，心中想的是某个设备或实体（entity），而不是某种卡片类型。这就是为什么现在添加卡片的对话框从你的设备和实体开始。
 
-### Taking part
+### 参与其中
 
-The foundation asks the community to take part in research, like the community survey that was announced on the [blog](https://www.home-assistant.io/blog/2024/12/16/community-survey-2024/), and user tests shared on the forum and social media. Research with participants follows the [User Research Agreement](https://www.openhomefoundation.org/user-research-agreement/) of the Open Home Foundation.
+基金会邀请社区参与研究，例如在[博客](https://www.home-assistant.io/blog/2024/12/16/community-survey-2024/)上公布的社区调查，以及在论坛和社交媒体上分享的用户测试。涉及参与者的研究遵循 Open Home Foundation 的[用户研究协议](https://www.openhomefoundation.org/user-research-agreement/)。
 
-Want to run or analyze research yourself? Share your plan or your findings in the **UX research and insights** category, and see the [research project board](https://github.com/OpenHomeFoundation/user-research/projects). To talk with the people doing user research, join **#user-researchers** on the [Home Assistant Discord](https://www.home-assistant.io/join-chat/).
+想自己开展或分析研究？请在 **UX research and insights** 分类中分享你的计划或发现，并查看[研究项目看板](https://github.com/OpenHomeFoundation/user-research/projects)。想与从事用户研究的人交流，请加入 [Home Assistant Discord](https://www.home-assistant.io/join-chat/) 上的 **#user-researchers**。
 
-## Who we design for
+## 我们为谁设计
 
-Every design decision considers the [three types of users](/design/users/): people who outgrow other smart home platforms, people who love to tinker, and people who want more but need help to get there.
+每一个设计决策都会考虑[三类用户](/design/users/)：从其他智能家居平台成长过来的人、喜欢折腾的人，以及想要更多但需要帮助才能实现的人。

@@ -1,6 +1,6 @@
 ---
-title: Sensor card
-description: The sensor card shows the value of one numeric sensor in large type, with an optional line graph of its recent history underneath.
+title: 传感器卡片
+description: 传感器卡片以大号字体显示一个数值传感器的值，并在下方可选显示其近期历史的折线图。
 sidebarGroup: Information
 ---
 
@@ -10,53 +10,53 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 340px" data-props='{"config": {"type": "sensor", "entity": "sensor.living_room_temperature", "graph": "line"}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The sensor card is for one number that people want to read at a glance, and see the trend of: a temperature, the power a device uses, the humidity in a room. It shows the name and the icon at the top, the value in large type, and a line graph of the last 24 hours at the bottom.
+传感器卡片适用于人们想要一目了然地读取并查看其趋势的某个数值：温度、设备使用的功率、房间里的湿度。它在顶部显示名称和图标，以大号字体显示数值，并在底部显示过去 24 小时的折线图。
 
-It takes sensors, numbers, input numbers, and counters. The value has to be numeric for the graph to make sense.
+它支持传感器（sensor）、数字（number）、输入数字（input number）和计数器（counter）。数值必须是数字，折线图才有意义。
 
-Use the [tile card](/design/dashboards/tile-card/) when the value is one of many in a section and the trend doesn't matter. Use the [gauge card](/design/dashboards/gauge-card/) when the position of the value within a range matters more than its history. Use the [history graph card](/design/dashboards/history-graph-card/) to compare several entities, or when people need axes and exact values from the past.
+当数值只是某个区域中的众多数值之一、且趋势不重要时，请使用[磁贴卡片](/design/dashboards/tile-card/)。当数值在某个范围内的位置比其历史更重要时，请使用[仪表盘卡片](/design/dashboards/gauge-card/)。要比较多个实体（entity），或者当人们需要坐标轴和过去的确切数值时，请使用[历史图表卡片](/design/dashboards/history-graph-card/)。
 
-### With or without a graph
+### 有图或无图
 
-With `graph: line`, the card adds the graph. Without it, the card only shows the value. That plain version is the same as the [entity card](/design/dashboards/entity-card/), so if you don't want the graph, use that card instead.
+设置 `graph: line` 时，卡片会添加折线图。不设置时，卡片只显示数值。这个纯数值版本与[实体卡片](/design/dashboards/entity-card/)相同，所以如果你不想要折线图，请改用那张卡片。
 
 <Demo hass>
   <hui-card style="width: 300px" data-props='{"config": {"type": "sensor", "entity": "sensor.desk_plug_power", "graph": "line"}}'></hui-card>
   <hui-card style="width: 300px" data-props='{"config": {"type": "sensor", "entity": "sensor.outdoor_humidity"}}'></hui-card>
 </Demo>
 
-The graph is a sparkline: no axes, no labels, no tooltip. It shows the shape of the trend, not the numbers. That keeps the card calm, and it works because the current value sits right above it.
+折线图是一种迷你图（sparkline）：没有坐标轴、没有标签、没有工具提示。它显示的是趋势的形状，而不是具体数字。这让卡片保持简洁，而且由于当前数值就显示在图的上方，所以这样设计是可行的。
 
-### Time range and detail
+### 时间范围和细节
 
-`hours_to_show` sets how far back the graph goes. A short range shows quick changes, like the power of a device that just turned on. A long range shows patterns, like a temperature over a day.
+`hours_to_show` 设置折线图回溯的时间长度。较短的范围显示快速变化，比如刚开启的设备的功率。较长的范围显示规律，比如一整天的温度。
 
-With `detail: 2`, the graph uses more points and follows every change. The default, `detail: 1`, averages the values per hour, which gives a smoother line. Pick the smooth line unless the peaks are the point.
+设置 `detail: 2` 时，折线图使用更多的数据点，并跟随每一次变化。默认值 `detail: 1` 会对每小时的数值取平均，从而得到更平滑的曲线。除非峰值本身才是重点，否则请选择平滑曲线。
 
 <Demo hass>
   <hui-card style="width: 300px" data-props='{"config": {"type": "sensor", "entity": "sensor.desk_plug_power", "graph": "line", "hours_to_show": 6, "detail": 2}}'></hui-card>
   <hui-card style="width: 300px" data-props='{"config": {"type": "sensor", "entity": "sensor.desk_plug_power", "graph": "line", "hours_to_show": 6}}'></hui-card>
 </Demo>
 
-### Content
+### 内容
 
-- The name comes from the entity. Keep it short, the card is half a section wide.
-- Leave the unit alone. The entity provides it, and the card formats the value for the language of the user. Override `unit` only for an entity that has no unit of its own.
-- Set `limits` only when the default scale of the graph hides what matters, like small changes in a temperature that never drops below 18 degrees.
+- 名称来自实体。请保持简短，卡片只占半个区域的宽度。
+- 不要改动单位。单位由实体提供，卡片会根据用户的语言对数值进行格式化。仅当实体本身没有单位时才覆盖 `unit`。
+- 仅当折线图的默认刻度隐藏了重要信息时才设置 `limits`，比如温度从不低于 18 度时的微小变化。
 
-## Configuration
+## 配置
 
-- `entity` (string, required): a sensor, number, input number, or counter entity.
-- `name` (string): the name to show. Defaults to the name of the entity.
-- `icon` (string): the icon to show. Defaults to the icon of the entity.
-- `graph` (string): `line` adds the graph, `none` leaves it out. Defaults to `none`.
-- `unit` (string): the unit to show. Defaults to the unit of the entity.
-- `detail` (number): `1` for an hourly average, `2` for more detail. Defaults to `1`.
-- `hours_to_show` (number): how many hours the graph shows. Defaults to `24`.
-- `limits` (map): `min` and `max` for the vertical scale of the graph. By default, the scale follows the values.
-- `theme` (string): a theme for this card only.
+- `entity`（字符串，必填）：传感器、数字、输入数字或计数器实体。
+- `name`（字符串）：要显示的名称。默认为实体的名称。
+- `icon`（字符串）：要显示的图标。默认为实体的图标。
+- `graph`（字符串）：`line` 添加折线图，`none` 则不显示。默认为 `none`。
+- `unit`（字符串）：要显示的单位。默认为实体的单位。
+- `detail`（数字）：`1` 为每小时平均值，`2` 为更多细节。默认为 `1`。
+- `hours_to_show`（数字）：折线图显示多少小时。默认为 `24`。
+- `limits`（映射）：折线图垂直刻度的 `min` 和 `max`。默认情况下，刻度跟随数值变化。
+- `theme`（字符串）：仅用于此卡片的主题。
 
 ```yaml
 type: sensor
@@ -65,10 +65,10 @@ graph: line
 hours_to_show: 6
 ```
 
-## In code
+## 代码实现
 
-The card lives in `src/panels/lovelace/cards/hui-sensor-card.ts`, and the element is `<hui-sensor-card>`. It extends the entity card (`hui-entity-card.ts`): it turns its own options into an entity card configuration, and adds the graph as a footer. The graph is the graph header and footer element, in `src/panels/lovelace/header-footer/hui-graph-header-footer.ts`, which the entities card can use as a footer too.
+该卡片位于 `src/panels/lovelace/cards/hui-sensor-card.ts`，元素为 `<hui-sensor-card>`。它继承自实体卡片（`hui-entity-card.ts`）：将自己的选项转换为实体卡片配置，并将折线图作为页脚添加。折线图是图表页眉和页脚元素，位于 `src/panels/lovelace/header-footer/hui-graph-header-footer.ts`，实体卡片也可以将其用作页脚。
 
-In the sections view, the card takes 6 of the 12 columns, and 2 rows. It can't get smaller than that.
+在区域（sections）视图中，该卡片占 12 列中的 6 列，以及 2 行。它不能比这更小。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-sensor-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-sensor-card.ts)

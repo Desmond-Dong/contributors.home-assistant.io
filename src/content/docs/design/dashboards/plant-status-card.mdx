@@ -1,6 +1,6 @@
 ---
-title: Plant status card
-description: The plant status card shows the readings of a plant, like moisture and light, and points out the one that needs attention.
+title: 植物状态卡片
+description: 植物状态卡片显示植物的读数，例如湿度和光照，并指出需要关注的那一项。
 sidebarGroup: Information
 ---
 
@@ -10,41 +10,41 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 380px" data-props='{"config": {"type": "plant-status", "entity": "plant.monstera"}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The plant status card is made for one kind of entity: a plant from the plant integration. That entity bundles the sensors of a plant, like moisture, temperature, light, conductivity, and battery, and knows the range each one should be in. The card shows all readings in a row, each with an icon, the value, and the unit.
+植物状态卡片专为一种实体（entity）设计：来自 plant 集成（integration）的植物实体。该实体汇集了植物的各项传感器，例如湿度、温度、光照、电导率和电池电量，并且知道每项读数应处于的取值范围。卡片将所有读数排成一行显示，每项读数带有图标、数值和单位。
 
-A reading outside its range is shown in bold, in the error color. In the demo, the moisture of the Monstera is too low. That is the whole point of the card: you see at a glance which plant needs water, light, or a new battery.
+超出取值范围的读数会以错误颜色加粗显示。在演示中，龟背竹的湿度过低。这正是这张卡片的意义所在：您可以一眼看出哪株植物需要浇水、需要光照，或者需要更换电池。
 
-Selecting a reading opens the more-info dialog of the sensor behind it, with its history.
+选择某项读数会打开其背后传感器的更多信息对话框，其中包含历史记录。
 
-The card only works with plant entities. For a single plant sensor, like a moisture sensor without the plant integration, use a [tile card](/design/dashboards/tile-card/) or a [sensor card](/design/dashboards/sensor-card/).
+该卡片仅适用于植物实体。对于单个植物传感器，例如未使用 plant 集成的湿度传感器，请使用[平铺卡片](/design/dashboards/tile-card/)或[传感器卡片](/design/dashboards/sensor-card/)。
 
-### Picture
+### 图片
 
-When the plant entity has a picture, the card shows it as a banner, with the name on top of it. Without a picture, only the name is shown, as in the demo.
+当植物实体带有图片时，卡片会将其显示为横幅，并在其上方显示名称。没有图片时，则仅显示名称，如演示中所示。
 
-### Content
+### 内容
 
-- The card shows the readings the plant has. You can't pick which ones, so leave out a sensor in the plant integration if it should not be on the card.
-- The battery icon follows the level, and takes the color of the battery level, like red when it is almost empty.
-- Use `name` when the name of the plant entity is not the name people use for the plant.
+- 卡片显示植物实体所拥有的读数。您无法选择显示哪些读数，因此如果某个传感器不应显示在卡片上，请在 plant 集成中将其省略。
+- 电池图标会随电量变化，并采用电池电量对应的颜色，例如电量几乎耗尽时显示为红色。
+- 当植物实体的名称不是人们常用的植物名称时，可以使用 `name`。
 
-## Configuration
+## 配置
 
-- `entity` (string, required): the plant entity to show.
-- `name` (string): the name to show. Defaults to the name of the entity.
-- `theme` (string): the theme for this card.
+- `entity`（字符串，必填）：要显示的植物实体。
+- `name`（字符串）：要显示的名称。默认为实体的名称。
+- `theme`（字符串）：此卡片使用的主题。
 
 ```yaml
 type: plant-status
 entity: plant.monstera
 ```
 
-## In code
+## 代码实现
 
-The card lives in `src/panels/lovelace/cards/hui-plant-status-card.ts`, and the element is `<hui-plant-status-card>`. The readings it shows are the attributes of the plant entity that it knows: `moisture`, `temperature`, `brightness`, `conductivity`, and `battery`. The `problem` attribute of the entity says which ones are out of range. The `sensors` attribute links each reading to its sensor entity: the card uses it to format the value like that sensor, and to open its more-info dialog.
+该卡片位于 `src/panels/lovelace/cards/hui-plant-status-card.ts`，元素为 `<hui-plant-status-card>`。它显示的读数是其所知的植物实体属性：`moisture`、`temperature`、`brightness`、`conductivity` 和 `battery`。实体的 `problem` 属性指出了哪些读数超出范围。`sensors` 属性将每项读数与其传感器实体关联起来：卡片利用它按照对应传感器的格式显示数值，并打开其更多信息对话框。
 
-The card has a fixed size of 3 in the masonry view, and takes the full width of a section.
+在瀑布流视图中，该卡片的固定大小为 3，在分区视图中则占满整行宽度。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-plant-status-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-plant-status-card.ts)

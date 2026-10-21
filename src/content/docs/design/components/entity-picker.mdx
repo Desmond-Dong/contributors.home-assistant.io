@@ -1,6 +1,6 @@
 ---
-title: Entity picker
-description: The entity picker lets people choose one entity, with search, from all entities in their home.
+title: 实体选择器
+description: 实体选择器让人们可以通过搜索，从家中的所有实体中选择一个实体。
 sidebarGroup: Pickers
 ---
 
@@ -12,193 +12,193 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   <ha-entity-picker label="Entity"></ha-entity-picker>
 </Demo>
 
-## Overview
+## 概述
 
-The entity picker is a field for choosing one [entity](/glossary/entity/): the light a card shows, the sensor a helper reads from, the entity an automation watches. Select the field to open a searchable list. Each row shows the entity name, with its device and area as context, so people can tell two lamps called **Ceiling** apart.
+实体选择器是用于选择一个[实体](/glossary/entity/)的字段：卡片显示的灯、辅助元素（helper）读取的传感器、自动化监视的实体。选择该字段会打开一个可搜索的列表。每一行显示实体名称，并附带其设备和区域作为上下文，这样人们就能区分两个都叫 **Ceiling** 的灯。
 
-The entity picker is the most used picker in the frontend, and in most places it arrives through the entity selector. Use the element directly when you build a custom editor outside of a form.
+实体选择器是前端中使用最多的选择器，在大多数地方它通过实体选择器（selector）来使用。当你在表单之外构建自定义编辑器时，可以直接使用该元素。
 
-## When to use
+## 何时使用
 
-Use the entity picker for:
+在以下情况使用实体选择器：
 
-- Choosing exactly one entity
-- A custom editor outside of a form
+- 只选择一个实体
+- 表单之外的自定义编辑器
 
-Don't use the entity picker for:
+不要在以下情况使用实体选择器：
 
-- Picking several entities. Use the entity [selector](/design/components/selector/), which can allow more than one. It renders a picker per entity, and below them a picker for the next one, which turns into an **Add entity** button once the list has an entity.
-- Picking what an action works on, like the lights to turn on. Use the target selector: it accepts entities, devices, areas, floors, and labels in one field.
-- Picking a device instead of one of its entities. Use the [device picker](/design/components/device-picker/).
-- A field in a form. Don't place the picker yourself: use the entity selector in an [ha-form](/design/components/form/) schema, and the form renders the picker for you.
+- 选择多个实体。请使用实体[选择器](/design/components/selector/)，它允许选择多个。它会为每个实体渲染一个选择器，并在其下方显示用于选择下一个实体的选择器，一旦列表中已有实体，该选择器就会变成一个**添加实体**按钮。
+- 选择操作所作用的对象，比如要打开的灯。请使用目标选择器：它可以在一个字段中接受实体、设备、区域、楼层和标签。
+- 选择设备而不是它的某个实体。请使用[设备选择器](/design/components/device-picker/)。
+- 表单中的字段。不要自己放置选择器：请在 [ha-form](/design/components/form/) schema 中使用实体选择器（selector），表单会为你渲染该选择器。
 
-## Anatomy
+## 结构
 
-1. **Label**: above the field
-2. **Field**: the button that shows the value and opens the list
-3. **Value or placeholder**: the state icon and name of the entity, with its device and area, or **Select an entity** when empty
-4. **Clear button**: removes the value, when the field is not required
-5. **Arrow**: shows that the field opens a list
-6. **Helper**: optional text below the field
-7. **List**: the popover with a search field and the entities. Each row has the state icon, the entity name, its device and area, and the integration name at the end.
+1. **标签**：位于字段上方
+2. **字段**：显示值并打开列表的按钮
+3. **值或占位符**：实体的状态图标和名称，以及其设备和区域；为空时显示**选择一个实体**
+4. **清除按钮**：移除值，当字段不是必填时显示
+5. **箭头**：表示该字段会打开一个列表
+6. **辅助文本**：字段下方的可选文本
+7. **列表**：带有搜索字段和实体的弹出框。每一行包含状态图标、实体名称、其设备和区域，行末是集成名称。
 
-## Variants
+## 变体
 
-### Filtered
+### 已过滤
 
-Only show the entities that make sense for the field. You can filter on domain, device class, unit of measurement, and on a list of entity IDs to include or exclude.
+只显示对该字段有意义的实体。你可以按域名（domain）、设备类别、计量单位进行过滤，也可以按要包含或排除的实体 ID 列表进行过滤。
 
-<Demo hass layout="stack" caption="Only lights and switches.">
+<Demo hass layout="stack" caption="只有灯和开关。">
   <ha-entity-picker label="Entity" include-domains='["light", "switch"]'></ha-entity-picker>
 </Demo>
 
-<Demo hass layout="stack" caption="Only temperature and humidity sensors.">
+<Demo hass layout="stack" caption="只有温度和湿度传感器。">
   <ha-entity-picker label="Sensor" include-domains='["sensor"]' include-device-classes='["temperature", "humidity"]'></ha-entity-picker>
 </Demo>
 
-### With a helper
+### 带辅助文本
 
-The label names what the entity is for: **Entity**, **Temperature sensor**, **Light to control**. Add a helper below the field when the choice needs explaining.
+标签说明实体的用途：**Entity**、**Temperature sensor**、**Light to control**。当这个选择需要解释时，在字段下方添加辅助文本。
 
 <Demo hass layout="stack">
   <ha-entity-picker label="Temperature sensor" include-domains='["sensor"]' include-device-classes='["temperature"]' helper="The card shows the temperature of this sensor."></ha-entity-picker>
 </Demo>
 
-### Showing entity IDs
+### 显示实体 ID
 
-The list shows the integration of each entity at the end of the row. The picker can show the entity ID instead, below the name. People can also turn this on for every picker in their profile settings. Use it in places where people think in entity IDs, like advanced or YAML-oriented screens.
+列表在每行末尾显示每个实体的集成。选择器也可以改为在名称下方显示实体 ID。人们也可以在自己的个人资料设置中为所有选择器开启此功能。在人们以实体 ID 思考的地方使用它，比如高级或面向 YAML 的界面。
 
 <Demo hass layout="stack">
   <ha-entity-picker label="Entity" show-entity-id></ha-entity-picker>
 </Demo>
 
-### Add button
+### 添加按钮
 
-In a list of entities, the picker for the next entity can show as a button. It then always shows a button, and never a value. Selecting an entity reports it, so you can add it to your list. The button label defaults to **Add entity**, and can be changed.
+在实体列表中，用于选择下一个实体的选择器可以显示为按钮。此时它始终显示为按钮，而不会显示值。选择一个实体会报告它，这样你就可以把它添加到你的列表中。按钮标签默认为**添加实体**，并且可以更改。
 
 <Demo hass layout="stack">
   <ha-entity-picker add-button></ha-entity-picker>
 </Demo>
 
-### Custom entity IDs
+### 自定义实体 ID
 
-By default, people can only choose entities from the list. The picker can also accept a typed entity ID that does not exist yet. The typed value must still look like an entity ID, like `light.attic`.
+默认情况下，人们只能从列表中选择实体。选择器也可以接受一个尚不存在的、手动输入的实体 ID。输入的值仍然必须看起来像一个实体 ID，例如 `light.attic`。
 
-## Behavior
+## 行为
 
-- **Enabled**: selecting the field opens the list, and moves focus to its search field.
-- **Hover and pressed**: the field shows a ripple.
-- **Focus**: the line at the bottom of the field turns 2px thick, in the primary color.
-- **Search**: typing filters the list as you type. When nothing matches, the list says **No entities found for** your search term.
-- **Unknown**: when the value is an entity that does not exist, like one that was removed, the field turns to the quiet warning color and shows **Unknown entity selected**. People can then pick another entity, or clear the field.
-- **Disabled**: the field is dimmed to 50% opacity and can't be opened.
-- **Narrow screens**: when the window is at most 870px wide or 500px high, the list opens as a bottom sheet instead of a popover.
+- **启用**：选择该字段会打开列表，并将焦点移至其搜索字段。
+- **悬停和按下**：字段显示涟漪效果。
+- **聚焦**：字段底部的线条变为 2px 粗，并使用主色。
+- **搜索**：输入时会即时过滤列表。当没有匹配项时，列表会显示**未找到与你的搜索词匹配的实体**。
+- **未知**：当值是一个不存在的实体时，比如已被移除的实体，字段会变为低调的警告色，并显示**已选择未知实体**。人们随后可以选择另一个实体，或清除该字段。
+- **禁用**：字段变暗至 50% 不透明度，且无法打开。
+- **窄屏**：当窗口宽度不超过 870px 或高度不超过 500px 时，列表会以底部抽屉的形式打开，而不是弹出框。
 
-Picking an entity closes the list. The new value is reported once the list has closed.
+选择一个实体会关闭列表。新值会在列表关闭后报告。
 
 <Demo hass layout="stack">
   <ha-entity-picker label="Entity" value="light.attic"></ha-entity-picker>
   <ha-entity-picker label="Entity" value="climate.thermostat" disabled></ha-entity-picker>
 </Demo>
 
-## Specs
+## 规格
 
-The entity picker uses the shared picker field and list of the frontend, `ha-picker-field` and `ha-generic-picker`.
+实体选择器使用前端共享的选择器字段和列表，即 `ha-picker-field` 和 `ha-generic-picker`。
 
-### Field
+### 字段
 
-| Property | Value | Token |
+| 属性 | 值 | 令牌 |
 | --- | --- | --- |
-| Space between label and field | 8px | None |
-| Minimum height | 56px | None |
-| Padding start | 16px | `--ha-space-4` |
-| Padding end | 8px | `--ha-space-2` |
-| Gap between parts | 8px | `--ha-space-2` |
-| Corner radius | 4px at the top, square at the bottom | `--ha-border-radius-sm` |
-| Background | Form background | `--ha-color-form-background` |
-| Bottom line | 1px | `--ha-color-border-neutral-loud` |
-| Bottom line, focused | 2px | `--mdc-theme-primary` |
-| Bottom line, invalid | 2px | `--error-color` |
-| Placeholder text | Secondary text color | `--secondary-text-color` |
-| Clear button | 32px | `--ha-icon-button-size` |
-| Arrow icon | 20px, in a 32px wide area | `--mdc-icon-size` |
-| Unknown background | Quiet warning fill | `--ha-color-fill-warning-quiet-resting` |
-| Unknown text | Warning text | `--ha-color-on-warning-normal` |
-| Disabled | 50% opacity on the disabled form background | `--ha-color-form-background-disabled` |
-| Space above the helper | 8px | `--ha-space-2` |
+| 标签与字段之间的间距 | 8px | None |
+| 最小高度 | 56px | None |
+| 起始内边距 | 16px | `--ha-space-4` |
+| 结束内边距 | 8px | `--ha-space-2` |
+| 各部分之间的间距 | 8px | `--ha-space-2` |
+| 圆角半径 | 顶部 4px，底部为直角 | `--ha-border-radius-sm` |
+| 背景 | 表单背景 | `--ha-color-form-background` |
+| 底部线条 | 1px | `--ha-color-border-neutral-loud` |
+| 底部线条，聚焦时 | 2px | `--mdc-theme-primary` |
+| 底部线条，无效时 | 2px | `--error-color` |
+| 占位符文本 | 次要文本颜色 | `--secondary-text-color` |
+| 清除按钮 | 32px | `--ha-icon-button-size` |
+| 箭头图标 | 20px，位于 32px 宽的区域内 | `--mdc-icon-size` |
+| 未知背景 | 低调警告填充 | `--ha-color-fill-warning-quiet-resting` |
+| 未知文本 | 警告文本 | `--ha-color-on-warning-normal` |
+| 禁用 | 禁用表单背景上 50% 不透明度 | `--ha-color-form-background-disabled` |
+| 辅助文本上方的间距 | 8px | `--ha-space-2` |
 
-### List
+### 列表
 
-| Property | Value | Token |
+| 属性 | 值 | 令牌 |
 | --- | --- | --- |
-| Width | The width of the field, at least 250px | `--ha-generic-picker-width` |
-| Maximum width | The width, unless set | `--ha-generic-picker-max-width` |
-| Maximum height | The smaller of 70% of the window height and 500px. When the window is at most 1000px high, the smaller of 70% and 400px | None |
-| Corner radius | 8px | `--ha-border-radius-md` |
-| Shadow | Medium shadow | `--ha-box-shadow-m` |
-| Row divider | 1px between rows | `--divider-color` |
-| Bottom sheet corner radius | 20px | `--ha-border-radius-2xl` |
-| Bottom sheet maximum width | 600px | None |
+| 宽度 | 字段的宽度，至少 250px | `--ha-generic-picker-width` |
+| 最大宽度 | 该宽度，除非另行设置 | `--ha-generic-picker-max-width` |
+| 最大高度 | 窗口高度的 70% 与 500px 中的较小者。当窗口高度不超过 1000px 时，为 70% 与 400px 中的较小者 | None |
+| 圆角半径 | 8px | `--ha-border-radius-md` |
+| 阴影 | 中等阴影 | `--ha-box-shadow-m` |
+| 行分隔线 | 行与行之间 1px | `--divider-color` |
+| 底部抽屉圆角半径 | 20px | `--ha-border-radius-2xl` |
+| 底部抽屉最大宽度 | 600px | None |
 
-## Guidelines
+## 指南
 
-- Only show the entities that make sense for the field. A card that controls lights should only offer lights.
-- Avoid filters that are so strict that people end up with an empty list and no idea why.
-- Show entity IDs only where people think in entity IDs.
+- 只显示对该字段有意义的实体。控制灯的卡片应该只提供灯。
+- 避免过于严格的过滤条件，以免人们最终得到一个空列表却不知道原因。
+- 只在人们以实体 ID 思考的地方显示实体 ID。
 
-<DoDont hass doText="Filter the list to what the field needs, and name what the entity is for." dontText="Offer every entity in the home for a field that only works with one kind.">
+<DoDont hass doText="按字段的需要过滤列表，并说明实体的用途。" dontText="不要为只适用于一种类型的字段提供家中的所有实体。">
   <ha-entity-picker slot="do" label="Light to control" include-domains='["light"]'></ha-entity-picker>
   <ha-entity-picker slot="dont" label="Entity"></ha-entity-picker>
 </DoDont>
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-| Key | Action |
+| 按键 | 操作 |
 | --- | --- |
-| <kbd>Tab</kbd> | Moves focus to the field, and to the clear button when there is one. A disabled field is skipped. |
-| <kbd>Enter</kbd> or <kbd>Space</kbd> | Opens the list, when the field has focus. |
-| Typing | Searches the list. Focus is in the search field when the list opens. |
-| <kbd>Arrow down</kbd> and <kbd>Arrow up</kbd> | Moves through the entities. |
-| <kbd>Home</kbd> and <kbd>End</kbd> | Jumps to the first or last entity. |
-| <kbd>Page up</kbd> and <kbd>Page down</kbd> | Moves a page through the list. |
-| <kbd>Enter</kbd> | Picks the highlighted entity. While searching, the top match is highlighted. With only one option in the list, <kbd>Enter</kbd> picks it. |
-| <kbd>Escape</kbd> | Closes the list. |
+| <kbd>Tab</kbd> | 将焦点移至字段，以及清除按钮（如果存在）。禁用的字段会被跳过。 |
+| <kbd>Enter</kbd> 或 <kbd>Space</kbd> | 当字段获得焦点时，打开列表。 |
+| 输入 | 搜索列表。列表打开时，焦点位于搜索字段中。 |
+| <kbd>Arrow down</kbd> 和 <kbd>Arrow up</kbd> | 在实体之间移动。 |
+| <kbd>Home</kbd> 和 <kbd>End</kbd> | 跳转到第一个或最后一个实体。 |
+| <kbd>Page up</kbd> 和 <kbd>Page down</kbd> | 在列表中按页移动。 |
+| <kbd>Enter</kbd> | 选择高亮显示的实体。搜索时，最顶部的匹配项会被高亮显示。当列表中只有一个选项时，<kbd>Enter</kbd> 会选择它。 |
+| <kbd>Escape</kbd> | 关闭列表。 |
 
-### Focus
+### 焦点
 
-Focus on the field shows as a thicker bottom line, not as a focus ring. While the list is open as a popover, focus stays inside it. In the list, focus stays in the search field while the arrow keys move the highlight.
+字段获得焦点时显示为更粗的底部线条，而不是焦点环。当列表作为弹出框打开时，焦点保持在其中。在列表中，当方向键移动高亮时，焦点保持在搜索字段中。
 
-### Target size
+### 目标尺寸
 
-The field is at least 56px high and fills the width it gets. The clear button is 32px by 32px.
+字段高度至少为 56px，并填满它获得的宽度。清除按钮为 32px × 32px。
 
-### Screen readers
+### 屏幕阅读器
 
-- The field is announced as a button, named by its label and the entity in it.
-- The list is announced as a dialog with a list of options, and the picked entity as selected.
-- The clear button is announced as "Clear", in the language of the user.
+- 字段会被播报为一个按钮，由其标签和其中的实体命名。
+- 列表会被播报为一个包含选项列表的对话框，被选中的实体会被标记为已选择。
+- 清除按钮会被播报为"Clear"，使用用户的语言。
 
-### In the code
+### 在代码中
 
-- Focus is delegated to a native `<button>` in the field. The popover traps focus. The highlighted row in the list is marked with an `active` attribute. The list does not set `aria-activedescendant`.
-- The label above the field is a `<label>` element that is not linked to the field. The field is a native `<button>` that gets the label as part of its accessible name through `aria-labelledby`, together with the text in the field.
-- The list opens in an element with the role `dialog` and `aria-modal="true"`, named after the label.
-- The list has the role `listbox`, and each entity the role `option`, with `aria-selected` for the picked entity.
-- The clear button has the accessible name "Clear", translated into the language of the user.
+- 焦点被委托给字段中的一个原生 `<button>`。弹出框会捕获焦点。列表中高亮显示的行会用 `active` 属性标记。列表不设置 `aria-activedescendant`。
+- 字段上方的标签是一个未与字段关联的 `<label>` 元素。字段是一个原生 `<button>`，它通过 `aria-labelledby` 将标签作为其可访问名称的一部分，连同字段中的文本一起。
+- 列表在一个角色为 `dialog` 且 `aria-modal="true"` 的元素中打开，以标签命名。
+- 列表的角色为 `listbox`，每个实体的角色为 `option`，被选中的实体带有 `aria-selected`。
+- 清除按钮的可访问名称为"Clear"，会翻译成用户的语言。
 
-## Related
+## 相关内容
 
-- [Device picker](/design/components/device-picker/): pick one device
-- [Area picker](/design/components/area-picker/): pick one area
-- [Selector](/design/components/selector/): the entity selector, for one or several entities
-- [Form](/design/components/form/): renders the picker from a schema
-- [State icon](/design/components/state-icon/): the icon in each row
+- [设备选择器](/design/components/device-picker/)：选择一个设备
+- [区域选择器](/design/components/area-picker/)：选择一个区域
+- [选择器](/design/components/selector/)：实体选择器（selector），用于一个或多个实体
+- [表单](/design/components/form/)：从 schema 渲染选择器
+- [状态图标](/design/components/state-icon/)：每一行中的图标
 
-## In code
+## 在代码中
 
-The element is `<ha-entity-picker>`. It reads the states, the registries, and the translations from the context the app provides, so you don't pass `hass` to it.
+该元素是 `<ha-entity-picker>`。它从应用提供的上下文中读取状态、注册表和翻译，因此你不需要向它传递 `hass`。
 
 ```ts
 html`
@@ -211,56 +211,56 @@ html`
 `;
 ```
 
-In HTML, the list attributes take JSON:
+在 HTML 中，列表属性接受 JSON：
 
 ```html
 <ha-entity-picker label="Light" include-domains='["light"]'></ha-entity-picker>
 ```
 
-### Attributes
+### 属性
 
-- `label`: the label above the field.
-- `value`: the entity ID of the selected entity.
-- `helper`: help text below the field.
-- `placeholder`: the text in the empty field. Defaults to **Select an entity**.
-- `search-label`: the placeholder of the search field in the list.
-- `include-domains`: only show entities of these domains.
-- `exclude-domains`: hide entities of these domains.
-- `include-device-classes`: only show entities with these device classes.
-- `include-unit-of-measurement`: only show entities with these units.
-- `include-entities`: only show these entities.
-- `exclude-entities`: hide these entities.
-- `show-entity-id`: show the entity ID of each entity in the list.
-- `allow-custom-entity`: accept a typed entity ID that is not in the list.
-- `add-button`: show a button instead of the field.
-- `add-button-label`: the label of that button. Defaults to **Add entity**.
-- `hide-clear-icon`: hide the button that clears the value.
-- `required`: marks the field as required.
-- `disabled`: disables the picker.
-- `autofocus`: focuses the picker when it renders.
+- `label`：字段上方的标签。
+- `value`：所选实体的实体 ID。
+- `helper`：字段下方的帮助文本。
+- `placeholder`：空字段中的文本。默认为**选择一个实体**。
+- `search-label`：列表中搜索字段的占位符。
+- `include-domains`：只显示这些域名的实体。
+- `exclude-domains`：隐藏这些域名的实体。
+- `include-device-classes`：只显示具有这些设备类别的实体。
+- `include-unit-of-measurement`：只显示具有这些计量单位的实体。
+- `include-entities`：只显示这些实体。
+- `exclude-entities`：隐藏这些实体。
+- `show-entity-id`：在列表中显示每个实体的实体 ID。
+- `allow-custom-entity`：接受一个不在列表中的、手动输入的实体 ID。
+- `add-button`：显示一个按钮而不是字段。
+- `add-button-label`：该按钮的标签。默认为**添加实体**。
+- `hide-clear-icon`：隐藏清除值的按钮。
+- `required`：将字段标记为必填。
+- `disabled`：禁用选择器。
+- `autofocus`：在渲染时聚焦选择器。
 
-### Properties
+### 特性
 
-These can only be set from code:
+这些只能通过代码设置：
 
-- `entityFilter`: a function that gets the state object of each entity, and returns `true` to show it. Use it for filters the attributes can't express, like on supported features.
-- `extraOptions`: extra rows above the entities. Each has an `id` (the value when picked, it does not need to be an entity ID), a `primary` text, and optionally a `secondary` text, an `icon`, an `icon_path`, or an `entity_id` to show the icon of. Set `hide_clear` to hide the clear button while that option is selected.
-- `createDomains`: helper domains people can create a new entity for, straight from the list. Picking one opens the dialog to create that helper, and selects the new entity when it is created. Creating helpers does not work in the demos on this page.
+- `entityFilter`：一个函数，接收每个实体的状态对象，并返回 `true` 以显示它。用于属性无法表达的过滤条件，比如受支持的功能。
+- `extraOptions`：实体上方的额外行。每行包含一个 `id`（被选中时的值，不必是实体 ID）、一个 `primary` 文本，以及可选的 `secondary` 文本、`icon`、`icon_path` 或用于显示其图标的 `entity_id`。设置 `hide_clear` 可在该选项被选中时隐藏清除按钮。
+- `createDomains`：人们可以直接从列表中为其创建新实体的辅助元素域名。选择其中一个会打开创建该辅助元素的对话框，并在创建完成后选中新实体。创建辅助元素在本页的演示中不可用。
 
-### Methods
+### 方法
 
-- `open()`: opens the list.
+- `open()`：打开列表。
 
-### Events
+### 事件
 
-- `value-changed`: fires when people pick or clear an entity. The new entity ID is in `event.detail.value`, or `undefined` when cleared.
-- `change`: fires after `value-changed`.
+- `value-changed`：当人们选择或清除一个实体时触发。新的实体 ID 位于 `event.detail.value` 中，清除时为 `undefined`。
+- `change`：在 `value-changed` 之后触发。
 
-### Styling
+### 样式
 
-- `--ha-generic-picker-width`: the width of the list. Defaults to the width of the field, and at least `250px`.
-- `--ha-generic-picker-max-width`: the maximum width of the list.
+- `--ha-generic-picker-width`：列表的宽度。默认为字段的宽度，且至少为 `250px`。
+- `--ha-generic-picker-max-width`：列表的最大宽度。
 
-On a narrow screen, the list opens as a bottom sheet instead of below the field.
+在窄屏上，列表会以底部抽屉的形式打开，而不是在字段下方。
 
 Source: [`src/components/entity/ha-entity-picker.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/entity/ha-entity-picker.ts)

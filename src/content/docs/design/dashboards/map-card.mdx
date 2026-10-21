@@ -1,6 +1,6 @@
 ---
-title: Map card
-description: The map card shows where people, devices, and zones are, on an interactive map, with an optional trail of where they have been.
+title: 地图卡片
+description: 地图卡片在交互式地图上显示人员、设备和地理位置区域（zone）的位置，并可选显示它们曾经到过的轨迹。
 sidebarGroup: Information
 ---
 
@@ -10,69 +10,69 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 420px" data-props='{"config": {"type": "map", "entities": ["person.alex", "person.sam", "zone.home", "zone.work"]}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The map card answers one question: where is everyone? It puts a marker on the map for every entity with a location, like a person, a device tracker, or a zone. Selecting a marker opens the more-info dialog of the entity. People can pan and zoom the map, and the buttons on the side reset the view and turn clustering on or off.
+地图卡片回答一个问题：大家都在哪里？它为每个具有位置的实体（entity）在地图上放置一个标记，例如人员、设备跟踪器或地理位置区域。选择一个标记会打开该实体的更多信息对话框。用户可以平移和缩放地图，侧边的按钮可以重置视图并开启或关闭聚合功能。
 
-Use it when the location itself matters. If people only want to know whether someone is home, a [tile card](/design/dashboards/tile-card/) or a [glance card](/design/dashboards/glance-card/) of the person entity says that in far less room. A map takes a lot of space for one piece of information, so give it a reason to be there.
+在位置本身很重要时使用它。如果人们只想知道某个人是否在家，那么该人员实体的[平铺卡片](/design/dashboards/tile-card/)或[概览卡片](/design/dashboards/glance-card/)用少得多的空间就能说明这一点。地图为一条信息占用大量空间，所以要给它一个存在的理由。
 
-The map follows the theme of Home Assistant by default. In a light theme the map is light, in a dark theme it is dark.
+地图默认跟随 Home Assistant 的主题。浅色主题下地图是浅色的，深色主题下地图是深色的。
 
-### Markers
+### 标记
 
-A person or a device tracker shows as a round marker with the initials of its name, or its picture when it has one. A zone shows as its icon. With `label_mode` on an entity, the marker shows the state, an attribute, or the icon instead of the name.
+人员或设备跟踪器显示为带有其名称首字母的圆形标记，如果它有图片则显示图片。地理位置区域显示为其图标。对实体使用 `label_mode` 时，标记会显示状态、属性或图标，而不是名称。
 
-Markers that are close together are combined into one bubble with a count, until you zoom in. Turn this off with `cluster: false` when you have only a few entities.
+靠得很近的标记会合并为一个带有数量的气泡，直到你放大为止。当实体较少时，可以使用 `cluster: false` 关闭此功能。
 
-### Path of previous locations
+### 历史位置路径
 
-With `hours_to_show`, the map draws a line through where each entity has been in that many hours. It is useful for something that moves, like a car or a lawn mower. Keep the number of hours low: a week of locations turns into a tangle that tells nobody anything.
+使用 `hours_to_show` 时，地图会为每个实体在该小时数内到过的地方绘制一条线。这对于会移动的东西很有用，比如汽车或割草机。请保持小时数较低：一周的位置会变成一团乱麻，谁也看不懂。
 
-### Theme mode
+### 主题模式
 
-With `theme_mode`, the map is always `light` or always `dark`, whatever the theme. The default, `auto`, follows the theme. A dark map can work well on a wall tablet at night, but forcing a mode means it no longer matches the rest of the dashboard.
+使用 `theme_mode` 时，无论主题如何，地图始终为 `light` 或始终为 `dark`。默认值 `auto` 跟随主题。深色地图在夜间的壁挂平板上效果很好，但强制指定模式意味着它不再与仪表盘（dashboard）的其余部分匹配。
 
 <Demo hass>
   <hui-card style="width: 420px" data-props='{"config": {"type": "map", "entities": ["person.alex", "person.sam"], "theme_mode": "dark"}}'></hui-card>
 </Demo>
 
-### Map style
+### 地图样式
 
-The map has a few built-in looks, picked with `map_style`: `default`, `colorful`, `natural`, `muted`, `gray`, and `toner`. Each has a light and a dark version, and the theme mode picks which one shows. The default style uses colors that fit the Home Assistant theme. In YAML, `map_style` can also be a mapping that starts from one of these styles and changes its colors.
+地图有几种内置外观，通过 `map_style` 选择：`default`、`colorful`、`natural`、`muted`、`gray` 和 `toner`。每种样式都有浅色和深色版本，主题模式决定显示哪一个。默认样式使用与 Home Assistant 主题相配的颜色。在 YAML 中，`map_style` 也可以是一个映射，从这些样式之一出发并修改其颜色。
 
-### Content
+### 内容
 
-- Add the entities that need to be on the map, and nothing more. Every extra marker makes the one people look for harder to find.
-- Add zones when they give the markers meaning, like the home and the office. A marker next to a zone reads at a glance.
-- Use `name` on an entity when its initials are ambiguous, like two people whose names start with the same letter.
+- 只添加需要显示在地图上的实体，不要更多。每个多余的标记都会让人们要找的那个更难找到。
+- 当地理位置区域能赋予标记意义时才添加它们，比如家和办公室。标记旁边有地理位置区域时，一眼就能读懂。
+- 当实体的首字母有歧义时，比如两个人的名字以同一个字母开头，请对该实体使用 `name`。
 
-## Configuration
+## 配置
 
-- `entities` (list): the entities to show. Each is an entity ID, or a mapping with `entity` and the options below. Required, unless you use `show_all` or `geo_location_sources`.
-- `geo_location_sources` (list): the geolocation sources to show all entities of, like earthquakes or wildfires from a feed. Use `all` for every source.
-- `show_all` (boolean): shows every entity with a location. Can't be combined with `entities` or `geo_location_sources`. Defaults to `false`.
-- `title` (string): the title above the map.
-- `aspect_ratio` (string): the height of the map compared to its width, like `16:9` or `50%`.
-- `default_zoom` (number): the zoom level when the map opens. Defaults to `14`.
-- `theme_mode` (string): `auto`, `light`, or `dark`. Defaults to `auto`.
-- `map_style` (string or mapping): the look of the map. Defaults to `default`.
-- `hours_to_show` (number): how many hours of previous locations to draw. Defaults to `0`, no path.
-- `auto_fit` (boolean): moves and zooms the map whenever an entity moves, so all of them stay in view. Defaults to `false`.
-- `fit_zones` (boolean): keeps the zones in view as well when the map fits the entities. Defaults to `false`.
-- `show_zone_radius` (boolean): always draws the circle that shows the size of a zone. Defaults to `false`.
-- `cluster` (boolean): combines markers that are close together. Defaults to `true`.
-- `scale_ruler` (boolean): shows a ruler with the scale of the map. Defaults to `false`.
-- `conditions` (list): shows the entities only when all conditions are met.
+- `entities`（列表）：要显示的实体。每项是一个实体 ID，或者是一个包含 `entity` 和以下选项的映射。必填，除非你使用 `show_all` 或 `geo_location_sources`。
+- `geo_location_sources`（列表）：要显示其所有实体的地理位置来源，例如来自数据源的地震或野火。使用 `all` 表示所有来源。
+- `show_all`（布尔值）：显示每个具有位置的实体。不能与 `entities` 或 `geo_location_sources` 同时使用。默认为 `false`。
+- `title`（字符串）：地图上方的标题。
+- `aspect_ratio`（字符串）：地图高度与宽度的比例，例如 `16:9` 或 `50%`。
+- `default_zoom`（数字）：地图打开时的缩放级别。默认为 `14`。
+- `theme_mode`（字符串）：`auto`、`light` 或 `dark`。默认为 `auto`。
+- `map_style`（字符串或映射）：地图的外观。默认为 `default`。
+- `hours_to_show`（数字）：绘制多少小时的历史位置。默认为 `0`，即不显示路径。
+- `auto_fit`（布尔值）：每当实体移动时移动并缩放地图，使所有实体保持在视野内。默认为 `false`。
+- `fit_zones`（布尔值）：当地图适配实体时，也让地理位置区域保持在视野内。默认为 `false`。
+- `show_zone_radius`（布尔值）：始终绘制显示地理位置区域大小的圆圈。默认为 `false`。
+- `cluster`（布尔值）：合并靠得近的标记。默认为 `true`。
+- `scale_ruler`（布尔值）：显示带有地图比例尺的标尺。默认为 `false`。
+- `conditions`（列表）：仅在满足所有条件时才显示这些实体。
 
-The options of an entity in `entities`:
+`entities` 中实体的选项：
 
-- `entity` (string, required): the entity to show.
-- `name` (string): the label on the marker.
-- `color` (string): the color of the marker and its path.
-- `label_mode` (string): what the marker shows: `name`, `state`, `attribute`, or `icon`. Defaults to `name`.
-- `attribute` (string): the attribute to show, with `label_mode: attribute`.
-- `unit` (string): the unit to show after the attribute.
-- `focus` (boolean): keeps this entity in view when the map fits. Defaults to `true`.
+- `entity`（字符串，必填）：要显示的实体。
+- `name`（字符串）：标记上的标签。
+- `color`（字符串）：标记及其路径的颜色。
+- `label_mode`（字符串）：标记显示的内容：`name`、`state`、`attribute` 或 `icon`。默认为 `name`。
+- `attribute`（字符串）：当 `label_mode: attribute` 时要显示的属性。
+- `unit`（字符串）：显示在属性之后的单位。
+- `focus`（布尔值）：当地图适配时，使该实体保持在视野内。默认为 `true`。
 
 ```yaml
 type: map
@@ -85,10 +85,10 @@ entities:
   - zone.work
 ```
 
-## In code
+## 代码实现
 
-The card lives in `src/panels/lovelace/cards/hui-map-card.ts`, and the element is `<hui-map-card>`. The map itself is `<ha-map>` in `src/components/map/`, which is also used by the more-info dialog of a person, and by the location editors in the settings. It draws a vector map with MapLibre, and falls back to Leaflet on devices that can't show a vector map. The styles live in `src/common/map/map-styles.ts`.
+该卡片位于 `src/panels/lovelace/cards/hui-map-card.ts`，元素为 `<hui-map-card>`。地图本身是 `src/components/map/` 中的 `<ha-map>`，它也被人员实体的更多信息对话框以及设置中的位置编辑器使用。它使用 MapLibre 绘制矢量地图，并在无法显示矢量地图的设备上回退到 Leaflet。样式位于 `src/common/map/map-styles.ts`。
 
-In the sections view, the map takes the full width and 4 rows. It can shrink to 6 columns and 2 rows.
+在分区视图中，地图占据全宽和 4 行。它可以缩小到 6 列和 2 行。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-map-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-map-card.ts)

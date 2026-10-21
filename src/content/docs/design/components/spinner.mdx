@@ -1,6 +1,6 @@
 ---
-title: Spinner
-description: A spinner shows that something is loading or in progress, when you don't know how long it will take.
+title: 加载指示器（Spinner）
+description: 加载指示器（Spinner）用于显示某项内容正在加载或进行中，适用于你不知道需要多长时间的情况。
 sidebarGroup: Feedback and status
 ---
 
@@ -11,38 +11,38 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   <ha-spinner></ha-spinner>
 </Demo>
 
-## Overview
+## 概述
 
-A spinner shows that something is loading or in progress, when you don't know how long it will take: loading data, connecting to a device, running an action. Show it where the result will appear, so people know what they are waiting for.
+加载指示器（Spinner）用于显示某项内容正在加载或进行中，适用于你不知道需要多长时间的情况：加载数据、连接设备、执行操作。请将它显示在结果将要出现的位置，这样人们就知道自己在等待什么。
 
-## When to use
+## 何时使用
 
-Use a spinner for:
+在以下情况使用加载指示器：
 
-- Waiting for something without a known duration
-- A whole page, panel, or card that is loading
+- 等待某个没有已知时长的事物
+- 整个页面、面板或卡片正在加载
 
-Don't use a spinner for:
+在以下情况不要使用加载指示器：
 
-- An action started from a button. Use the `loading` state of the [button](/design/components/button/), or a [progress button](/design/components/progress-button/). The feedback then stays on the thing people selected.
-- A level against a known maximum. Use a [bar](/design/components/bar/).
-- Loading that failed. Replace the spinner with an [alert](/design/components/alert/) that says what went wrong.
+- 由按钮触发的操作。请使用[按钮](/design/components/button/)的 `loading` 状态，或[进度按钮](/design/components/progress-button/)。这样反馈会保留在人们所选的对象上。
+- 相对于已知最大值的量级。请使用[进度条](/design/components/bar/)。
+- 加载失败。请将加载指示器替换为说明出错原因的[警告](/design/components/alert/)。
 
-## Anatomy
+## 结构
 
-1. **Track**: the full circle behind the indicator
-2. **Indicator**: the arc that grows, shrinks, and turns around the track
+1. **轨道（Track）**：指示器背后的完整圆环
+2. **指示器（Indicator）**：沿轨道增长、缩短并旋转的弧线
 
-## Variants
+## 变体
 
-### Size
+### 尺寸
 
-There are four sizes. Pick the size that fits the space it is waiting to fill:
+共有四种尺寸。请选择适合其等待填充的空间的尺寸：
 
-- **Tiny**: 16px
-- **Small**: 28px
-- **Medium**: 48px, the default
-- **Large**: 68px
+- **极小（Tiny）**：16px
+- **小（Small）**：28px
+- **中（Medium）**：48px，默认尺寸
+- **大（Large）**：68px
 
 <Demo>
   <ha-spinner size="tiny"></ha-spinner>
@@ -51,31 +51,31 @@ There are four sizes. Pick the size that fits the space it is waiting to fill:
   <ha-spinner size="large"></ha-spinner>
 </Demo>
 
-## Behavior
+## 行为
 
-The spinner has one state: it keeps turning until you remove it. It has no hover, focus, or pressed state. The whole spinner turns once every 3.5 seconds, while the arc grows and shrinks every 1.5 seconds. The styles have no separate rule for reduced motion, so the animation runs the same when someone asks for less motion.
+加载指示器只有一种状态：它会持续旋转，直到你将其移除。它没有悬停、聚焦或按下状态。整个加载指示器每 3.5 秒旋转一圈，而弧线每 1.5 秒增长和缩短一次。其样式没有针对减少动态效果的单独规则，因此当有人要求减少动态效果时，动画仍以相同方式运行。
 
-## Specs
+## 规格参数
 
-| Size | Diameter | Token |
+| 尺寸 | 直径 | Token |
 | --- | --- | --- |
-| Tiny | 16px | `--ha-spinner-size` |
-| Small | 28px | `--ha-spinner-size` |
-| Medium, the default | 48px | `--ha-spinner-size` |
-| Large | 68px | `--ha-spinner-size` |
+| 极小 | 16px | `--ha-spinner-size` |
+| 小 | 28px | `--ha-spinner-size` |
+| 中（默认） | 48px | `--ha-spinner-size` |
+| 大 | 68px | `--ha-spinner-size` |
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Track and indicator width | 4px | None |
-| Indicator color | Primary color | `--primary-color`, through `--ha-spinner-indicator-color` |
-| Track color | Divider color | `--divider-color`, through `--ha-spinner-divider-color` |
-| Indicator ends | Round | None |
-| Rotation | 3.5s per turn, linear | None |
-| Arc animation | 1.5s, ease-in-out | None |
+| 轨道和指示器宽度 | 4px | 无 |
+| 指示器颜色 | 主颜色 | `--primary-color`，通过 `--ha-spinner-indicator-color` |
+| 轨道颜色 | 分隔线颜色 | `--divider-color`，通过 `--ha-spinner-divider-color` |
+| 指示器端点 | 圆形 | 无 |
+| 旋转 | 每圈 3.5 秒，线性 | 无 |
+| 弧线动画 | 1.5 秒，ease-in-out | 无 |
 
-## Guidelines
+## 指南
 
-<DoDont doText="Show the loading state on the button that started it." dontText="Put a separate spinner next to the button.">
+<DoDont doText="在触发加载的按钮上显示加载状态。" dontText="在按钮旁边放置一个单独的加载指示器。">
   <ha-button slot="do" loading>Save</ha-button>
   <Fragment slot="dont">
     <ha-button>Save</ha-button>
@@ -83,46 +83,46 @@ The spinner has one state: it keeps turning until you remove it. It has no hover
   </Fragment>
 </DoDont>
 
-- Don't leave a spinner running forever. If loading fails, replace it with an alert.
+- 不要让加载指示器永远运行下去。如果加载失败，请将其替换为警告。
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-The spinner is not focusable, and has no keyboard interaction.
+加载指示器不可聚焦，也没有键盘交互。
 
-### Screen readers
+### 屏幕阅读器
 
-The spinner is announced as a progress bar named "Loading", without a value, because there is no known progress.
+加载指示器会被播报为一个名为“Loading”的进度条，不带值，因为没有已知的进度。
 
-### In the code
+### 在代码中
 
-The spinner has the role `progressbar`, with the accessible name "Loading" from the localization of Web Awesome, and no value.
+加载指示器具有 `progressbar` 角色，其可访问名称“Loading”来自 Web Awesome 的本地化，并且没有值。
 
-## Related
+## 相关内容
 
-- [Button](/design/components/button/): the `loading` state for actions
-- [Progress button](/design/components/progress-button/): a button that shows the result of its action
-- [Bar](/design/components/bar/): a level against a known maximum
-- [Alert](/design/components/alert/): when loading fails
+- [按钮](/design/components/button/)：用于操作的 `loading` 状态
+- [进度按钮](/design/components/progress-button/)：显示其操作结果的按钮
+- [进度条](/design/components/bar/)：相对于已知最大值的量级
+- [警告](/design/components/alert/)：加载失败时使用
 
-## In code
+## 代码实现
 
-The element is `<ha-spinner>`. It is based on the [Web Awesome spinner](https://webawesome.com/docs/components/spinner/).
+该元素为 `<ha-spinner>`。它基于 [Web Awesome spinner](https://webawesome.com/docs/components/spinner/)。
 
 ```html
 <ha-spinner></ha-spinner>
 <ha-spinner size="small"></ha-spinner>
 ```
 
-### Attributes
+### 属性
 
-- `size`: `tiny`, `small`, `medium`, or `large`. Without it, the spinner is 48 pixels, the same as `medium`.
+- `size`：`tiny`、`small`、`medium` 或 `large`。不设置时，加载指示器为 48 像素，与 `medium` 相同。
 
-### Styling
+### 样式
 
-- `--ha-spinner-size`: the size, for when none of the presets fit. The `size` attribute sets this for you.
-- `--ha-spinner-indicator-color`: the moving part. Defaults to `var(--primary-color)`.
-- `--ha-spinner-divider-color`: the track behind it. Defaults to `var(--divider-color)`.
+- `--ha-spinner-size`：尺寸，用于预设尺寸都不合适的情况。`size` 属性会自动为你设置此项。
+- `--ha-spinner-indicator-color`：移动的部分。默认为 `var(--primary-color)`。
+- `--ha-spinner-divider-color`：其背后的轨道。默认为 `var(--divider-color)`。
 
 Source: [`src/components/ha-spinner.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-spinner.ts)

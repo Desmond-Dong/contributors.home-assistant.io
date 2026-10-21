@@ -1,18 +1,18 @@
 ---
-title: Foundations
-description: Color, typography, spacing, motion, and accessibility. The design tokens and rules behind everything in Home Assistant.
+title: 基础
+description: 颜色、排版、间距、动效和无障碍。Home Assistant 中一切设计背后的设计令牌（design token）和规则。
 order: 10
 ---
 
-The foundations are the smallest decisions in the design: which colors exist, which sizes text can have, how much space goes between things, how fast things move. They are defined as [design tokens](/glossary/design-token/) in the [Home Assistant frontend](https://github.com/home-assistant/frontend/tree/dev/src/resources/theme), and every component is built from them.
+基础是设计中最细小的决策：存在哪些颜色、文本可以有哪些字号、事物之间留多少空间、事物移动多快。它们被定义为[设计令牌（design token）](/glossary/design-token/)，存放在 [Home Assistant 前端](https://github.com/home-assistant/frontend/tree/dev/src/resources/theme)中，每个组件都由它们构建而成。
 
-The color, typography, and spacing pages read the tokens directly. What you see there is what the frontend uses.
+颜色、排版和间距页面直接读取这些令牌。你在那里看到的就是前端所使用的内容。
 
-- [Color](/design/foundations/color/): the palettes, and the semantic colors built on them.
-- [Typography](/design/foundations/typography/): the type scale and font weights.
-- [Spacing](/design/foundations/spacing/): the spacing scale and corner radius.
-- [Accessibility](/design/foundations/accessibility/): contrast, focus, keyboard, labels, target size, and screen readers. What WCAG asks, and how the frontend does it.
-- [Motion](/design/foundations/motion/): the animation durations, and how reduced motion works.
+- [颜色](/design/foundations/color/)：调色板，以及建立在调色板之上的语义化颜色。
+- [排版](/design/foundations/typography/)：字号阶梯和字重。
+- [间距](/design/foundations/spacing/)：间距阶梯和圆角半径。
+- [无障碍](/design/foundations/accessibility/)：对比度、焦点、键盘、标签、目标尺寸和屏幕阅读器。WCAG 的要求，以及前端如何实现。
+- [动效](/design/foundations/motion/)：动画时长，以及减弱动效（reduced motion）的工作方式。
 
 > [!TIP]
-> Designing something new? Stay on the tokens. A custom color or spacing value is a sign that something is missing in the foundations, and that is worth a discussion in the **Design system** category of the [UX design discussions](https://github.com/OpenHomeFoundation/ux-design/discussions).
+> 在设计新东西？请坚持使用令牌。自定义的颜色或间距值意味着基础中缺少了某些东西，这值得在 [UX 设计讨论](https://github.com/OpenHomeFoundation/ux-design/discussions)的 **Design system** 分类中发起讨论。

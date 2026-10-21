@@ -1,6 +1,6 @@
 ---
-title: Select box
-description: Select boxes let people pick one option from a few, shown side by side as cards, with room for a description or an image.
+title: 选择框
+description: 选择框让人们从几个选项中挑选一个，选项以卡片形式并排显示，可容纳描述或图片。
 sidebarGroup: Input
 ---
 
@@ -11,134 +11,134 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   <ha-select-box data-props='{"options": [{"value": "single", "label": "Single", "description": "Do not start a new run. Issue a warning."}, {"value": "restart", "label": "Restart", "description": "Start a new run after first stopping the previous run."}, {"value": "queued", "label": "Queued", "description": "Start a new run after all previous runs complete."}], "value": "single"}' style="display: block; width: 100%"></ha-select-box>
 </Demo>
 
-## Overview
+## 概述
 
-A select box lets people pick one option from a small set, when the options need explaining. Each option is a card with a radio button, a label, and optionally a description and an image. All options are visible at once, so people can compare them before they choose.
+选择框（select box）让人们从少量选项中挑选一个，适用于需要对选项进行解释的场景。每个选项是一张卡片，包含一个单选按钮、一个标签，还可以有描述和图片。所有选项同时可见，人们可以在选择前进行比较。
 
-The frontend uses it for choices like these:
+前端在以下场景中使用它：
 
-- The unit system in the general settings: metric or US customary, with examples of the units that come with each.
-- The mode of an automation, where each mode has a description of what happens when the automation runs again while it is still running.
-- The way a voice assistant processes speech, during setup.
+- 通用设置中的单位制：公制或美制，并附带各自单位的示例。
+- 自动化（automation）的模式，每种模式都描述了当自动化仍在运行时再次触发会发生什么。
+- 语音助手处理语音的方式，在设置过程中使用。
 
-## When to use
+## 何时使用
 
-Use a select box for:
+在以下情况使用选择框：
 
-- Picking one option from a small set, where the options need a description or an image
+- 从少量选项中挑选一个，且选项需要描述或图片
 
-Don't use a select box for:
+在以下情况不要使用选择框：
 
-- Options that are self-explanatory. A select box takes more room than it needs. Use a regular select or a radio list instead.
-- Long lists. Use a select.
-- A setting that is simply on or off. Use a [switch](/design/components/switch/).
-- Picking several options. Use checkboxes.
+- 选项本身一目了然。选择框占用的空间超出所需。请改用普通下拉选择或单选列表。
+- 长列表。请使用下拉选择。
+- 仅仅是开或关的设置。请使用[开关](/design/components/switch/)。
+- 选择多个选项。请使用复选框。
 
-## Anatomy
+## 结构
 
-1. **Card**: the bordered container of an option. The whole card can be selected.
-2. **Radio button**: shows which option is selected
-3. **Label**: the name of the option
-4. **Description**: optional, a short explanation below the label
-5. **Image**: optional, below the text, or next to it in a single column
+1. **卡片**：选项的带边框容器。整张卡片都可以被选中。
+2. **单选按钮**：显示哪个选项被选中
+3. **标签**：选项的名称
+4. **描述**：可选，标签下方的简短说明
+5. **图片**：可选，位于文字下方，或在单列布局中位于文字旁边
 
-## Variants
+## 变体
 
-### Columns
+### 多列
 
-By default, the options sit next to each other, up to three per row. With more options, they wrap to the next row. Set the maximum number of columns to fit the content: fewer columns give longer descriptions more room.
+默认情况下，选项并排显示，每行最多三个。选项更多时会换到下一行。可设置最大列数以适应内容：列数越少，较长的描述就有越多的空间。
 
-### Single column
+### 单列
 
-With a single column, each option becomes a row, with the image next to the text. When the image needs the full width, like a wide preview, stack it below the text instead.
+单列布局时，每个选项成为一行，图片位于文字旁边。当图片需要占满整个宽度时（例如宽幅预览图），可改为将图片堆叠在文字下方。
 
 <Demo layout="stack">
   <ha-select-box max_columns="1" data-props='{"options": [{"value": "single", "label": "Single", "description": "Do not start a new run. Issue a warning."}, {"value": "restart", "label": "Restart", "description": "Start a new run after first stopping the previous run."}], "value": "restart"}' style="display: block; width: 100%"></ha-select-box>
 </Demo>
 
-## Behavior
+## 行为
 
-- **Hover**: the card gets a light tint of the divider color.
-- **Selected**: the radio button is checked, and the card gets a 20% tint of the primary color.
-- **Disabled**: a disabled option shows its content and image at 50% opacity, and can't be picked. You can also disable the whole select box.
-- Selecting an option does not change the value on its own. The page sets the new value from the event.
-- Long labels are cut off with an ellipsis. Descriptions wrap.
-- In the dark theme, an option can use its own image. In a right to left language, an image can be mirrored.
+- **悬停**：卡片呈现分隔线颜色的浅色调。
+- **已选中**：单选按钮被勾选，卡片呈现主色调 20% 的色调。
+- **禁用**：禁用的选项以 50% 不透明度显示其内容和图片，且无法被选中。你也可以禁用整个选择框。
+- 选择某个选项本身不会改变值。页面通过事件来设置新值。
+- 过长的标签会以省略号截断。描述会换行。
+- 在深色主题中，选项可以使用自己的图片。在从右到左的语言中，图片可以镜像显示。
 
-## Specs
+## 规格参数
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Gap between options | 12px | `--ha-space-3` |
-| Card padding | 12px | None |
-| Card border | 1px | `--divider-color` |
-| Card corner radius | 12px | `--ha-border-radius-lg`, through `--ha-card-border-radius` |
-| Gap between radio button and text, and between content and image | 8px | `--ha-space-2` |
-| Gap between label and description | 4px | `--ha-space-1` |
-| Label | 14px, weight 400, `--primary-text-color` | `--ha-font-size-m`, `--ha-font-weight-normal` |
-| Description | 12px, weight 400, `--secondary-text-color` | `--ha-font-size-s`, `--ha-font-weight-normal` |
-| Line height | 1.2 | `--ha-line-height-condensed` |
-| Image size | At most 96px by 96px. Stacked: full width, at most 96px high. | `--ha-select-box-image-size` |
-| Maximum columns | 3 | `max_columns` |
+| 选项之间的间距 | 12px | `--ha-space-3` |
+| 卡片内边距 | 12px | 无 |
+| 卡片边框 | 1px | `--divider-color` |
+| 卡片圆角 | 12px | `--ha-border-radius-lg`，通过 `--ha-card-border-radius` |
+| 单选按钮与文字之间、内容与图片之间的间距 | 8px | `--ha-space-2` |
+| 标签与描述之间的间距 | 4px | `--ha-space-1` |
+| 标签 | 14px，字重 400，`--primary-text-color` | `--ha-font-size-m`，`--ha-font-weight-normal` |
+| 描述 | 12px，字重 400，`--secondary-text-color` | `--ha-font-size-s`，`--ha-font-weight-normal` |
+| 行高 | 1.2 | `--ha-line-height-condensed` |
+| 图片尺寸 | 最大 96px × 96px。堆叠时：全宽，最高 96px。 | `--ha-select-box-image-size` |
+| 最大列数 | 3 | `max_columns` |
 
-| State | Card tint |
+| 状态 | 卡片色调 |
 | --- | --- |
-| Resting | None |
-| Hover | `--divider-color` at 20% opacity |
-| Selected | `--primary-color` at 20% opacity |
-| Disabled | `--disabled-color` at 5% opacity, content at 50% opacity |
+| 静止 | 无 |
+| 悬停 | `--divider-color`，20% 不透明度 |
+| 已选中 | `--primary-color`，20% 不透明度 |
+| 禁用 | `--disabled-color`，5% 不透明度，内容 50% 不透明度 |
 
-The tint changes in 180ms, ease-in-out.
+色调变化耗时 180ms，缓动方式为 ease-in-out。
 
-## Guidelines
+## 指南
 
-- Keep the label short: a word or two that names the option, like **Single** or **Restart**.
-- Use the description to explain what the choice means, in a sentence or two.
-- Use an image when a picture explains the option faster than words, like the layout of a card. Images are decorative: the label must still make sense on its own.
+- 标签保持简短：用一两个词命名选项，例如 **Single** 或 **Restart**。
+- 用描述来解释这个选择意味着什么，用一两句话即可。
+- 当图片比文字更快解释选项时使用图片，例如卡片的布局。图片是装饰性的：标签本身仍必须能表达清楚含义。
 
-<DoDont doText="Name the option in a word or two, and explain it in the description." dontText="Put the whole explanation in the label.">
+<DoDont doText="用一两个词命名选项，并在描述中加以解释。" dontText="把整个解释都放在标签里。">
   <ha-select-box slot="do" max_columns="1" data-props='{"options": [{"value": "single", "label": "Single", "description": "Do not start a new run. Issue a warning."}], "value": "single"}' style="display: block; width: 100%"></ha-select-box>
   <ha-select-box slot="dont" max_columns="1" data-props='{"options": [{"value": "single", "label": "Do not start a new run and issue a warning"}], "value": "single"}' style="display: block; width: 100%"></ha-select-box>
 </DoDont>
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-| Key | Action |
+| 按键 | 操作 |
 | --- | --- |
-| <kbd>Tab</kbd> | Moves focus into the group, to the selected option, and out of it again. |
-| Arrow keys | Move to the next or previous option and select it. Disabled options are skipped. |
-| <kbd>Space</kbd> | Selects the focused option. |
+| <kbd>Tab</kbd> | 将焦点移入选项组，定位到已选中的选项，再移出选项组。 |
+| 方向键 | 移动到下一个或上一个选项并选中它。会跳过禁用的选项。 |
+| <kbd>Space</kbd> | 选中当前获得焦点的选项。 |
 
-### Focus
+### 焦点
 
-Focus moves to the selected option in the group. The arrow keys move focus and the selection together.
+焦点会移动到选项组中已选中的选项。方向键会同时移动焦点和选中项。
 
-### Target size
+### 目标尺寸
 
-The whole card is the target, not only the radio button.
+整张卡片都是点击目标，而不仅仅是单选按钮。
 
-### Screen readers
+### 屏幕阅读器
 
-The options are announced as a group of radio buttons, each with its label and description, and whether it is selected or disabled. The group itself has no name, so put a heading or label above it that names the choice. Images are skipped.
+选项会作为一组单选按钮播报，每个选项包含其标签和描述，以及是否被选中或禁用。选项组本身没有名称，因此请在其上方放置一个标题或标签来命名这个选择。图片会被跳过。
 
-### In the code
+### 代码层面
 
-- The options are in a group with the role `radiogroup`. Each radio button has the role `radio`, with `aria-checked` and `aria-disabled`.
-- Each radio button is named by its label, and described by its description, through `aria-labelledby` and `aria-describedby`.
-- The select box has no label of its own, so the group has no accessible name.
-- Images have an empty `alt`.
+- 选项位于一个 role 为 `radiogroup` 的组中。每个单选按钮的 role 为 `radio`，并带有 `aria-checked` 和 `aria-disabled`。
+- 每个单选按钮通过其标签命名，并通过其描述进行说明，分别通过 `aria-labelledby` 和 `aria-describedby` 实现。
+- 选择框自身没有标签，因此该组没有可访问名称。
+- 图片的 `alt` 为空。
 
-## Related
+## 相关内容
 
-- [Switch](/design/components/switch/): a setting that is on or off
-- [Select menu](/design/components/select-menu/): picking an option for a device
-- [Selector](/design/components/selector/): where select boxes show up in forms
+- [开关](/design/components/switch/)：开或关的设置
+- [选择菜单](/design/components/select-menu/)：为设备选择一个选项
+- [选择器](/design/components/selector/)：选择框在表单中出现的位置
 
-## In code
+## 代码实现
 
-The element is `<ha-select-box>`. The options and the selected value can only be set from code, as properties:
+该元素是 `<ha-select-box>`。选项和选中的值只能通过代码以属性（property）的形式设置：
 
 ```ts
 html`
@@ -161,34 +161,34 @@ html`
 `;
 ```
 
-The select box has no label of its own. Put a heading or label above it that names the choice.
+选择框自身没有标签。请在其上方放置一个标题或标签来命名这个选择。
 
-### Properties
+### 属性（Properties）
 
-These can only be set from code:
+这些只能通过代码设置：
 
-- `options`: the list of options. Each option has:
-  - `value`: the value of the option. Required.
-  - `label`: the label.
-  - `description`: a short description, below the label.
-  - `image`: the URL of an image, or an object with `src`, `src_dark` (used in the dark theme), and `flip_rtl` (mirrors the image for right-to-left languages).
-  - `disabled`: disables this option.
-- `value`: the value of the selected option.
+- `options`：选项列表。每个选项包含：
+  - `value`：选项的值。必填。
+  - `label`：标签。
+  - `description`：简短描述，位于标签下方。
+  - `image`：图片的 URL，或一个包含 `src`、`src_dark`（在深色主题中使用）和 `flip_rtl`（在从右到左的语言中镜像图片）的对象。
+  - `disabled`：禁用此选项。
+- `value`：选中选项的值。
 
-### Attributes
+### 特性（Attributes）
 
-- `disabled`: disables all options.
-- `max_columns`: the maximum number of options per row. Defaults to `3`. With `1`, each option is a row, with the image next to the text.
-- `stacked_image`: with `max_columns="1"`, shows the image below the text at full width, instead of next to it.
+- `disabled`：禁用所有选项。
+- `max_columns`：每行选项的最大数量。默认为 `3`。设为 `1` 时，每个选项占一行，图片位于文字旁边。
+- `stacked_image`：当 `max_columns="1"` 时，将图片以全宽显示在文字下方，而不是旁边。
 
-Note the underscores: these two attributes are `max_columns` and `stacked_image`, not `max-columns` and `stacked-image`.
+注意下划线：这两个特性是 `max_columns` 和 `stacked_image`，而不是 `max-columns` 和 `stacked-image`。
 
-### Events
+### 事件
 
-- `value-changed`: fires when people pick an option. The new value is in `event.detail.value`. The select box does not update its own `value`: set it again from the event.
+- `value-changed`：当用户选择某个选项时触发。新值位于 `event.detail.value` 中。选择框不会更新自身的 `value`：需要从事件中重新设置。
 
-### Styling
+### 样式
 
-- `--ha-select-box-image-size`: the maximum width and height of the images. Defaults to `96px`.
+- `--ha-select-box-image-size`：图片的最大宽度和高度。默认为 `96px`。
 
 Source: [`src/components/ha-select-box.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-select-box.ts)

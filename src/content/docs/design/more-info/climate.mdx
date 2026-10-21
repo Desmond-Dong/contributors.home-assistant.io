@@ -1,6 +1,6 @@
 ---
-title: Climate
-description: The more-info view of a thermostat or air conditioner, built around a round temperature dial.
+title: 温控
+description: 恒温器或空调的更多信息视图，围绕圆形温度转盘构建。
 sidebarGroup: Lights and climate
 ---
 
@@ -11,43 +11,43 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="climate.bedroom_air_conditioner"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 显示内容
 
-The main control of a climate entity is the target temperature, on a round dial: the [control circular slider](/design/components/controls/). A dial reads like the thermostat on a wall, and it fits a range with a current value and a target in one shape. A small dot on the ring marks the current temperature.
+温控（climate）实体的主要控制是目标温度，显示在一个圆形转盘上：即[圆形滑块控件](/design/components/controls/)。转盘的读法就像墙上的恒温器一样，它用一个形状同时呈现范围、当前值和目标值。圆环上的一个小圆点标记当前温度。
 
-Inside the dial you find, from top to bottom:
+转盘内部从上到下依次是：
 
-- What the device is doing right now, like heating or cooling, colored to match. When it reports no action, the label shows the mode instead.
-- The target temperature, in big numbers.
-- A minus and a plus button, to change the target one step at a time.
+- 设备当前正在执行的操作，例如制热或制冷，并带有相应的颜色。当设备未报告任何操作时，标签会显示模式。
+- 目标温度，以大号数字显示。
+- 一个减号按钮和一个加号按钮，用于每次一步地调整目标温度。
 
-Above the dial, the current temperature and, when the device reports it, the current humidity are shown as small labels. This view has no large state at the top: the dial already says it all.
+转盘上方，以小标签的形式显示当前温度，以及设备报告时的当前湿度。此视图顶部没有大号状态显示：转盘已经说明了一切。
 
-Below the dial, a row of menus holds the secondary settings. **Mode** is always there, with the HVAC modes of the device, like **Off**, **Heat**, and **Cool**, each with its own icon. The others only show when the device supports them:
+转盘下方，一排菜单承载着次要设置。**模式**始终存在，显示设备的 HVAC 模式，例如**关闭**、**制热**和**制冷**，每种模式都有自己的图标。其他菜单仅在设备支持时才显示：
 
-- The preset, like eco or away.
-- The fan mode.
-- The swing mode, and the horizontal swing mode.
+- 预设，例如节能或离家。
+- 风扇模式。
+- 摆风模式，以及水平摆风模式。
 
-The thermostat is heating, so the ring is orange and the target is set. The air conditioner supports a fan mode and a swing mode, so it gets two extra menus. It is off, so the dial is gray and inactive.
+恒温器正在制热，所以圆环是橙色的，并且已设置目标温度。空调支持风扇模式和摆风模式，所以它多了两个菜单。它处于关闭状态，所以转盘是灰色的且不可操作。
 
-## Variants
+## 变体
 
-- **Target temperature range**: a device that keeps the temperature between a low and a high value gets a dial with two handles. Both values show in the center, and you select one to adjust it with the buttons. The low handle takes the heating color, the high one the cooling color.
-- **Target humidity**: a device that can also hold a humidity level gets two round buttons below the dial, for temperature and humidity. They swap the main control between the two dials.
-- **No target**: a device that only reports the temperature gets a read-only ring, with the current temperature and no buttons.
+- **目标温度范围**：将温度保持在低值和高值之间的设备会得到一个带有两个手柄的转盘。两个值都显示在中心，你可以选择其中一个，然后用按钮进行调整。低值手柄使用制热颜色，高值手柄使用制冷颜色。
+- **目标湿度**：还能保持湿度水平的设备会在转盘下方得到两个圆形按钮，分别对应温度和湿度。它们可以在两个转盘之间切换主控制。
+- **无目标**：仅报告温度的设备会得到一个只读的圆环，显示当前温度且没有按钮。
 
-## Design notes
+## 设计说明
 
-- The colors come from the state: heat is orange, cool is blue, and the ring goes gray when the device is off. The current action, like heating, tints the dial.
-- The ring fills to match the mode. In heat it fills from the start up to the target, in cool it fills from the target to the end, so you see which side of the target the device works on. A device that only heats or only cools keeps that fill in **Off** and **Auto** too.
-- The number of decimals follows the step of the device. A device with half-degree steps shows **21.0**, never **21**.
-- The **Mode** options are sorted in a fixed order, not the order the device reports them in, so every thermostat lists its modes the same way.
-- The dial sends the new target when you let go, not while you drag. The minus and plus buttons wait a second after the last tap, so tapping plus three times sends one change, not three.
-- With a range, the low target can never pass the high one, and the other way around.
+- 颜色来自状态：制热是橙色，制冷是蓝色，设备关闭时圆环变为灰色。当前操作（例如制热中）会给转盘着色。
+- 圆环的填充与模式相匹配。制热时从起点填充到目标值，制冷时从目标值填充到终点，这样你就能看到设备在目标值的哪一侧工作。仅制热或仅制冷的设备在**关闭**和**自动**模式下也保持这种填充。
+- 小数位数遵循设备的步长。步长为半度的设备显示 **21.0**，而绝不会是 **21**。
+- **模式**选项按固定顺序排序，而不是设备报告的顺序，这样每个恒温器都以相同的方式列出其模式。
+- 转盘在你松手时发送新目标，而不是在拖动过程中。减号和加号按钮会在最后一次点击后等待一秒，因此连点三次加号只会发送一次更改，而不是三次。
+- 使用范围时，低目标永远不会超过高目标，反之亦然。
 
-## In code
+## 代码实现
 
-The view is `more-info-climate` in `src/dialogs/more-info/controls/more-info-climate.ts`. The dials are `ha-state-control-climate-temperature` and `ha-state-control-climate-humidity` in `src/state-control/climate/`. The menus are [select menus](/design/components/select-menu/) in an `ha-more-info-control-select-container`. The features are in `src/data/feature/climate_entity_feature.ts`.
+该视图位于 `src/dialogs/more-info/controls/more-info-climate.ts` 中的 `more-info-climate`。转盘是 `src/state-control/climate/` 中的 `ha-state-control-climate-temperature` 和 `ha-state-control-climate-humidity`。菜单是 `ha-more-info-control-select-container` 中的[选择菜单](/design/components/select-menu/)。功能位于 `src/data/feature/climate_entity_feature.ts`。
 
-Source: [`more-info-climate.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-climate.ts)
+源码：[`more-info-climate.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-climate.ts)

@@ -1,6 +1,6 @@
 ---
-title: Gauge
-description: A gauge shows a single value on a half circle dial, with an optional color for how good or bad that value is.
+title: 仪表盘（Gauge）
+description: 仪表盘在半圆形刻度盘上显示单个数值，并可通过可选的颜色表示该数值的好坏程度。
 sidebarGroup: Showing values
 ---
 
@@ -12,35 +12,35 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   <ha-gauge value="78" label="%" style="width: 200px; --gauge-color: var(--warning-color)"></ha-gauge>
 </Demo>
 
-## Overview
+## 概述
 
-A gauge is the dial of the gauge card, and of the energy gauge cards like self-sufficiency. It shows one value on a half circle, with the number printed in the middle. The dial adds context: where the value sits in its range, and how good or bad that is.
+仪表盘（gauge）是仪表盘卡片（gauge card）以及能源类仪表盘卡片（如自给自足率卡片）中的刻度盘。它在半圆形上显示一个数值，数字印在中间。刻度盘提供了上下文：数值在其范围内的位置，以及这个位置代表的好坏程度。
 
-## When to use
+## 何时使用
 
-Use a gauge for:
+在以下情况使用仪表盘：
 
-- One value that lives within a known range, where the position in that range matters, like a temperature, a battery level, or a percentage
-- A value with a severity, like good, warning, or bad
+- 单个数值位于一个已知范围内，且该数值在范围内的位置很重要，例如温度、电池电量或百分比
+- 具有严重程度的数值，例如良好、警告或异常
 
-Don't use a gauge for:
+不要在以下情况使用仪表盘：
 
-- A level inside a settings row or a list. Use a [bar](/design/components/bar/), it takes far less room.
-- A value without a meaningful minimum and maximum. The dial has nothing to show then.
+- 设置行或列表中的电平显示。请使用[条形图（bar）](/design/components/bar/)，它占用的空间要少得多。
+- 没有有意义的最小值和最大值的数值。此时刻度盘没有任何可展示的内容。
 
-## Anatomy
+## 结构
 
-1. **Track**: the empty half circle, the full range from `min` to `max`
-2. **Value arc**: the filled part of the track, up to the value
-3. **Levels**: optional colored segments of the track
-4. **Needle**: in needle mode, replaces the value arc and points at the value
-5. **Value text**: the formatted value and unit, or the label of the current level, in the middle
+1. **轨道（Track）**：空白的半圆形，即从 `min` 到 `max` 的完整范围
+2. **数值弧（Value arc）**：轨道中被填充的部分，填充至数值处
+3. **分段（Levels）**：轨道上可选的彩色分段
+4. **指针（Needle）**：在指针模式下，取代数值弧并指向数值
+5. **数值文本（Value text）**：位于中间的格式化数值和单位，或当前分段的标签
 
-## Variants
+## 变体
 
-### Filled arc with a severity color
+### 带严重程度颜色的填充弧
 
-The default. The arc fills up to the value. The dial color can carry meaning: the success, warning, or error color, based on where the value is. Without a color set, the filled part of the dial has no color. Use the info color when the value has no good or bad.
+这是默认样式。弧线填充至数值处。刻度盘的颜色可以承载含义：根据数值所在的位置，使用成功（success）、警告（warning）或错误（error）颜色。如果未设置颜色，刻度盘的填充部分则没有颜色。当数值没有好坏之分时，请使用信息（info）颜色。
 
 <Demo>
   <ha-gauge value="30" style="width: 160px; --gauge-color: var(--info-color)"></ha-gauge>
@@ -49,85 +49,85 @@ The default. The arc fills up to the value. The dial color can carry meaning: th
   <ha-gauge value="90" style="width: 160px; --gauge-color: var(--error-color)"></ha-gauge>
 </Demo>
 
-### Needle with levels
+### 带分段的指针
 
-In the needle version, the dial shows a needle instead of a filled arc, and can be colored in segments, called levels. Each level starts at its own value and runs up to the next one. This shows the whole scale at once, so people see both the value and how close it is to the next segment.
+在指针版本中，刻度盘显示指针而不是填充弧，并且可以按分段着色，这些分段称为 levels。每个分段从其自身的数值开始，延伸到下一个分段的起始值。这样可以一次性显示整个刻度，让人们既能看到数值，也能看到它距离下一个分段有多近。
 
 <Demo>
   <ha-gauge value="62" needle levels='[{"level":0,"stroke":"var(--success-color)"},{"level":50,"stroke":"var(--warning-color)"},{"level":80,"stroke":"var(--error-color)"}]' label="%" style="width: 200px"></ha-gauge>
 </Demo>
 
-A level can have a label. When the value falls in that segment, the label replaces the number in the middle of the gauge. Use it when a word says more than the number, like **Low** or **High**.
+分段可以带有标签。当数值落在该分段内时，标签会取代仪表盘中间的数字。当一个词语比数字更能说明问题时可以使用它，例如**低**或**高**。
 
-If the first level does not start at the minimum, the gauge adds a segment in the info color from the minimum up to the first level.
+如果第一个分段的起始值不是最小值，仪表盘会以信息（info）颜色添加一个从最小值到第一个分段的分段。
 
-## Behavior
+## 行为
 
-- The gauge is not interactive. It has no hover, focus, pressed, or disabled state.
-- When the value changes, the arc or needle moves to the new position in 1 second, with an ease curve.
-- A value below the minimum or above the maximum is shown at the start or end of the dial. The text still shows the real value.
-- The value text scales to fit the space inside the dial: at most 55% of the width and 40% of the height of the gauge.
-- A percent sign gets the spacing that fits the language of the user. Any other unit is shown after a space.
-- The value text is always laid out left to right, also in a right to left language.
+- 仪表盘不可交互。它没有悬停、聚焦、按下或禁用状态。
+- 当数值变化时，弧线或指针会在 1 秒内以缓动曲线移动到新位置。
+- 低于最小值或高于最大值的数值会显示在刻度盘的起点或终点。文本仍显示真实数值。
+- 数值文本会缩放以适应刻度盘内部的空间：最大不超过仪表盘宽度的 55% 和高度的 40%。
+- 百分号会根据用户的语言采用合适的间距。其他任何单位都会显示在空格之后。
+- 数值文本始终从左到右排版，即使在从右到左的语言中也是如此。
 
-## Specs
+## 规格
 
-The gauge is an SVG that scales with its width. The sizes below are in SVG units, on a drawing that is 100 units wide and 55 units high.
+仪表盘是一个随其宽度缩放的 SVG。以下尺寸以 SVG 单位表示，绘图区域宽 100 单位、高 55 单位。
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Width | Follows the width you give the element, height follows | None |
-| Arc radius | 40 units | None |
-| Arc and level thickness | 12 units | None |
-| Arc ends | Square | None |
-| Value text size before scaling | 16px | `--ha-font-size-l` |
-| Value text area | At most 55% of the width and 40% of the height, 10% from the bottom | None |
-| Animation | 1s, ease | None |
+| 宽度 | 跟随你为元素设置的宽度，高度随之变化 | 无 |
+| 弧线半径 | 40 单位 | 无 |
+| 弧线和分段厚度 | 12 单位 | 无 |
+| 弧线端点 | 方形 | 无 |
+| 缩放前的数值文本大小 | 16px | `--ha-font-size-l` |
+| 数值文本区域 | 最大为宽度的 55% 和高度的 40%，距底部 10% | 无 |
+| 动画 | 1 秒，缓动 | 无 |
 
-| Part | Color |
+| 部分 | 颜色 |
 | --- | --- |
-| Track | `--primary-background-color` |
-| Value arc | `--gauge-color` |
-| Added first level | `--info-color` |
-| Needle | `--primary-text-color`, with a 1 unit outline in `--card-background-color` |
-| Value text | `--primary-text-color` |
+| 轨道 | `--primary-background-color` |
+| 数值弧 | `--gauge-color` |
+| 补充的第一个分段 | `--info-color` |
+| 指针 | `--primary-text-color`，带有 1 单位的 `--card-background-color` 轮廓 |
+| 数值文本 | `--primary-text-color` |
 
-## Guidelines
+## 指南
 
-<DoDont doText="Color the dial by severity, so the color means something." dontText="Leave out the gauge color. The filled part of the dial has no color then.">
+<DoDont doText="根据严重程度为刻度盘着色，让颜色具有含义。" dontText="省略仪表盘颜色。这样刻度盘的填充部分就没有颜色了。">
   <ha-gauge slot="do" value="78" label="%" style="width: 160px; --gauge-color: var(--warning-color)"></ha-gauge>
   <ha-gauge slot="dont" value="78" label="%" style="width: 160px"></ha-gauge>
 </DoDont>
 
-<DoDont doText="Put the unit in the label." dontText="Show a number without a unit, when the value has one.">
+<DoDont doText="将单位放在 label 中。" dontText="当数值带有单位时，只显示没有单位的数字。">
   <ha-gauge slot="do" value="21" min="0" max="40" label="°C" style="width: 160px; --gauge-color: var(--info-color)"></ha-gauge>
   <ha-gauge slot="dont" value="21" min="0" max="40" style="width: 160px; --gauge-color: var(--info-color)"></ha-gauge>
 </DoDont>
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-The gauge is not focusable and has no keyboard interaction.
+仪表盘不可聚焦，也没有键盘交互。
 
-### Screen readers
+### 屏幕阅读器
 
-A screen reader can read the value and unit as text. The dial itself, and the severity it shows, has no text alternative: severity is shown through color only. The value text is the part that does not depend on color.
+屏幕阅读器可以将数值和单位作为文本朗读。刻度盘本身及其所表示的严重程度没有文本替代：严重程度仅通过颜色显示。数值文本是不依赖颜色的部分。
 
-### In the code
+### 在代码中
 
-The gauge has no role and no ARIA attributes. The value and unit are SVG text.
+仪表盘没有 role，也没有 ARIA 属性。数值和单位是 SVG 文本。
 
-## Related
+## 相关内容
 
-- [Bar](/design/components/bar/): a compact level for rows and lists
-- [Controls](/design/components/controls/): when the value can be changed
-- [Gauge card](/design/dashboards/gauge-card/): the card built on this dial
-- [Color](/design/foundations/color/): the severity colors
+- [条形图（Bar）](/design/components/bar/)：适用于行和列表的紧凑电平显示
+- [控件（Controls）](/design/components/controls/)：当数值可以被更改时
+- [仪表盘卡片（Gauge card）](/design/dashboards/gauge-card/)：基于此刻度盘构建的卡片
+- [颜色（Color）](/design/foundations/color/)：严重程度颜色
 
-## In code
+## 代码实现
 
-The element is `<ha-gauge>`. Give it a width; the height follows.
+该元素是 `<ha-gauge>`。请为其设置宽度；高度会随之变化。
 
 ```html
 <ha-gauge
@@ -139,27 +139,27 @@ The element is `<ha-gauge>`. Give it a width; the height follows.
 ></ha-gauge>
 ```
 
-The value is formatted with the `locale` of the user, so set the `locale` property from `hass.locale`.
+数值会使用用户的 `locale` 进行格式化，因此请从 `hass.locale` 设置 `locale` 属性。
 
-### Attributes
+### 属性
 
-- `value`: the current value. Defaults to `0`.
-- `min`: the start of the scale. Defaults to `0`.
-- `max`: the end of the scale. Defaults to `100`.
-- `label`: the unit, shown after the value.
-- `needle`: shows a needle instead of a filled arc.
-- `levels`: a JSON array of segments, each with a `level`, a `stroke` color, and an optional `label`. If the first level does not start at `min`, the gauge adds an info colored segment from `min`.
+- `value`：当前数值。默认为 `0`。
+- `min`：刻度的起点。默认为 `0`。
+- `max`：刻度的终点。默认为 `100`。
+- `label`：单位，显示在数值之后。
+- `needle`：显示指针而不是填充弧。
+- `levels`：一个 JSON 数组，表示各个分段，每个分段包含一个 `level`、一个 `stroke` 颜色以及一个可选的 `label`。如果第一个分段的起始值不是 `min`，仪表盘会添加一个从 `min` 开始的信息颜色分段。
 
-These can only be set as properties:
+以下属性只能通过 property 设置：
 
-- `locale`: the locale data used to format the value.
-- `valueText`: text to show instead of the formatted value. The gauge card uses it to show the state as formatted by Home Assistant.
-- `formatOptions`: `Intl.NumberFormatOptions` for formatting the value.
+- `locale`：用于格式化数值的区域设置数据。
+- `valueText`：代替格式化数值显示的文本。仪表盘卡片使用它来显示由 Home Assistant 格式化的状态。
+- `formatOptions`：用于格式化数值的 `Intl.NumberFormatOptions`。
 
-### Styling
+### 样式
 
-- `--gauge-color`: the color of the filled arc. Not used in needle mode.
-- `--primary-background-color`: the empty part of the dial.
-- `--primary-text-color`: the value text, and the needle.
+- `--gauge-color`：填充弧的颜色。在指针模式下不使用。
+- `--primary-background-color`：刻度盘的空白部分。
+- `--primary-text-color`：数值文本和指针。
 
-Source: [`src/components/ha-gauge.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-gauge.ts)
+来源：[`src/components/ha-gauge.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-gauge.ts)

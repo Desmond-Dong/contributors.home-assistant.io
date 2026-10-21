@@ -1,6 +1,6 @@
 ---
-title: Vacuum
-description: The more-info view of a robot vacuum, with an animated status picture and a row of command buttons.
+title: 吸尘器
+description: 扫地机器人的更多信息视图，带有动态状态图片和一排命令按钮。
 sidebarGroup: Appliances
 ---
 
@@ -10,32 +10,32 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="vacuum.robot_vacuum"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 展示内容
 
-A robot vacuum mostly runs on its own. You don't steer it, you send it commands. So the main part of this view is not a slider or a switch, but a picture of the robot that shows what it is doing, with a row of command buttons below it.
+扫地机器人（robot vacuum）大多自主运行。你不需要操控它，只需要向它发送命令。因此这个视图的主体部分不是滑块或开关，而是一张显示机器人正在做什么的图片，下方是一排命令按钮。
 
-The picture is a drawing of a robot vacuum, seen from above. It changes with the state: it moves and its brushes spin while cleaning, and it looks different when docked, returning, paused, or in error. It takes the color of the state. When someone has asked their system for reduced motion, the picture stays still.
+这张图片是一个俯视视角的扫地机器人绘图。它会随状态变化：清扫时它会移动并且刷子旋转，而在停靠、返程、暂停或出错时看起来不同。它会呈现该状态的颜色。当有人要求系统减少动态效果时，图片会保持静止。
 
-Below the picture, a group of [control buttons](/design/components/controls/) holds the commands. Each one only shows when the vacuum supports it:
+在图片下方，一组[控制按钮](/design/components/controls/)承载着各种命令。每个按钮只在该吸尘器支持时才显示：
 
-- **Start** or **Pause**, in one button that switches between the two.
-- **Stop**.
-- **Return home**.
-- **Locate**, to make the robot beep.
-- **Clean spot**.
+- **开始**或**暂停**，合并在一个按钮中，可在两者之间切换。
+- **停止**。
+- **返回基站**。
+- **定位**，让机器人发出提示音。
+- **定点清扫**。
 
-Below the buttons, a row holds the secondary settings: a **Fan speed** menu, and a **Cleaning: By area** button for vacuums that can clean specific areas. That button opens a view where you pick the areas to clean.
+在按钮下方，一行放置次要设置：一个**风速**菜单，以及一个供支持清扫特定区域的吸尘器使用的**清扫：按区域**按钮。该按钮会打开一个视图，你可以在其中选择要清扫的区域。
 
-The state at the top shows the status the vacuum reports, when it reports one. Next to the time, it shows the battery level, with an icon, when the device has a battery sensor. The vacuum above is docked and fully charged.
+顶部的状态显示吸尘器报告的状态（如果它有报告的话）。在时间旁边，当设备有电池传感器时，会以图标显示电池电量。上方的吸尘器已停靠且电量已充满。
 
-## Design notes
+## 设计说明
 
-- Buttons that make no sense right now are disabled. The vacuum above is docked, so **Stop** is grayed out. A vacuum that is already on its way home can't be sent home again.
-- Older vacuums that don't report their state get a combined start and pause button, with a play and pause icon.
-- The battery comes from the battery sensor of the same device, not from the vacuum entity itself. When the device has a charging sensor, the icon shows that too.
+- 当前无意义的按钮会被禁用。上方的吸尘器已停靠，因此**停止**按钮呈灰色。已经在返程中的吸尘器无法再次被发送返程。
+- 不报告自身状态的旧款吸尘器会得到一个合并的开始和暂停按钮，带有播放和暂停图标。
+- 电池信息来自同一设备的电池传感器，而不是吸尘器实体（entity）本身。当设备有充电传感器时，图标也会显示充电状态。
 
-## In code
+## 代码实现
 
-The view is `more-info-vacuum` in `src/dialogs/more-info/controls/more-info-vacuum.ts`. The picture is `ha-state-control-vacuum-status` in `src/state-control/vacuum/`. The clean by area view is in `src/dialogs/more-info/components/vacuum/`. The `VacuumEntityFeature` enum and helpers like `canReturnHome` are in `src/data/vacuum.ts`.
+该视图是 `src/dialogs/more-info/controls/more-info-vacuum.ts` 中的 `more-info-vacuum`。图片是 `src/state-control/vacuum/` 中的 `ha-state-control-vacuum-status`。按区域清扫视图位于 `src/dialogs/more-info/components/vacuum/`。`VacuumEntityFeature` 枚举以及 `canReturnHome` 等辅助函数位于 `src/data/vacuum.ts` 中。
 
-Source: [`more-info-vacuum.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-vacuum.ts)
+源码：[`more-info-vacuum.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-vacuum.ts)

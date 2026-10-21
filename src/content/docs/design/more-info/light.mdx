@@ -1,6 +1,6 @@
 ---
-title: Light
-description: The more-info view of a light, with a big brightness slider and switches for color and color temperature.
+title: 灯
+description: 灯的更多信息视图，带有一个大亮度滑块以及颜色和色温开关。
 sidebarGroup: Lights and climate
 ---
 
@@ -10,39 +10,39 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="light.living_room_lamp"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 展示内容
 
-The main control of a light is brightness, because that is what people change most. It is a tall vertical [control slider](/design/components/controls/), filled from the bottom like a glass. When the light has a color, the slider takes it, slightly toned so a very pale color stays visible.
+灯的主要控制是亮度，因为这是人们最常调整的内容。它是一个高大的垂直[控制滑块](/design/components/controls/)，像玻璃杯一样从底部向上填充。当灯具有颜色时，滑块会采用该颜色，并略微调淡，以便非常浅的颜色仍然可见。
 
-The state at the top shows the brightness, like **71%**, instead of just **On**. When the light is off, or has no brightness, it shows the regular state.
+顶部的状态显示亮度，例如 **71%**，而不是仅仅显示 **On**。当灯处于关闭状态或没有亮度时，则显示常规状态。
 
-What the view shows depends on the color modes the light supports:
+视图显示的内容取决于灯支持的颜色模式（color modes）：
 
-- **On and off only**: no slider. A big switch takes its place, with a lit and an unlit bulb as icons.
-- **Brightness**: the slider, with a **Toggle** button below it to turn the light on or off.
-- **Color temperature**: a button to swap the main control for a color temperature slider, from warm to cool.
-- **Color**: a button to swap the main control for a color wheel. Lights with extra white channels (RGBW or RGBWW) also get sliders for the color brightness and the white brightness below the wheel.
-- **White**: a **Set white** button, for lights with a separate white channel.
+- **仅开和关**：没有滑块。取而代之的是一个大的开关，图标分别是点亮和未点亮的灯泡。
+- **亮度**：滑块，其下方有一个 **Toggle** 按钮用于打开或关闭灯。
+- **色温**：一个按钮，可将主控制切换为色温滑块，从暖色到冷色。
+- **颜色**：一个按钮，可将主控制切换为色轮。带有额外白色通道（RGBW 或 RGBWW）的灯还会在色轮下方显示颜色亮度和白色亮度的滑块。
+- **白色**：一个 **Set white** 按钮，适用于具有独立白色通道的灯。
 
-The floor lamp above supports color and color temperature, so it gets all three buttons: brightness, color, and temperature. The hallway light below only dims, so it gets the slider and the **Toggle** button. The kitchen ceiling light dims too, but it is off: the slider is empty and has no handle.
+上图的落地灯支持颜色和色温，因此它拥有全部三个按钮：亮度、颜色和色温。下图的走廊灯仅支持调光，因此它只有滑块和 **Toggle** 按钮。厨房吸顶灯也支持调光，但它处于关闭状态：滑块为空且没有滑块手柄。
 
 <Demo hass>
   <ha-demo-more-info entity="light.hallway"></ha-demo-more-info>
   <ha-demo-more-info entity="light.kitchen_ceiling"></ha-demo-more-info>
 </Demo>
 
-When a light supports effects, an **Effect** menu sits below the controls. Lights that support color or color temperature can also show a row of favorite colors under the buttons, one tap away. Those come from the entity settings, and are not part of these demos.
+当灯支持效果（effects）时，控制项下方会出现一个 **Effect** 菜单。支持颜色或色温的灯还可以在按钮下方显示一行收藏颜色，只需轻点一下即可使用。这些颜色来自实体（entity）设置，不属于这些演示的一部分。
 
-## Design notes
+## 设计说明
 
-- The main control changes, but its place stays the same. The row of round buttons switches between brightness, color, and color temperature, and the selected one is highlighted.
-- The color and temperature buttons show a small color wheel and a warm to cool gradient instead of an icon. You recognize them before you read the label.
-- A separator in the button row splits the toggle from the mode buttons, and the mode buttons from **Set white**.
-- When the light is unavailable, the slider and every button are disabled, but they stay in place, so the layout doesn't jump.
-- In a light group, the member lights show up below the controls as tile cards. Their tile follows the main control: a brightness slider, a color temperature slider, or no control when the group is set to color.
+- 主控制会变化，但其位置保持不变。一排圆形按钮在亮度、颜色和色温之间切换，选中的按钮会高亮显示。
+- 颜色和色温按钮显示一个小的色轮和一个从暖到冷的渐变，而不是图标。你在阅读标签之前就能认出它们。
+- 按钮行中的分隔符将切换按钮与模式按钮分开，也将模式按钮与 **Set white** 分开。
+- 当灯不可用时，滑块和所有按钮都会被禁用，但它们仍保留在原位，因此布局不会跳动。
+- 在灯组中，成员灯会以磁贴卡片（tile cards）的形式显示在控制项下方。它们的磁贴跟随主控制：亮度滑块、色温滑块，或者当组设置为颜色时没有控制项。
 
-## In code
+## 代码中
 
-The view is `more-info-light` in `src/dialogs/more-info/controls/more-info-light.ts`. The brightness slider is `ha-state-control-light-brightness` in `src/state-control/light/`. The color wheel and the color temperature slider are `light-color-rgb-picker` and `light-color-temp-picker`, and the favorite colors are `ha-more-info-light-favorite-colors`, all in `src/dialogs/more-info/components/lights/`. The color modes and features are in `src/data/light.ts`.
+该视图是 `src/dialogs/more-info/controls/more-info-light.ts` 中的 `more-info-light`。亮度滑块是 `src/state-control/light/` 中的 `ha-state-control-light-brightness`。色轮和色温滑块是 `light-color-rgb-picker` 和 `light-color-temp-picker`，收藏颜色是 `ha-more-info-light-favorite-colors`，它们都位于 `src/dialogs/more-info/components/lights/` 中。颜色模式和功能位于 `src/data/light.ts` 中。
 
 Source: [`more-info-light.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-light.ts)

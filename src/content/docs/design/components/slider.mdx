@@ -1,6 +1,6 @@
 ---
-title: Slider
-description: Sliders let people pick a number from a range, by dragging.
+title: 滑块
+description: 滑块让人们通过拖动，从一段范围中选取一个数值。
 sidebarGroup: Input
 ---
 
@@ -10,157 +10,157 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-slider min="0" max="100" value="60"></ha-slider>
 </Demo>
 
-## Overview
+## 概述
 
-A slider lets people pick a number from a range, by dragging. People see right away where the value sits between the minimum and the maximum, and can change it with a single drag.
+滑块让人们通过拖动，从一段范围中选取一个数值。人们可以立刻看到数值位于最小值和最大值之间的位置，并且只需一次拖动就能更改它。
 
-## When to use
+## 何时使用
 
-Use a slider for:
+在以下情况使用滑块：
 
-- A value where the range matters more than the exact number, like a volume, a speed, or a percentage
+- 数值的范围比精确数字更重要的场景，例如音量、速度或百分比
 
-Don't use a slider for:
+在以下情况不要使用滑块：
 
-- A value without a clear minimum and maximum, or one that people need to enter exactly. Use a [text input](/design/components/input/) with `type="number"`.
-- Controlling a device on a dashboard or in the more info dialog. The frontend has the larger `<ha-control-slider>` for that, see [controls](/design/components/controls/). The slider on this page is for settings, forms, and compact rows.
+- 没有明确最小值和最大值的数值，或者人们需要精确输入的数值。请使用 `type="number"` 的[文本输入框](/design/components/input/)。
+- 在仪表盘或更多信息对话框中控制设备。前端为此提供了更大的 `<ha-control-slider>`，参见[控件](/design/components/controls/)。本页介绍的滑块用于设置、表单和紧凑的行。
 
-The number selector in the frontend does both: it shows a slider with a number input next to it, so people can drag for a rough value and type for an exact one. It falls back to only the input when there is no minimum or maximum.
+前端中的数字选择器两者兼顾：它显示一个滑块，旁边带有数字输入框，人们可以拖动以获得大致数值，也可以输入以获得精确数值。当没有最小值或最大值时，它会退化为仅显示输入框。
 
-## Anatomy
+## 结构
 
-1. **Label**: optional, above the slider
-2. **Track**: the full range, from minimum to maximum
-3. **Indicator**: the filled part of the track, up to the value
-4. **Markers**: optional, a dot for each step on the track
-5. **Thumb**: the circle people drag, at the current value
-6. **Tooltip**: shows the current value above the thumb while people drag or focus the slider
-7. **Hint**: optional help text below the slider
+1. **标签（Label）**：可选，位于滑块上方
+2. **轨道（Track）**：完整范围，从最小值到最大值
+3. **指示器（Indicator）**：轨道中已填充的部分，直到当前数值
+4. **刻度点（Markers）**：可选，轨道上每个步进对应的一个圆点
+5. **滑块钮（Thumb）**：人们拖动的圆形，位于当前数值处
+6. **工具提示（Tooltip）**：当人们拖动或聚焦滑块时，在滑块钮上方显示当前数值
+7. **提示（Hint）**：可选，位于滑块下方的帮助文本
 
-## Variants
+## 变体
 
-### Size
+### 尺寸
 
-There are two sizes: small (the default) and medium. They differ in the size of the thumb. The small one fits in rows and forms, which is where most sliders in the frontend live.
+有两种尺寸：小（默认）和中。它们的区别在于滑块钮的大小。小尺寸适合放在行和表单中，这也是前端中大多数滑块所在的位置。
 
 <Demo>
   <ha-slider size="s" min="0" max="100" value="40"></ha-slider>
   <ha-slider size="m" min="0" max="100" value="40"></ha-slider>
 </Demo>
 
-### Steps and markers
+### 步进与刻度点
 
-The step sets how fine the value is. With few steps, the slider can show each one as a marker on the track.
+步进（step）决定了数值的精细程度。当步进较少时，滑块可以在轨道上为每个步进显示一个刻度点。
 
 <Demo>
   <ha-slider min="0" max="8" step="1" value="4" with-markers></ha-slider>
 </Demo>
 
-### With a label
+### 带标签
 
-A slider shows no number next to it. It can have a label above it.
+滑块旁边不显示数字。它可以在上方带有一个标签。
 
 <Demo>
   <ha-slider label="Volume" min="0" max="100" value="30"></ha-slider>
 </Demo>
 
-## Behavior
+## 行为
 
-- **Enabled**: the indicator and the thumb are in the primary color, the rest of the track in the disabled color.
-- **Focus**: keyboard focus shows a 2px solid focus ring around the thumb, and opens the tooltip with the value.
-- **Dragging**: the thumb follows the pointer, the value snaps to the nearest step, and the tooltip shows the value.
-- **Disabled**: the track is dimmed to half its opacity. The slider shows the value, but it can't be changed or focused.
-- **Read-only**: shows the value, without letting people change it.
+- **启用**：指示器和滑块钮为主色，轨道的其余部分为禁用色。
+- **聚焦**：键盘聚焦时，滑块钮周围会显示 2px 的实线聚焦环，并打开显示数值的工具提示。
+- **拖动**：滑块钮跟随指针，数值吸附到最近的步进，工具提示显示该数值。
+- **禁用**：轨道的不透明度降低到一半。滑块显示数值，但无法更改或聚焦。
+- **只读**：显示数值，但不允许人们更改它。
 
 <Demo>
   <ha-slider min="0" max="100" value="60" disabled></ha-slider>
 </Demo>
 
-The slider follows the text direction of the page: in a right to left language, the minimum is at the right.
+滑块遵循页面的文本方向：在从右到左的语言中，最小值位于右侧。
 
-## Specs
+## 规格
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Width | 200px, at least 100px | None |
-| Track thickness | 4px | `--ha-slider-track-size` |
-| Track corner radius | 9999px, fully rounded | None |
-| Thumb size, small | 16px | None |
-| Thumb size, medium | 20px | None |
-| Thumb border | None | None |
-| Marker size | 2px, half the track thickness | None |
-| Disabled track opacity | 0.5 | None |
-| Focus ring | 2px solid, around the thumb | `--ha-color-focus` |
-| Tooltip distance from the thumb | 8px | `tooltip-distance` |
+| 宽度 | 200px，至少 100px | 无 |
+| 轨道厚度 | 4px | `--ha-slider-track-size` |
+| 轨道圆角半径 | 9999px，完全圆角 | 无 |
+| 滑块钮尺寸，小 | 16px | 无 |
+| 滑块钮尺寸，中 | 20px | 无 |
+| 滑块钮边框 | 无 | 无 |
+| 刻度点尺寸 | 2px，轨道厚度的一半 | 无 |
+| 禁用轨道不透明度 | 0.5 | 无 |
+| 聚焦环 | 2px 实线，围绕滑块钮 | `--ha-color-focus` |
+| 工具提示与滑块钮的距离 | 8px | `tooltip-distance` |
 
-| Part | Color |
+| 部件 | 颜色 |
 | --- | --- |
-| Track | `--disabled-color`, through `--ha-slider-track-color` |
-| Indicator | `--primary-color`, through `--ha-slider-indicator-color` |
-| Thumb | `--primary-color`, through `--ha-slider-thumb-color` |
-| Markers | `--card-background-color` |
+| 轨道 | `--disabled-color`，通过 `--ha-slider-track-color` |
+| 指示器 | `--primary-color`，通过 `--ha-slider-indicator-color` |
+| 滑块钮 | `--primary-color`，通过 `--ha-slider-thumb-color` |
+| 刻度点 | `--card-background-color` |
 
-The tooltip has no arrow, and uses the same tokens as the [tooltip](/design/components/tooltip/) component:
+工具提示没有箭头，并使用与[工具提示](/design/components/tooltip/)组件相同的 token：
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Background | Secondary background | `--secondary-background-color`, through `--ha-tooltip-background-color` |
-| Text | Primary text | `--primary-text-color`, through `--ha-tooltip-text-color` |
-| Font size | 12px | `--ha-font-size-s` |
-| Padding | 8px | `--ha-space-2` |
-| Corner radius | 4px | `--ha-border-radius-sm` |
+| 背景 | 次要背景 | `--secondary-background-color`，通过 `--ha-tooltip-background-color` |
+| 文本 | 主要文本 | `--primary-text-color`，通过 `--ha-tooltip-text-color` |
+| 字体大小 | 12px | `--ha-font-size-s` |
+| 内边距 | 8px | `--ha-space-2` |
+| 圆角半径 | 4px | `--ha-border-radius-sm` |
 
-## Guidelines
+## 指南
 
-- Give a slider a label that names what it controls, like **Volume** or **Speed**.
-- Make sure the current value is visible somewhere else when it matters, like in the row or in an input next to it. The tooltip only shows while people drag or focus the slider.
+- 为滑块添加一个说明其控制内容的标签，例如**音量**或**速度**。
+- 当数值很重要时，确保当前数值在其他地方可见，例如在行中或旁边的输入框中。工具提示只在人们拖动或聚焦滑块时显示。
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-| Key | Action |
+| 按键 | 操作 |
 | --- | --- |
-| <kbd>Tab</kbd> | Moves focus to the slider, and away from it. A disabled slider is skipped. |
-| <kbd>Arrow right</kbd> or <kbd>Arrow up</kbd> | Increases the value by one step. In a right to left language, <kbd>Arrow left</kbd> increases. |
-| <kbd>Arrow left</kbd> or <kbd>Arrow down</kbd> | Decreases the value by one step. In a right to left language, <kbd>Arrow right</kbd> decreases. |
-| <kbd>Page up</kbd> | Increases the value by a tenth of the range, at least one step. |
-| <kbd>Page down</kbd> | Decreases the value by a tenth of the range, at least one step. |
-| <kbd>Home</kbd> | Sets the minimum. |
-| <kbd>End</kbd> | Sets the maximum. |
+| <kbd>Tab</kbd> | 将焦点移到滑块上，以及从滑块移开。禁用的滑块会被跳过。 |
+| <kbd>右箭头</kbd> 或 <kbd>上箭头</kbd> | 将数值增加一个步进。在从右到左的语言中，<kbd>左箭头</kbd> 为增加。 |
+| <kbd>左箭头</kbd> 或 <kbd>下箭头</kbd> | 将数值减少一个步进。在从右到左的语言中，<kbd>右箭头</kbd> 为减少。 |
+| <kbd>Page up</kbd> | 将数值增加范围的十分之一，至少一个步进。 |
+| <kbd>Page down</kbd> | 将数值减少范围的十分之一，至少一个步进。 |
+| <kbd>Home</kbd> | 设为最小值。 |
+| <kbd>End</kbd> | 设为最大值。 |
 
-The keys do nothing while the slider is disabled or read-only.
+当滑块被禁用或只读时，这些按键不起作用。
 
-### Focus
+### 聚焦
 
-Keyboard focus shows a 2px solid focus ring around the thumb, and opens the tooltip with the value.
+键盘聚焦时，滑块钮周围会显示 2px 的实线聚焦环，并打开显示数值的工具提示。
 
-### Target size
+### 目标尺寸
 
-The slider has 14px of extra touch area above and below the track, for a touch target 32px high.
+滑块在轨道上方和下方各有 14px 的额外触摸区域，形成 32px 高的触摸目标。
 
-### Screen readers
+### 屏幕阅读器
 
-The slider is announced with its label and its value, formatted for the language of the user. Without a label, it has no name. The hint is read as its description.
+滑块会连同其标签和数值一起播报，数值按用户的语言格式化。没有标签时，它没有名称。提示文本会作为其描述被朗读。
 
-### In the code
+### 在代码中
 
-- The slider has the role `slider`, with `aria-valuemin`, `aria-valuemax`, `aria-valuenow`, and `aria-valuetext`. The value text is the number formatted for the language of the user, or the result of `valueFormatter` when it is set.
-- The accessible name comes from the label, through `aria-labelledby`. Without a label, the slider has no name.
-- The hint is connected with `aria-describedby`.
-- The value in the tooltip is hidden from screen readers. They get it from the value text instead.
-- `aria-disabled` follows `disabled`. `aria-readonly` also follows `disabled`, not `readonly`.
+- 滑块具有 `slider` 角色，带有 `aria-valuemin`、`aria-valuemax`、`aria-valuenow` 和 `aria-valuetext`。数值文本是按用户语言格式化的数字，或者在设置了 `valueFormatter` 时为其结果。
+- 可访问名称来自标签，通过 `aria-labelledby` 提供。没有标签时，滑块没有名称。
+- 提示文本通过 `aria-describedby` 关联。
+- 工具提示中的数值对屏幕阅读器隐藏。它们改为从数值文本中获取。
+- `aria-disabled` 跟随 `disabled`。`aria-readonly` 也跟随 `disabled`，而不是 `readonly`。
 
-## Related
+## 相关内容
 
-- [Controls](/design/components/controls/): the larger slider for devices on dashboards
-- [Text input](/design/components/input/): for an exact number
-- [Selector](/design/components/selector/): the number selector shows a slider with an input next to it
-- [Tooltip](/design/components/tooltip/): the same look as the value tooltip
+- [控件](/design/components/controls/)：用于仪表盘上设备的更大滑块
+- [文本输入框](/design/components/input/)：用于精确数字
+- [选择器](/design/components/selector/)：数字选择器显示一个滑块，旁边带有输入框
+- [工具提示](/design/components/tooltip/)：与数值工具提示相同的外观
 
-## In code
+## 在代码中
 
-The element is `<ha-slider>`. It is based on the [Web Awesome slider](https://webawesome.com/docs/components/slider/).
+该元素是 `<ha-slider>`。它基于 [Web Awesome slider](https://webawesome.com/docs/components/slider/)。
 
 ```html
 <ha-slider min="0" max="100" value="60"></ha-slider>
@@ -168,48 +168,48 @@ The element is `<ha-slider>`. It is based on the [Web Awesome slider](https://we
 <ha-slider size="m" label="Volume"></ha-slider>
 ```
 
-### Attributes
+### 属性
 
-- `value`: the current value. Defaults to `0`.
-- `min`: the minimum value. Defaults to `0`.
-- `max`: the maximum value. Defaults to `100`.
-- `step`: the granularity of the value. Defaults to `1`.
-- `size`: `s` (default) or `m`.
-- `with-markers`: shows a marker at each step.
-- `with-tooltip`: shows the value in a tooltip while dragging or focused. On by default in `<ha-slider>`, so to hide it, set the `withTooltip` property to `false` from code.
-- `tooltip-placement`: `top` (default), `right`, `bottom`, or `left`.
-- `tooltip-distance`: the distance of the tooltip from the thumb, in pixels. Defaults to `8`.
-- `label`: a label above the slider.
-- `hint`: help text below the slider.
-- `disabled`: disables the slider.
-- `readonly`: shows the value, without letting people change it.
-- `orientation`: `horizontal` (default) or `vertical`.
-- `indicator-offset`: the value the colored part of the track starts from. Useful when the range goes below and above zero.
-- `range`, `min-value`, and `max-value`: turn the slider into a range slider with two thumbs. Not used in the frontend yet.
-- `name`: submitted with a form.
+- `value`：当前数值。默认为 `0`。
+- `min`：最小值。默认为 `0`。
+- `max`：最大值。默认为 `100`。
+- `step`：数值的粒度。默认为 `1`。
+- `size`：`s`（默认）或 `m`。
+- `with-markers`：在每个步进处显示一个刻度点。
+- `with-tooltip`：在拖动或聚焦时，在工具提示中显示数值。在 `<ha-slider>` 中默认开启，因此若要隐藏它，需从代码中将 `withTooltip` 属性设置为 `false`。
+- `tooltip-placement`：`top`（默认）、`right`、`bottom` 或 `left`。
+- `tooltip-distance`：工具提示与滑块钮的距离，以像素为单位。默认为 `8`。
+- `label`：滑块上方的标签。
+- `hint`：滑块下方的帮助文本。
+- `disabled`：禁用滑块。
+- `readonly`：显示数值，但不允许人们更改它。
+- `orientation`：`horizontal`（默认）或 `vertical`。
+- `indicator-offset`：轨道着色部分起始的数值。当范围跨越零的两侧时很有用。
+- `range`、`min-value` 和 `max-value`：将滑块变成带有两个滑块钮的范围滑块。前端尚未使用。
+- `name`：随表单一起提交。
 
-The tooltip shows the plain number. To format it, like adding a unit, set the `valueFormatter` property to a function from code.
+工具提示显示纯数字。若要格式化它，例如添加单位，需从代码中将 `valueFormatter` 属性设置为一个函数。
 
-### Slots
+### 插槽
 
-- `label`: a label with markup. Only used when the `label` attribute is not set.
-- `hint`: a hint with markup. Only used when the `hint` attribute is not set.
-- `reference`: labels shown below the track, like the minimum and maximum.
+- `label`：带标记的标签。仅在未设置 `label` 属性时使用。
+- `hint`：带标记的提示。仅在未设置 `hint` 属性时使用。
+- `reference`：显示在轨道下方的标签，例如最小值和最大值。
 
-### Events
+### 事件
 
-- `input`: fires continuously while people drag.
-- `change`: fires when people let go, and the value is committed.
+- `input`：在人们拖动时持续触发。
+- `change`：在人们松开、数值被提交时触发。
 
-Read the new value from `value` on the element. Most sliders in the frontend act on `change` only, and apply the value once people let go.
+从元素的 `value` 读取新数值。前端中的大多数滑块只响应 `change`，并在人们松开后才应用数值。
 
-### Styling
+### 样式
 
-- `--ha-slider-track-size`: the thickness of the track. Defaults to `4px`.
-- `--ha-slider-track-color`: the color of the track. Defaults to `var(--disabled-color)`.
-- `--ha-slider-indicator-color`: the color of the filled part of the track. Defaults to `var(--primary-color)`.
-- `--ha-slider-thumb-color`: the color of the thumb. Defaults to `var(--primary-color)`.
+- `--ha-slider-track-size`：轨道的厚度。默认为 `4px`。
+- `--ha-slider-track-color`：轨道的颜色。默认为 `var(--disabled-color)`。
+- `--ha-slider-indicator-color`：轨道已填充部分的颜色。默认为 `var(--primary-color)`。
+- `--ha-slider-thumb-color`：滑块钮的颜色。默认为 `var(--primary-color)`。
 
-The slider is 200 pixels wide by default, and at least 100 pixels. Set `width` on the element to change that.
+滑块默认宽 200 像素，且至少 100 像素。设置元素上的 `width` 可以更改此值。
 
-Source: [`src/components/ha-slider.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-slider.ts)
+源代码：[`src/components/ha-slider.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-slider.ts)

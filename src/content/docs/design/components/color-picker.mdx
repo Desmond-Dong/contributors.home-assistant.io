@@ -1,6 +1,6 @@
 ---
-title: Color picker
-description: The color wheel picks a hue and saturation, like the color of a light.
+title: 颜色选择器
+description: 色轮用于选择色相和饱和度，例如灯光的颜色。
 sidebarGroup: Input
 ---
 
@@ -10,106 +10,106 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-hs-color-picker value="[32, 0.6]" style="width: 240px; height: 240px"></ha-hs-color-picker>
 </Demo>
 
-## Overview
+## 概述
 
-The color picker is a round color wheel. The angle picks the hue, and the distance from the center picks the saturation: white in the middle, full color at the edge. People drag the marker around, or tap a spot on the wheel to jump there.
+颜色选择器是一个圆形色轮。角度决定色相（hue），与中心的距离决定饱和度（saturation）：中心为白色，边缘为全彩。用户可以拖动标记，或点击色轮上的某个位置直接跳转过去。
 
-You find it in the more-info dialog of a light that supports colors. There, it sits together with a few other controls:
+在支持颜色的灯的更多信息对话框中可以找到它。在那里，它与其他几个控件一起出现：
 
-- A small eyedropper button that opens the native color picker of the browser or the operating system, for people who want to enter an exact color.
-- Sliders for the color brightness and the white channels, for lights that have them. The wheel follows those sliders, so it shows the color the light will actually make.
+- 一个小的取色器按钮，可打开浏览器或操作系统的原生颜色选择器，供想要输入精确颜色的用户使用。
+- 用于颜色亮度和白色通道的滑块（适用于具备这些功能的灯）。色轮会跟随这些滑块，因此它显示的是灯光实际会呈现的颜色。
 
-## When to use
+## 何时使用
 
-Use the color wheel for:
+在以下情况下使用色轮：
 
-- Picking a color by eye, like the color of a light. It is fast and touch friendly.
+- 通过肉眼挑选颜色，例如灯光的颜色。它快速且对触屏友好。
 
-Don't use the color wheel for:
+在以下情况下不要使用色轮：
 
-- Entering an exact color on its own. The wheel is not precise. When an exact value matters, offer another way in next to it, like the more-info dialog does with the native color picker.
-- A color that must be reachable with the keyboard, without another input next to it. The wheel only reacts to a pointer.
+- 单独用于输入精确的颜色。色轮并不精确。当精确值很重要时，请在旁边提供其他输入方式，就像更多信息对话框在色轮旁边提供原生颜色选择器那样。
+- 用于必须可以通过键盘操作的颜色输入，且旁边没有其他输入方式。色轮只响应指针操作。
 
-## Anatomy
+## 结构
 
-1. **Wheel**: the round canvas with all hues around it, from white in the center to full color at the edge
-2. **Marker**: a circle filled with the picked color, with a white outline and a shadow. It is hidden when there is no value.
+1. **色轮**：圆形画布，周围环绕所有色相，从中心的白色到边缘的全彩
+2. **标记**：一个填充了所选颜色的圆，带有白色轮廓和阴影。没有值时会隐藏。
 
-## Variants
+## 变体
 
-The wheel has no variants. What changes is how it is drawn.
+色轮没有变体。变化的是它的绘制方式。
 
-### Brightness and white channels
+### 亮度和白色通道
 
-The wheel draws its colors at full brightness. It can be darkened as a whole, so it matches the brightness people picked for the color.
+色轮以全亮度绘制颜色。它可以整体调暗，以匹配用户为颜色选择的亮度。
 
-For lights with white channels, like one white channel, or a cold and a warm white, the wheel mixes the white into its colors, so it shows what the light will look like.
+对于带白色通道的灯，例如单个白色通道，或冷白和暖白，色轮会将白色混入其颜色中，以显示灯光的实际效果。
 
-<Demo caption="The same wheel at half brightness, and with a white channel mixed in.">
+<Demo caption="同一个色轮，一半亮度，以及混入白色通道后的效果。">
   <ha-hs-color-picker value="[32, 0.6]" data-props='{"colorBrightness": 128}' style="width: 200px; height: 200px"></ha-hs-color-picker>
   <ha-hs-color-picker value="[32, 0.6]" wv="160" style="width: 200px; height: 200px"></ha-hs-color-picker>
 </Demo>
 
-These only change how the wheel looks. The picked value stays a hue and a saturation.
+这些只会改变色轮的外观。所选的值仍然是色相和饱和度。
 
-## Behavior
+## 行为
 
-- **Dragging**: while someone drags, the marker grows so it stays visible under the pointer. With a mouse or a pen it grows to 1.5 times its size. On a touch screen it grows to 2.5 times, and moves up a little, so it is not hidden under the finger.
-- **Tapping**: a tap on the wheel moves the marker to that spot and picks the color.
-- **Released**: when the drag ends, the marker animates back to its normal size, and the color is picked. When the browser cancels a drag, the marker goes back to where it was.
-- **Disabled**: a disabled wheel ignores dragging and tapping. It looks the same as an enabled one.
-- **No value**: without a value, the marker is hidden.
+- **拖动**：拖动时，标记会变大，以便在指针下保持可见。使用鼠标或触控笔时，它会放大到 1.5 倍。在触摸屏上，它会放大到 2.5 倍，并向上移动一点，以免被手指遮挡。
+- **点击**：点击色轮会将标记移动到该位置并选中该颜色。
+- **释放**：拖动结束时，标记会以动画恢复到正常大小，并选中该颜色。当浏览器取消拖动时，标记会回到原来的位置。
+- **禁用**：禁用的色轮会忽略拖动和点击。它的外观与启用时相同。
+- **无值**：没有值时，标记会隐藏。
 
-The wheel has no hover or focus state.
+色轮没有悬停或聚焦状态。
 
-## Specs
+## 规格说明
 
-The wheel fills its container, and the marker scales with it. The marker sizes below are in the coordinates of the wheel, which is 400 units wide by default.
+色轮填满其容器，标记随其缩放。以下标记尺寸以色轮的坐标为单位，色轮默认宽度为 400 个单位。
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Wheel shape | Circle | `--ha-border-radius-circle` (50%) |
-| Marker radius | 16 units | None |
-| Marker outline | 2 units, white | None |
-| Marker shadow | Two drop shadows: 1 unit down with a 2 unit blur at 30% black, and 1 unit down with a 3 unit blur at 15% black | None |
-| Marker scale while dragging | 1.5 with a mouse or pen, 2.5 with touch | None |
-| Marker offset while dragging with touch | Up by 1/16 of the wheel size | None |
-| Marker animation | Size and color 100ms, position 200ms, ease-in-out. Off while dragging. | None |
-| Size in the more-info dialog | 45% of the screen height, between 200px and 320px | None |
+| 色轮形状 | 圆形 | `--ha-border-radius-circle` (50%) |
+| 标记半径 | 16 个单位 | 无 |
+| 标记轮廓 | 2 个单位，白色 | 无 |
+| 标记阴影 | 两个投影：向下 1 个单位、模糊 2 个单位、30% 黑色，以及向下 1 个单位、模糊 3 个单位、15% 黑色 | 无 |
+| 拖动时标记的缩放 | 鼠标或触控笔为 1.5，触摸为 2.5 | 无 |
+| 触摸拖动时标记的偏移 | 向上偏移色轮尺寸的 1/16 | 无 |
+| 标记动画 | 大小和颜色 100ms，位置 200ms，ease-in-out。拖动时关闭。 | 无 |
+| 在更多信息对话框中的尺寸 | 屏幕高度的 45%，介于 200px 和 320px 之间 | 无 |
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-The wheel only reacts to a pointer: a mouse, a pen, or a finger. It does not take focus and has no keyboard interaction. Pair it with an input people can reach with a keyboard, like the native color picker the more-info dialog offers next to it.
+色轮只响应指针操作：鼠标、触控笔或手指。它不获取焦点，也没有键盘交互。请将它与用户可以通过键盘操作的输入方式配对使用，例如更多信息对话框在色轮旁边提供的原生颜色选择器。
 
-### Visibility
+### 可见性
 
-The marker is the picked color with a white outline and a shadow, so it stays visible on light and dark parts of the wheel.
+标记是所选颜色，带有白色轮廓和阴影，因此在色轮的明亮和深色部分都能保持可见。
 
-### Screen readers
+### 屏幕阅读器
 
-Screen readers get nothing from the wheel. The input next to it is the way in.
+屏幕阅读器无法从色轮获取任何信息。旁边的输入方式才是访问途径。
 
-### In the code
+### 在代码中
 
-The wheel is a canvas with an SVG marker on top. It has no role, name, or value for assistive technology.
+色轮是一个画布，上面有一个 SVG 标记。它没有供辅助技术使用的 role、名称或值。
 
-## Related
+## 相关内容
 
-- [Slider](/design/components/slider/): for brightness and white channels next to the wheel
-- [Controls](/design/components/controls/): the other large controls of the more-info dialog
-- [Light](/design/more-info/light/): the more-info dialog that uses the wheel
+- [滑块](/design/components/slider/)：色轮旁边用于亮度和白色通道的控件
+- [控件](/design/components/controls/)：更多信息对话框中的其他大型控件
+- [灯](/design/more-info/light/)：使用色轮的更多信息对话框
 
-## In code
+## 代码实现
 
-The element is `<ha-hs-color-picker>`.
+该元素是 `<ha-hs-color-picker>`。
 
 ```html
 <ha-hs-color-picker value="[32, 0.6]"></ha-hs-color-picker>
 ```
 
-The wheel fills its container, so give it a size. In the more-info dialog it is 45% of the screen height, between 200 and 320 pixels.
+色轮会填满其容器，因此需要为其指定尺寸。在更多信息对话框中，它占屏幕高度的 45%，介于 200 和 320 像素之间。
 
 ```css
 ha-hs-color-picker {
@@ -119,26 +119,26 @@ ha-hs-color-picker {
 }
 ```
 
-### Attributes
+### 属性（Attributes）
 
-- `value`: the color, as an array of the hue in degrees (`0` to `359`) and the saturation (`0` to `1`). For example, `[32, 0.6]`. Without a value, the marker is hidden.
-- `wv`: the white channel of an RGBW light, from `0` to `255`.
-- `cw` and `ww`: the cold and warm white channels of an RGBWW light, from `0` to `255`.
-- `disabled`: ignores dragging and tapping.
+- `value`：颜色，以数组形式表示色相（角度，`0` 到 `359`）和饱和度（`0` 到 `1`）。例如 `[32, 0.6]`。没有值时，标记会隐藏。
+- `wv`：RGBW 灯的白色通道，从 `0` 到 `255`。
+- `cw` 和 `ww`：RGBWW 灯的冷白和暖白通道，从 `0` 到 `255`。
+- `disabled`：忽略拖动和点击。
 
-### Properties
+### 特性（Properties）
 
-These can only be set as properties:
+这些只能作为特性设置：
 
-- `colorBrightness`: the brightness the wheel is drawn at, from `0` to `255`. Defaults to `255`.
-- `minKelvin` and `maxKelvin`: the color temperature range of the light. Used to mix the cold and warm white into the colors.
-- `renderSize`: the resolution of the wheel, in pixels. Defaults to `400`. This is not the size on screen.
+- `colorBrightness`：色轮绘制时的亮度，从 `0` 到 `255`。默认为 `255`。
+- `minKelvin` 和 `maxKelvin`：灯的色温范围。用于将冷白和暖白混入颜色中。
+- `renderSize`：色轮的分辨率，以像素为单位。默认为 `400`。这不是屏幕上的尺寸。
 
-### Events
+### 事件
 
-- `value-changed`: the color was picked, when someone lets go or taps. `detail.value` is the new `[hue, saturation]`.
-- `cursor-moved`: the marker moves while dragging. `detail.value` is the color under the marker, and `undefined` when the drag ends. Use it to preview the color while dragging, without sending every step to the light.
+- `value-changed`：颜色被选中时触发，即用户松开或点击时。`detail.value` 是新的 `[hue, saturation]`。
+- `cursor-moved`：拖动时标记移动。`detail.value` 是标记下的颜色，拖动结束时为 `undefined`。用它可以在拖动时预览颜色，而无需将每一步都发送到灯。
 
-The wheel moves its marker, but does not update its own `value` property. Read the new color from the event.
+色轮会移动其标记，但不会更新自身的 `value` 特性。请从事件中读取新颜色。
 
-Source: [`src/components/ha-hs-color-picker.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-hs-color-picker.ts)
+源码：[`src/components/ha-hs-color-picker.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-hs-color-picker.ts)

@@ -1,7 +1,7 @@
 ---
-title: Lock
-description: The more-info view of a lock, with a big lock switch and a separate, confirmed button to open the door.
-sidebarGroup: Openings and security
+title: 锁
+description: 锁的更多信息视图，带有一个大的锁开关和一个单独的、需确认的开门按钮。
+sidebarGroup: 门窗与安防
 ---
 
 import Demo from "../../../../components/docs/Demo.astro";
@@ -10,32 +10,32 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="lock.front_door"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 显示内容
 
-The main control of a lock is a big vertical [control switch](/design/components/controls/). Locked is at the top, unlocked at the bottom, with a closed and an open padlock as icons. The switch takes the color of the state, like green for locked.
+锁的主要控件是一个大的竖向[控制开关](/design/components/controls/)。上锁状态在顶部，解锁状态在底部，图标分别为闭合和打开的挂锁。开关会采用状态对应的颜色，例如上锁时为绿色。
 
-While the lock is locking or unlocking, the icon pulses, so you see that something is happening even before the state changes.
+当锁正在上锁或解锁时，图标会闪烁，让你在状态改变之前就能看到有事情正在发生。
 
-Some locks can also open the door, not just unlock it. The front door lock above supports that, so it gets an **Open door** button below the switch. Opening a door is not something you want to do by accident, so it takes two taps:
+有些锁不仅能解锁，还能打开门。上面的前门锁就支持该功能，因此它在开关下方会有一个**开门**按钮。开门不是你想误触就执行的操作，所以需要点击两次：
 
-1. Select **Open door**. The button changes to **Really open?**.
-2. Select it again within a few seconds to open the door. The button shows **Done** for a moment, then returns to **Open door**.
+1. 选择**开门**。按钮会变为**确定要打开吗？**。
+2. 在几秒内再次选择它即可开门。按钮会短暂显示**已完成**，然后恢复为**开门**。
 
-When you wait too long, the button goes back to **Open door** by itself.
+如果等待时间过长，按钮会自动恢复为**开门**。
 
-## Other states
+## 其他状态
 
-- **Jammed**: the switch is replaced by a large icon of the jammed lock, with **Unlock** and **Lock** buttons below it, so you can try again in either direction.
-- **Unknown**: the switch becomes two separate buttons, **Lock** and **Unlock**, since there is no state to put the switch in.
-- **Open, opening, locking, or unlocking**: **Open door** is disabled, because the door is already open or busy.
+- **卡住（Jammed）**：开关会被一个大的卡住锁图标取代，下方有**解锁**和**上锁**按钮，以便你向任一方向重试。
+- **未知（Unknown）**：开关会变为两个独立的按钮，**上锁**和**解锁**，因为没有可供开关所处的状态。
+- **已打开、正在打开、正在上锁或正在解锁**：**开门**按钮被禁用，因为门已经打开或正在操作中。
 
-## Design notes
+## 设计说明
 
-- When a lock needs a code, Home Assistant asks for it in a separate dialog before it locks, unlocks, or opens. A code stored in the entity settings skips that question.
-- Locking and unlocking are one gesture on the same switch. Opening the door is kept apart, as a button with its own confirmation, because it can't be undone by flipping the switch back.
+- 当锁需要密码时，Home Assistant 会在上锁、解锁或开门之前通过单独的对话框要求输入密码。在实体（entity）设置中存储的密码可以跳过该询问。
+- 上锁和解锁是同一个开关上的一种手势操作。开门则被单独分离出来，作为一个带有自身确认步骤的按钮，因为它无法通过把开关拨回去来撤销。
 
-## In code
+## 代码实现
 
-The view is `more-info-lock` in `src/dialogs/more-info/controls/more-info-lock.ts`. The switch is `ha-state-control-lock-toggle` in `src/state-control/lock/`. The helpers, like `canOpen` and `callProtectedLockService`, and the `LockEntityFeature` enum are in `src/data/lock.ts`.
+该视图是 `src/dialogs/more-info/controls/more-info-lock.ts` 中的 `more-info-lock`。开关是 `src/state-control/lock/` 中的 `ha-state-control-lock-toggle`。辅助函数（如 `canOpen` 和 `callProtectedLockService`）以及 `LockEntityFeature` 枚举位于 `src/data/lock.ts` 中。
 
-Source: [`more-info-lock.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-lock.ts)
+源码：[`more-info-lock.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-lock.ts)

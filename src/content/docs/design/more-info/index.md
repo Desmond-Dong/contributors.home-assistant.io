@@ -1,6 +1,6 @@
 ---
-title: More info
-description: The dialog that opens when you select an entity, and the view each type of entity gets in it.
+title: 更多信息
+description: 选择实体时打开的对话框，以及每种类型的实体在其中呈现的视图。
 order: 26
 sidebarGroups:
   - Lights and climate
@@ -11,36 +11,36 @@ sidebarGroups:
   - Information
 ---
 
-Select an entity almost anywhere in Home Assistant, and the more-info dialog opens. It is the one place where you see everything about a single entity: its state, a control to change it, what it did before, and its settings. Because it opens from dashboards, from search, from the entities table, and from other dialogs, it is one of the screens people see most.
+在 Home Assistant 中几乎任何地方选择一个实体（entity），都会打开“更多信息”对话框。这是唯一一个可以看到单个实体全部信息的地方：它的状态、用于更改状态的控制、它之前做过什么，以及它的设置。由于它可以从仪表盘、搜索、实体表格以及其他对话框中打开，它是人们最常看到的界面之一。
 
-The dialog is the same for every entity. What sits inside it depends on the domain: a light gets a brightness slider, a thermostat gets a round dial, a timer gets a duration field. These pages show each of those domain views, rendered live by the real frontend on a fake home.
+该对话框对每个实体都是相同的。其中显示的内容取决于域（domain）：灯会有亮度滑块，恒温器会有圆形表盘，计时器会有时长输入框。这些页面展示了每个域的视图，由真实前端在一个虚拟家庭中实时渲染。
 
-## Anatomy
+## 结构
 
-The dialog has a header and a few views you move between.
+该对话框包含一个页眉和几个可以在其间切换的视图。
 
-- **Header**: a close button, the name of the entity, and above it a breadcrumb with the area and the device it belongs to. On the right sit a **History** button, a **Settings** button, and a menu. The menu holds **Add to…**, the favorites options for entities that have them, a link to the device, **Related**, and **Details**. The **Settings** button and the menu show only for administrators.
-- **Info view**: the default view. For domains with the newer design it starts with a large state, like **71%** or **Locked**, and the time it last changed. Select the time to switch between relative and absolute time. Below it is the main control, and below that the secondary controls. Older domains show a state row at the top instead. Domains without a view of their own, like a sensor, also get a history graph and an activity list below it.
-- **History**: the history graph and the activity of the entity. For domains with their own view, history lives behind the header button, so the info view stays about controlling the device.
-- **Settings**: the entity settings, like its name, icon, area, and whether it is enabled.
-- **Related**: the context of the entity, like its floor, area, device, integration, and labels, followed by the other items it is related to, like the automations and scripts that use it.
-- **Details**: the entity ID, the raw state, when it last changed and updated, and every attribute. A code button in the header switches it to YAML.
+- **页眉**：一个关闭按钮、实体的名称，以及其上方显示所属区域（area）和设备（device）的面包屑导航。右侧有**历史**按钮、**设置**按钮和一个菜单。菜单包含**添加到…**、实体的收藏选项（如果有）、指向设备的链接、**相关**和**详情**。**设置**按钮和菜单仅对管理员显示。
+- **信息视图**：默认视图。对于采用较新设计的域，它以一个大的状态开头，例如 **71%** 或 **已上锁**，以及状态上次更改的时间。选择该时间可以在相对时间和绝对时间之间切换。其下方是主控制，再下方是次级控制。较旧的域则在顶部显示一行状态。没有自己视图的域（例如传感器），还会在其下方显示历史图表和活动列表。
+- **历史**：实体的历史图表和活动。对于拥有自己视图的域，历史内容位于页眉按钮之后，这样信息视图就可以专注于控制设备。
+- **设置**：实体设置，例如名称、图标、区域，以及是否已启用。
+- **相关**：实体的上下文，例如它所在的楼层、区域、设备、集成（integration）和标签，随后是与它相关的其他项目，例如使用它的自动化和脚本。
+- **详情**：实体 ID、原始状态、上次更改和更新的时间，以及所有属性。页眉中的一个代码按钮可将其切换为 YAML。
 
-When an entity is a group of other entities, like a light group or a scene, the info view lists the members below the controls as tile cards, so you can control them one by one.
+当一个实体是其他实体的组合时，例如灯组或场景，信息视图会在控制项下方以磁贴卡片的形式列出成员，以便逐个控制它们。
 
-## Design principles
+## 设计原则
 
-The newer more-info views follow the same pattern, so a light, a lock, and a fan feel like one family.
+较新的“更多信息”视图遵循相同的模式，因此灯、锁和风扇看起来像是一个系列。
 
-- **One big main control.** Each view has one control that does the main job of the entity, and it gets most of the room: a vertical slider, a big switch, a round dial. These come from the [controls](/design/components/controls/) family, made to be used with a finger as much as with a mouse.
-- **Secondary controls below.** Modes, presets, and other settings sit in a row of compact [select menus](/design/components/select-menu/) under the main control. Small mode switches, like brightness or color for a light, sit in a row of round icon buttons right below it.
-- **The state first.** The large state at the top tells you what is going on before you touch anything. Views reword it when that helps: a light shows its brightness, a cover shows **Open · 70%**.
-- **Only what the device can do.** Every control checks the supported features of the entity. When a device can't do something, the control is not there. It is not shown disabled, it is gone. Controls are only disabled when the entity is unavailable, or when an action makes no sense in the current state, like closing a door that is already closed.
-- **Color follows state.** Controls take the color of the entity's state, like amber for a light that is on or green for a locked lock, using the same colors as the [state icon](/design/components/state-icon/).
+- **一个大的主控制。** 每个视图都有一个执行实体主要功能的控制，并占据大部分空间：垂直滑块、大开关或圆形表盘。这些来自[控件](/design/components/controls/)系列，设计上既适合鼠标操作，也适合手指操作。
+- **次级控制在下方。** 模式、预设和其他设置以一排紧凑的[选择菜单](/design/components/select-menu/)的形式位于主控制下方。小的模式切换，例如灯的亮度或颜色，则以一排圆形图标按钮的形式紧随其下。
+- **状态优先。** 顶部的大状态让你在操作之前就能了解当前情况。视图会在有帮助时重新表述它：灯显示其亮度，窗帘显示 **Open · 70%**。
+- **只显示设备能做的事。** 每个控制都会检查实体支持的功能。当设备无法执行某项操作时，该控制不会出现。它不会以禁用状态显示，而是直接消失。只有当实体不可用，或某个操作在当前状态下没有意义时（例如关闭已经关上的门），控制才会被禁用。
+- **颜色跟随状态。** 控件会采用实体状态对应的颜色，例如开启的灯为琥珀色，已上锁的锁为绿色，使用与[状态图标](/design/components/state-icon/)相同的颜色。
 
-## Views
+## 视图
 
-### Lights and climate
+### 灯光与温控
 
 - [Light](/design/more-info/light/)
 - [Climate](/design/more-info/climate/)
@@ -48,25 +48,25 @@ The newer more-info views follow the same pattern, so a light, a lock, and a fan
 - [Humidifier](/design/more-info/humidifier/)
 - [Water heater](/design/more-info/water-heater/)
 
-### Openings and security
+### 门窗与安防
 
 - [Cover](/design/more-info/cover/)
 - [Valve](/design/more-info/valve/)
 - [Lock](/design/more-info/lock/)
 - [Alarm control panel](/design/more-info/alarm-control-panel/)
 
-### Media
+### 媒体
 
 - [Media player](/design/more-info/media-player/)
 
-### Appliances
+### 家电
 
 - [Vacuum](/design/more-info/vacuum/)
 - [Lawn mower](/design/more-info/lawn-mower/)
 - [Switch](/design/more-info/switch/)
 - [Update](/design/more-info/update/)
 
-### Helpers
+### 辅助元素
 
 - [Input number](/design/more-info/input-number/)
 - [Number](/design/more-info/number/)
@@ -74,16 +74,16 @@ The newer more-info views follow the same pattern, so a light, a lock, and a fan
 - [Timer](/design/more-info/timer/)
 - [Scene](/design/more-info/scene/)
 
-### Information
+### 信息
 
 - [Weather](/design/more-info/weather/)
 - [Person](/design/more-info/person/)
 - [Sun](/design/more-info/sun/)
 
-## In code
+## 代码实现
 
-The dialog is `ha-more-info-dialog`, in `src/dialogs/more-info/`. The info view is `ha-more-info-info`, which renders `more-info-content`. That element picks the view for the domain of the entity, `more-info-<domain>`, from `src/dialogs/more-info/controls/`. The list of domains with the newer design is `DOMAINS_WITH_NEW_MORE_INFO` in `src/dialogs/more-info/const.ts`.
+该对话框是 `ha-more-info-dialog`，位于 `src/dialogs/more-info/`。信息视图是 `ha-more-info-info`，它渲染 `more-info-content`。该元素从 `src/dialogs/more-info/controls/` 中为实体的域选择视图 `more-info-<domain>`。采用较新设计的域列表是 `src/dialogs/more-info/const.ts` 中的 `DOMAINS_WITH_NEW_MORE_INFO`。
 
-The large state at the top is `ha-more-info-state-header`, and the row of secondary controls is `ha-more-info-control-select-container`, both in `src/dialogs/more-info/components/`. Most main controls live in `src/state-control/`, one folder per domain.
+顶部的大状态是 `ha-more-info-state-header`，次级控制行是 `ha-more-info-control-select-container`，两者都位于 `src/dialogs/more-info/components/` 中。大多数主控制位于 `src/state-control/` 中，每个域一个文件夹。
 
-Source: [`src/dialogs/more-info/`](https://github.com/home-assistant/frontend/tree/dev/src/dialogs/more-info)
+源码：[`src/dialogs/more-info/`](https://github.com/home-assistant/frontend/tree/dev/src/dialogs/more-info)

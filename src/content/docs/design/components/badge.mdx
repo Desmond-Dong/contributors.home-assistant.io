@@ -1,6 +1,6 @@
 ---
-title: Badge
-description: Badges show a small piece of status information, like a temperature or the state of a light, in a compact pill.
+title: 徽章（Badge）
+description: 徽章以紧凑的胶囊形显示一小段状态信息，例如温度或灯的状态。
 sidebarGroup: Feedback and status
 ---
 
@@ -21,132 +21,132 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   </ha-badge>
 </Demo>
 
-## Overview
+## 概述
 
-A badge shows one thing at a glance: a state, a value, a count. It is what powers the badges at the top of a dashboard, like the entity badge and the energy total badges. It is a compact pill with an optional icon, an optional label, and the value.
+徽章（badge）让人一眼就能看到一件事：一个状态、一个数值、一个计数。仪表盘顶部的徽章就是由它实现的，例如实体（entity）徽章和能源总量徽章。它是一个紧凑的胶囊形组件，带有可选的图标、可选的标签和值。
 
-## When to use
+## 何时使用
 
-Use a badge for:
+在以下情况使用徽章：
 
-- A single fact, like a temperature, the state of a light, or a count
-- A compact shortcut to more detail, like opening the more info dialog of an entity
+- 单一事实，例如温度、灯的状态或一个计数
+- 指向更多详情的紧凑快捷方式，例如打开实体的更多信息对话框
 
-Don't use a badge for:
+不要在以下情况使用徽章：
 
-- More than one fact. Use a card.
-- A message that needs to be read, like an error. Use an [alert](/design/components/alert/).
-- An action that is not about the value it shows. Use a [button](/design/components/button/).
+- 超过一个事实。请使用卡片。
+- 需要被阅读的消息，例如错误。请使用[警报（alert）](/design/components/alert/)。
+- 与所显示的值无关的操作。请使用[按钮（button）](/design/components/button/)。
 
-## Anatomy
+## 结构
 
-1. **Container**: the pill, with the background, border, and shadow of a card
-2. **Icon**: optional, colored with the badge color. An image here becomes a round picture.
-3. **Label**: optional small secondary text above the content
-4. **Content**: the value or state
+1. **容器**：胶囊形，带有卡片的背景、边框和阴影
+2. **图标**：可选，使用徽章颜色着色。此处的图片会显示为圆形图片。
+3. **标签**：可选，位于内容上方的小号次要文本
+4. **内容**：值或状态
 
-## Variants
+## 变体
 
-### With or without a label
+### 带或不带标签
 
-The label sits above the content, in small secondary text. Use it to say _what_ the value is about, like the area or the entity name. Leave it out when the icon and value already make that clear.
+标签位于内容上方，以小号次要文本显示。用它说明值是关于_什么_的，例如区域（area）或实体名称。当图标和值已经能说明清楚时，可以省略它。
 
 <Demo>
   <ha-badge>21.5 °C</ha-badge>
   <ha-badge label="Living room">21.5 °C</ha-badge>
 </Demo>
 
-### Badge or button
+### 徽章或按钮
 
-By default, a badge is static. Make it a button badge when selecting it does something, like opening the more info dialog of an entity. A button badge gets hover and press feedback, a pointer cursor, and keyboard focus, and screen readers announce it as a button.
+默认情况下，徽章是静态的。当选中它会执行某个操作时（例如打开实体的更多信息对话框），将其设为按钮徽章。按钮徽章具有悬停和按下反馈、指针光标和键盘焦点，并且屏幕阅读器会将其播报为按钮。
 
 <Demo>
   <ha-badge>Static</ha-badge>
   <ha-badge type="button">Selectable</ha-badge>
 </Demo>
 
-### Icon only
+### 仅图标
 
-An icon only badge drops the label and content, and becomes a round icon. Use it only for icons people recognize without text. Otherwise, keep the text.
+仅图标徽章会去掉标签和内容，变成一个圆形图标。仅当人们无需文字即可识别该图标时才使用。否则，请保留文字。
 
-## Behavior
+## 行为
 
-- **Static**: a badge of the default type has no hover, focus, or pressed state.
-- **Hover**: a button badge gets an overlay in the badge color at 4% opacity.
-- **Pressed**: a button badge gets an overlay in the badge color at 12% opacity.
-- **Focus**: a focused button badge gets a border and a 1px ring in the badge color. The change takes 180ms.
+- **静态**：默认类型的徽章没有悬停、焦点或按下状态。
+- **悬停**：按钮徽章会获得一层徽章颜色、4% 不透明度的覆盖层。
+- **按下**：按钮徽章会获得一层徽章颜色、12% 不透明度的覆盖层。
+- **焦点**：获得焦点的按钮徽章会获得徽章颜色的边框和 1px 的光环。此变化耗时 180ms。
 
-## Specs
+## 规格
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Height and minimum width | 36px | `--ha-badge-size` |
-| Padding left and right | 12px | None |
-| Padding left and right, icon only | 0 | None |
-| Corner radius | Half the height, 18px | `--ha-badge-border-radius` |
-| Gap between icon and text | 8px | `--ha-space-2` |
-| Icon size | 18px | `--ha-badge-icon-size` |
-| Image in the icon slot | 30px, round | `--ha-border-radius-circle` |
-| Border width | 1px | `--ha-card-border-width` |
-| Label | 10px, weight 500, line height 10px | `--ha-font-size-xs`, `--ha-font-weight-medium` |
-| Content | 12px, weight 500, line height 1.2 | `--ha-font-size-s`, `--ha-font-weight-medium`, `--ha-line-height-condensed` |
+| 高度和最小宽度 | 36px | `--ha-badge-size` |
+| 左右内边距 | 12px | 无 |
+| 左右内边距，仅图标 | 0 | 无 |
+| 圆角半径 | 高度的一半，18px | `--ha-badge-border-radius` |
+| 图标与文字之间的间距 | 8px | `--ha-space-2` |
+| 图标大小 | 18px | `--ha-badge-icon-size` |
+| 图标插槽中的图片 | 30px，圆形 | `--ha-border-radius-circle` |
+| 边框宽度 | 1px | `--ha-card-border-width` |
+| 标签 | 10px，字重 500，行高 10px | `--ha-font-size-xs`, `--ha-font-weight-medium` |
+| 内容 | 12px，字重 500，行高 1.2 | `--ha-font-size-s`, `--ha-font-weight-medium`, `--ha-line-height-condensed` |
 
-| Part | Color |
+| 部分 | 颜色 |
 | --- | --- |
-| Background | `--ha-card-background`, falling back to `--card-background-color` |
-| Border | `--ha-card-border-color`, falling back to `--divider-color` |
-| Shadow | `--ha-card-box-shadow`, none by default |
-| Icon, focus border, and focus ring | `--badge-color`, defaults to `--secondary-text-color` |
-| Label | `--secondary-text-color` |
-| Content | `--primary-text-color` |
+| 背景 | `--ha-card-background`，回退到 `--card-background-color` |
+| 边框 | `--ha-card-border-color`，回退到 `--divider-color` |
+| 阴影 | `--ha-card-box-shadow`，默认无 |
+| 图标、焦点边框和焦点光环 | `--badge-color`，默认为 `--secondary-text-color` |
+| 标签 | `--secondary-text-color` |
+| 内容 | `--primary-text-color` |
 
-## Guidelines
+## 指南
 
-<DoDont doText="Keep the content to a value with its unit, or a state." dontText="Put a sentence in a badge.">
+<DoDont doText="内容保持为带单位的值或一个状态。" dontText="在徽章中放一整句话。">
   <ha-badge slot="do" label="Living room"><ha-svg-icon slot="icon" path="M15 13V5A3 3 0 0 0 9 5V13A5 5 0 1 0 15 13M12 4A1 1 0 0 1 13 5V8H11V5A1 1 0 0 1 12 4Z"></ha-svg-icon>21.5 °C</ha-badge>
   <ha-badge slot="dont"><ha-svg-icon slot="icon" path="M15 13V5A3 3 0 0 0 9 5V13A5 5 0 1 0 15 13M12 4A1 1 0 0 1 13 5V8H11V5A1 1 0 0 1 12 4Z"></ha-svg-icon>The living room is 21.5 °C</ha-badge>
 </DoDont>
 
-- Keep a badge to a single fact. If you need more room, use a card.
-- Only make a badge a button badge when selecting it does something. Don't make a badge look selectable when it isn't.
-- See [UI text](/design/ui-text/) for how to write states and units.
+- 徽章只保留一个事实。如果需要更多空间，请使用卡片。
+- 只有当选中徽章会执行某个操作时，才将其设为按钮徽章。不要让徽章看起来可选中而实际不可。
+- 关于如何书写状态和单位，请参阅 [UI 文本](/design/ui-text/)。
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-| Key | Action |
+| 按键 | 操作 |
 | --- | --- |
-| <kbd>Tab</kbd> | Moves focus to a button badge. A static badge is not focusable. |
+| <kbd>Tab</kbd> | 将焦点移至按钮徽章。静态徽章不可聚焦。 |
 
-The badge has no key handler of its own. What <kbd>Enter</kbd> or <kbd>Space</kbd> do on a button badge depends on the handler the page adds.
+徽章本身没有按键处理器。<kbd>Enter</kbd> 或 <kbd>Space</kbd> 在按钮徽章上的行为取决于页面添加的处理器。
 
-### Focus
+### 焦点
 
-A focused button badge gets a border and a thin ring in the badge color, only when you use a keyboard.
+获得焦点的按钮徽章会获得徽章颜色的边框和细光环，且仅在使用键盘时显示。
 
-### Target size
+### 目标大小
 
-The badge is 36px high, and at least 36px wide.
+徽章高 36px，宽至少 36px。
 
-### Screen readers
+### 屏幕阅读器
 
-A screen reader reads the label and the content. A button badge is announced as a button. An icon only badge has no text of its own, so it needs a name from the page that uses it.
+屏幕阅读器会读取标签和内容。按钮徽章会被播报为按钮。仅图标徽章自身没有文字，因此需要使用它的页面为其提供名称。
 
-### In the code
+### 在代码中
 
-- A button badge has the role `button` and `tabindex="0"`. A static badge has no role, and can't be focused.
-- The focus style uses `:focus-visible`.
+- 按钮徽章具有 `button` 角色和 `tabindex="0"`。静态徽章没有角色，且不可聚焦。
+- 焦点样式使用 `:focus-visible`。
 
-## Related
+## 相关内容
 
-- [Label badge](/design/components/label-badge/): the older round badge
-- [State icon](/design/components/state-icon/): the icon that badges for entities show
-- [Alert](/design/components/alert/): for a message instead of a value
+- [标签徽章（Label badge）](/design/components/label-badge/)：较旧的圆形徽章
+- [状态图标（State icon）](/design/components/state-icon/)：实体徽章显示的图标
+- [警报（Alert）](/design/components/alert/)：用于显示消息而非值
 
-## In code
+## 在代码中
 
-The element is `<ha-badge>`. The content goes in the default slot, the icon in the `icon` slot.
+该元素是 `<ha-badge>`。内容放在默认插槽中，图标放在 `icon` 插槽中。
 
 ```html
 <ha-badge label="Living room">
@@ -157,25 +157,25 @@ The element is `<ha-badge>`. The content goes in the default slot, the icon in t
 <ha-badge type="button">On</ha-badge>
 ```
 
-### Attributes
+### 属性
 
-- `type`: `badge` (default) or `button`.
-- `label`: small text above the content.
-- `icon-only`: shows only the icon. Hides the label and the content.
+- `type`：`badge`（默认）或 `button`。
+- `label`：内容上方的小号文字。
+- `icon-only`：仅显示图标。隐藏标签和内容。
 
-### Slots
+### 插槽
 
-- Default: the content of the badge.
-- `icon`: the icon, usually an `ha-svg-icon` or `ha-state-icon`. An `img` in this slot is shown as a round 30 pixel picture, like an entity picture.
+- 默认：徽章的内容。
+- `icon`：图标，通常是 `ha-svg-icon` 或 `ha-state-icon`。此插槽中的 `img` 会显示为 30 像素的圆形图片，例如实体图片。
 
-### Styling
+### 样式
 
-- `--badge-color`: the icon color, and the focus ring color. Defaults to `var(--secondary-text-color)`. Dashboard badges set it to the state color of the entity.
-- `--ha-badge-size`: the height, and the minimum width. Defaults to `36px`.
-- `--ha-badge-border-radius`: the corner radius. Defaults to half the size, which makes it a pill.
-- `--ha-badge-font-size`: the size of the content text. Defaults to `var(--ha-font-size-s)`.
-- `--ha-badge-icon-size`: the icon size. Defaults to `18px`.
+- `--badge-color`：图标颜色和焦点光环颜色。默认为 `var(--secondary-text-color)`。仪表盘徽章会将其设为实体的状态颜色。
+- `--ha-badge-size`：高度和最小宽度。默认为 `36px`。
+- `--ha-badge-border-radius`：圆角半径。默认为尺寸的一半，使其呈胶囊形。
+- `--ha-badge-font-size`：内容文字的大小。默认为 `var(--ha-font-size-s)`。
+- `--ha-badge-icon-size`：图标大小。默认为 `18px`。
 
-The background, border, and shadow follow the card variables (`--ha-card-background`, `--ha-card-border-color`, `--ha-card-border-width`, `--ha-card-box-shadow`), so badges match the cards of the theme.
+背景、边框和阴影遵循卡片变量（`--ha-card-background`、`--ha-card-border-color`、`--ha-card-border-width`、`--ha-card-box-shadow`），因此徽章与主题的卡片保持一致。
 
 Source: [`src/components/ha-badge.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-badge.ts)

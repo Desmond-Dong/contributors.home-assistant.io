@@ -1,23 +1,23 @@
 ---
-title: Remove, delete, add, or create
-description: Four words that are easy to mix up. Using them consistently tells people what will happen.
+title: 移除、删除、添加或创建
+description: 四个容易混淆的词。一致地使用它们能让用户明白将会发生什么。
 order: 3
 ---
 
-These words look interchangeable, but they tell people something different. Used consistently, they answer an important question before it is asked: can I undo this?
+这些词看起来可以互换，但它们传达的含义不同。一致地使用它们，可以在用户提问之前就回答一个重要问题：我能撤销这个操作吗？
 
-## Remove or delete
+## 移除还是删除
 
-- **Remove** takes something away, but it still exists, or can be added back. Removing a user from a group, removing a card from a dashboard, removing a label from a device.
-- **Delete** destroys something for good. It cannot be undone. Deleting an automation, deleting a backup, deleting a user.
+- **移除**（Remove）是把某样东西拿走，但它仍然存在，或者可以被重新添加。例如：将用户从群组中移除、将卡片从仪表盘（dashboard）中移除、将标签从设备（device）上移除。
+- **删除**（Delete）是彻底销毁某样东西。它无法被撤销。例如：删除自动化（automation）、删除备份、删除用户。
 
-If in doubt, ask: does the thing still exist afterwards? Then it is remove.
+如果拿不准，就问自己：这个东西之后还存在吗？如果存在，那就是移除。
 
-## Add or create
+## 添加还是创建
 
-- **Add** puts something that already exists somewhere. Adding a device to an area, adding a user to a group, adding a card to a dashboard.
-- **Create** makes something new from scratch. Creating an automation, creating a dashboard, creating a backup.
+- **添加**（Add）是把已经存在的东西放到某个地方。例如：将设备添加到区域（area）、将用户添加到群组、将卡片添加到仪表盘。
+- **创建**（Create）是从零开始做出新的东西。例如：创建自动化、创建仪表盘、创建备份。
 
-## Pairs
+## 成对使用
 
-The words come in pairs. Something you add, you remove. Something you create, you delete.
+这些词是成对出现的。添加的东西，用移除；创建的东西，用删除。

@@ -1,6 +1,6 @@
 ---
-title: Media player
-description: The more-info view of a speaker, TV, or other media player, laid out like a music app.
+title: 媒体播放器
+description: 扬声器、电视或其他媒体播放器的更多信息视图，布局类似音乐应用。
 sidebarGroup: Media
 ---
 
@@ -11,30 +11,30 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="media_player.living_room_tv"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 显示内容
 
-The media player view looks like the now playing screen of a music app, because that is what people expect when they control what is playing. From top to bottom:
+媒体播放器视图看起来像音乐应用的正在播放界面，因为人们在控制播放内容时最熟悉这种样式。从上到下依次为：
 
-- **Cover art**: the picture of what is playing, like an album cover. Without one, a gray square with a music note takes its place.
-- **Title and artist**: the title of the media, and a line with the artist or other details below it. Both scroll slowly when they are too long to fit, using [marquee text](/design/components/marquee-text/).
-- **Progress**: a [slider](/design/components/slider/) with the position and the duration below it. You can drag it to seek, when the player supports that. It only shows when the media has a duration.
-- **Playback controls**: previous and next track, with a big filled play or pause [button](/design/components/button/) in the middle. Repeat and shuffle sit on the outer ends, when the player supports them.
-- **Volume**: a mute button and a volume slider. Players that only step the volume get volume down and volume up buttons instead.
-- **More actions**: a row of icon buttons for browsing media, joining other speakers, picking the source and the sound mode, and turning the player on or off.
+- **封面图**：正在播放内容的图片，例如专辑封面。如果没有封面，则显示一个带音符的灰色方块。
+- **标题和艺术家**：媒体的标题，下方一行显示艺术家或其他详细信息。当内容过长无法完整显示时，两者会缓慢滚动，使用[跑马灯文本](/design/components/marquee-text/)。
+- **进度**：一个[滑块](/design/components/slider/)，下方显示当前进度和总时长。当播放器支持时，可以拖动它来跳转。只有当媒体有时长信息时才会显示。
+- **播放控制**：上一曲和下一曲，中间是一个大的实心播放或暂停[按钮](/design/components/button/)。当播放器支持时，重复和随机播放位于两端。
+- **音量**：一个静音按钮和一个音量滑块。只支持步进调节音量的播放器则显示音量减小和音量增大按钮。
+- **更多操作**：一排图标按钮，用于浏览媒体、加入其他扬声器、选择音源和声音模式，以及打开或关闭播放器。
 
-The speaker is playing music. The TV is off: it shows only the empty cover and the buttons to pick a source and turn it on.
+扬声器正在播放音乐。电视处于关闭状态：只显示空的封面，以及选择音源和打开电源的按钮。
 
-## Design notes
+## 设计说明
 
-- This view has no large state at the top. The cover art, the title, and the play button already tell you what is going on.
-- Every control checks the supported features of the player. A control the player doesn't support is left out. Around the play button, a missing control leaves an empty spot, so play and pause always stay in the center.
-- The volume only shows while the player is on, since there is nothing to hear when it is off.
-- The source and sound mode buttons open a [dropdown](/design/components/dropdown/), with the current choice selected.
-- When a speaker is grouped with others, the join button shows a small badge with the number of speakers in the group.
-- When the player is unavailable, the view shows only the empty cover with the state, and no controls.
+- 此视图顶部没有大的状态显示。封面图、标题和播放按钮已经足以说明当前状况。
+- 每个控件都会检查播放器支持的功能。播放器不支持的功能会被省略。在播放按钮周围，缺失的控件会留出空位，因此播放和暂停始终保持在中心位置。
+- 音量控件只在播放器开启时显示，因为关闭时没有声音可听。
+- 音源和声音模式按钮会打开一个[下拉菜单](/design/components/dropdown/)，并选中当前选项。
+- 当一个扬声器与其他扬声器分组时，加入按钮会显示一个小徽标，标明组内扬声器的数量。
+- 当播放器不可用时，视图只显示带有状态的空封面，不显示任何控件。
 
-## In code
+## 代码实现
 
-The view is `more-info-media_player` in `src/dialogs/more-info/controls/more-info-media_player.ts`. Which playback buttons show is decided by `computeMediaControls` in `src/data/media-player.ts`. The features are in `src/data/feature/media-player_entity_feature.ts`.
+该视图是 `src/dialogs/more-info/controls/more-info-media_player.ts` 中的 `more-info-media_player`。显示哪些播放按钮由 `src/data/media-player.ts` 中的 `computeMediaControls` 决定。相关功能定义在 `src/data/feature/media-player_entity_feature.ts` 中。
 
-Source: [`more-info-media_player.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-media_player.ts)
+源码：[`more-info-media_player.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-media_player.ts)

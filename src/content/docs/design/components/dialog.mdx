@@ -1,103 +1,103 @@
 ---
-title: Dialog
-description: Dialogs ask for a decision or input, on top of what you were doing.
+title: 对话框
+description: 对话框在您正在进行的操作之上，请求做出决定或输入内容。
 sidebarGroup: Feedback and status
 ---
 
 import DoDont from "../../../../components/docs/DoDont.astro";
 
-## Overview
+## 概述
 
-Dialogs interrupt. Use them for things that need attention now: a confirmation, a short form, a choice. For anything bigger, use a page.
+对话框会打断用户。请将其用于需要立即关注的事项：确认、简短表单或选择。对于更大的内容，请使用页面。
 
-Dialogs in the frontend are based on [Material Design 3](https://m3.material.io/components/dialogs/overview), with the adjustments described on this page.
+前端的对话框基于 [Material Design 3](https://m3.material.io/components/dialogs/overview)，并包含本页所述的调整。
 
-## When to use
+## 何时使用
 
-Use a dialog for:
+在以下情况使用对话框：
 
-- Confirming an action, especially one that can't be undone
-- A short form, like renaming something
-- A choice someone must make before they can continue
+- 确认某个操作，尤其是无法撤销的操作
+- 简短的表单，例如重命名某个项目
+- 用户必须做出选择才能继续
 
-Don't use a dialog for:
+不要在以下情况使用对话框：
 
-- A message that doesn't block anything. Use an [alert](/design/components/alert/).
-- Content that needs more room than a dialog has. Use a dedicated page.
-- Content that people show and hide on the page. Use an [expansion panel](/design/components/expansion-panel/).
+- 不会阻塞任何操作的消息。请使用[提醒（alert）](/design/components/alert/)。
+- 需要比对话框更多空间的内容。请使用专用页面。
+- 用户在页面上显示和隐藏的内容。请使用[展开面板（expansion panel）](/design/components/expansion-panel/)。
 
-## Anatomy
+## 结构
 
-1. **Scrim**: the overlay behind the dialog
-2. **Surface**: the dialog itself, with rounded corners and a shadow
-3. **Close button**: in the top left of the header
-4. **Title**: the header text, and an optional subtitle below or above it
-5. **Header actions**: optional icon buttons in the top right, like help or settings
-6. **Body**: the content, which scrolls when it doesn't fit
-7. **Footer**: the buttons, at the bottom right
+1. **遮罩（Scrim）**：对话框背后的覆盖层
+2. **表面（Surface）**：对话框本身，带有圆角和阴影
+3. **关闭按钮**：位于标题栏左上角
+4. **标题**：标题栏文本，其下方或上方可以有可选的副标题
+5. **标题栏操作**：右上角可选的图标按钮，例如帮助或设置
+6. **主体**：内容，当内容放不下时会滚动
+7. **页脚**：按钮，位于右下角
 
-When the body is scrolled, a thin line appears below the header.
+当主体滚动时，标题栏下方会出现一条细线。
 
-## Variants
+## 变体
 
-### Standard and alert
+### 标准对话框和提醒对话框
 
-A standard dialog has a header with a close button. On a small screen, it fills the whole screen.
+标准对话框带有带关闭按钮的标题栏。在小屏幕上，它会填满整个屏幕。
 
-An alert dialog is for alerts and confirmations. It stays a dialog on a small screen, with its rounded corners. By design it only has buttons, no close button. Making a dialog an alert dialog does not remove the close button by itself: the confirmation dialog of the frontend brings its own header without one.
+提醒对话框用于提醒和确认。在小屏幕上它仍保持为对话框，并保留其圆角。按照设计，它只有按钮，没有关闭按钮。将对话框设为提醒对话框本身并不会移除关闭按钮：前端的确认对话框自带不带关闭按钮的标题栏。
 
-### Width
+### 宽度
 
-There are four widths: small, medium (the default), large, and full. Use one of these, and avoid custom sizes unless there is a clear need.
+有四种宽度：小、中（默认）、大和全屏。请使用其中之一，除非有明确需要，否则避免自定义尺寸。
 
-## Behavior
+## 行为
 
-- **Opening**: the dialog animates in over the scrim in 200ms. With reduced motion turned on, it appears right away. Focus moves to the element that is marked to get it, or to the dialog itself.
-- **Closing**: the close button, a button in the dialog marked as a close button, <kbd>Escape</kbd>, and selecting the scrim all close the dialog. Focus then returns to the element that opened it.
-- **Guarded closing**: when someone has changed a form in the dialog, it does not close with <kbd>Escape</kbd> or by selecting the scrim. Instead, it gives a little shake (a 250ms pulse). That prevents losing work by accident. Confirmation dialogs work the same way.
-- **Scrolling**: the body scrolls when the content doesn't fit, and the page behind the dialog doesn't scroll.
-- **Small screens**: up to 450px wide or 500px high, a standard dialog fills the screen, without rounded corners.
+- **打开**：对话框在 200 毫秒内以动画形式出现在遮罩之上。开启减弱动态效果后，它会立即出现。焦点会移动到被标记为接收焦点的元素，或对话框本身。
+- **关闭**：关闭按钮、对话框中被标记为关闭按钮的按钮、<kbd>Escape</kbd> 键以及点击遮罩都会关闭对话框。随后焦点会返回到打开它的元素。
+- **受保护的关闭**：当用户修改了对话框中的表单时，它不会因 <kbd>Escape</kbd> 键或点击遮罩而关闭。相反，它会轻微抖动（一个 250 毫秒的脉冲）。这可以防止意外丢失工作。确认对话框的工作方式相同。
+- **滚动**：当内容放不下时主体会滚动，而对话框背后的页面不会滚动。
+- **小屏幕**：当宽度不超过 450px 或高度不超过 500px 时，标准对话框会填满屏幕，且没有圆角。
 
-## Specs
+## 规格
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Width, small | 320px | `--ha-dialog-width-sm` |
-| Width, medium | 580px | `--ha-dialog-width-md` |
-| Width, large | 1024px | `--ha-dialog-width-lg` |
-| Width, full | 95% of the screen, within the safe area | `--ha-dialog-width-full` |
-| Maximum height | The safe height minus 80px | `--ha-space-20`, through `--ha-dialog-max-height` |
-| Corner radius | 24px, 0 for a standard dialog on small screens | `--ha-border-radius-3xl`, through `--ha-dialog-border-radius` |
-| Background | Card background | `--card-background-color`, through `--ha-dialog-surface-background` |
-| Shadow | Large shadow | `--wa-shadow-l`, through `--dialog-box-shadow` |
-| Header minimum height | 48px | `--ha-space-12` |
-| Header padding | 4px left and right, 8px on larger screens | `--ha-space-1`, `--ha-space-2` |
-| Title | 20px, weight 500, line height 1.2 | `--ha-font-size-xl`, `--ha-font-weight-medium`, `--ha-line-height-condensed` |
-| Subtitle | 14px, line height 1.6 | `--ha-font-size-m`, `--ha-line-height-normal` |
-| Subtitle color | Secondary text color | `--secondary-text-color` |
-| Body padding | 0 at the top, 24px on the other sides | `--ha-space-6`, through `--dialog-content-padding` |
-| Footer padding | 12px at the top, 16px on the other sides | `--ha-space-3`, `--ha-space-4` |
-| Space between footer buttons | 12px | `--ha-space-3` |
-| Open and close animation | 200ms, 0ms with reduced motion | `--ha-dialog-show-duration`, `--ha-dialog-hide-duration` |
+| 宽度，小 | 320px | `--ha-dialog-width-sm` |
+| 宽度，中 | 580px | `--ha-dialog-width-md` |
+| 宽度，大 | 1024px | `--ha-dialog-width-lg` |
+| 宽度，全屏 | 屏幕的 95%，在安全区域内 | `--ha-dialog-width-full` |
+| 最大高度 | 安全高度减去 80px | `--ha-space-20`，通过 `--ha-dialog-max-height` |
+| 圆角 | 24px，小屏幕上的标准对话框为 0 | `--ha-border-radius-3xl`，通过 `--ha-dialog-border-radius` |
+| 背景 | 卡片背景 | `--card-background-color`，通过 `--ha-dialog-surface-background` |
+| 阴影 | 大阴影 | `--wa-shadow-l`，通过 `--dialog-box-shadow` |
+| 标题栏最小高度 | 48px | `--ha-space-12` |
+| 标题栏内边距 | 左右各 4px，较大屏幕上为 8px | `--ha-space-1`、`--ha-space-2` |
+| 标题 | 20px，字重 500，行高 1.2 | `--ha-font-size-xl`、`--ha-font-weight-medium`、`--ha-line-height-condensed` |
+| 副标题 | 14px，行高 1.6 | `--ha-font-size-m`、`--ha-line-height-normal` |
+| 副标题颜色 | 次要文本颜色 | `--secondary-text-color` |
+| 主体内边距 | 顶部为 0，其他各边为 24px | `--ha-space-6`，通过 `--dialog-content-padding` |
+| 页脚内边距 | 顶部为 12px，其他各边为 16px | `--ha-space-3`、`--ha-space-4` |
+| 页脚按钮之间的间距 | 12px | `--ha-space-3` |
+| 打开和关闭动画 | 200 毫秒，减弱动态效果时为 0 毫秒 | `--ha-dialog-show-duration`、`--ha-dialog-hide-duration` |
 
-## Guidelines
+## 指南
 
-### Layout
+### 布局
 
-- Keep dialogs narrow. The design guideline is at most 560 pixels wide, and a fixed 320 pixels for alert and confirmation dialogs. The code is not that strict: the default width is 580 pixels, and the confirmation dialog uses it too. Need more room? Use a dedicated page.
-- The close button sits in the top left, on every screen size.
-- Extra icon buttons, like help, settings, or expand, sit in the top right. With more than two, they go into an overflow menu.
-- The main action is grouped with **Cancel** at the bottom right. On mobile, full screen dialogs keep these buttons fixed at the bottom.
-- Alert and confirmation dialogs only have buttons, no close button.
+- 保持对话框窄一些。设计指南规定宽度最多 560 像素，提醒对话框和确认对话框固定为 320 像素。代码并没有那么严格：默认宽度是 580 像素，确认对话框也使用该宽度。需要更多空间？请使用专用页面。
+- 关闭按钮位于左上角，适用于所有屏幕尺寸。
+- 额外的图标按钮，例如帮助、设置或展开，位于右上角。超过两个时，它们会进入溢出菜单。
+- 主要操作与**取消**按钮一起分组在右下角。在移动设备上，全屏对话框会将这些按钮固定在底部。
+- 提醒对话框和确认对话框只有按钮，没有关闭按钮。
 
-### Closing
+### 关闭
 
-- Every dialog with actions has a way out: on desktop a **Cancel** button and the close button, on mobile the close button.
-- When someone has changed a form in the dialog, it does not close with Escape or by selecting outside of it. That prevents losing work by accident.
+- 每个带操作的对话框都有退出途径：在桌面端有**取消**按钮和关闭按钮，在移动端有关闭按钮。
+- 当用户修改了对话框中的表单时，它不会因 Escape 键或点击对话框外部而关闭。这可以防止意外丢失工作。
 
-### Buttons
+### 按钮
 
-<DoDont doText="Group a plain Cancel with one main action." dontText="Add a third button that leaves the task unfinished.">
+<DoDont doText="将一个普通的取消按钮与一个主要操作组合在一起。" dontText="添加一个让任务未完成的第三个按钮。">
   <Fragment slot="do">
     <ha-button appearance="plain">Cancel</ha-button>
     <ha-button>Save</ha-button>
@@ -109,7 +109,7 @@ There are four widths: small, medium (the default), large, and full. Use one of 
   </Fragment>
 </DoDont>
 
-<DoDont doText="Use the danger variant for a destructive action." dontText="Use the brand color for an action that deletes something.">
+<DoDont doText="对破坏性操作使用 danger 变体。" dontText="对删除内容的操作使用品牌色。">
   <Fragment slot="do">
     <ha-button appearance="plain">Cancel</ha-button>
     <ha-button variant="danger">Delete</ha-button>
@@ -120,69 +120,69 @@ There are four widths: small, medium (the default), large, and full. Use one of 
   </Fragment>
 </DoDont>
 
-- Keep labels short: **Save**, **Delete**, **Enable**.
-- Avoid three buttons in one dialog, especially when one of them leaves the task unfinished.
+- 保持标签简短：**保存**、**删除**、**启用**。
+- 避免在一个对话框中使用三个按钮，尤其是当其中一个会让任务未完成时。
 
-### Content
+### 内容
 
-People mostly read the title and the buttons. Put what matters there.
+人们主要阅读标题和按钮。把重要的内容放在那里。
 
-- Always give a dialog a title.
-- Avoid content entered by users in the title, like a name. It can make the title unreadably long.
-- Use the description for people who are unsure: explain what will happen.
-- Keep it short.
+- 始终为对话框提供标题。
+- 避免在标题中使用用户输入的内容，例如名称。这可能会使标题长到难以阅读。
+- 为不确定的用户使用描述：解释将会发生什么。
+- 保持简短。
 
-A confirmation dialog for deleting a dashboard:
+一个用于删除仪表盘（dashboard）的确认对话框：
 
-> **Delete dashboard?**
+> **删除仪表盘？**
 >
-> Dashboard Kitchen will be permanently deleted from Home Assistant.
+> 仪表盘 Kitchen 将从 Home Assistant 中被永久删除。
 >
-> **Cancel** / **Delete**
+> **取消** / **删除**
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-| Key | Action |
+| 按键 | 操作 |
 | --- | --- |
-| <kbd>Tab</kbd> | Moves focus through the dialog. Focus stays inside the dialog while it is open. |
-| <kbd>Escape</kbd> | Closes the dialog, unless closing is guarded. Then the dialog shakes and stays open. |
-| <kbd>Enter</kbd> or <kbd>Space</kbd> | Selects the focused button, like any button. |
+| <kbd>Tab</kbd> | 在对话框内移动焦点。对话框打开时，焦点保持在对话框内。 |
+| <kbd>Escape</kbd> | 关闭对话框，除非关闭受到保护。此时对话框会抖动并保持打开。 |
+| <kbd>Enter</kbd> 或 <kbd>Space</kbd> | 选中获得焦点的按钮，与任何按钮一样。 |
 
-### Focus
+### 焦点
 
-When the dialog opens, focus moves into it: to the first field of a form, or to the dialog itself. When the dialog closes, focus returns to the element that had it before. The rest of the page can't be reached while the dialog is open.
+对话框打开时，焦点会移入其中：移到表单的第一个字段，或对话框本身。对话框关闭时，焦点会返回到之前拥有它的元素。对话框打开时，页面的其余部分无法被访问。
 
-### Target size
+### 目标尺寸
 
-The close button is an icon button of 48px by 48px.
+关闭按钮是一个 48px × 48px 的图标按钮。
 
-### Screen readers
+### 屏幕阅读器
 
-A dialog is announced as a dialog, with its title as its name. A confirmation dialog also reads its description. The close button is announced as "Close", in the language of the user.
+对话框会被播报为对话框，其标题作为其名称。确认对话框还会朗读其描述。关闭按钮会以用户的语言播报为“关闭”。
 
-### In the code
+### 在代码中
 
-- The dialog is a native `<dialog>` element, opened as a modal, so it has the role `dialog` and the page behind it is inert.
-- Focus moves to the element with `autofocus`. Components that delegate focus, like `<ha-form autofocus>`, pass it on to their first field.
-- The accessible name is the `header-title`, or `accessibleLabel` for a dialog that puts its title in a slot.
-- Use `aria-describedby` to connect the description, like the confirmation dialogs do.
-- The close button has the translated label `ui.common.close` as its accessible name.
+- 对话框是一个原生的 `<dialog>` 元素，以模态方式打开，因此它具有 `dialog` 角色，其背后的页面是惰性的。
+- 焦点会移动到带有 `autofocus` 的元素。委托焦点的组件（例如 `<ha-form autofocus>`）会将其传递给它们的第一个字段。
+- 可访问名称是 `header-title`，对于将标题放在插槽中的对话框，则是 `accessibleLabel`。
+- 使用 `aria-describedby` 连接描述，就像确认对话框所做的那样。
+- 关闭按钮以翻译后的标签 `ui.common.close` 作为其可访问名称。
 
-## Related
+## 相关内容
 
-- [Adaptive dialog](/design/components/adaptive-dialog/): a dialog that becomes a bottom sheet on a phone
-- [Button](/design/components/button/): the buttons in the footer
-- [Alert](/design/components/alert/): a message that doesn't block anything
-- [Form](/design/components/form/): the fields in a dialog
-- [UI text](/design/ui-text/): how to write titles and labels
+- [自适应对话框](/design/components/adaptive-dialog/)：在手机上变为底部弹层的对话框
+- [按钮](/design/components/button/)：页脚中的按钮
+- [提醒](/design/components/alert/)：不会阻塞任何操作的消息
+- [表单](/design/components/form/)：对话框中的字段
+- [UI 文本](/design/ui-text/)：如何撰写标题和标签
 
-## In code
+## 代码实现
 
-The element is `<ha-dialog>`. It is based on the [Web Awesome dialog](https://webawesome.com/docs/components/dialog/). Look at existing dialogs in the [frontend repository](https://github.com/home-assistant/frontend/tree/dev/src/dialogs) before you build a new one.
+该元素是 `<ha-dialog>`。它基于 [Web Awesome dialog](https://webawesome.com/docs/components/dialog/)。在构建新对话框之前，请查看[前端仓库](https://github.com/home-assistant/frontend/tree/dev/src/dialogs)中现有的对话框。
 
-Open a dialog by firing the `show-dialog` event, and let it load itself:
+通过触发 `show-dialog` 事件打开对话框，并让它自行加载：
 
 ```ts
 fireEvent(this, "show-dialog", {
@@ -192,10 +192,10 @@ fireEvent(this, "show-dialog", {
 });
 ```
 
-- Use `DialogMixin` for a new dialog (`src/dialogs/dialog-mixin.ts`). Read the parameters from its `params` property, and call `closeDialog()` to close it.
-- Use `header-title` and `header-subtitle` for simple header text, and the header slots when you need more.
-- Put the buttons in `ha-dialog-footer`, in its `primaryAction` and `secondaryAction` slots.
-- Add `autofocus` to the first focusable element, like `<ha-form autofocus>`.
+- 为新对话框使用 `DialogMixin`（`src/dialogs/dialog-mixin.ts`）。从其 `params` 属性读取参数，并调用 `closeDialog()` 来关闭它。
+- 对于简单的标题栏文本，使用 `header-title` 和 `header-subtitle`，需要更多内容时使用标题栏插槽。
+- 将按钮放在 `ha-dialog-footer` 中，位于其 `primaryAction` 和 `secondaryAction` 插槽内。
+- 为第一个可获得焦点的元素添加 `autofocus`，例如 `<ha-form autofocus>`。
 
 ```html
 <ha-dialog open header-title="Rename" width="small">
@@ -209,41 +209,41 @@ fireEvent(this, "show-dialog", {
 </ha-dialog>
 ```
 
-### Attributes
+### 属性
 
-- `open`: opens the dialog.
-- `type`: `standard` (default) or `alert`. A standard dialog fills the screen on small screens, an alert dialog stays a dialog.
-- `width`: `small`, `medium` (default), `large`, or `full`.
-- `prevent-scrim-close`: blocks closing with Escape or by selecting the scrim. The dialog shakes instead.
-- `header-title` and `header-subtitle`: the header text.
-- `header-subtitle-position`: `below` (default) or `above` the title.
-- `flexcontent`: makes the body a flex container.
-- `without-header`: leaves out the header.
-- `aria-labelledby` and `aria-describedby`: passed on to the dialog.
+- `open`：打开对话框。
+- `type`：`standard`（默认）或 `alert`。标准对话框在小屏幕上会填满屏幕，提醒对话框则保持为对话框。
+- `width`：`small`、`medium`（默认）、`large` 或 `full`。
+- `prevent-scrim-close`：阻止通过 Escape 键或点击遮罩关闭。对话框会改为抖动。
+- `header-title` 和 `header-subtitle`：标题栏文本。
+- `header-subtitle-position`：位于标题的 `below`（默认）或 `above`。
+- `flexcontent`：使主体成为 flex 容器。
+- `without-header`：省略标题栏。
+- `aria-labelledby` 和 `aria-describedby`：传递给对话框。
 
-### Slots
+### 插槽
 
-- Default: the body.
-- `header`: replaces the whole header.
-- `headerNavigationIcon`: replaces the close button.
-- `headerTitle` and `headerSubtitle`: your own title and subtitle, when the attributes are not set.
-- `headerActionItems`: icon buttons in the top right.
-- `footer`: the footer, usually an `ha-dialog-footer`.
+- 默认：主体。
+- `header`：替换整个标题栏。
+- `headerNavigationIcon`：替换关闭按钮。
+- `headerTitle` 和 `headerSubtitle`：当未设置相应属性时，使用您自己的标题和副标题。
+- `headerActionItems`：右上角的图标按钮。
+- `footer`：页脚，通常是一个 `ha-dialog-footer`。
 
-### Events
+### 事件
 
-- `opened`: the dialog is shown.
-- `after-show`: the open animation is done.
-- `closed`: the dialog is hidden.
+- `opened`：对话框已显示。
+- `after-show`：打开动画已完成。
+- `closed`：对话框已隐藏。
 
-### Styling
+### 样式
 
-- `--dialog-content-padding`: the padding of the body.
-- `--ha-dialog-show-duration` and `--ha-dialog-hide-duration`: the animation durations.
-- `--ha-dialog-surface-background`: the background.
-- `--ha-dialog-border-radius`: the corner radius.
-- `--dialog-box-shadow`: the shadow.
-- `--ha-dialog-surface-backdrop-filter` and `--ha-dialog-scrim-backdrop-filter`: backdrop filters for the surface and the scrim.
-- `--dialog-surface-margin-top`: the top margin of the surface.
+- `--dialog-content-padding`：主体的内边距。
+- `--ha-dialog-show-duration` 和 `--ha-dialog-hide-duration`：动画时长。
+- `--ha-dialog-surface-background`：背景。
+- `--ha-dialog-border-radius`：圆角。
+- `--dialog-box-shadow`：阴影。
+- `--ha-dialog-surface-backdrop-filter` 和 `--ha-dialog-scrim-backdrop-filter`：表面和遮罩的背景滤镜。
+- `--dialog-surface-margin-top`：表面的上外边距。
 
-Source: [`src/components/ha-dialog.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-dialog.ts)
+源码：[`src/components/ha-dialog.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-dialog.ts)

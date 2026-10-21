@@ -1,6 +1,6 @@
 ---
-title: Grid and stack cards
-description: The grid, horizontal stack, and vertical stack cards hold other cards, to place them side by side or below each other as one card.
+title: 网格卡片和堆叠卡片
+description: 网格卡片、水平堆叠卡片和垂直堆叠卡片用于容纳其他卡片，将它们并排或上下排列为一张卡片。
 sidebarGroup: Grouping and layout
 ---
 
@@ -10,63 +10,63 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 380px" data-props='{"config": {"type": "grid", "columns": 2, "square": false, "cards": [{"type": "button", "entity": "light.living_room_lamp"}, {"type": "button", "entity": "light.hallway"}, {"type": "button", "entity": "switch.desk_plug"}, {"type": "button", "entity": "lock.front_door"}]}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-These three cards have no content of their own. They hold other cards and lay them out:
+这三种卡片本身没有内容。它们容纳其他卡片并对这些卡片进行布局：
 
-- The grid card places cards in columns, row after row.
-- The horizontal stack card places cards side by side, in one row.
-- The vertical stack card places cards below each other.
+- 网格卡片将卡片按列、逐行排列。
+- 水平堆叠卡片将卡片并排放在一行中。
+- 垂直堆叠卡片将卡片上下排列。
 
-They come from the masonry view, where every card takes one column and the view decides where it goes. A stack is the way to keep cards together there, like a heading with the cards below it, or two gauges side by side.
+它们源自瀑布流（masonry）视图，在瀑布流视图中每张卡片占据一列，由视图决定卡片的位置。堆叠是在那里将卡片组合在一起的方式，例如一个标题加上其下方的卡片，或者两个仪表并排显示。
 
-In the sections view, you rarely need them. A section is already a grid of 12 columns, and each card gets its own size in it. Place the cards in the section directly, so each one can be moved, resized, and hidden on its own. Reach for a stack only for cards that must stay together in every layout, on every screen.
+在分区（sections）视图中，你很少需要它们。分区本身已经是一个 12 列的网格，每张卡片在其中都有自己的尺寸。请直接将卡片放置在分区中，这样每张卡片都可以单独移动、调整大小和隐藏。只有当卡片必须在每种布局、每个屏幕上都保持在一起时，才使用堆叠。
 
-### Grid
+### 网格
 
-The grid card has three columns by default. Set `columns` to change that. By default, every cell is square, which suits small cards like the [button card](/design/dashboards/button-card/). Set `square: false` to let each row take the height of its tallest card.
+网格卡片默认有三列。可以通过设置 `columns` 来更改。默认情况下，每个单元格都是正方形，这适合像[按钮卡片](/design/dashboards/button-card/)这样的小卡片。设置 `square: false` 可以让每行的高度取决于该行中最高的卡片。
 
 <Demo hass>
   <hui-card style="width: 380px" data-props='{"config": {"type": "grid", "cards": [{"type": "button", "entity": "light.living_room_lamp"}, {"type": "button", "entity": "light.hallway"}, {"type": "button", "entity": "light.kitchen_ceiling"}]}}'></hui-card>
   <hui-card style="width: 380px" data-props='{"config": {"type": "grid", "columns": 2, "square": false, "cards": [{"type": "tile", "entity": "binary_sensor.front_door"}, {"type": "tile", "entity": "lock.front_door"}, {"type": "tile", "entity": "binary_sensor.kitchen_window"}, {"type": "tile", "entity": "binary_sensor.bathroom_leak"}]}}'></hui-card>
 </Demo>
 
-### Horizontal stack
+### 水平堆叠
 
-The horizontal stack divides its width evenly over its cards. Keep it to two or three cards. On a narrow screen, every card in the stack gets narrower too, because a stack never wraps.
+水平堆叠将其宽度平均分配给其中的卡片。请保持两到三张卡片。在窄屏幕上，堆叠中的每张卡片也会变窄，因为堆叠永远不会换行。
 
 <Demo hass>
   <hui-card style="width: 380px" data-props='{"config": {"type": "horizontal-stack", "cards": [{"type": "gauge", "entity": "sensor.living_room_humidity", "name": "Inside"}, {"type": "gauge", "entity": "sensor.outdoor_humidity", "name": "Outside"}]}}'></hui-card>
 </Demo>
 
-### Vertical stack
+### 垂直堆叠
 
-The vertical stack puts cards below each other, as one card. Combine it with a horizontal stack to build a small layout of its own.
+垂直堆叠将卡片上下排列为一张卡片。可以将其与水平堆叠结合，构建一个独立的小布局。
 
 <Demo hass>
   <hui-card style="width: 380px" data-props='{"config": {"type": "vertical-stack", "cards": [{"type": "tile", "entity": "media_player.living_room_speaker"}, {"type": "horizontal-stack", "cards": [{"type": "tile", "entity": "light.living_room_lamp"}, {"type": "tile", "entity": "climate.thermostat"}]}]}}'></hui-card>
 </Demo>
 
-### Title
+### 标题
 
-All three take an optional `title`, shown above the cards. In the sections view, use a [heading card](/design/dashboards/heading-card/) instead, so the title looks the same as the rest of the view.
+这三种卡片都可以接受一个可选的 `title`，显示在卡片上方。在分区视图中，请改用[标题卡片](/design/dashboards/heading-card/)，这样标题的外观会与视图中的其他部分保持一致。
 
-### Content
+### 内容
 
-- A stack in a stack in a stack is hard to edit and hard to change. If a layout needs that, a section probably fits better.
-- Cards in a grid or stack keep their own borders and backgrounds. The holder adds the spacing between them, nothing else.
+- 堆叠中再嵌套堆叠、层层嵌套的堆叠既难以编辑，也难以修改。如果布局需要这样做，使用分区可能更合适。
+- 网格或堆叠中的卡片保留各自的边框和背景。容器只负责添加它们之间的间距，不做其他事情。
 
-## Configuration
+## 配置
 
-All three cards take:
+这三种卡片都接受：
 
-- `cards` (list, required): the cards to show, each with its own configuration.
-- `title` (string): a title above the cards.
+- `cards`（列表，必填）：要显示的卡片，每张卡片都有自己的配置。
+- `title`（字符串）：显示在卡片上方的标题。
 
-The grid card also takes:
+网格卡片还接受：
 
-- `columns` (number): the number of columns. Defaults to `3`.
-- `square` (boolean): makes every cell square. Defaults to `true`.
+- `columns`（数字）：列数。默认为 `3`。
+- `square`（布尔值）：使每个单元格为正方形。默认为 `true`。
 
 ```yaml
 type: grid
@@ -88,10 +88,10 @@ cards:
     entity: sensor.outdoor_humidity
 ```
 
-## In code
+## 代码位置
 
-The cards live in `src/panels/lovelace/cards/`: `hui-grid-card.ts`, `hui-horizontal-stack-card.ts`, and `hui-vertical-stack-card.ts`. The elements are `<hui-grid-card>`, `<hui-horizontal-stack-card>`, and `<hui-vertical-stack-card>`. All three extend the shared base in `hui-stack-card.ts`, which creates a `<hui-card>` for each card in the list and renders the title. Each card only adds its own layout styles on top.
+这些卡片位于 `src/panels/lovelace/cards/` 中：`hui-grid-card.ts`、`hui-horizontal-stack-card.ts` 和 `hui-vertical-stack-card.ts`。对应的元素是 `<hui-grid-card>`、`<hui-horizontal-stack-card>` 和 `<hui-vertical-stack-card>`。这三种卡片都继承自 `hui-stack-card.ts` 中的共享基类，该基类为列表中的每张卡片创建一个 `<hui-card>` 并渲染标题。每种卡片只是在此基础上添加自己的布局样式。
 
-The size of a stack follows the cards in it: the vertical stack adds up their sizes, and the horizontal stack takes the largest.
+堆叠的尺寸取决于其中的卡片：垂直堆叠将它们的尺寸相加，水平堆叠则取其中最大的尺寸。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-stack-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-stack-card.ts)

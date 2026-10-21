@@ -1,6 +1,6 @@
 ---
-title: Controls
-description: Big, touch-friendly controls for operating a device, like the toggles and sliders in the more-info dialogs.
+title: 控件
+description: 用于操作设备的大型、触控友好的控件，例如更多信息对话框中的开关和滑块。
 sidebarGroup: Showing values
 ---
 
@@ -15,40 +15,40 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-control-circular-slider value="21" current="19" min="10" max="30" step="0.5" label="Target temperature" style="width: 240px"></ha-control-circular-slider>
 </Demo>
 
-## Overview
+## 概述
 
-The control family is made for operating a device by hand, with a finger as much as with a mouse. The controls are large, have big hit areas, and react to dragging and swiping, not just tapping. You find them in two places:
+控件（control）系列专为手动操作设备而设计，无论是用手指还是用鼠标都能轻松使用。这些控件体积大、点击区域大，并且对拖动和滑动都有响应，而不仅仅是点按。你可以在两个地方找到它们：
 
-- In the **more-info dialogs**, where one big control takes center stage: the vertical brightness slider of a light, the round thermostat dial, the toggle of a switch.
-- In the **features of the tile card**, where a smaller, horizontal version sits below the entity, like a brightness slider or a row of mode buttons.
+- 在**更多信息对话框**中，一个大型控件占据中心位置：灯的垂直亮度滑块、圆形恒温器转盘、开关的切换按钮。
+- 在**磁贴卡片（tile card）的功能区**中，一个更小的水平版本位于实体（entity）下方，例如亮度滑块或一排模式按钮。
 
-## When to use
+## 何时使用
 
-Use a control for:
+在以下情况使用控件：
 
-- The main job of a screen being to change the state of a device
-- A feature of a tile card
+- 屏幕的主要任务是改变设备的状态
+- 磁贴卡片的一项功能
 
-Don't use a control for:
+不要在以下情况使用控件：
 
-- Forms and settings. Use the regular form controls instead, like a [button](/design/components/button/), a [switch](/design/components/switch/), or a [slider](/design/components/slider/). A control from this family in a settings form looks out of place, and takes far more room than it needs.
-- Secondary settings of a device with many options. Use a [select menu](/design/components/select-menu/).
+- 表单和设置。请改用常规的表单控件，例如[按钮](/design/components/button/)、[开关](/design/components/switch/)或[滑块](/design/components/slider/)。这一系列的控件放在设置表单中会显得格格不入，而且占用的空间远超所需。
+- 选项繁多的设备的次要设置。请使用[选择菜单](/design/components/select-menu/)。
 
-## Anatomy
+## 结构
 
-All controls share the same look:
+所有控件共享相同的外观：
 
-1. **Track**: the rounded shape, with a light tint of the color
-2. **Active part**: the part in full color, like the fill of a slider, the knob of a switch, or the selected option
-3. **Content**: an icon, a value, or a label, depending on the control
+1. **轨道**：圆角形状，带有颜色的浅色调
+2. **活动部分**：全色部分，例如滑块的填充、开关的旋钮，或选中的选项
+3. **内容**：图标、数值或标签，取决于具体的控件
 
-Their color can be set, so it matches the state of the entity, like the color of a light.
+它们的颜色可以设置，以便与实体的状态相匹配，例如灯的颜色。
 
-## Variants
+## 变体
 
-### Control button
+### 控件按钮
 
-A square button with an icon, for a single action like **Open**, **Stop**, or **Lock**. It is the building block for rows of actions, like the open, stop, and close buttons of a cover.
+一个带图标的方形按钮，用于单一操作，例如**打开**、**停止**或**上锁**。它是构建操作行的基础模块，例如卷帘的打开、停止和关闭按钮。
 
 <Demo>
   <ha-control-button label="Open" style="width: 64px; height: 64px; --control-button-border-radius: var(--ha-border-radius-xl); --mdc-icon-size: 24px">
@@ -65,11 +65,11 @@ A square button with an icon, for a single action like **Open**, **Stop**, or **
   </ha-control-button>
 </Demo>
 
-The frontend has a separate group component to put control buttons in a row or a column. It is not available in these demos.
+前端有一个单独的分组组件，用于将控件按钮排成一行或一列。这些演示中不可用。
 
-### Control switch
+### 控件开关
 
-A big on and off switch. Use it for the main toggle of a device. In the more-info dialog it stands upright and is reversed, so on is at the top. In a tile card feature it lies flat.
+一个大型的开和关切换开关。用于设备的主开关。在更多信息对话框中，它竖立放置并且方向反转，因此“开”位于顶部。在磁贴卡片功能区中，它平放。
 
 <Demo>
   <ha-control-switch label="Power" style="width: 240px; height: 42px">
@@ -82,15 +82,15 @@ A big on and off switch. Use it for the main toggle of a device. In the more-inf
   </ha-control-switch>
 </Demo>
 
-### Control slider
+### 控件滑块
 
-A thick slider for a value in a range, like brightness, volume, or the position of a cover. While someone drags it, a tooltip shows the value.
+一个粗滑块，用于表示某个范围内的数值，例如亮度、音量或卷帘的位置。当有人拖动它时，工具提示会显示该数值。
 
-The mode sets how the value is drawn:
+模式（mode）决定了数值的绘制方式：
 
-- **Start** (default): fills from the start. Use it for an amount, like brightness.
-- **End**: fills from the end. The cover position slider uses it, so the bar comes down from the top, like the cover itself.
-- **Cursor**: shows only a marker, no fill. Use it when there is no "more" or "less", like a color temperature or a tilt position.
+- **Start**（默认）：从起点开始填充。用于表示数量，例如亮度。
+- **End**：从终点开始填充。卷帘位置滑块使用它，因此进度条从顶部向下延伸，就像卷帘本身一样。
+- **Cursor**：只显示一个标记，没有填充。当没有“更多”或“更少”的概念时使用，例如色温或倾斜角度。
 
 <Demo>
   <ha-control-slider vertical value="70" label="Start" style="height: 240px; --control-slider-thickness: 90px; --control-slider-border-radius: var(--ha-border-radius-6xl)"></ha-control-slider>
@@ -98,19 +98,19 @@ The mode sets how the value is drawn:
   <ha-control-slider vertical mode="cursor" value="70" label="Cursor" style="height: 240px; --control-slider-thickness: 90px; --control-slider-border-radius: var(--ha-border-radius-6xl)"></ha-control-slider>
 </Demo>
 
-The horizontal version is what tile card features use:
+水平版本是磁贴卡片功能区所使用的：
 
 <Demo layout="stack">
   <ha-control-slider value="40" unit="%" label="Brightness" style="width: 320px; --control-slider-thickness: 42px"></ha-control-slider>
 </Demo>
 
-### Control circular slider
+### 控件圆形滑块
 
-A round dial, open at the bottom, for a target value like a temperature or humidity. It can also show the current value as a small dot on the track, so people see where they are and where they are going.
+一个圆形转盘，底部开口，用于目标值，例如温度或湿度。它还可以在轨道上以一个小圆点显示当前值，让人们看到自己当前的位置和目标位置。
 
-The dial itself shows no text. In the more-info dialogs, the target and current value are printed in the middle of it by the surrounding component.
+转盘本身不显示任何文字。在更多信息对话框中，目标值和当前值由周围的组件打印在转盘中央。
 
-The mode sets which part of the track is filled, just like the slider. The thermostat fills from the start when heating, from the end when cooling, and the whole track when the direction does not matter. In the dual version, the dial has two handles, a low and a high one, for a range like heating and cooling at once.
+模式决定了轨道的哪一部分被填充，与滑块相同。恒温器在制热时从起点填充，在制冷时从终点填充，在方向无关紧要时填充整个轨道。在双模式版本中，转盘有两个手柄，一个低值手柄和一个高值手柄，用于同时制热和制冷这样的范围。
 
 <Demo>
   <ha-control-circular-slider value="21" current="19" min="10" max="30" step="0.5" label="Heat to" style="width: 200px; --control-circular-slider-color: var(--state-climate-heat-color, #ff8100)"></ha-control-circular-slider>
@@ -118,139 +118,139 @@ The mode sets which part of the track is filled, just like the slider. The therm
   <ha-control-circular-slider dual low="19" high="24" current="21" min="10" max="30" step="0.5" low-label="Heat to" high-label="Cool to" style="width: 200px; --control-circular-slider-low-color: var(--state-climate-heat-color, #ff8100); --control-circular-slider-high-color: var(--state-climate-cool-color, #2b9af9)"></ha-control-circular-slider>
 </Demo>
 
-### Control number buttons
+### 控件数字按钮
 
-A value with a minus and a plus button, for small, precise steps. The target temperature feature of the tile card uses it. Use it when people adjust a value by a step or two, rather than jumping across the range.
+一个带有减号和加号按钮的数值，用于小幅度、精确的调整。磁贴卡片的目标温度功能就使用它。当人们只需将数值调整一两步，而不是在整个范围内跳转时，请使用它。
 
 <Demo>
   <ha-control-number-buttons value="21" min="10" max="30" step="0.5" unit="°C" label="Target temperature" style="width: 220px; height: 42px"></ha-control-number-buttons>
   <ha-control-number-buttons value="21" min="10" max="30" step="0.5" unit="°C" label="Target temperature" disabled style="width: 220px; height: 42px"></ha-control-number-buttons>
 </Demo>
 
-### Control select
+### 控件选择
 
-A row, or a column, of options where one is selected, like the speed of a fan or the mode of an alarm panel. Each option shows an icon, a label, or both. The selected option is filled with the color.
+一行或一列选项，其中一个是选中状态，例如风扇的速度或警报面板的模式。每个选项显示一个图标、一个标签，或两者兼有。选中的选项以该颜色填充。
 
-Use it for a handful of options that people switch between often. In the more-info dialog it stands upright, with one option per step. For secondary settings with more options, like the preset or swing mode of a thermostat, the more-info dialogs use a [select menu](/design/components/select-menu/) instead.
+用于人们经常切换的少量选项。在更多信息对话框中，它竖立放置，每步一个选项。对于选项更多的次要设置，例如恒温器的预设或摆动模式，更多信息对话框会改用[选择菜单](/design/components/select-menu/)。
 
-The options can only be set from code, so there is no live demo here.
+选项只能通过代码设置，因此这里没有实时演示。
 
-## Behavior
+## 行为
 
-- **Hover**: the tint of the control switch track gets stronger, from 20% to 40%. An option of a control select gets a 20% tint of the color.
-- **Focus**: keyboard focus shows a 2px ring around the control. The control switch, slider, and select use their own color for the ring. The control button and number buttons use the secondary text color. The circular slider shows focus by making the focused arc thicker, from 24px to 28px.
-- **Pressed**: while someone drags a slider, the tooltip with the value shows. It hides when they let go. With the keyboard, it shows while a key is pressed, and hides half a second after the key is released.
-- **Swiping**: the control switch turns on or off with a swipe in its direction, and toggles with a tap.
-- **Disabled**: each control handles it in its own way:
-  - The control button turns its icon to the disabled text color, on a 20% tint of the disabled color.
-  - The control switch is dimmed to 50% opacity.
-  - The control select turns its text and selected option to the disabled color.
-  - The number buttons turn their text to the disabled color. The minus and plus buttons are dimmed to 40%.
-  - The circular slider only shows its track and the dot of the current value, without the colored arcs and the handles.
-  - The control slider ignores dragging and tapping, but has no separate look.
-- **Limits**: the minus and plus buttons disable themselves at the minimum and the maximum. When the number buttons get narrower than 100 pixels, the unit is hidden.
-- **Inactive**: for a device that is off, the circular slider can hide the colored arc.
-- **Read only**: a read only circular slider shows its value, but ignores dragging and tapping. The keyboard still changes the value.
+- **悬停**：控件开关轨道的色调会加深，从 20% 到 40%。控件选择的选项会获得 20% 的颜色色调。
+- **聚焦**：键盘聚焦会在控件周围显示一个 2px 的圆环。控件开关、滑块和选择使用它们自己的颜色作为圆环颜色。控件按钮和数字按钮使用次要文字颜色。圆形滑块通过加粗聚焦的弧线来显示聚焦状态，从 24px 到 28px。
+- **按下**：当有人拖动滑块时，会显示带数值的工具提示。松开时隐藏。使用键盘时，按键期间显示，按键释放半秒后隐藏。
+- **滑动**：控件开关可以通过沿其方向的滑动来打开或关闭，点按则切换状态。
+- **禁用**：每个控件都有自己的处理方式：
+  - 控件按钮将其图标变为禁用文字颜色，背景为禁用颜色的 20% 色调。
+  - 控件开关变暗至 50% 不透明度。
+  - 控件选择将其文字和选中选项变为禁用颜色。
+  - 数字按钮将其文字变为禁用颜色。减号和加号按钮变暗至 40%。
+  - 圆形滑块只显示其轨道和当前值圆点，不显示彩色弧线和手柄。
+  - 控件滑块忽略拖动和点按，但没有单独的外观。
+- **限制**：减号和加号按钮在最小值和最大值处自行禁用。当数字按钮宽度小于 100 像素时，单位会被隐藏。
+- **未激活**：对于已关闭的设备，圆形滑块可以隐藏彩色弧线。
+- **只读**：只读的圆形滑块显示其数值，但忽略拖动和点按。键盘仍然可以更改数值。
 
-Most transitions take 180ms, ease-in-out. The arcs of the circular slider move in 300ms.
+大多数过渡耗时 180ms，缓动方式为 ease-in-out。圆形滑块的弧线移动耗时 300ms。
 
-## Specs
+## 规格
 
-### Default sizes
+### 默认尺寸
 
-All controls fill their container. The defaults below are what you get without setting a size.
+所有控件都会填满其容器。以下默认值是在未设置尺寸时的效果。
 
-| Control | Default size | Corner radius | Token |
+| 控件 | 默认尺寸 | 圆角 | Token |
 | --- | --- | --- | --- |
-| Control button | 40px by 40px, 8px padding | 8px | `--ha-border-radius-md`, through `--control-button-border-radius` |
-| Control switch | 40px thick | 12px | `--ha-border-radius-lg`, through `--control-switch-border-radius` |
-| Control slider | 40px thick | 8px | `--ha-border-radius-md`, through `--control-slider-border-radius` |
-| Control circular slider | 320px wide | Round track ends | None |
-| Control number buttons | The height of a card feature, buttons 35px wide | 8px | `--ha-border-radius-md`, through `--control-number-buttons-border-radius` |
-| Control select | 40px thick, 4px padding | 10px | `--control-select-border-radius` |
+| 控件按钮 | 40px × 40px，8px 内边距 | 8px | `--ha-border-radius-md`，通过 `--control-button-border-radius` |
+| 控件开关 | 40px 粗 | 12px | `--ha-border-radius-lg`，通过 `--control-switch-border-radius` |
+| 控件滑块 | 40px 粗 | 8px | `--ha-border-radius-md`，通过 `--control-slider-border-radius` |
+| 控件圆形滑块 | 320px 宽 | 圆形轨道端点 | 无 |
+| 控件数字按钮 | 卡片功能区的高度，按钮 35px 宽 | 8px | `--ha-border-radius-md`，通过 `--control-number-buttons-border-radius` |
+| 控件选择 | 40px 粗，4px 内边距 | 10px | `--control-select-border-radius` |
 
-In the more-info dialogs, the vertical controls are 130 pixels thick, up to 320 pixels tall, with 36px corners (`--ha-border-radius-6xl`). In tile card features, the horizontal controls are 42 pixels thick. A feature inline next to the icon of a tile card keeps the height of the icon, 36 pixels, unless the card reserves a row for it.
+在更多信息对话框中，垂直控件厚度为 130 像素，高度最高 320 像素，圆角为 36px（`--ha-border-radius-6xl`）。在磁贴卡片功能区中，水平控件厚度为 42 像素。位于磁贴卡片图标旁边的内联功能区保持图标的高度，即 36 像素，除非卡片为它保留了一行。
 
-### Color
+### 颜色
 
-| Part | Color | Token |
+| 部分 | 颜色 | Token |
 | --- | --- | --- |
-| Track tint | The disabled color at 20% opacity (30% for the circular slider) | `--disabled-color` |
-| Active part | The primary color | `--primary-color`, through the color property of each control |
-| Icon of a control button | The primary text color | `--primary-text-color`, through `--control-button-icon-color` |
-| Knob icon of the control switch | White | None |
-| Text of the selected option of a control select | White | None |
-| Handle of the slider and the circular slider | White | None |
-| Current value dot of the circular slider | The primary text color at 50% opacity | `--primary-text-color` |
-| Slider tooltip | Clear background, primary text color, 12px corners | `--clear-background-color`, `--ha-border-radius-lg` |
+| 轨道色调 | 禁用颜色，20% 不透明度（圆形滑块为 30%） | `--disabled-color` |
+| 活动部分 | 主颜色 | `--primary-color`，通过每个控件的 color 属性 |
+| 控件按钮的图标 | 主要文字颜色 | `--primary-text-color`，通过 `--control-button-icon-color` |
+| 控件开关的旋钮图标 | 白色 | 无 |
+| 控件选择选中选项的文字 | 白色 | 无 |
+| 滑块和圆形滑块的手柄 | 白色 | 无 |
+| 圆形滑块的当前值圆点 | 主要文字颜色，50% 不透明度 | `--primary-text-color` |
+| 滑块工具提示 | 透明背景、主要文字颜色、12px 圆角 | `--clear-background-color`、`--ha-border-radius-lg` |
 
-### Other parts
+### 其他部分
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Icon size | 20px, 16px for the number buttons | `--mdc-icon-size` |
-| Switch knob | Half of the track, inset by 4px | `--control-switch-padding` |
-| Minimum touch area of the switch | 40px | `--control-switch-min-touch-size` |
-| Circular slider track | 24px wide, 270 degrees, open at the bottom | None |
-| Extra hit area around the circular slider | 12px | `--control-circular-slider-interaction-margin` |
-| Slider handle | 4px wide, with `show-handle` | None |
+| 图标大小 | 20px，数字按钮为 16px | `--mdc-icon-size` |
+| 开关旋钮 | 轨道的一半，内缩 4px | `--control-switch-padding` |
+| 开关的最小触控区域 | 40px | `--control-switch-min-touch-size` |
+| 圆形滑块轨道 | 24px 宽，270 度，底部开口 | 无 |
+| 圆形滑块周围的额外点击区域 | 12px | `--control-circular-slider-interaction-margin` |
+| 滑块手柄 | 4px 宽，需启用 `show-handle` | 无 |
 
-## Guidelines
+## 指南
 
-Give every control a label. Most of them show only an icon or a value, and the label is what screen readers announce.
+为每个控件提供标签。大多数控件只显示图标或数值，而标签是屏幕阅读器播报的内容。
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-| Control | Keys |
+| 控件 | 按键 |
 | --- | --- |
-| Control button | <kbd>Tab</kbd> to focus, <kbd>Enter</kbd> or <kbd>Space</kbd> to select. It is a native button. |
-| Control switch | <kbd>Enter</kbd> or <kbd>Space</kbd> toggles. The arrow keys in its direction turn it on or off, following which way the switch is turned and the text direction. |
-| Control slider | Arrow keys move one step. <kbd>Page up</kbd> and <kbd>Page down</kbd> move 10% of the range. <kbd>Home</kbd> and <kbd>End</kbd> go to the minimum and the maximum. In a right to left language, left and right are swapped. |
-| Control circular slider | The same keys as the control slider, on each handle. |
-| Control number buttons | The same keys as the control slider. The minus and plus buttons are not in the tab order: the keyboard works on the value. |
-| Control select | <kbd>Tab</kbd> focuses the selected option, or the first one when none is selected. The arrow keys move focus between options, and <kbd>Enter</kbd> or <kbd>Space</kbd> selects the focused one. |
+| 控件按钮 | <kbd>Tab</kbd> 聚焦，<kbd>Enter</kbd> 或 <kbd>Space</kbd> 选择。它是一个原生按钮。 |
+| 控件开关 | <kbd>Enter</kbd> 或 <kbd>Space</kbd> 切换。沿其方向的箭头键将其打开或关闭，遵循开关的朝向和文字方向。 |
+| 控件滑块 | 箭头键移动一步。<kbd>Page up</kbd> 和 <kbd>Page down</kbd> 移动范围的 10%。<kbd>Home</kbd> 和 <kbd>End</kbd> 跳到最小值和最大值。在从右到左的语言中，左右方向互换。 |
+| 控件圆形滑块 | 与控件滑块相同的按键，作用于每个手柄。 |
+| 控件数字按钮 | 与控件滑块相同的按键。减号和加号按钮不在 Tab 顺序中：键盘直接作用于数值。 |
+| 控件选择 | <kbd>Tab</kbd> 聚焦选中的选项，若未选中任何选项则聚焦第一个。箭头键在选项之间移动焦点，<kbd>Enter</kbd> 或 <kbd>Space</kbd> 选中当前聚焦的选项。 |
 
-Only the control slider swaps the left and right arrow keys in a right to left language. The circular slider and the number buttons do not.
+只有控件滑块会在从右到左的语言中互换左右箭头键。圆形滑块和数字按钮不会。
 
-### Focus
+### 聚焦
 
-Keyboard focus shows a 2px ring around the control, or a thicker arc on the circular slider. See [behavior](#behavior) for the colors.
+键盘聚焦会在控件周围显示一个 2px 的圆环，或在圆形滑块上显示更粗的弧线。颜色请参见[行为](#behavior)。
 
-A disabled control switch or number buttons leaves the tab order. A disabled control select keeps one option in the tab order, but ignores keys and selection. The control slider stays focusable when disabled, and keeps reacting to the keyboard.
+禁用的控件开关或数字按钮会退出 Tab 顺序。禁用的控件选择会保留一个选项在 Tab 顺序中，但忽略按键和选择。控件滑块在禁用时仍可聚焦，并继续响应键盘。
 
-### Target size
+### 目标尺寸
 
-The control button, switch, slider, and select are 40px in their smallest direction by default. The control switch keeps a touch area of at least 40px by 40px. The circular slider adds 12px of hit area around its track.
+控件按钮、开关、滑块和选择在最小方向上默认为 40px。控件开关保持至少 40px × 40px 的触控区域。圆形滑块在其轨道周围增加 12px 的点击区域。
 
-### Screen readers
+### 屏幕阅读器
 
-Every control is announced by its label, with its kind and its value: a button, a switch that is on or off, a slider with its formatted value, a spin button with the value and its unit, or a group of radio buttons with the selected option. The minus and plus buttons of the number buttons are announced in English, as "decrement" and "increment". On the dual circular slider, both handles are announced with the low label.
+每个控件都通过其标签播报，并附带其类型和数值：一个按钮、一个开或关的开关、一个带格式化数值的滑块、一个带数值和单位的数字输入框，或一个带选中选项的单选按钮组。数字按钮的减号和加号按钮以英文播报，为 "decrement" 和 "increment"。在双模式圆形滑块上，两个手柄都以低值标签播报。
 
-### In the code
+### 在代码中
 
-| Control | Role | Name and state |
+| 控件 | 角色 | 名称和状态 |
 | --- | --- | --- |
-| Control button | `button` | `label` as `aria-label`, and as a native tooltip |
-| Control switch | `switch` | `label` as `aria-label`, `aria-checked`. The knob and its icon are hidden from screen readers. |
-| Control slider | `slider` | `label` as `aria-label`, `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, `aria-orientation`, and `aria-valuetext` with the formatted value |
-| Control circular slider | `slider` on each handle | `low-label`, or `label` when there is no `low-label`, as `aria-label` on both handles (`high-label` is not used), `aria-valuenow` from `value` (with `dual`, there is none), `aria-valuemin`, `aria-valuemax`, `aria-disabled`, and `aria-readonly` |
-| Control number buttons | `spinbutton` | `label` as `aria-label`, `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, and `aria-valuetext` with the value and the unit. The minus and plus buttons are named "decrement" and "increment". |
-| Control select | `radiogroup`, with a `radio` per option | `label` names the group. Each option is named by its `ariaLabel` or `label`, and has `aria-checked`. |
+| 控件按钮 | `button` | `label` 作为 `aria-label`，并作为原生工具提示 |
+| 控件开关 | `switch` | `label` 作为 `aria-label`，`aria-checked`。旋钮及其图标对屏幕阅读器隐藏。 |
+| 控件滑块 | `slider` | `label` 作为 `aria-label`，`aria-valuenow`、`aria-valuemin`、`aria-valuemax`、`aria-orientation`，以及带格式化数值的 `aria-valuetext` |
+| 控件圆形滑块 | 每个手柄上为 `slider` | `low-label`，或在没有 `low-label` 时使用 `label`，作为两个手柄的 `aria-label`（不使用 `high-label`），`aria-valuenow` 来自 `value`（使用 `dual` 时没有），`aria-valuemin`、`aria-valuemax`、`aria-disabled`，以及 `aria-readonly` |
+| 控件数字按钮 | `spinbutton` | `label` 作为 `aria-label`，`aria-valuenow`、`aria-valuemin`、`aria-valuemax`，以及带数值和单位的 `aria-valuetext`。减号和加号按钮命名为 "decrement" 和 "increment"。 |
+| 控件选择 | `radiogroup`，每个选项一个 `radio` | `label` 命名该组。每个选项由其 `ariaLabel` 或 `label` 命名，并具有 `aria-checked`。 |
 
-## Related
+## 相关内容
 
-- [Select menu](/design/components/select-menu/): the dropdown of the control family
-- [Control scrubber](/design/components/control-scrubber/): the member of the family for ranges that go round, like hue
-- [Slider](/design/components/slider/), [switch](/design/components/switch/), and [button](/design/components/button/): the regular form controls
-- [Tile card](/design/dashboards/tile-card/): where the smaller controls show up as features
+- [选择菜单](/design/components/select-menu/)：控件系列中的下拉菜单
+- [控件拖动条](/design/components/control-scrubber/)：控件系列中用于循环范围的成员，例如色相
+- [滑块](/design/components/slider/)、[开关](/design/components/switch/)和[按钮](/design/components/button/)：常规表单控件
+- [磁贴卡片](/design/dashboards/tile-card/)：较小控件作为功能区出现的地方
 
-## In code
+## 在代码中
 
-All controls fill their container by default. Size them with CSS: set `height` and `width` on the element, and the thickness custom property where there is one. A vertical control gets its width from the thickness, and needs a height.
+所有控件默认填满其容器。使用 CSS 设置尺寸：在元素上设置 `height` 和 `width`，并在有厚度自定义属性的地方设置它。垂直控件的宽度来自厚度，需要另外设置高度。
 
-In the more-info dialogs, the vertical controls are 130 pixels thick, up to 320 pixels tall, with `--ha-border-radius-6xl` corners. In tile card features, the horizontal controls are 42 pixels thick.
+在更多信息对话框中，垂直控件厚度为 130 像素，高度最高 320 像素，圆角为 `--ha-border-radius-6xl`。在磁贴卡片功能区中，水平控件厚度为 42 像素。
 
 ### ha-control-button
 
@@ -260,29 +260,29 @@ In the more-info dialogs, the vertical controls are 130 pixels thick, up to 320 
 </ha-control-button>
 ```
 
-Attributes:
+属性：
 
-- `label`: the accessible name, also shown as a native tooltip.
-- `disabled`: disables the button.
+- `label`：无障碍名称，也显示为原生工具提示。
+- `disabled`：禁用按钮。
 
-Slots:
+插槽：
 
-- Default: the content, usually an `ha-svg-icon`.
+- 默认：内容，通常是一个 `ha-svg-icon`。
 
-Events: listen for the regular `click` event.
+事件：监听常规的 `click` 事件。
 
-Styling:
+样式：
 
-- `--control-button-icon-color`: defaults to `var(--primary-text-color)`.
-- `--control-button-background-color`: defaults to `var(--disabled-color)`.
-- `--control-button-background-opacity`: defaults to `0.2`.
-- `--control-button-border-radius`: defaults to `var(--ha-border-radius-md)`.
-- `--control-button-focus-color`: the focus ring. Defaults to `var(--secondary-text-color)`.
-- `--control-button-padding`: defaults to `8px`.
-- `--control-button-font-weight`: for a text label. Defaults to `var(--ha-font-weight-medium)`.
-- `--mdc-icon-size`: the icon size. Defaults to `20px`.
+- `--control-button-icon-color`：默认为 `var(--primary-text-color)`。
+- `--control-button-background-color`：默认为 `var(--disabled-color)`。
+- `--control-button-background-opacity`：默认为 `0.2`。
+- `--control-button-border-radius`：默认为 `var(--ha-border-radius-md)`。
+- `--control-button-focus-color`：聚焦圆环。默认为 `var(--secondary-text-color)`。
+- `--control-button-padding`：默认为 `8px`。
+- `--control-button-font-weight`：用于文字标签。默认为 `var(--ha-font-weight-medium)`。
+- `--mdc-icon-size`：图标大小。默认为 `20px`。
 
-The default size is 40 by 40 pixels.
+默认尺寸为 40 × 40 像素。
 
 ### ha-control-switch
 
@@ -293,39 +293,39 @@ The default size is 40 by 40 pixels.
 </ha-control-switch>
 ```
 
-Attributes:
+属性：
 
-- `checked`: the switch is on.
-- `label`: the accessible name.
-- `vertical`: stands the switch upright.
-- `reversed`: flips the direction. Upright and reversed puts on at the top.
-- `disabled`: disables the switch.
-- `touch-action`: the CSS `touch-action` for swiping. Defaults to `pan-y`, or `pan-x` when vertical.
+- `checked`：开关处于打开状态。
+- `label`：无障碍名称。
+- `vertical`：将开关竖立放置。
+- `reversed`：翻转方向。竖立且反转时，“开”位于顶部。
+- `disabled`：禁用开关。
+- `touch-action`：用于滑动的 CSS `touch-action`。默认为 `pan-y`，垂直时为 `pan-x`。
 
-These can only be set as properties:
+这些只能作为属性（property）设置：
 
-- `pathOn` and `pathOff`: SVG path data for the icons. Use these, or the slots.
+- `pathOn` 和 `pathOff`：图标的 SVG 路径数据。使用这些或插槽。
 
-Slots:
+插槽：
 
-- `icon-on`: the icon when on.
-- `icon-off`: the icon when off.
+- `icon-on`：打开时的图标。
+- `icon-off`：关闭时的图标。
 
-Events:
+事件：
 
-- `change`: the switch was toggled, by selecting, swiping, or the keyboard. Read the new state from `checked`.
+- `change`：开关被切换，通过点按、滑动或键盘。从 `checked` 读取新状态。
 
-Styling:
+样式：
 
-- `--control-switch-on-color`: defaults to `var(--primary-color)`.
-- `--control-switch-off-color`: defaults to `var(--disabled-color)`.
-- `--control-switch-background-opacity`: the tint of the track. Defaults to `0.2`.
-- `--control-switch-hover-background-opacity`: the tint on hover. Defaults to `0.4`.
-- `--control-switch-thickness`: defaults to `40px`.
-- `--control-switch-min-touch-size`: defaults to `40px`.
-- `--control-switch-border-radius`: defaults to `var(--ha-border-radius-lg)`.
-- `--control-switch-padding`: the space around the knob. Defaults to `4px`.
-- `--mdc-icon-size`: the icon size. Defaults to `20px`.
+- `--control-switch-on-color`：默认为 `var(--primary-color)`。
+- `--control-switch-off-color`：默认为 `var(--disabled-color)`。
+- `--control-switch-background-opacity`：轨道的色调。默认为 `0.2`。
+- `--control-switch-hover-background-opacity`：悬停时的色调。默认为 `0.4`。
+- `--control-switch-thickness`：默认为 `40px`。
+- `--control-switch-min-touch-size`：默认为 `40px`。
+- `--control-switch-border-radius`：默认为 `var(--ha-border-radius-lg)`。
+- `--control-switch-padding`：旋钮周围的空间。默认为 `4px`。
+- `--mdc-icon-size`：图标大小。默认为 `20px`。
 
 ### ha-control-slider
 
@@ -333,44 +333,44 @@ Styling:
 <ha-control-slider vertical value="60" unit="%" label="Brightness"></ha-control-slider>
 ```
 
-Attributes:
+属性：
 
-- `value`: the current value.
-- `min`: defaults to `0`.
-- `max`: defaults to `100`.
-- `step`: defaults to `1`.
-- `label`: the accessible name.
-- `unit`: shown after the value in the tooltip.
-- `mode`: `start` (default), `end`, or `cursor`.
-- `vertical`: stands the slider upright.
-- `inverted`: flips the direction of the values.
-- `show-handle`: shows a handle at the end of the fill.
-- `tooltip-mode`: `interaction` (default) shows the value while dragging, `always` keeps it visible, `never` hides it.
-- `tooltip-position`: `top`, `bottom`, `left`, or `right`. Defaults to `top`, or `left` when vertical.
-- `round-value`: rounds the shown and announced value to a whole number, while the handle still snaps to `step`. Use it when `step` is fractional, but the value is a whole number in practice.
-- `touch-action`: the CSS `touch-action`. Defaults to `pan-y`, or `pan-x` when vertical.
-- `disabled`: disables the slider.
+- `value`：当前值。
+- `min`：默认为 `0`。
+- `max`：默认为 `100`。
+- `step`：默认为 `1`。
+- `label`：无障碍名称。
+- `unit`：显示在工具提示中数值之后。
+- `mode`：`start`（默认）、`end` 或 `cursor`。
+- `vertical`：将滑块竖立放置。
+- `inverted`：翻转数值的方向。
+- `show-handle`：在填充末端显示一个手柄。
+- `tooltip-mode`：`interaction`（默认）在拖动时显示数值，`always` 保持可见，`never` 隐藏。
+- `tooltip-position`：`top`、`bottom`、`left` 或 `right`。默认为 `top`，垂直时为 `left`。
+- `round-value`：将显示和播报的数值四舍五入为整数，而手柄仍按 `step` 吸附。当 `step` 是小数但实际数值是整数时使用。
+- `touch-action`：CSS `touch-action`。默认为 `pan-y`，垂直时为 `pan-x`。
+- `disabled`：禁用滑块。
 
-The `locale` property, used to format the value, can only be set from code.
+`locale` 属性用于格式化数值，只能通过代码设置。
 
-Slots:
+插槽：
 
-- `background`: content drawn on the track, behind the fill. The color temperature slider uses it for its gradient.
+- `background`：绘制在轨道上、填充下方的内容。色温滑块用它来显示渐变。
 
-Events:
+事件：
 
-- `value-changed`: the value was set, on release. `detail.value` is the new value.
-- `slider-moved`: the handle moves while dragging. `detail.value` is the value under the handle, and `undefined` on release.
+- `value-changed`：数值已设定，在释放时触发。`detail.value` 是新值。
+- `slider-moved`：拖动时手柄移动。`detail.value` 是手柄下的数值，释放时为 `undefined`。
 
-Styling:
+样式：
 
-- `--control-slider-color`: the fill. Defaults to `var(--primary-color)`.
-- `--control-slider-background`: the track. Defaults to `var(--disabled-color)`.
-- `--control-slider-background-opacity`: defaults to `0.2`.
-- `--control-slider-thickness`: defaults to `40px`.
-- `--control-slider-border-radius`: defaults to `var(--ha-border-radius-md)`.
-- `--control-slider-inset-shadow`: defaults to `none`.
-- `--control-slider-tooltip-font-size`: defaults to `var(--ha-font-size-m)`.
+- `--control-slider-color`：填充。默认为 `var(--primary-color)`。
+- `--control-slider-background`：轨道。默认为 `var(--disabled-color)`。
+- `--control-slider-background-opacity`：默认为 `0.2`。
+- `--control-slider-thickness`：默认为 `40px`。
+- `--control-slider-border-radius`：默认为 `var(--ha-border-radius-md)`。
+- `--control-slider-inset-shadow`：默认为 `none`。
+- `--control-slider-tooltip-font-size`：默认为 `var(--ha-font-size-m)`。
 
 ### ha-control-circular-slider
 
@@ -380,39 +380,39 @@ Styling:
 <ha-control-circular-slider dual low="19" high="24" min="10" max="30" low-label="Heat to" high-label="Cool to"></ha-control-circular-slider>
 ```
 
-Attributes:
+属性：
 
-- `value`: the target value, for a single handle.
-- `low` and `high`: the two values, with `dual`.
-- `current`: the current value, shown as a dot on the track.
-- `min`: defaults to `0`.
-- `max`: defaults to `100`.
-- `step`: defaults to `1`.
-- `mode`: `start`, `end`, or `full`. Sets which part of the track is filled.
-- `dual`: shows two handles, for `low` and `high`.
-- `label`: the accessible name of the handles.
-- `low-label`: when set, used as the accessible name of both handles instead of `label`.
-- `high-label`: accepted, but not used.
-- `inactive`: hides the colored arcs, for a device that is off.
-- `readonly`: shows the value, but people can't change it with a pointer. The keyboard still works.
-- `disabled`: disables the dial.
-- `prevent-interaction-on-scroll`: on touch screens, only the handle reacts, and only after a short press, so swiping past the dial scrolls the page instead of changing the value.
+- `value`：目标值，用于单手柄。
+- `low` 和 `high`：两个数值，配合 `dual` 使用。
+- `current`：当前值，显示为轨道上的一个圆点。
+- `min`：默认为 `0`。
+- `max`：默认为 `100`。
+- `step`：默认为 `1`。
+- `mode`：`start`、`end` 或 `full`。决定轨道的哪一部分被填充。
+- `dual`：显示两个手柄，分别对应 `low` 和 `high`。
+- `label`：手柄的无障碍名称。
+- `low-label`：设置后，将代替 `label` 作为两个手柄的无障碍名称。
+- `high-label`：可接受，但不使用。
+- `inactive`：隐藏彩色弧线，用于已关闭的设备。
+- `readonly`：显示数值，但人们无法用指针更改。键盘仍然有效。
+- `disabled`：禁用转盘。
+- `prevent-interaction-on-scroll`：在触摸屏上，只有手柄响应操作，且需短按之后，因此滑过转盘的滑动会滚动页面而不是更改数值。
 
-Events, each with the new value in `detail.value`:
+事件，每个事件都在 `detail.value` 中携带新值：
 
-- `value-changing` and `value-changed`: while dragging, and on release.
-- `low-changing` and `low-changed`: the same for the low handle.
-- `high-changing` and `high-changed`: the same for the high handle.
+- `value-changing` 和 `value-changed`：拖动期间和释放时。
+- `low-changing` 和 `low-changed`：低值手柄的相同事件。
+- `high-changing` 和 `high-changed`：高值手柄的相同事件。
 
-Styling:
+样式：
 
-- `--control-circular-slider-color`: the fill. Defaults to `var(--primary-color)`.
-- `--control-circular-slider-low-color` and `--control-circular-slider-high-color`: the two fills with `dual`. Default to the color above.
-- `--control-circular-slider-background`: the track. Defaults to `var(--disabled-color)`.
-- `--control-circular-slider-background-opacity`: defaults to `0.3`.
-- `--control-circular-slider-interaction-margin`: the extra hit area around the track. Defaults to `12px`.
+- `--control-circular-slider-color`：填充。默认为 `var(--primary-color)`。
+- `--control-circular-slider-low-color` 和 `--control-circular-slider-high-color`：配合 `dual` 使用的两个填充。默认为上述颜色。
+- `--control-circular-slider-background`：轨道。默认为 `var(--disabled-color)`。
+- `--control-circular-slider-background-opacity`：默认为 `0.3`。
+- `--control-circular-slider-interaction-margin`：轨道周围的额外点击区域。默认为 `12px`。
 
-The default width is 320 pixels.
+默认宽度为 320 像素。
 
 ### ha-control-number-buttons
 
@@ -420,33 +420,33 @@ The default width is 320 pixels.
 <ha-control-number-buttons value="21" min="10" max="30" step="0.5" unit="°C" label="Target temperature"></ha-control-number-buttons>
 ```
 
-Attributes:
+属性：
 
-- `value`: the current value.
-- `min` and `max`: the range. Both are optional.
-- `step`: defaults to `1`.
-- `unit`: shown after the value.
-- `label`: the accessible name.
-- `disabled`: disables the control.
+- `value`：当前值。
+- `min` 和 `max`：范围。两者都是可选的。
+- `step`：默认为 `1`。
+- `unit`：显示在数值之后。
+- `label`：无障碍名称。
+- `disabled`：禁用该控件。
 
-These can only be set as properties:
+这些只能作为属性（property）设置：
 
-- `locale`: the locale data used to format the value.
-- `formatOptions`: `Intl.NumberFormatOptions`, for example to always show one decimal.
+- `locale`：用于格式化数值的区域设置数据。
+- `formatOptions`：`Intl.NumberFormatOptions`，例如始终显示一位小数。
 
-Events:
+事件：
 
-- `value-changed`: the value changed, from a button or the keyboard. `detail.value` is the new value.
+- `value-changed`：数值已更改，来自按钮或键盘。`detail.value` 是新值。
 
-Styling:
+样式：
 
-- `--control-number-buttons-background-color`: defaults to `var(--disabled-color)`.
-- `--control-number-buttons-background-opacity`: defaults to `0.2`.
-- `--control-number-buttons-border-radius`: defaults to `var(--ha-border-radius-md)`.
-- `--control-number-buttons-focus-color`: the focus ring. Defaults to `var(--secondary-text-color)`.
-- `--mdc-icon-size`: the size of the minus and plus icons. Defaults to `16px`.
+- `--control-number-buttons-background-color`：默认为 `var(--disabled-color)`。
+- `--control-number-buttons-background-opacity`：默认为 `0.2`。
+- `--control-number-buttons-border-radius`：默认为 `var(--ha-border-radius-md)`。
+- `--control-number-buttons-focus-color`：聚焦圆环。默认为 `var(--secondary-text-color)`。
+- `--mdc-icon-size`：减号和加号图标的大小。默认为 `16px`。
 
-The height comes from `--feature-height`, the height of a tile card feature. Outside a card feature, set a `height`.
+高度来自 `--feature-height`，即磁贴卡片功能区的高度。在卡片功能区之外，请设置 `height`。
 
 ### ha-control-select
 
@@ -462,33 +462,33 @@ html`<ha-control-select
 ></ha-control-select>`
 ```
 
-Attributes:
+属性：
 
-- `value`: the `value` of the selected option.
-- `label`: the accessible name of the group.
-- `vertical`: shows the options in a column.
-- `hide-option-label`: shows only the icons. The labels are still used as accessible names.
-- `disabled`: disables the control.
+- `value`：选中选项的 `value`。
+- `label`：该组的无障碍名称。
+- `vertical`：将选项显示为一列。
+- `hide-option-label`：只显示图标。标签仍用作无障碍名称。
+- `disabled`：禁用该控件。
 
-These can only be set as properties:
+这些只能作为属性（property）设置：
 
-- `options`: an array of options. Each has a `value`, and optionally a `label`, an `ariaLabel`, an icon as SVG `path`, or an `icon` template.
+- `options`：选项数组。每个选项有一个 `value`，以及可选的 `label`、`ariaLabel`、作为 SVG `path` 的图标，或一个 `icon` 模板。
 
-Events:
+事件：
 
-- `value-changed`: an option was selected. `detail.value` is its `value`.
+- `value-changed`：一个选项被选中。`detail.value` 是它的 `value`。
 
-Styling:
+样式：
 
-- `--control-select-color`: the selected option. Defaults to `var(--primary-color)`.
-- `--control-select-background`: the track. Defaults to `var(--disabled-color)`.
-- `--control-select-background-opacity`: defaults to `0.2`.
-- `--control-select-selected-opacity`: defaults to `1`.
-- `--control-select-focused-opacity`: defaults to `0.2`.
-- `--control-select-thickness`: defaults to `40px`.
-- `--control-select-border-radius`: defaults to `10px`.
-- `--control-select-padding`: the space around the options. Defaults to `4px`.
-- `--control-select-button-border-radius`: the corners of each option. Follows the border radius and padding.
-- `--mdc-icon-size`: defaults to `20px`.
+- `--control-select-color`：选中选项。默认为 `var(--primary-color)`。
+- `--control-select-background`：轨道。默认为 `var(--disabled-color)`。
+- `--control-select-background-opacity`：默认为 `0.2`。
+- `--control-select-selected-opacity`：默认为 `1`。
+- `--control-select-focused-opacity`：默认为 `0.2`。
+- `--control-select-thickness`：默认为 `40px`。
+- `--control-select-border-radius`：默认为 `10px`。
+- `--control-select-padding`：选项周围的空间。默认为 `4px`。
+- `--control-select-button-border-radius`：每个选项的圆角。跟随边框圆角和内边距。
+- `--mdc-icon-size`：默认为 `20px`。
 
-Sources: [`ha-control-button.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-button.ts), [`ha-control-switch.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-switch.ts), [`ha-control-slider.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-slider.ts), [`ha-control-circular-slider.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-circular-slider.ts), [`ha-control-number-buttons.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-number-buttons.ts), and [`ha-control-select.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-select.ts), all in `src/components/`.
+源代码：[`ha-control-button.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-button.ts)、[`ha-control-switch.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-switch.ts)、[`ha-control-slider.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-slider.ts)、[`ha-control-circular-slider.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-circular-slider.ts)、[`ha-control-number-buttons.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-number-buttons.ts) 和 [`ha-control-select.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-control-select.ts)，均位于 `src/components/` 中。

@@ -1,25 +1,25 @@
 ---
-title: Patterns
-description: Recurring situations in the Home Assistant interface, like a form, a wait, an empty list, or an error, and how the frontend handles them.
+title: 模式
+description: Home Assistant 界面中反复出现的情形，例如表单、等待、空列表或错误，以及前端如何处理它们。
 order: 22
 ---
 
-A component is one building block. A pattern is how several of them work together to handle a situation that comes back all over the interface: filling in a form, waiting for something, finding a list empty, or running into an error.
+组件是一个构建模块。模式则是多个组件如何协同工作，以处理界面中反复出现的情形：填写表单、等待某件事、发现列表为空，或者遇到错误。
 
-Home Assistant already has an answer for most of these situations. Using the same answer everywhere means people learn it once. Before you design a new way to show an error or a wait, check here.
+对于其中大多数情形，Home Assistant 已经有了现成的解决方案。在所有地方使用相同的解决方案，意味着人们只需学习一次。在你设计一种展示错误或等待的新方式之前，请先在这里查看。
 
-Each pattern describes when it applies, how it works, which [components](/design/components/) it uses, and what to watch for in accessibility and text.
+每种模式都描述了它适用的场景、工作方式、使用了哪些[组件](/design/components/)，以及在无障碍和文本方面需要注意的事项。
 
-## The patterns
+## 模式列表
 
-- [Forms and validation](/design/patterns/forms/): collecting input, helper text, required fields, and showing what is wrong.
-- [Loading](/design/patterns/loading/): spinners, buttons that show progress, and skeletons.
-- [Empty states](/design/patterns/empty-states/): what to show when there is nothing to show yet, or no results.
-- [Errors and messages](/design/patterns/errors/): alerts, toasts, and repairs. Which one to pick, and how to word it.
-- [Confirmations and undo](/design/patterns/confirmations/): asking before something can't be undone, offering undo when it can, and not losing unsaved changes.
+- [表单与校验](/design/patterns/forms/)：收集输入、辅助文本、必填字段，以及显示错误所在。
+- [加载](/design/patterns/loading/)：加载指示器、显示进度的按钮，以及骨架屏。
+- [空状态](/design/patterns/empty-states/)：当还没有内容可显示，或没有结果时，应该展示什么。
+- [错误与消息](/design/patterns/errors/)：警告、Toast 提示和修复。该选择哪一种，以及如何措辞。
+- [确认与撤销](/design/patterns/confirmations/)：在操作无法撤销前进行询问，在可以撤销时提供撤销功能，以及避免丢失未保存的更改。
 
-## Related
+## 相关内容
 
-- [Accessibility](/design/foundations/accessibility/): the requirements every pattern has to meet.
-- [UI text](/design/ui-text/): the words that go into these patterns.
-- Missing a pattern, or think one should change? Start a discussion in the **Design system** category of the [UX design discussions](https://github.com/OpenHomeFoundation/ux-design/discussions).
+- [无障碍](/design/foundations/accessibility/)：每种模式都必须满足的要求。
+- [界面文本](/design/ui-text/)：用于这些模式中的文字。
+- 缺少某个模式，或者认为某个模式需要修改？请在 [UX design discussions](https://github.com/OpenHomeFoundation/ux-design/discussions) 的 **Design system** 分类中发起讨论。

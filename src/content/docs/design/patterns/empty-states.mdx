@@ -1,36 +1,36 @@
 ---
-title: Empty states
-description: What to show when a screen or a list has nothing in it, and how to help people move on from there.
+title: 空状态
+description: 当屏幕或列表中没有任何内容时应该显示什么，以及如何帮助用户继续操作。
 order: 3
 ---
 
 import Demo from "../../../../components/docs/Demo.astro";
 
-Sooner or later, every list is empty. Someone just installed Home Assistant, a search finds nothing, a filter hides everything. An empty state turns that blank space into a clear message: what is going on, and what people can do about it.
+每个列表迟早都会变空。有人刚安装了 Home Assistant，搜索没有找到结果，或者筛选器隐藏了所有内容。空状态（empty state）将这片空白转化为一条清晰的信息：发生了什么，以及用户可以怎么做。
 
-## When to use
+## 何时使用
 
-Use an empty state when a screen, a panel, or a list has finished loading and has nothing to show. There are two kinds, and they need different words:
+当屏幕、面板或列表已完成加载且没有任何内容可显示时，使用空状态。空状态有两种，需要不同的措辞：
 
-- **Nothing yet**: people have not picked or created anything. Tell them what to do to get started.
-- **No results**: there is data, but the current search or filter matches none of it. Tell them what to change.
+- **暂无内容**：用户尚未选择或创建任何内容。告诉他们如何开始。
+- **无结果**：有数据，但当前的搜索或筛选没有匹配到任何内容。告诉他们需要更改什么。
 
-The history panel shows both. Before you pick anything, it says **Nothing to show yet**: "Select areas, devices, entities or labels to see their history". When your selection has no history, it says **No results found**: "No history for the current selection. Try changing the targets, filters, or time range."
+历史记录面板同时展示了这两种情况。在你选择任何内容之前，它会显示**暂无内容可显示**：“选择区域、设备、实体（entity）或标签以查看其历史记录”。当你的选择没有历史记录时，它会显示**未找到结果**：“当前选择没有历史记录。请尝试更改目标、筛选器或时间范围。”
 
-Pickers make the same split: one text for a list that has no items at all, and another for a search that matches nothing.
+选择器（picker）也做了同样的区分：一个文本用于完全没有条目的列表，另一个文本用于没有匹配到任何内容的搜索。
 
-Don't show an empty state while the content is still loading. Show a [loading state](/design/patterns/loading/) until you know the list is empty.
+在内容仍在加载时，不要显示空状态。在你确认列表为空之前，请显示[加载状态](/design/patterns/loading/)。
 
-## How it works
+## 工作原理
 
-The frontend has one component for this: `ha-empty-state`. It centers its content in the space it gets, up to 500 pixels wide, with:
+前端有一个用于此目的的组件：`ha-empty-state`。它将其内容居中显示在所获得的空间中，最大宽度为 500 像素，包含：
 
-- An icon on top, 64 pixels, in the secondary text color
-- A heading that says what is going on
-- An optional description that says why, or what to do next
-- Optional actions below it, like a button to add the first item
+- 顶部一个图标，64 像素，使用次要文本颜色
+- 一个说明当前情况的标题
+- 一个可选的描述，说明原因或下一步该做什么
+- 其下方可选的操作，例如用于添加第一个条目的按钮
 
-<Demo caption="The empty state of the history panel, with its real text.">
+<Demo caption="历史记录面板的空状态，使用其真实文本。">
   <ha-empty-state
     icon="M9 17H7V10H9V17M13 17H11V7H13V17M17 17H15V13H17V17M19 19H5V5H19V19.1M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3Z"
     heading="No results found"
@@ -38,26 +38,26 @@ The frontend has one component for this: `ha-empty-state`. It centers its conten
   ></ha-empty-state>
 </Demo>
 
-### Writing the text
+### 撰写文本
 
-- The heading is short and plain: **No results found**, **Nothing to show yet**.
-- The description says what people can do: "Try changing the targets, filters, or time range."
-- When there is one clear next step, offer it as a button, with a label that says what it does.
+- 标题应简短明了：**未找到结果**、**暂无内容可显示**。
+- 描述应说明用户可以做什么：“请尝试更改目标、筛选器或时间范围。”
+- 当有一个明确的下一步操作时，将其作为按钮提供，按钮标签应说明其功能。
 
-See [Messages](/design/ui-text/messages/) for more on the words.
+有关措辞的更多信息，请参阅[消息](/design/ui-text/messages/)。
 
-## Accessibility
+## 无障碍
 
-- The heading is a real heading (`h2`), so screen reader users can find it.
-- The icon is decoration. The heading and description carry the message on their own.
+- 标题是一个真正的标题（`h2`），因此屏幕阅读器用户可以找到它。
+- 图标仅作装饰。标题和描述本身就能传达信息。
 
-## Components
+## 组件
 
-- `ha-empty-state`, in `src/components/ha-empty-state.ts` of the frontend.
-- [Button](/design/components/button/), for the next step
-- [Entity picker](/design/components/entity-picker/) and the other pickers, for their own empty and no match texts
+- `ha-empty-state`，位于前端的 `src/components/ha-empty-state.ts`。
+- [按钮](/design/components/button/)，用于下一步操作
+- [实体选择器](/design/components/entity-picker/)及其他选择器，用于它们各自的空状态和无匹配文本
 
-## In code
+## 代码示例
 
 ```ts
 html`
@@ -69,4 +69,4 @@ html`
 `;
 ```
 
-Put actions, like an `ha-button`, in the default slot. Set `--ha-empty-state-icon-size` to change the size of the icon.
+将操作（例如 `ha-button`）放入默认插槽（slot）中。设置 `--ha-empty-state-icon-size` 可以更改图标的大小。

@@ -1,6 +1,6 @@
 ---
-title: Heading card
-description: The heading card puts a title above a group of cards, with optional badges for the status of that group.
+title: 标题卡片
+description: 标题卡片在一组卡片上方显示标题，并可通过可选的徽章显示该组的状态。
 sidebarGroup: Grouping and layout
 ---
 
@@ -11,15 +11,15 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 420px" data-props='{"config": {"type": "tile", "entity": "light.living_room_lamp"}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The heading card names a group of cards. In the sections view, a new section starts with a heading card, so most sections have one at the top. It has no background and no border: it reads as part of the page, not as a card.
+标题卡片为一组卡片命名。在分区视图中，每个新分区都以一个标题卡片开始，因此大多数分区的顶部都有一个标题卡片。它没有背景也没有边框：它看起来像是页面的一部分，而不是一张卡片。
 
-Use a heading to say what the cards below it have in common, like a room or a topic. Don't use it for a single card that already has a name of its own.
+用标题来说明其下方的卡片有什么共同点，比如一个房间或一个主题。不要为一张已经有自己名称的单独卡片使用标题。
 
-### Title and subtitle
+### 标题和副标题
 
-The `title` style is the default, for the top of a section. The `subtitle` style is smaller and lighter, for a group inside a section. Use a subtitle to split a long section, like the lights and the climate of the same room.
+`title` 样式是默认样式，用于分区顶部。`subtitle` 样式更小更轻，用于分区内的一个组。使用副标题来拆分较长的分区，比如同一房间的灯光和气候。
 
 <Demo hass layout="stack">
   <hui-card style="width: 420px" data-props='{"config": {"type": "heading", "heading": "Bedroom"}}'></hui-card>
@@ -27,50 +27,50 @@ The `title` style is the default, for the top of a section. The `subtitle` style
   <hui-card style="width: 420px" data-props='{"config": {"type": "tile", "entity": "climate.bedroom_air_conditioner"}}'></hui-card>
 </Demo>
 
-### Badges
+### 徽章
 
-Badges sit on the other side of the heading and summarize the group at a glance, like the temperature of a room, or whether a door is open. An entity badge shows the icon and the state of an entity. It does nothing when selected, unless you give it an action. A button badge shows an icon or a short text, and runs an action.
+徽章位于标题的另一侧，可以一目了然地概括该组的情况，比如房间的温度，或者门是否打开。实体（entity）徽章显示实体的图标和状态。除非你为它设置了操作，否则选中它时不会有任何反应。按钮徽章显示一个图标或一段简短文字，并执行一个操作。
 
-Keep it to a few badges. When they don't fit, they scroll sideways, and the ones out of view are easy to miss.
+徽章数量要控制在几个以内。当它们放不下时，会横向滚动，超出视野的徽章很容易被忽略。
 
 <Demo hass>
   <hui-card style="width: 420px" data-props='{"config": {"type": "heading", "heading": "Hallway", "heading_style": "subtitle", "badges": [{"type": "entity", "entity": "binary_sensor.front_door"}, {"type": "entity", "entity": "lock.front_door"}, {"type": "entity", "entity": "light.hallway", "show_state": false}]}}'></hui-card>
 </Demo>
 
-### Action
+### 操作
 
-By default, the heading does nothing when you select it. Give it a `tap_action`, like navigating to the dashboard of the room, and a chevron appears next to the title to show it leads somewhere.
+默认情况下，选中标题时不会有任何反应。为它设置一个 `tap_action`，比如导航到房间的仪表盘（dashboard），标题旁边就会出现一个箭头图标，表示它可以跳转到某处。
 
 <Demo hass>
   <hui-card style="width: 420px" data-props='{"config": {"type": "heading", "heading": "Garden", "icon": "mdi:flower", "tap_action": {"action": "navigate", "navigation_path": "/dashboard-garden"}}}'></hui-card>
 </Demo>
 
-### Content
+### 内容
 
-- Keep the heading to one or two words. The area or the topic is enough.
-- An icon is optional. Use it when it helps people find a section while scrolling, and use it on every heading of the view, or none.
-- Badges show status, they are not a second row of controls. For controls, use [tile cards](/design/dashboards/tile-card/) below the heading.
+- 标题保持一到两个词即可。区域（area）或主题就足够了。
+- 图标是可选的。当它有助于人们在滚动时找到某个分区时才使用，并且要么在视图中的每个标题上都使用，要么都不使用。
+- 徽章用于显示状态，而不是第二行控件。如需控件，请在标题下方使用[磁贴卡片](/design/dashboards/tile-card/)。
 
-## Configuration
+## 配置
 
-- `heading` (string): the text of the heading.
-- `heading_style` (string): `title` or `subtitle`. Defaults to `title`.
-- `icon` (string): an icon in front of the heading.
-- `tap_action`, `hold_action`, `double_tap_action` (action): what happens when you select the heading. Default to `none`.
-- `badges` (list): the badges to show. Each badge has a `type`: `entity` (the default) or `button`.
+- `heading`（字符串）：标题的文字。
+- `heading_style`（字符串）：`title` 或 `subtitle`。默认为 `title`。
+- `icon`（字符串）：标题前面的图标。
+- `tap_action`、`hold_action`、`double_tap_action`（操作）：选中标题时会发生什么。默认为 `none`。
+- `badges`（列表）：要显示的徽章。每个徽章都有一个 `type`：`entity`（默认）或 `button`。
 
-An entity badge takes:
+实体徽章可以接受：
 
-- `entity` (string, required): the entity to show.
-- `name` (string): the name of the entity, used for the tooltip of the badge.
-- `icon` (string): the icon. Defaults to the icon of the entity.
-- `color` (string): the color of the icon. Use `state` for the color of the state. Without it, the icon has no color.
-- `show_state` (boolean): shows the state. Defaults to `true`.
-- `show_icon` (boolean): shows the icon. Defaults to `true`.
-- `state_content` (string or list): what to show as the state, like an attribute.
-- `tap_action`, `hold_action`, `double_tap_action` (action): what happens when you select the badge. Default to `none`.
+- `entity`（字符串，必填）：要显示的实体。
+- `name`（字符串）：实体的名称，用于徽章的工具提示。
+- `icon`（字符串）：图标。默认为实体的图标。
+- `color`（字符串）：图标的颜色。使用 `state` 可采用状态的颜色。不设置时，图标没有颜色。
+- `show_state`（布尔值）：是否显示状态。默认为 `true`。
+- `show_icon`（布尔值）：是否显示图标。默认为 `true`。
+- `state_content`（字符串或列表）：作为状态显示的内容，比如某个属性。
+- `tap_action`、`hold_action`、`double_tap_action`（操作）：选中徽章时会发生什么。默认为 `none`。
 
-A button badge takes `text`, `icon`, `color`, and the same actions.
+按钮徽章可以接受 `text`、`icon`、`color` 以及相同的操作。
 
 ```yaml
 type: heading
@@ -81,10 +81,10 @@ badges:
   - entity: sensor.living_room_humidity
 ```
 
-## In code
+## 代码位置
 
-The card lives in `src/panels/lovelace/cards/hui-heading-card.ts`, and the element is `<hui-heading-card>`. The badges are `<hui-heading-badge>` elements, which create the badge for each type from `src/panels/lovelace/heading-badges/`.
+该卡片位于 `src/panels/lovelace/cards/hui-heading-card.ts`，元素为 `<hui-heading-card>`。徽章是 `<hui-heading-badge>` 元素，它们根据 `src/panels/lovelace/heading-badges/` 中的内容为每种类型创建徽章。
 
-In the sections view, the heading always takes the full width of the section, and its height follows its content. The title and subtitle styles can be themed with the `--ha-heading-card-title-*` and `--ha-heading-card-subtitle-*` variables.
+在分区视图中，标题始终占据分区的全部宽度，其高度随内容而定。标题和副标题样式可以通过 `--ha-heading-card-title-*` 和 `--ha-heading-card-subtitle-*` 变量进行主题设置。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-heading-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-heading-card.ts)

@@ -1,6 +1,6 @@
 ---
-title: Dashboards
-description: What dashboards and cards are, how to pick the right card, and the principles every card follows.
+title: 仪表盘
+description: 什么是仪表盘和卡片，如何选择合适的卡片，以及每张卡片遵循的原则。
 order: 25
 sidebarGroups:
   - Entity cards
@@ -10,82 +10,82 @@ sidebarGroups:
   - Media and pictures
 ---
 
-A dashboard is the home screen of Home Assistant: the place people look at every day to see what is going on and to control their home. Dashboards are built from cards. Each card does one job, like showing a lamp, a graph, or the weather.
+仪表盘（dashboard）是 Home Assistant 的主屏幕：人们每天都会在这里查看家中动态并控制家居。仪表盘由卡片（card）构建而成。每张卡片只做一件事，比如显示一盏灯、一个图表或天气。
 
-Each card has one page here, for designers and frontend developers alike. **Usage** comes first: when to use the card, which options change how it looks, and what to put in it. **Configuration** lists the options, with a YAML example. **In code** tells you where the card lives in the frontend. The examples on these pages are the real cards from the frontend, running live on a fake home, in the light or dark theme of the app.
+每张卡片在这里都有一个专属页面，供设计师和前端开发者共同使用。首先是**用法**：何时使用该卡片、哪些选项会改变其外观，以及在其中放置什么内容。**配置**列出各个选项，并附有 YAML 示例。**代码实现**告诉你该卡片在前端中的位置。这些页面上的示例是来自前端的真实卡片，运行在一个虚拟的家中，可切换应用的浅色或深色主题。
 
-## Views and sections
+## 视图与分区
 
-A dashboard has one or more views, the tabs at the top. The default view type is the sections view: cards sit in sections, and each section is a grid of 12 columns. A section is between 320 and 500 pixels wide, and the view adds columns of sections as the screen gets wider.
+仪表盘有一个或多个视图（view），即顶部的标签页。默认的视图类型是分区视图（sections view）：卡片放置在分区（section）中，每个分区是一个 12 列的网格。分区的宽度在 320 到 500 像素之间，随着屏幕变宽，视图会增加分区的列数。
 
-Rows in a section are 56 pixels high, with 8 pixels between them. Every card tells the grid how many columns and rows it needs, and what its minimum is. A tile card takes half a section and one row, so two tiles sit side by side. People can resize cards in the editor, within the limits the card sets.
+分区中的行高为 56 像素，行间距为 8 像素。每张卡片都会告诉网格它需要多少列和行，以及它的最小值是多少。一个磁贴卡片（tile card）占用半个分区和一行，因此两个磁贴可以并排放置。人们可以在编辑器中调整卡片大小，但受卡片自身设置的限制。
 
-Older views, like the masonry view, place cards in columns based on their height. They still work, but new dashboards start with sections.
+较旧的视图（如瀑布流视图）根据卡片高度将其放置在列中。它们仍然可用，但新仪表盘从分区开始。
 
-## Choosing a card
+## 选择卡片
 
-Start with the [tile card](/design/dashboards/tile-card/). It shows one entity, its state, and with features, the controls people need. When you add an entity to a section, it becomes a tile, and the dashboard Home Assistant builds for you is mostly tiles. Most of the time, a tile is the right answer.
+从[磁贴卡片](/design/dashboards/tile-card/)开始。它显示一个实体（entity）、其状态（state），并通过功能（feature）提供人们所需的控制。当你将一个实体添加到分区时，它会变成一个磁贴，Home Assistant 为你构建的仪表盘也主要由磁贴组成。大多数情况下，磁贴就是正确的答案。
 
-Pick another card when the tile can't do the job:
+当磁贴无法胜任时，选择其他卡片：
 
-- Something over time, like a temperature over the past day: the [history graph card](/design/dashboards/history-graph-card/) or the [sensor card](/design/dashboards/sensor-card/).
-- A big, focused control for one device: the [thermostat card](/design/dashboards/thermostat-card/), the [light card](/design/dashboards/light-card/), or the [media control card](/design/dashboards/media-control-card/).
-- Many entities in little room, like a list of settings: the [entities card](/design/dashboards/entities-card/).
-- Something that is not an entity, like text or a web page: the [markdown card](/design/dashboards/markdown-card/) or the [webpage card](/design/dashboards/iframe-card/).
-- A title above a group of cards: the [heading card](/design/dashboards/heading-card/).
+- 展示随时间变化的内容，比如过去一天的温度：[历史图表卡片](/design/dashboards/history-graph-card/)或[传感器卡片](/design/dashboards/sensor-card/)。
+- 针对单个设备的大型、聚焦的控制：[温控器卡片](/design/dashboards/thermostat-card/)、[灯光卡片](/design/dashboards/light-card/)或[媒体控制卡片](/design/dashboards/media-control-card/)。
+- 在狭小空间内展示多个实体，比如一列设置项：[实体组卡片](/design/dashboards/entities-card/)。
+- 展示不是实体的内容，比如文本或网页：[Markdown 卡片](/design/dashboards/markdown-card/)或[网页卡片](/design/dashboards/iframe-card/)。
+- 在一组卡片上方显示标题：[标题卡片](/design/dashboards/heading-card/)。
 
-## Card principles
+## 卡片原则
 
-These principles come from how the cards in the frontend work. Follow them when you design a new card, or change an existing one.
+这些原则源自前端中卡片的工作方式。在设计新卡片或修改现有卡片时，请遵循它们。
 
-- **Fit the grid.** A card sizes itself in columns and rows of the sections grid, not in pixels. Give it a sensible default size and a minimum, and make it look good when people resize it.
-- **Follow the state.** Cards use the icon and color of the state of an entity, so a light that is on looks the same on every card. Do not invent a new color for something the state already says.
-- **One tap, one expected result.** Selecting an entity opens its more-info dialog, by default. Quick actions, like toggling a light from the icon of a tile, go where people expect them. Most cards that show an entity support `tap_action`, `hold_action`, and `double_tap_action`, so people can change what happens.
-- **Reuse features.** Controls inside a card are card features, like a brightness slider or the buttons of a cover. A feature is built once, and the tile card, the area card, the thermostat card, and the humidifier card can all use it. Add a feature before you add a new card.
-- **Show only what is there.** A card hides what an entity does not support, like the color controls of a lamp that only dims. Do not show controls that do nothing.
-- **Be honest when something is wrong.** When an entity is unavailable, the card says so and grays out. When the configuration is wrong, the card turns into an error card that says what is missing.
-- **Make it editable.** Every card has a visual editor, so people never need YAML to set it up. A new option needs a field in the editor.
+- **适应网格。** 卡片以分区网格的列和行来定义自身大小，而不是以像素。为它提供一个合理的默认大小和最小值，并确保人们在调整其大小时它依然美观。
+- **跟随状态。** 卡片使用实体状态的图标和颜色，因此一盏开着的灯在每张卡片上看起来都一样。不要为状态已经表达的内容发明新颜色。
+- **一次点击，一个预期结果。** 默认情况下，选择一个实体会打开其更多信息对话框。快捷操作（比如从磁贴的图标切换灯光）应放在人们预期它们出现的位置。大多数显示实体的卡片都支持 `tap_action`、`hold_action` 和 `double_tap_action`，因此人们可以更改点击后的行为。
+- **复用功能。** 卡片内的控件是卡片功能（feature），比如亮度滑块或窗帘的按钮。一个功能只需构建一次，磁贴卡片、区域卡片、温控器卡片和加湿器卡片都可以使用它。在添加新卡片之前，先考虑添加一个功能。
+- **只显示存在的内容。** 卡片会隐藏实体不支持的内容，比如只支持调光的灯的颜色控件。不要显示毫无作用的控件。
+- **出现问题时如实呈现。** 当实体不可用时，卡片会如实显示并变灰。当配置有误时，卡片会变成一个错误卡片，说明缺少什么。
+- **支持可视化编辑。** 每张卡片都有可视化编辑器，因此人们无需 YAML 即可完成设置。新选项需要在编辑器中有对应的字段。
 
-## Entity cards
+## 实体卡片
 
-- [Tile card](/design/dashboards/tile-card/): one entity, its state, and its controls. The default.
-- [Entity card](/design/dashboards/entity-card/): the state of one entity, big and clear.
-- [Button card](/design/dashboards/button-card/): a big button for one entity or action.
-- [Entities card](/design/dashboards/entities-card/): a list of entities, one per row.
-- [Glance card](/design/dashboards/glance-card/): the state of a few entities at a glance.
-- [Entity filter card](/design/dashboards/entity-filter-card/): only the entities that are in a certain state.
+- [磁贴卡片](/design/dashboards/tile-card/)：一个实体、其状态及其控件。默认选择。
+- [实体卡片](/design/dashboards/entity-card/)：一个实体的状态，大而清晰。
+- [按钮卡片](/design/dashboards/button-card/)：针对一个实体或操作的大按钮。
+- [实体组卡片](/design/dashboards/entities-card/)：实体列表，每行一个。
+- [概览卡片](/design/dashboards/glance-card/)：一目了然地显示几个实体的状态。
+- [实体筛选卡片](/design/dashboards/entity-filter-card/)：只显示处于特定状态的实体。
 
-## Controls
+## 控制
 
-- [Light card](/design/dashboards/light-card/): brightness of one light, on a dial.
-- [Thermostat card](/design/dashboards/thermostat-card/): the target temperature, on a dial.
-- [Humidifier card](/design/dashboards/humidifier-card/): the target humidity, on a dial.
-- [Alarm panel card](/design/dashboards/alarm-panel-card/): arm and disarm an alarm, with a keypad.
-- [Media control card](/design/dashboards/media-control-card/): what is playing, and the controls to play it.
-- [To-do list card](/design/dashboards/todo-list-card/): the items of a to-do list.
+- [灯光卡片](/design/dashboards/light-card/)：一盏灯的亮度，以旋钮呈现。
+- [温控器卡片](/design/dashboards/thermostat-card/)：目标温度，以旋钮呈现。
+- [加湿器卡片](/design/dashboards/humidifier-card/)：目标湿度，以旋钮呈现。
+- [警报面板卡片](/design/dashboards/alarm-panel-card/)：通过键盘布防和撤防警报。
+- [媒体控制卡片](/design/dashboards/media-control-card/)：正在播放的内容，以及播放控制。
+- [待办事项卡片](/design/dashboards/todo-list-card/)：待办事项列表中的条目。
 
-## Information
+## 信息
 
-- [Sensor card](/design/dashboards/sensor-card/): the value of a sensor, with a small graph.
-- [Gauge card](/design/dashboards/gauge-card/): a single value on a dial.
-- [History graph card](/design/dashboards/history-graph-card/): how states changed over time.
-- [Weather forecast card](/design/dashboards/weather-forecast-card/): the weather now, and the days or hours ahead.
-- [Map card](/design/dashboards/map-card/): where people and things are.
-- [Markdown card](/design/dashboards/markdown-card/): text, written in Markdown.
-- [Plant status card](/design/dashboards/plant-status-card/): how a plant is doing.
-- [Clock card](/design/dashboards/clock-card/): the time, digital or analog.
+- [传感器卡片](/design/dashboards/sensor-card/)：传感器的数值，附带小图表。
+- [仪表卡片](/design/dashboards/gauge-card/)：以旋钮显示单个数值。
+- [历史图表卡片](/design/dashboards/history-graph-card/)：状态随时间的变化。
+- [天气预报卡片](/design/dashboards/weather-forecast-card/)：当前天气，以及未来数天或数小时的预报。
+- [地图卡片](/design/dashboards/map-card/)：人和物的位置。
+- [Markdown 卡片](/design/dashboards/markdown-card/)：以 Markdown 编写的文本。
+- [植物状态卡片](/design/dashboards/plant-status-card/)：植物的生长状况。
+- [时钟卡片](/design/dashboards/clock-card/)：时间，数字或模拟样式。
 
-## Grouping and layout
+## 分组与布局
 
-- [Heading card](/design/dashboards/heading-card/): a title for a group of cards.
-- [Area card](/design/dashboards/area-card/): an area, with its sensors and controls.
-- [Grid and stack cards](/design/dashboards/grid-card/): cards in a grid, a row, or a column.
-- [Conditional card](/design/dashboards/conditional-card/): a card that only shows when conditions are met.
+- [标题卡片](/design/dashboards/heading-card/)：为一组卡片提供标题。
+- [区域卡片](/design/dashboards/area-card/)：一个区域（area），及其传感器和控件。
+- [网格与堆叠卡片](/design/dashboards/grid-card/)：以网格、行或列排列的卡片。
+- [条件卡片](/design/dashboards/conditional-card/)：仅在满足条件时显示的卡片。
 
-## Media and pictures
+## 媒体与图片
 
-- [Picture card](/design/dashboards/picture-card/): a picture that does something when selected.
-- [Picture entity card](/design/dashboards/picture-entity-card/): an entity, shown as a picture or a camera.
-- [Picture glance card](/design/dashboards/picture-glance-card/): a picture, with a row of entities on top.
-- [Picture elements card](/design/dashboards/picture-elements-card/): entities and actions placed on a picture, like a floor plan.
-- [Webpage card](/design/dashboards/iframe-card/): a web page, inside the dashboard.
+- [图片卡片](/design/dashboards/picture-card/)：被选中时会执行操作的图片。
+- [图片实体卡片](/design/dashboards/picture-entity-card/)：以图片或摄像头画面显示的实体。
+- [图片概览卡片](/design/dashboards/picture-glance-card/)：一张图片，顶部带有一行实体。
+- [图片元素卡片](/design/dashboards/picture-elements-card/)：放置在图片上的实体和操作，比如平面图。
+- [网页卡片](/design/dashboards/iframe-card/)：嵌入仪表盘内的网页。

@@ -1,6 +1,6 @@
 ---
-title: Components
-description: The building blocks of the Home Assistant interface, with guidelines, specs, accessibility, and code, on one page per component.
+title: 组件
+description: Home Assistant 界面的构建模块，每个组件一页，包含指南、规格、无障碍信息和代码。
 order: 20
 sidebarGroups:
   - Actions
@@ -12,99 +12,99 @@ sidebarGroups:
   - Layout and content
 ---
 
-The interface is built from a shared set of components. Reusing them keeps Home Assistant consistent, and saves everyone work. Before you design or build something new, check whether one of these already does the job.
+界面由一组共享的组件构建而成。复用它们可以让 Home Assistant 保持一致，也为每个人节省工作量。在你设计或构建新东西之前，请先检查这些组件中是否已有能胜任的。
 
-The examples on these pages are the real components from the frontend, running live, in the light or dark theme of the app.
+这些页面上的示例是来自前端的真实组件，实时运行于应用的浅色或深色主题中。
 
-## How a component page is built
+## 组件页面的结构
 
-Each component has one page, for designers and developers alike. Design comes first, code comes last, and every page uses the same order, so you know where to look:
+每个组件都有一个页面，供设计师和开发者共同使用。设计在前，代码在后，每个页面都采用相同的顺序，方便你知道去哪里查找：
 
-1. **Overview**: what the component is, in a sentence or two.
-2. **When to use**: the job it does, and when another component fits better.
-3. **Anatomy**: the parts it is made of.
-4. **Variants**: the versions it comes in, and when to pick which.
-5. **Behavior**: what it does when people interact with it.
-6. **Specs**: sizes, spacing, and colors, in [design tokens](/design/foundations/).
-7. **Guidelines**: how to use it well, often with a do and a don't.
-8. **Accessibility**: keyboard, focus, target size, and what screen readers announce, with the roles and ARIA in code last.
-9. **Related**: components and [patterns](/design/patterns/) that go with it.
-10. **In code**: the element, its attributes, slots, events, and how to style it.
+1. **概述**：用一两句话说明该组件是什么。
+2. **何时使用**：它承担的任务，以及何时用其他组件更合适。
+3. **结构剖析**：它由哪些部分组成。
+4. **变体**：它有哪些版本，以及何时选用哪种。
+5. **行为**：用户与之交互时会发生什么。
+6. **规格**：尺寸、间距和颜色，以[设计令牌（design tokens）](/design/foundations/)表示。
+7. **指南**：如何正确使用它，通常包含“应该做”和“不该做”。
+8. **无障碍**：键盘、焦点、目标尺寸，以及屏幕阅读器会朗读的内容，最后是代码中的角色（role）和 ARIA。
+9. **相关内容**：与之搭配的组件和[模式（patterns）](/design/patterns/)。
+10. **代码**：元素、其属性、插槽（slot）、事件，以及如何设置样式。
 
-Developers can jump straight to **In code**. Designers can stop before it. The **Accessibility** section works the same way: first what people get, like keyboard support, focus, target size, and what a screen reader announces, then an **In the code** part with the roles and ARIA attributes behind it.
+开发者可以直接跳到**代码**部分。设计师可以在那之前停下。**无障碍**部分的结构也是如此：先介绍用户能获得什么，比如键盘支持、焦点、目标尺寸，以及屏幕阅读器会朗读的内容，然后是**代码中**部分，介绍背后的角色和 ARIA 属性。
 
-## Where the spec lives
+## 规格的所在之处
 
-These pages are the reference for the components of Home Assistant: how they look, how they behave, and when to use them. They replace design.home-assistant.io.
+这些页面是 Home Assistant 组件的参考：它们的外观、行为，以及何时使用。它们取代了 design.home-assistant.io。
 
-To change a component:
+要修改一个组件：
 
-1. Start a discussion in the **Design system** category of the [UX design discussions](https://github.com/OpenHomeFoundation/ux-design/discussions), and settle the direction there.
-2. Open a pull request in the [frontend repository](https://github.com/home-assistant/frontend) that changes the component.
-3. Open a pull request to [this site](https://github.com/home-assistant/contributors.home-assistant.io) that updates the page of the component.
+1. 在 [UX 设计讨论](https://github.com/OpenHomeFoundation/ux-design/discussions)的 **Design system** 分类中发起讨论，并在那里确定方向。
+2. 在[前端仓库](https://github.com/home-assistant/frontend)中打开一个修改该组件的拉取请求（pull request）。
+3. 向[本站](https://github.com/home-assistant/contributors.home-assistant.io)打开一个更新该组件页面的拉取请求。
 
-See [How we design](/design/how-we-design/#where-a-component-is-specified) for the whole path.
+完整流程请参见[我们的设计方式](/design/how-we-design/#where-a-component-is-specified)。
 
 ## Actions
 
-- [Button](/design/components/button/): start an action, like saving a form or opening a dialog.
-- [Progress button](/design/components/progress-button/): an action that takes a moment, and shows how it went.
-- [Dropdown](/design/components/dropdown/): a menu of actions or options, behind a button.
+- [按钮（Button）](/design/components/button/)：启动一个操作，比如保存表单或打开对话框。
+- [进度按钮（Progress button）](/design/components/progress-button/)：需要一些时间的操作，并显示其进展如何。
+- [下拉菜单（Dropdown）](/design/components/dropdown/)：按钮背后的操作或选项菜单。
 
 ## Input
 
-- [Text input](/design/components/input/): a single line of text, like a name, a number, or a password.
-- [Textarea](/design/components/textarea/): text that runs over several lines.
-- [Switch](/design/components/switch/): turn a single setting on or off.
-- [Slider](/design/components/slider/): pick a number from a range, by dragging.
-- [Select box](/design/components/select-box/): pick one of a few options, shown side by side as cards.
-- [Color picker](/design/components/color-picker/): pick a hue and saturation on a color wheel, like the color of a light.
+- [文本输入框（Text input）](/design/components/input/)：单行文本，比如名称、数字或密码。
+- [文本域（Textarea）](/design/components/textarea/)：跨越多行的文本。
+- [开关（Switch）](/design/components/switch/)：开启或关闭单个设置。
+- [滑块（Slider）](/design/components/slider/)：通过拖动从范围中选取一个数字。
+- [选择框（Select box）](/design/components/select-box/)：从几个选项中选一个，以卡片形式并排显示。
+- [颜色选择器（Color picker）](/design/components/color-picker/)：在色轮上选取色相和饱和度，比如灯的颜色。
 
 ## Pickers
 
-- [Entity picker](/design/components/entity-picker/): choose one entity, with search.
-- [Device picker](/design/components/device-picker/): choose one device, with search.
-- [Area picker](/design/components/area-picker/): choose one area, or create a new one on the spot.
+- [实体选择器（Entity picker）](/design/components/entity-picker/)：选择一个实体（entity），支持搜索。
+- [设备选择器（Device picker）](/design/components/device-picker/)：选择一个设备（device），支持搜索。
+- [区域选择器（Area picker）](/design/components/area-picker/)：选择一个区域（area），或当场新建一个。
 
 ## Forms
 
-- [Form](/design/components/form/): a complete form, rendered from a schema.
-- [Selector](/design/components/selector/): the right control for a value, as used by integrations, blueprints, and forms.
+- [表单（Form）](/design/components/form/)：由模式（schema）渲染出的完整表单。
+- [选择器（Selector）](/design/components/selector/)：为值匹配合适的控件，集成（integration）、蓝图（blueprint）和表单都会用到。
 
 ## Feedback and status
 
-- [Alert](/design/components/alert/): a short, important message on the page.
-- [Dialog](/design/components/dialog/): a decision or input, on top of the current screen.
-- [Adaptive dialog](/design/components/adaptive-dialog/): a dialog on a big screen, a bottom sheet on a phone.
-- [Badge](/design/components/badge/): a small piece of status, in a pill.
-- [Label badge](/design/components/label-badge/): the classic round state badge.
-- [Spinner](/design/components/spinner/): something is loading.
-- [Tooltip](/design/components/tooltip/): a short hint on hover or focus.
-- [Tip](/design/components/tip/): a short, optional hint below the content, like a keyboard shortcut.
-- [State icon](/design/components/state-icon/): the icon and color of an entity, based on its state.
+- [提醒（Alert）](/design/components/alert/)：页面上一条简短而重要的消息。
+- [对话框（Dialog）](/design/components/dialog/)：在当前屏幕之上进行决策或输入。
+- [自适应对话框（Adaptive dialog）](/design/components/adaptive-dialog/)：在大屏幕上是对话框，在手机上是底部抽屉。
+- [徽章（Badge）](/design/components/badge/)：药丸形的小块状态信息。
+- [标签徽章（Label badge）](/design/components/label-badge/)：经典的圆形状态徽章。
+- [加载指示器（Spinner）](/design/components/spinner/)：表示某物正在加载。
+- [工具提示（Tooltip）](/design/components/tooltip/)：悬停或聚焦时显示的简短提示。
+- [提示（Tip）](/design/components/tip/)：内容下方简短的可选提示，比如键盘快捷键。
+- [状态图标（State icon）](/design/components/state-icon/)：基于实体状态显示的图标和颜色。
 
 ## Showing values
 
-- [Bar](/design/components/bar/): how much of something is used.
-- [Gauge](/design/components/gauge/): a single value on a dial.
-- [Controls](/design/components/controls/): big, touch friendly controls for operating a device.
-- [Control scrubber](/design/components/control-scrubber/): drag a strip under a fixed window, for ranges that go round, like hue.
-- [Select menu](/design/components/select-menu/): a compact dropdown to pick one option, like the mode of a thermostat.
+- [条形（Bar）](/design/components/bar/)：显示某物的使用量。
+- [仪表盘（Gauge）](/design/components/gauge/)：表盘上的单个数值。
+- [控件（Controls）](/design/components/controls/)：用于操作设备的大尺寸、触控友好的控件。
+- [控制滑条（Control scrubber）](/design/components/control-scrubber/)：在固定窗口下拖动一条滑条，适用于循环范围，比如色相。
+- [选择菜单（Select menu）](/design/components/select-menu/)：用于选择单个选项的紧凑下拉菜单，比如恒温器的模式。
 
 ## Layout and content
 
-- [List](/design/components/list/): rows of items.
-- [Expansion panel](/design/components/expansion-panel/): a section that opens when needed.
-- [Marquee text](/design/components/marquee-text/): one line of text that scrolls when it does not fit.
-- [Faded](/design/components/faded/): the start of a long text, with the rest faded out until people select it.
+- [列表（List）](/design/components/list/)：一行行的条目。
+- [展开面板（Expansion panel）](/design/components/expansion-panel/)：需要时才展开的部分。
+- [跑马灯文本（Marquee text）](/design/components/marquee-text/)：放不下时会滚动的单行文本。
+- [渐隐（Faded）](/design/components/faded/)：长文本的开头，其余部分渐隐，直到用户选择后才显示。
 
-## Bigger building blocks
+## 更大的构建模块
 
-Components come together in larger pieces of the interface, each with their own section:
+组件会组合成界面中更大的部分，每个部分都有独立的章节：
 
-- [Dashboards](/design/dashboards/): the cards people put on their dashboards.
-- [More info](/design/more-info/): the dialog that opens when you select an entity, and the view each type of entity gets in it.
+- [仪表盘（Dashboards）](/design/dashboards/)：用户放在其仪表盘上的卡片。
+- [更多信息（More info）](/design/more-info/)：选择一个实体时打开的对话框，以及每种类型的实体在其中获得的视图。
 
-## Missing something?
+## 缺少什么吗？
 
-Not every component in the frontend has a page here yet. A missing page is a good contribution in itself: open a pull request to [this site](https://github.com/home-assistant/contributors.home-assistant.io), following the outline above. If you think a component should change, start a discussion in the **Design system** category of the [UX design discussions](https://github.com/OpenHomeFoundation/ux-design/discussions). Developers can find the code of every component in [`src/components`](https://github.com/home-assistant/frontend/tree/dev/src/components) of the frontend, and the [Frontend](/frontend/) area explains how to work with it.
+并非前端中的每个组件在这里都有页面。缺失的页面本身就是很好的贡献：按照上述大纲向[本站](https://github.com/home-assistant/contributors.home-assistant.io)打开一个拉取请求。如果你认为某个组件应该修改，请在 [UX 设计讨论](https://github.com/OpenHomeFoundation/ux-design/discussions)的 **Design system** 分类中发起讨论。开发者可以在前端的 [`src/components`](https://github.com/home-assistant/frontend/tree/dev/src/components) 中找到每个组件的代码，[前端（Frontend）](/frontend/)板块介绍了如何使用它。

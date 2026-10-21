@@ -1,6 +1,6 @@
 ---
-title: Humidifier
-description: The more-info view of a humidifier or dehumidifier, with a round dial for the target humidity.
+title: 加湿器
+description: 加湿器或除湿器的更多信息视图，带有一个用于设定目标湿度的圆形转盘。
 sidebarGroup: Lights and climate
 ---
 
@@ -10,27 +10,27 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="humidifier.bedroom_humidifier"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 显示内容
 
-The main control is the target humidity, on the same round dial as the [climate](/design/more-info/climate/) view: the [control circular slider](/design/components/controls/). Using one shape for every "keep the room at this value" device means people learn it once.
+主控件是目标湿度，位于与[气候（climate）](/design/more-info/climate/)视图相同的圆形转盘上：即[圆形滑块控件](/design/components/controls/)。所有“将房间保持在此数值”的设备都使用同一种形状，意味着人们只需学习一次。
 
-Inside the dial you find what the device is doing right now, like humidifying or drying, the target in big numbers, and a minus and a plus button. A dot on the ring marks the current humidity, and the current humidity is also shown as a small label above the dial.
+在转盘内部，你可以看到设备当前正在执行的操作（例如加湿或除湿）、以大号数字显示的目标值，以及一个减号按钮和一个加号按钮。圆环上的一个圆点标记当前湿度，当前湿度也会以小标签的形式显示在转盘上方。
 
-Below the dial, a row of menus holds the secondary settings:
+在转盘下方，一排菜单承载着次要设置：
 
-- **State**, to turn the device on or off. It is always there.
-- **Mode**, like normal, eco, sleep, or boost. It only shows when the device supports modes.
+- **状态（state）**，用于打开或关闭设备。它始终存在。
+- **模式（mode）**，例如普通、节能、睡眠或强力。仅当设备支持模式时才会显示。
 
-## Design notes
+## 设计说明
 
-- Like the climate view, the humidifier has no big on and off switch. Turning it on or off is a menu, so the dial keeps its place as the main control.
-- The dial takes the color of the state and the current action, and goes gray when the device is off.
-- A humidifier fills the ring from the start up to the target. A dehumidifier fills it from the target to the end, because it works to bring the humidity down.
-- When the device doesn't report a current humidity, the label above the dial and the dot on the ring are left out.
-- The mode menu lists the modes the device reports, each with its own icon.
+- 与气候视图一样，加湿器没有大的开和关开关。打开或关闭设备是一个菜单项，这样转盘就能保持其作为主控件的位置。
+- 转盘会采用状态和当前操作的颜色，当设备关闭时变为灰色。
+- 加湿器从起点填充圆环至目标值。除湿器则从目标值填充到终点，因为它的工作是把湿度降下来。
+- 当设备不报告当前湿度时，转盘上方的标签和圆环上的圆点会被省略。
+- 模式菜单列出设备报告的模式，每个模式都有各自的图标。
 
-## In code
+## 代码实现
 
-The view is `more-info-humidifier` in `src/dialogs/more-info/controls/more-info-humidifier.ts`. The dial is `ha-state-control-humidifier-humidity` in `src/state-control/humidifier/`. The `HumidifierEntityFeature` enum is in `src/data/humidifier.ts`.
+该视图是 `src/dialogs/more-info/controls/more-info-humidifier.ts` 中的 `more-info-humidifier`。转盘是 `src/state-control/humidifier/` 中的 `ha-state-control-humidifier-humidity`。`HumidifierEntityFeature` 枚举位于 `src/data/humidifier.ts` 中。
 
-Source: [`more-info-humidifier.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-humidifier.ts)
+源码：[`more-info-humidifier.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-humidifier.ts)

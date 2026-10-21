@@ -1,6 +1,6 @@
 ---
-title: Label badge
-description: The round, classic state badge, with a value in the circle and a short label on its edge.
+title: 标签徽章（label badge）
+description: 经典的圆形状态徽章，圆圈内显示数值，边缘显示简短标签。
 sidebarGroup: Feedback and status
 ---
 
@@ -15,32 +15,32 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   </ha-label-badge>
 </Demo>
 
-## Overview
+## 概述
 
-The label badge is the older, round badge style: a value in a circle, a short label on its bottom edge, and a description below it. Today it only powers the state badge element of the picture elements card.
+标签徽章是较旧的圆形徽章样式：圆圈内显示数值，底边显示简短标签，下方显示描述。如今它仅用于图片元素卡片的状态徽章元素。
 
-## When to use
+## 何时使用
 
-Use a label badge for:
+在以下情况使用标签徽章：
 
-- Work on the state badge element of the picture elements card
+- 处理图片元素卡片的状态徽章元素时
 
-Don't use a label badge for:
+在以下情况不要使用标签徽章：
 
-- Badges on a dashboard. Those use the [badge](/design/components/badge/), which has the current dashboard style.
+- 仪表盘（dashboard）上的徽章。那些徽章使用[徽章（badge）](/design/components/badge/)，它具有当前的仪表盘样式。
 
-## Anatomy
+## 结构
 
-1. **Circle**: the round container, with a colored border, and optionally a background image
-2. **Value**: the content of the circle, text or an icon
-3. **Label**: optional, a colored pill on the bottom edge of the circle, in uppercase
-4. **Description**: optional text below the badge
+1. **圆圈**：圆形容器，带有彩色边框，可选背景图片
+2. **数值**：圆圈内的内容，文本或图标
+3. **标签**：可选，圆圈底边的彩色胶囊形标签，大写显示
+4. **描述**：徽章下方的可选文本
 
-## Variants
+## 变体
 
-### Label length
+### 标签长度
 
-Labels longer than five characters get a smaller font.
+超过五个字符的标签会使用更小的字体。
 
 <Demo>
   <ha-label-badge label="kWh">3.2</ha-label-badge>
@@ -48,98 +48,98 @@ Labels longer than five characters get a smaller font.
   <ha-label-badge description="Kitchen">22</ha-label-badge>
 </Demo>
 
-## Behavior
+## 行为
 
-- The label badge is static: it has no hover, focus, pressed, or disabled state.
-- A value that is too wide for the circle is cut off with an ellipsis. So is a label that is wider than the circle.
-- The description is cut off at 5em wide.
-- Changes to the border and label color fade in 0.3s.
+- 标签徽章是静态的：它没有悬停、聚焦、按下或禁用状态。
+- 对于圆圈来说过宽的数值会被省略号截断。比圆圈更宽的标签也是如此。
+- 描述在 5em 宽度处被截断。
+- 边框和标签颜色的变化会在 0.3 秒内淡入。
 
-## Specs
+## 规格
 
-All sizes are relative to the font size, so the badge scales with the text around it.
+所有尺寸都相对于字体大小，因此徽章会随周围的文本缩放。
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Circle size | 2.5em | `--ha-label-badge-size` |
-| Font size of the circle | 1.5em | `--ha-label-badge-font-size` |
-| Corner radius | 50%, a circle | `--ha-label-badge-border-radius` |
-| Border | 0.1em solid | `--ha-label-badge-color` |
-| Label font size | 0.5em of the circle, 90% of that when longer than five characters | None |
-| Label corner radius | 12px | `--ha-border-radius-lg` |
-| Label weight | 500 | `--ha-font-weight-medium` |
-| Description font size | 0.9em | `--ha-label-badge-title-font-size` |
-| Description width | 5em | `--ha-label-badge-title-width` |
-| Space above the description | 1em | None |
+| 圆圈大小 | 2.5em | `--ha-label-badge-size` |
+| 圆圈字体大小 | 1.5em | `--ha-label-badge-font-size` |
+| 圆角半径 | 50%，圆形 | `--ha-label-badge-border-radius` |
+| 边框 | 0.1em solid | `--ha-label-badge-color` |
+| 标签字体大小 | 圆圈的 0.5em，超过五个字符时为其 90% | None |
+| 标签圆角半径 | 12px | `--ha-border-radius-lg` |
+| 标签字重 | 500 | `--ha-font-weight-medium` |
+| 描述字体大小 | 0.9em | `--ha-label-badge-title-font-size` |
+| 描述宽度 | 5em | `--ha-label-badge-title-width` |
+| 描述上方的间距 | 1em | None |
 
-| Part | Color |
+| 部分 | 颜色 |
 | --- | --- |
-| Border and label background | `--ha-label-badge-color`, defaults to `--primary-color` |
-| Label text | `--ha-label-badge-label-color`, defaults to white |
-| Circle background | `--label-badge-background-color`, set to `--card-background-color` by the theme |
-| Value | `--label-badge-text-color`, set to the primary text color at 80% opacity by the theme |
+| 边框和标签背景 | `--ha-label-badge-color`，默认为 `--primary-color` |
+| 标签文本 | `--ha-label-badge-label-color`，默认为白色 |
+| 圆圈背景 | `--label-badge-background-color`，由主题设置为 `--card-background-color` |
+| 数值 | `--label-badge-text-color`，由主题设置为透明度 80% 的主要文本颜色 |
 
-## Guidelines
+## 准则
 
-<DoDont doText="Keep the value to a few characters." dontText="Put a long value in the circle. It gets cut off.">
+<DoDont doText="保持数值只有几个字符。" dontText="在圆圈内放入过长的数值。它会被截断。">
   <ha-label-badge slot="do" label="°C">21</ha-label-badge>
   <ha-label-badge slot="dont" label="°C">21.5432</ha-label-badge>
 </DoDont>
 
-<DoDont doText="Use a short description." dontText="Use a long name. The description is cut off at about five characters wide.">
+<DoDont doText="使用简短的描述。" dontText="使用过长的名称。描述会在大约五个字符宽度处被截断。">
   <ha-label-badge slot="do" description="Kitchen">22</ha-label-badge>
   <ha-label-badge slot="dont" description="Downstairs living room">22</ha-label-badge>
 </DoDont>
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-The label badge is not focusable, and has no keyboard interaction.
+标签徽章不可聚焦，也没有键盘交互。
 
-### Screen readers
+### 屏幕阅读器
 
-A screen reader reads the value, the label, and the description as plain text. The label looks uppercase, but is read as written. An icon as the value is skipped.
+屏幕阅读器会将数值、标签和描述作为纯文本朗读。标签看起来是大写的，但会按原样朗读。作为数值的图标会被跳过。
 
-### In the code
+### 在代码中
 
-- The label badge has no role.
-- The label is in uppercase through CSS only.
-- An icon as the value is decorative when it is an `ha-svg-icon`, which has `aria-hidden="true"`.
+- 标签徽章没有角色（role）。
+- 标签仅通过 CSS 显示为大写。
+- 作为数值的图标在是 `ha-svg-icon` 时是装饰性的，它带有 `aria-hidden="true"`。
 
-## Related
+## 相关内容
 
-- [Badge](/design/components/badge/): the current badge
-- [State icon](/design/components/state-icon/): the icon of an entity
+- [徽章](/design/components/badge/)：当前的徽章
+- [状态图标](/design/components/state-icon/)：实体（entity）的图标
 
-## In code
+## 在代码中
 
-The element is `<ha-label-badge>`:
+该元素是 `<ha-label-badge>`：
 
 ```html
 <ha-label-badge label="°C" description="Living room">21</ha-label-badge>
 ```
 
-### Attributes
+### 属性
 
-- `label`: short text on the edge of the circle.
-- `description`: text below the badge.
-- `image`: URL of a background image for the circle, like an entity picture.
+- `label`：圆圈边缘的简短文本。
+- `description`：徽章下方的文本。
+- `image`：圆圈背景图片的 URL，例如实体图片。
 
-### Slots
+### 插槽
 
-- Default: the value inside the circle. Text or an icon.
+- 默认：圆圈内的数值。文本或图标。
 
-### Styling
+### 样式
 
-- `--ha-label-badge-color`: the border and label background. Defaults to `var(--primary-color)`.
-- `--ha-label-badge-label-color`: the label text. Defaults to white.
-- `--ha-label-badge-size`: the size of the circle. Defaults to `2.5em`.
-- `--ha-label-badge-font-size`: the font size of the value. Defaults to `1.5em`.
-- `--ha-label-badge-border-radius`: defaults to `50%`, a circle.
-- `--ha-label-badge-padding`: padding around the whole badge.
-- `--ha-label-badge-label-text-transform`: defaults to `uppercase`.
-- `--ha-label-badge-title-font-size`, `--ha-label-badge-title-font-weight`, and `--ha-label-badge-title-width`: the description below the badge.
-- `--label-badge-background-color` and `--label-badge-text-color`: the circle background and value color. These are theme variables.
+- `--ha-label-badge-color`：边框和标签背景。默认为 `var(--primary-color)`。
+- `--ha-label-badge-label-color`：标签文本。默认为白色。
+- `--ha-label-badge-size`：圆圈的大小。默认为 `2.5em`。
+- `--ha-label-badge-font-size`：数值的字体大小。默认为 `1.5em`。
+- `--ha-label-badge-border-radius`：默认为 `50%`，即圆形。
+- `--ha-label-badge-padding`：整个徽章周围的内边距。
+- `--ha-label-badge-label-text-transform`：默认为 `uppercase`。
+- `--ha-label-badge-title-font-size`、`--ha-label-badge-title-font-weight` 和 `--ha-label-badge-title-width`：徽章下方的描述。
+- `--label-badge-background-color` 和 `--label-badge-text-color`：圆圈背景和数值颜色。这些是主题变量。
 
 Source: [`src/components/ha-label-badge.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-label-badge.ts)

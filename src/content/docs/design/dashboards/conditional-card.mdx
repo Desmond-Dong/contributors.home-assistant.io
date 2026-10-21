@@ -1,6 +1,6 @@
 ---
-title: Conditional card
-description: The conditional card shows another card only when its conditions are met, like a light being on, or the screen being wide enough.
+title: 条件卡片
+description: 条件卡片（conditional card）仅在其条件满足时显示另一张卡片，例如灯处于开启状态，或屏幕足够宽。
 sidebarGroup: Grouping and layout
 ---
 
@@ -11,15 +11,15 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 360px" data-props='{"config": {"type": "conditional", "conditions": [{"condition": "screen", "media_query": "(max-width: 767px)"}], "card": {"type": "tile", "entity": "media_player.living_room_speaker"}}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The conditional card wraps one other card, and shows it only when all its conditions are met. When they aren't, the card takes no room at all. Use it to keep a dashboard calm: show the card for the washing machine while it runs, or a warning only when a door is open.
+条件卡片包裹另一张卡片，并且仅在所有条件都满足时才显示它。当条件不满足时，该卡片完全不占用空间。可以用它让仪表盘（dashboard）保持简洁：在洗衣机运行时显示其卡片，或仅在门打开时显示警告。
 
-The demo above holds two conditional cards with a screen condition. On a wide screen you see the tile with playback controls, on a narrow one the plain tile. Make your browser narrower to see them swap.
+上面的演示包含两张带有屏幕条件的条件卡片。在宽屏幕上，你会看到带有播放控件的磁贴（tile），在窄屏幕上则是普通磁贴。把浏览器窗口调窄一些，就能看到它们切换。
 
-### Visibility on every card
+### 每张卡片上的可见性
 
-Every other card has a **Visibility** tab in its editor, with the same conditions. They are stored as `visibility` in the configuration of the card itself. That is the better choice for new dashboards: the card stays one card, and you don't have to wrap it. The conditional card is still there, and dashboards that use it keep working.
+其他每张卡片在其编辑器中都有一个**可见性（Visibility）**选项卡，包含相同的条件。它们以 `visibility` 的形式存储在卡片自身的配置中。对于新仪表盘来说，这是更好的选择：卡片仍然是一张卡片，你无需包裹它。条件卡片依然存在，使用它的仪表盘也能继续正常工作。
 
 ```yaml
 type: tile
@@ -30,18 +30,18 @@ visibility:
     state: "on"
 ```
 
-### Conditions
+### 条件
 
-- `state`: the state of an entity is, or is not, one of the given states.
-- `numeric_state`: the state of an entity is above or below a number.
-- `screen`: the screen matches a media query, like a minimum width.
-- `user`: the person looking at the dashboard is one of the given users.
-- `time`: the current time is within a range, on the given weekdays.
-- `location`: the person looking at the dashboard is in one of the given zones.
-- `view_columns`: the sections view has a number of columns within a range.
-- `and`, `or`, and `not`: combine other conditions.
+- `state`：实体的状态是（或不是）给定状态之一。
+- `numeric_state`：实体的状态高于或低于某个数值。
+- `screen`：屏幕匹配某个媒体查询（media query），例如最小宽度。
+- `user`：正在查看仪表盘的用户是给定用户之一。
+- `time`：当前时间在某个范围内，且处于给定的工作日。
+- `location`：正在查看仪表盘的人位于给定的地理位置区域（zone）之一。
+- `view_columns`：分区视图（sections view）的列数在某个范围内。
+- `and`、`or` 和 `not`：组合其他条件。
 
-The conditions about the screen, the user, the time, and the location are checked in the browser. The conditions about the state of an entity are checked by Home Assistant, which tells the frontend when the result changes. The demos on this site have no Home Assistant behind them to do that, so they only show conditions that run in the browser.
+关于屏幕、用户、时间和位置的条件在浏览器中检查。关于实体状态的条件由 Home Assistant 检查，并在结果变化时通知前端。本网站的演示背后没有 Home Assistant 来执行此操作，因此它们只展示在浏览器中运行的条件。
 
 ```yaml
 type: conditional
@@ -57,19 +57,19 @@ card:
   entity: binary_sensor.front_door
 ```
 
-### Edit mode
+### 编辑模式
 
-While you edit the dashboard, the card always shows, whatever the conditions say. Otherwise you couldn't select a card that is hidden right now. To test the conditions, leave edit mode.
+在你编辑仪表盘时，无论条件如何，卡片始终显示。否则你将无法选中当前处于隐藏状态的卡片。要测试条件，请退出编辑模式。
 
-### Content
+### 内容
 
-- Don't hide what people look for. A card that comes and goes is great for a temporary state, like an open door, but confusing for something people expect in a fixed spot.
-- When a hidden card leaves a gap that looks odd, rethink the layout instead of adding more conditions.
+- 不要隐藏人们要找的东西。一张时隐时现的卡片适合临时状态，例如打开的门，但对于人们期望在固定位置看到的内容来说则会造成困扰。
+- 当一张隐藏的卡片留下看起来奇怪的空隙时，应重新考虑布局，而不是添加更多条件。
 
-## Configuration
+## 配置
 
-- `conditions` (list, required): the conditions to check. All of them must be met.
-- `card` (map, required): the card to show.
+- `conditions`（列表，必填）：要检查的条件。所有条件都必须满足。
+- `card`（映射，必填）：要显示的卡片。
 
 ```yaml
 type: conditional
@@ -83,12 +83,12 @@ card:
     - type: media-player-playback
 ```
 
-## In code
+## 代码实现
 
-The card lives in `src/panels/lovelace/cards/hui-conditional-card.ts`, and the element is `<hui-conditional-card>`. It extends `HuiConditionalBase` in `src/panels/lovelace/components/hui-conditional-base.ts`, which the conditional row of the [entities card](/design/dashboards/entities-card/) uses too.
+该卡片位于 `src/panels/lovelace/cards/hui-conditional-card.ts`，元素为 `<hui-conditional-card>`。它继承自 `src/panels/lovelace/components/hui-conditional-base.ts` 中的 `HuiConditionalBase`，[实体卡片](/design/dashboards/entities-card/)的条件行也使用了它。
 
-The conditions are evaluated by the `ConditionalListenerMixin` in `src/mixins/conditional-listener-mixin.ts`, the same mixin `<hui-card>` uses for the `visibility` option. Conditions about states go to Home Assistant through a `subscribe_condition` subscription. The others are checked locally. The types of the conditions are in `src/panels/lovelace/common/validate-condition.ts`.
+条件由 `src/mixins/conditional-listener-mixin.ts` 中的 `ConditionalListenerMixin` 求值，`<hui-card>` 在 `visibility` 选项中也使用了同一个 mixin。关于状态的条件通过 `subscribe_condition` 订阅发送给 Home Assistant。其他条件则在本地检查。条件的类型定义在 `src/panels/lovelace/common/validate-condition.ts` 中。
 
-When the card shows or hides, it fires a `card-visibility-changed` event, so the section or stack around it can update its layout.
+当卡片显示或隐藏时，它会触发 `card-visibility-changed` 事件，以便其周围的分区（section）或堆叠（stack）可以更新其布局。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-conditional-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-conditional-card.ts)

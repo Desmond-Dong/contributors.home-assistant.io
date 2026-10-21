@@ -1,6 +1,6 @@
 ---
-title: Alert
-description: Alerts show a short, important message, without interrupting what someone is doing.
+title: 警告（Alert）
+description: 警告用于显示简短的重要信息，且不会打断用户正在进行的操作。
 sidebarGroup: Feedback and status
 ---
 
@@ -14,143 +14,143 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   <ha-alert alert-type="success">Backup created.</ha-alert>
 </Demo>
 
-## Overview
+## 概述
 
-An alert draws attention to a message on the page itself. It does not block anything: people can read it and continue. Its type, shown by a color and an icon, tells how serious the message is.
+警告（alert）用于将注意力吸引到页面本身的一条消息上。它不会阻塞任何操作：用户可以阅读它并继续操作。它的类型通过颜色和图标显示，表明消息的严重程度。
 
-## When to use
+## 何时使用
 
-Use an alert for:
+在以下情况使用警告：
 
-- An error that someone needs to know about, with what to do about it
-- A warning about something that needs attention, or could go wrong
-- Useful context, like a tip or a change to be aware of
-- Confirming that something worked
+- 用户需要知道的错误，以及如何处理
+- 关于需要注意或可能出错的事情的警告
+- 有用的上下文信息，例如提示或需要知晓的变更
+- 确认某项操作已成功
 
-Don't use an alert for:
+不要在以下情况使用警告：
 
-- A decision someone must make before they can continue. Use a [dialog](/design/components/dialog/).
-- A short label or status next to something else. Use a [badge](/design/components/badge/).
-- Extra help that only shows on hover. Use a [tooltip](/design/components/tooltip/).
+- 用户必须先做出决定才能继续操作。请使用[对话框（dialog）](/design/components/dialog/)。
+- 某个元素旁边的简短标签或状态。请使用[徽章（badge）](/design/components/badge/)。
+- 仅在悬停时显示的额外帮助。请使用[工具提示（tooltip）](/design/components/tooltip/)。
 
-## Anatomy
+## 结构
 
-1. **Container**: the tinted background, in the color of the type
-2. **Icon**: the icon of the type, or your own icon
-3. **Title**: optional, in bold above the message
-4. **Message**: the text of the alert
-5. **Action**: optional, a dismiss button or your own action, like a button
+1. **容器**：带有色调的背景，颜色与类型对应
+2. **图标**：该类型的图标，或你自己的图标
+3. **标题**：可选，以粗体显示在消息上方
+4. **消息**：警告的文本内容
+5. **操作**：可选，一个关闭按钮或你自己的操作，例如一个按钮
 
-## Variants
+## 变体
 
-### Type
+### 类型
 
-There are four types. Each has its own color and icon:
+共有四种类型，每种都有自己的颜色和图标：
 
-- **Error**: something went wrong. Say what, and what to do about it.
-- **Warning**: something needs attention, or could go wrong.
-- **Info**: useful context, like a tip or a change to be aware of. This is the default.
-- **Success**: something worked as intended.
+- **错误（Error）**：出了问题。说明是什么问题，以及如何处理。
+- **警告（Warning）**：某事需要注意，或可能出错。
+- **信息（Info）**：有用的上下文信息，例如提示或需要知晓的变更。这是默认类型。
+- **成功（Success）**：某项操作按预期完成。
 
-### With a title
+### 带标题
 
-A title adds a bold line above the message. Use it together with a message, never on its own.
+标题会在消息上方添加一行粗体文字。标题必须与消息一起使用，切勿单独使用。
 
 <Demo layout="stack">
   <ha-alert alert-type="warning" title="Restart required">This update requires a restart.</ha-alert>
 </Demo>
 
-### Dismissable or with an action
+### 可关闭或带操作
 
-A dismissable alert gets a close button. You can also put your own action in the alert, like a button to undo.
+可关闭的警告会带有一个关闭按钮。你也可以在警告中放置自己的操作，例如一个撤销按钮。
 
 <Demo hass layout="stack">
   <ha-alert alert-type="info" dismissable>You can change this later in the settings.</ha-alert>
   <ha-alert alert-type="success">Backup created.<ha-button slot="action" appearance="plain">Undo</ha-button></ha-alert>
 </Demo>
 
-### Narrow
+### 窄版
 
-In the narrow version, the action moves below the message instead of next to it. This helps in small spaces, like a card.
+在窄版中，操作会移动到消息下方而不是旁边。这适用于狭小的空间，例如卡片中。
 
-## Behavior
+## 行为
 
-- An alert has no hover, focus, or pressed state of its own. Only the action inside it, like the dismiss button, has those.
-- Selecting the dismiss button does not remove the alert. It sends an event, and the page that shows the alert decides what happens, usually hiding it.
-- Long text wraps, and long words break, so the message always fits.
-- When there is no title, the icon is centered next to the message. With a title, it lines up with the title.
-- The alert is laid out left to right, unless its title starts with Hebrew or Arabic text. Then it follows the direction of the page.
+- 警告本身没有悬停、聚焦或按下状态。只有其中的操作（例如关闭按钮）才具有这些状态。
+- 选择关闭按钮并不会移除警告。它会发送一个事件，由显示警告的页面决定后续处理，通常是将其隐藏。
+- 长文本会换行，长单词会断行，因此消息总能完整显示。
+- 没有标题时，图标会在消息旁边居中显示。有标题时，图标会与标题对齐。
+- 警告从左到右排版，除非其标题以希伯来语或阿拉伯语开头。此时它会遵循页面的文字方向。
 
-## Specs
+## 规格参数
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Padding | 8px | `--ha-alert-padding` |
-| Icon size | 24px | `--ha-alert-icon-size` |
-| Space between icon and message | 8px | None |
-| Corner radius | 4px | `--ha-border-radius-sm` |
-| Background | The type color at 12% opacity | See below |
-| Title weight | 700 | `--ha-font-weight-bold` |
-| Dismiss button size | 36px | `--ha-icon-button-size` |
+| 内边距 | 8px | `--ha-alert-padding` |
+| 图标大小 | 24px | `--ha-alert-icon-size` |
+| 图标与消息之间的间距 | 8px | 无 |
+| 圆角半径 | 4px | `--ha-border-radius-sm` |
+| 背景 | 类型颜色，12% 不透明度 | 见下文 |
+| 标题字重 | 700 | `--ha-font-weight-bold` |
+| 关闭按钮大小 | 36px | `--ha-icon-button-size` |
 
-| Type | Icon | Icon and background color |
+| 类型 | 图标 | 图标和背景颜色 |
 | --- | --- | --- |
-| Error | Alert circle outline | `--error-color`, `#db4437` |
-| Warning | Alert outline | `--warning-color`, `#ffa600` |
-| Info | Information outline | `--info-color`, `#039be5` |
-| Success | Checkbox marked circle outline | `--success-color`, `#43a047` |
+| 错误 | Alert circle outline | `--error-color`, `#db4437` |
+| 警告 | Alert outline | `--warning-color`, `#ffa600` |
+| 信息 | Information outline | `--info-color`, `#039be5` |
+| 成功 | Checkbox marked circle outline | `--success-color`, `#43a047` |
 
-The message text has no color of its own: it uses the text color of the page around it.
+消息文本本身没有颜色：它使用周围页面的文本颜色。
 
-## Guidelines
+## 指南
 
-<DoDont doText="Say what went wrong, and what to do about it." dontText="Only say that something went wrong.">
+<DoDont doText="说明出了什么问题，以及如何处理。" dontText="只说出错了，而不说明细节。">
   <ha-alert slot="do" alert-type="error">Could not connect to the device. Check that it is turned on and connected to your network.</ha-alert>
   <ha-alert slot="dont" alert-type="error">An error occurred.</ha-alert>
 </DoDont>
 
-<DoDont doText="Use a title together with a message." dontText="Use a title without a message.">
+<DoDont doText="标题与消息一起使用。" dontText="只使用标题而不使用消息。">
   <ha-alert slot="do" alert-type="warning" title="Restart required">This update requires a restart.</ha-alert>
   <ha-alert slot="dont" alert-type="warning" title="Restart required"></ha-alert>
 </DoDont>
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-The alert itself does not take focus. Its action does:
+警告本身不接收焦点。它的操作可以接收焦点：
 
-| Key | Action |
+| 按键 | 操作 |
 | --- | --- |
-| <kbd>Tab</kbd> | Moves focus to the dismiss button or your own action. |
-| <kbd>Enter</kbd> or <kbd>Space</kbd> | Selects the focused button. |
+| <kbd>Tab</kbd> | 将焦点移动到关闭按钮或你自己的操作。 |
+| <kbd>Enter</kbd> 或 <kbd>Space</kbd> | 选择当前聚焦的按钮。 |
 
-### Target size
+### 目标尺寸
 
-The dismiss button is 36px by 36px.
+关闭按钮为 36px × 36px。
 
-### Screen readers
+### 屏幕阅读器
 
-- When an alert appears on a page that is already open, most screen readers read it out right away. An alert that is already there when the page loads is not announced.
-- Color and icon don't reach someone who uses a screen reader, so the text must make the type clear on its own.
-- The dismiss button is announced as "Dismiss alert", in the language of the user.
+- 当警告出现在已经打开的页面上时，大多数屏幕阅读器会立即朗读它。页面加载时已经存在的警告则不会被播报。
+- 颜色和图标无法传达给使用屏幕阅读器的用户，因此文本本身必须能清楚地表明类型。
+- 关闭按钮会被播报为“Dismiss alert”，使用用户的语言。
 
-### In the code
+### 代码层面
 
-- The alert has the role `alert`.
-- The icon is an `ha-svg-icon`, which is hidden from screen readers with `aria-hidden="true"`.
-- The dismiss button is an icon button with the translated label `ui.common.dismiss_alert` as its accessible name.
+- 警告具有 `alert` 角色。
+- 图标是一个 `ha-svg-icon`，通过 `aria-hidden="true"` 对屏幕阅读器隐藏。
+- 关闭按钮是一个图标按钮，其无障碍名称为翻译后的标签 `ui.common.dismiss_alert`。
 
-## Related
+## 相关内容
 
-- [Dialog](/design/components/dialog/): when someone must respond before continuing
-- [Badge](/design/components/badge/): a short status next to something
-- [Color](/design/foundations/color/): the colors behind the types
-- [UI text](/design/ui-text/): how to write the message
+- [对话框（Dialog）](/design/components/dialog/)：当用户必须先做出响应才能继续时
+- [徽章（Badge）](/design/components/badge/)：某物旁边的简短状态
+- [颜色（Color）](/design/foundations/color/)：各类型背后的颜色
+- [UI 文本（UI text）](/design/ui-text/)：如何撰写消息
 
-## In code
+## 代码实现
 
-The element is `<ha-alert>`, with the type set through `alert-type`:
+该元素为 `<ha-alert>`，通过 `alert-type` 设置类型：
 
 ```html
 <ha-alert alert-type="error">Could not connect to the device.</ha-alert>
@@ -160,26 +160,26 @@ The element is `<ha-alert>`, with the type set through `alert-type`:
 <ha-alert alert-type="success" dismissable>Backup created.</ha-alert>
 ```
 
-### Attributes
+### 属性
 
-- `alert-type`: `info` (default), `warning`, `error`, or `success`.
-- `title`: a title, shown in bold above the message.
-- `dismissable`: shows a dismiss button.
-- `narrow`: puts the action below the message.
+- `alert-type`：`info`（默认）、`warning`、`error` 或 `success`。
+- `title`：标题，以粗体显示在消息上方。
+- `dismissable`：显示关闭按钮。
+- `narrow`：将操作放置在消息下方。
 
-### Slots
+### 插槽
 
-- Default: the message.
-- `icon`: replaces the icon of the type.
-- `action`: your own action, like a button. It replaces the dismiss button.
+- 默认：消息。
+- `icon`：替换该类型的图标。
+- `action`：你自己的操作，例如一个按钮。它会替换关闭按钮。
 
-### Events
+### 事件
 
-- `alert-dismissed-clicked`: fired when the dismiss button is selected. Remove or hide the alert in response.
+- `alert-dismissed-clicked`：选择关闭按钮时触发。在响应中移除或隐藏警告。
 
-### Styling
+### 样式
 
-- `--ha-alert-padding`: the padding. Defaults to 8px.
-- `--ha-alert-icon-size`: the size of the icon. Defaults to 24px.
+- `--ha-alert-padding`：内边距。默认为 8px。
+- `--ha-alert-icon-size`：图标大小。默认为 24px。
 
 Source: [`src/components/ha-alert.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-alert.ts)

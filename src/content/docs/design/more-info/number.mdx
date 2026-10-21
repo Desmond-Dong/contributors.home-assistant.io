@@ -1,6 +1,6 @@
 ---
-title: Number
-description: The more-info view of a number entity of a device, a slider or a number field in the state row.
+title: 数字（Number）
+description: 设备的数字（number）实体的更多信息视图，即状态行中的滑块或数字输入框。
 sidebarGroup: Helpers
 ---
 
@@ -10,26 +10,26 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="number.living_room_speaker_bass"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 显示内容
 
-Number entities are the settings of a device that take a number, like the bass of a speaker or the sensitivity of a motion sensor. Like the [input number](/design/more-info/input-number/) helper, they don't have the newer more-info design. The control lives in the state row at the top of the dialog: the icon and name on the left, the control on the right.
+数字（number）实体是设备中接受数字的设置项，例如扬声器的低音或运动传感器的灵敏度。与[输入数字](/design/more-info/input-number/)辅助元素（helper）一样，它们没有采用较新的更多信息设计。控件位于对话框顶部的状态行中：左侧是图标和名称，右侧是控件。
 
-The integration picks the mode of the number:
+集成会决定数字的模式：
 
-- **Slider**: a [slider](/design/components/slider/), with the value next to it. The bass of the living room speaker above goes from -10 to 10, as a slider.
-- **Box**: a number [text input](/design/components/input/), with the unit at the end.
-- **Auto**: a slider when the range has a limited number of steps, and a field when it has too many to pick from with a slider.
+- **滑块（Slider）**：一个[滑块](/design/components/slider/)，旁边显示数值。上面客厅扬声器的低音以滑块形式从 -10 到 10。
+- **输入框（Box）**：一个数字[文本输入框](/design/components/input/)，末尾显示单位。
+- **自动（Auto）**：当取值范围的步数有限时显示滑块，当步数太多、不适合用滑块选择时显示输入框。
 
-Below the state row, the dialog shows the history of the entity and its activity. The demo shows only the state row.
+在状态行下方，对话框会显示该实体的历史记录及其活动。演示中仅显示状态行。
 
-## Design notes
+## 设计说明
 
-- The slider and the field use the minimum, maximum, and step the device reports.
-- The new value is sent when you let go of the slider, or when you confirm the field.
-- When the entity is unavailable, the slider and the field are disabled.
+- 滑块和输入框使用设备报告的最小值、最大值和步长。
+- 新值会在你松开滑块时，或在输入框中确认时发送。
+- 当实体不可用时，滑块和输入框将被禁用。
 
-## In code
+## 代码实现
 
-The state row is `state-card-number` in `src/state-summary/state-card-number.ts`. Whether it shows a slider is decided by `showNumberSlider` in `src/data/number.ts`. There is no `more-info-number`: the domain is in `DOMAINS_HIDE_DEFAULT_MORE_INFO` in `src/dialogs/more-info/const.ts`.
+状态行是 `src/state-summary/state-card-number.ts` 中的 `state-card-number`。是否显示滑块由 `src/data/number.ts` 中的 `showNumberSlider` 决定。没有 `more-info-number`：该域名位于 `src/dialogs/more-info/const.ts` 的 `DOMAINS_HIDE_DEFAULT_MORE_INFO` 中。
 
-Source: [`state-card-number.ts`](https://github.com/home-assistant/frontend/blob/dev/src/state-summary/state-card-number.ts)
+源码：[`state-card-number.ts`](https://github.com/home-assistant/frontend/blob/dev/src/state-summary/state-card-number.ts)

@@ -1,165 +1,165 @@
 ---
-title: Expansion panel
-description: An expansion panel hides a section behind a header, so people can open it when they need it.
+title: 展开面板（Expansion panel）
+description: 展开面板将一个区域隐藏在标题之后，人们可以在需要时将其展开。
 sidebarGroup: Layout and content
 ---
 
 import Demo from "../../../../components/docs/Demo.astro";
 
 <Demo layout="stack">
-  <ha-expansion-panel outlined header="Advanced settings" secondary="Only change these if you know what they do">
-    <p>Polling interval, timeouts, and other options most people never need to touch.</p>
+  <ha-expansion-panel outlined header="高级设置" secondary="只有知道其作用时才修改这些选项">
+    <p>轮询间隔、超时时间以及其他大多数人无需改动选项。</p>
   </ha-expansion-panel>
 </Demo>
 
-## Overview
+## 概述
 
-An expansion panel hides a section behind a header, so people can open it when they need it. It keeps a screen short and calm: the things most people need sit on the screen itself, and the rest waits in a panel.
+展开面板（expansion panel）将一个区域隐藏在标题之后，人们可以在需要时将其展开。它能让屏幕保持简洁清爽：大多数人需要的内容直接显示在屏幕上，其余内容则收纳在面板中。
 
-## When to use
+## 何时使用
 
-Use an expansion panel for:
+在以下情况使用展开面板：
 
-- Advanced options in a form
-- The optional fields of a dialog
-- A group of filters
+- 表单中的高级选项
+- 对话框中的可选字段
+- 一组筛选器
 
-Don't use an expansion panel for:
+不要在以下情况使用展开面板：
 
-- What people need to complete the task. If someone has to open the panel every time, the content should not be in a panel.
-- A set of rows that open something else. Use a [list](/design/components/list/).
+- 完成任务所必需的内容。如果用户每次都必须展开面板，那么这些内容就不应该放在面板中。
+- 一组会打开其他内容的行。请使用[列表](/design/components/list/)。
 
-## Anatomy
+## 结构
 
-1. **Container**: with `outlined`, a border and rounded corners around the whole panel
-2. **Header**: the row people select to open or close the panel
-3. **Leading icon**: optional, an icon at the start of the header
-4. **Title**: the header text
-5. **Secondary text**: optional, a short line below the title
-6. **Chevron**: points down when closed, and turns up when open. At the end of the header, or at the start with `left-chevron`.
-7. **Header icons**: optional, actions at the end of the header
-8. **Content**: the section that opens and closes
+1. **容器**：使用 `outlined` 时，整个面板周围有边框和圆角
+2. **标题**：用户点击以展开或收起面板的行
+3. **前导图标**：可选，标题开头的图标
+4. **标题文本**：标题的文字
+5. **辅助文本**：可选，标题下方的一行简短文字
+6. **箭头图标**：收起时朝下，展开时朝上。位于标题末尾，或使用 `left-chevron` 时位于开头。
+7. **标题图标**：可选，位于标题末尾的操作
+8. **内容**：展开和收起的区域
 
-## Variants
+## 变体
 
-### Header
+### 标题
 
-The header says what is inside. Keep it short: **Advanced settings**, **Areas**, **Network**. A secondary line below it can give a short summary, like the current value or why someone would open it.
+标题应说明面板内的内容。保持简短：**高级设置**、**区域**、**网络**。标题下方的一行辅助文本可以提供简短摘要，例如当前值或用户为何要展开它。
 
 <Demo layout="stack">
-  <ha-expansion-panel outlined header="Network">
-    <p>IP address, DNS, and proxy settings.</p>
+  <ha-expansion-panel outlined header="网络">
+    <p>IP 地址、DNS 和代理设置。</p>
   </ha-expansion-panel>
-  <ha-expansion-panel outlined header="Network" secondary="Using DHCP">
-    <p>IP address, DNS, and proxy settings.</p>
+  <ha-expansion-panel outlined header="网络" secondary="正在使用 DHCP">
+    <p>IP 地址、DNS 和代理设置。</p>
   </ha-expansion-panel>
 </Demo>
 
-### Outlined
+### 描边
 
-An outlined panel gets a border and rounded corners. The frontend uses it when the panel sits in a form or a dialog, next to other fields, so it reads as one block. The expandable section of a [form](/design/components/form/) and the card editors do this. Without the outline, the panel blends into its surroundings, which works in a list of panels, like the filter panes and the card picker.
+描边面板带有边框和圆角。当面板位于表单或对话框中、与其他字段并排时，前端会使用描边样式，使其看起来像一个整体。[表单](/design/components/form/)的可展开部分和卡片编辑器就是这样做的。不使用描边时，面板会融入周围环境，这适用于面板列表，例如筛选窗格和卡片选择器。
 
 <Demo layout="stack">
-  <ha-expansion-panel header="Without outline">
-    <p>The content of the panel.</p>
+  <ha-expansion-panel header="无描边">
+    <p>面板的内容。</p>
   </ha-expansion-panel>
-  <ha-expansion-panel outlined header="With outline">
-    <p>The content of the panel.</p>
+  <ha-expansion-panel outlined header="有描边">
+    <p>面板的内容。</p>
   </ha-expansion-panel>
 </Demo>
 
-### Chevron on the left
+### 箭头图标在左侧
 
-By default, the chevron sits at the end of the header. It can move to the start. The filter panes on the configuration pages use this, with a count of active filters and a button to clear them in the header.
+默认情况下，箭头图标位于标题末尾。它也可以移到开头。配置页面上的筛选窗格就使用了这种方式，标题中显示活动筛选器的数量以及一个清除按钮。
 
 <Demo layout="stack">
-  <ha-expansion-panel left-chevron header="Areas">
-    <p>Filter by area.</p>
+  <ha-expansion-panel left-chevron header="区域">
+    <p>按区域筛选。</p>
   </ha-expansion-panel>
 </Demo>
 
-### Open by default
+### 默认展开
 
-A panel can be open from the start.
+面板可以从一开始就是展开状态。
 
 <Demo layout="stack">
-  <ha-expansion-panel outlined expanded header="Data to back up">
-    <p>Settings and history, media, and the share folder.</p>
+  <ha-expansion-panel outlined expanded header="要备份的数据">
+    <p>设置和历史记录、媒体以及共享文件夹。</p>
   </ha-expansion-panel>
 </Demo>
 
-### Always open
+### 始终展开
 
-Without the chevron, people can no longer open or close the panel. Open from the start, it is a section that looks like a panel but always stays open.
+没有箭头图标时，用户就无法再展开或收起面板。从一开始就展开的面板，是一个看起来像面板但始终保持展开的区域。
 
-## Behavior
+## 行为
 
-- **Closed**: only the header shows. The content is not rendered at all.
-- **Opening and closing**: selecting the header opens or closes the panel. The content slides open or closed in 300ms, and the chevron turns in 150ms.
-- **Focus**: while the header has focus, it gets the input fill as background. With keyboard focus, the chevron also gets a round neutral fill.
-- **Always open**: the header can't be selected or focused.
+- **收起**：只显示标题。内容完全不渲染。
+- **展开和收起**：点击标题可展开或收起面板。内容在 300 毫秒内滑开或滑合，箭头图标在 150 毫秒内旋转。
+- **焦点**：当标题获得焦点时，其背景变为输入填充色。使用键盘获得焦点时，箭头图标还会获得圆形中性填充。
+- **始终展开**：标题无法被选中或聚焦。
 
-## Specs
+## 规格参数
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Header minimum height | 48px | None |
-| Header padding | 0 top and bottom, 8px left and right | `--expansion-panel-summary-padding` |
-| Content padding | 0 top and bottom, 8px left and right | `--expansion-panel-content-padding` |
-| Header font weight | 500 | `--ha-font-weight-medium` |
-| Title color | Primary text color | `--primary-text-color` |
-| Secondary text size | 12px | `--ha-font-size-s` |
-| Secondary text color | Secondary text color | `--secondary-text-color` |
-| Space between chevron or leading icon and title | 8px | None |
-| Chevron size | 24px | None |
-| Border, outlined | 1px solid | `--outline-color` |
-| Corner radius, outlined | 12px | `--ha-border-radius-lg`, through `--ha-card-border-radius` |
-| Header background on focus | Input fill | `--input-fill-color` |
-| Chevron background on keyboard focus | Round neutral fill | `--ha-color-fill-neutral-normal-active` |
-| Open and close animation | 300ms, `cubic-bezier(0.4, 0, 0.2, 1)` | None |
-| Chevron rotation | 180 degrees in 150ms, `cubic-bezier(0.4, 0, 0.2, 1)` | None |
+| 标题最小高度 | 48px | 无 |
+| 标题内边距 | 上下为 0，左右为 8px | `--expansion-panel-summary-padding` |
+| 内容内边距 | 上下为 0，左右为 8px | `--expansion-panel-content-padding` |
+| 标题字重 | 500 | `--ha-font-weight-medium` |
+| 标题颜色 | 主要文本颜色 | `--primary-text-color` |
+| 辅助文本大小 | 12px | `--ha-font-size-s` |
+| 辅助文本颜色 | 次要文本颜色 | `--secondary-text-color` |
+| 箭头图标或前导图标与标题之间的间距 | 8px | 无 |
+| 箭头图标大小 | 24px | 无 |
+| 边框，描边 | 1px solid | `--outline-color` |
+| 圆角半径，描边 | 12px | `--ha-border-radius-lg`，通过 `--ha-card-border-radius` |
+| 标题聚焦时的背景 | 输入填充 | `--input-fill-color` |
+| 键盘聚焦时箭头图标的背景 | 圆形中性填充 | `--ha-color-fill-neutral-normal-active` |
+| 展开和收起动画 | 300ms，`cubic-bezier(0.4, 0, 0.2, 1)` | 无 |
+| 箭头图标旋转 | 180 度，150ms，`cubic-bezier(0.4, 0, 0.2, 1)` | 无 |
 
-## Guidelines
+## 指南
 
-- Follow what the frontend does: an outlined panel in a form or a dialog, next to other fields, and no outline in a list of panels, like the filter panes.
+- 遵循前端的做法：在表单或对话框中、与其他字段并排时使用描边面板；在面板列表（如筛选窗格）中则不使用描边。
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-| Key | Action |
+| 按键 | 操作 |
 | --- | --- |
-| <kbd>Tab</kbd> | Moves focus to the header. A panel that is always open is skipped. |
-| <kbd>Enter</kbd> or <kbd>Space</kbd> | Opens or closes the panel. |
+| <kbd>Tab</kbd> | 将焦点移至标题。始终展开的面板会被跳过。 |
+| <kbd>Enter</kbd> 或 <kbd>Space</kbd> | 展开或收起面板。 |
 
-### Focus
+### 焦点
 
-While the header has focus, it gets the input fill as background. With keyboard focus, the chevron also gets a round neutral fill.
+当标题获得焦点时，其背景变为输入填充色。使用键盘获得焦点时，箭头图标还会获得圆形中性填充。
 
-### Target size
+### 目标尺寸
 
-The header is at least 48px high, and as wide as the panel.
+标题高度至少为 48px，宽度与面板相同。
 
-### Screen readers
+### 屏幕阅读器
 
-The header is announced as a button that is expanded or collapsed. The open content is announced as a region, named after the header.
+标题会被播报为一个已展开或已收起的按钮。展开的内容会被播报为一个区域（region），以标题命名。
 
-### In the code
+### 代码中
 
-- The header has the role `button`, with `aria-expanded` set to `true` or `false`.
-- The content has the role `region`, and is named by the header through `aria-labelledby`.
-- While the panel is closed, the content has `aria-hidden="true"`, and is not rendered.
-- The chevron is decorative and hidden from screen readers.
+- 标题具有 `button` 角色，`aria-expanded` 设置为 `true` 或 `false`。
+- 内容具有 `region` 角色，并通过 `aria-labelledby` 由标题命名。
+- 面板收起时，内容具有 `aria-hidden="true"`，且不渲染。
+- 箭头图标是装饰性的，对屏幕阅读器隐藏。
 
-## Related
+## 相关内容
 
-- [List](/design/components/list/): rows that open something else
-- [Form](/design/components/form/): the `expandable` schema type shows an expansion panel
-- [Dialog](/design/components/dialog/): where panels hold optional fields
+- [列表](/design/components/list/)：会打开其他内容的行
+- [表单](/design/components/form/)：`expandable` 模式类型会显示展开面板
+- [对话框](/design/components/dialog/)：面板在其中承载可选字段
 
-## In code
+## 代码实现
 
-The element is `<ha-expansion-panel>`. The content goes in the default slot.
+该元素为 `<ha-expansion-panel>`。内容放在默认插槽中。
 
 ```html
 <ha-expansion-panel outlined header="Advanced settings" secondary="Optional">
@@ -167,37 +167,37 @@ The element is `<ha-expansion-panel>`. The content goes in the default slot.
 </ha-expansion-panel>
 ```
 
-The content only renders while the panel is open. Keep that in mind if something inside needs to exist before it is opened.
+内容只在面板展开时渲染。如果其中的内容需要在展开之前就存在，请记住这一点。
 
-### Attributes
+### 属性
 
-- `header`: the header text.
-- `secondary`: a short line of text below the header.
-- `expanded`: opens the panel. Reflected, and updated when people open or close the panel.
-- `outlined`: adds a border and rounded corners.
-- `left-chevron`: puts the chevron at the start of the header.
-- `no-collapse`: removes the chevron, and the panel can no longer be opened or closed by people. Combine it with `expanded` for a section that looks like a panel but always stays open.
+- `header`：标题文本。
+- `secondary`：标题下方的一行简短文字。
+- `expanded`：展开面板。会被反射（reflected），并在用户展开或收起面板时更新。
+- `outlined`：添加边框和圆角。
+- `left-chevron`：将箭头图标放在标题开头。
+- `no-collapse`：移除箭头图标，用户无法再展开或收起面板。与 `expanded` 结合使用，可创建一个看起来像面板但始终保持展开的区域。
 
-### Slots
+### 插槽
 
-- Default: the content.
-- `header`: replaces the header text, and the secondary text, with your own content.
-- `secondary`: replaces the secondary text.
-- `leading-icon`: an icon at the start of the header.
-- `icons`: actions at the end of the header, like an icon button.
-- `event`: content between the header and the chevron.
+- 默认：内容。
+- `header`：用你自己的内容替换标题文本和辅助文本。
+- `secondary`：替换辅助文本。
+- `leading-icon`：标题开头的图标。
+- `icons`：标题末尾的操作，例如图标按钮。
+- `event`：标题和箭头图标之间的内容。
 
-### Events
+### 事件
 
-- `expanded-will-change`: fires just before the panel opens or closes. The `detail` has the new `expanded` value.
-- `expanded-changed`: fires after the panel opened or closed. The `detail` has the new `expanded` value.
+- `expanded-will-change`：在面板展开或收起之前触发。`detail` 包含新的 `expanded` 值。
+- `expanded-changed`：在面板展开或收起之后触发。`detail` 包含新的 `expanded` 值。
 
-### Styling
+### 样式
 
-- `--expansion-panel-summary-padding`: padding of the header. Defaults to `0 8px`.
-- `--expansion-panel-content-padding`: padding of the content. Defaults to `0 8px`.
-- `--ha-card-border-radius`: the corner radius of an outlined panel. Defaults to `var(--ha-border-radius-lg)`.
+- `--expansion-panel-summary-padding`：标题的内边距。默认为 `0 8px`。
+- `--expansion-panel-content-padding`：内容的内边距。默认为 `0 8px`。
+- `--ha-card-border-radius`：描边面板的圆角半径。默认为 `var(--ha-border-radius-lg)`。
 
-The `summary` part targets the header, for anything the custom properties don't cover.
+`summary` 部分指向标题，用于自定义属性无法覆盖的样式。
 
-Source: [`src/components/ha-expansion-panel.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-expansion-panel.ts)
+源码：[`src/components/ha-expansion-panel.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-expansion-panel.ts)

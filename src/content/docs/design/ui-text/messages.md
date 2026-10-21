@@ -1,64 +1,64 @@
 ---
-title: Messages
-description: How to word errors, warnings, empty states, confirmations, and success messages, so people know what happened and what to do next.
+title: 消息
+description: 如何撰写错误、警告、空状态、确认和成功消息的措辞，让人们知道发生了什么以及接下来该怎么做。
 order: 2
 ---
 
-A message interrupts what someone was doing, even if only for a second. Make that second count: say what happened, and what people can do about it.
+消息会打断人们正在做的事情，哪怕只有一秒钟。让这一秒钟物有所值：说明发生了什么，以及人们可以如何处理。
 
-Which component shows the message is a separate choice. See [Errors and messages](/design/patterns/errors/) for that.
+由哪个组件来显示消息是另一个问题。相关内容请参阅[错误和消息](/design/patterns/errors/)。
 
-## Errors
+## 错误
 
-An error is the moment the [personality](/brand/personality/) of Home Assistant matters most. Be welcoming and candid: explain what went wrong in plain words, and help people fix it.
+错误是 Home Assistant 的[个性](/brand/personality/)最重要的时刻。要友好而坦诚：用平实的语言解释出了什么问题，并帮助人们解决它。
 
-- **Say what happened**, in words people understand without knowing the code.
-- **Say what to do next**, when there is something people can do.
-- **Be specific.** Use the name of the device or the field that has the problem.
-- **Put it where the problem is.** An error about one field goes at that field, not at the top of the form.
+- **说明发生了什么**，用人们不懂代码也能理解的语言。
+- **说明接下来该做什么**，在人们有办法处理的时候。
+- **要具体。** 使用出问题的设备或字段的名称。
+- **把消息放在问题所在之处。** 关于某个字段的错误应显示在该字段处，而不是表单顶部。
 
-### Repairs
+### 修复
 
-A repair asks people to fix something in their setup, so it needs more than one line. A good repair:
+修复（repair）要求人们解决他们设置中的某个问题，因此需要不止一行文字。一个好的修复：
 
-- Explains what is happening, and why it matters.
-- Gives the exact steps to fix it, as a numbered list when there are several. Not just "update the firmware", but how.
-- Says what to expect after the steps.
-- Includes the details people need, like the name of the device.
+- 解释正在发生什么，以及为什么重要。
+- 给出解决问题的确切步骤，如果有多个步骤，用编号列表。不只是“更新固件”，而是说明如何更新。
+- 说明完成这些步骤后会有什么结果。
+- 包含人们需要的详细信息，比如设备的名称。
 
-Only raise a repair for a problem people can solve.
+只有当人们能够解决的问题时才发起修复。
 
-## Warnings
+## 警告
 
-A warning is about something that works now, but may stop working later. Say what can happen, and what people can do about it.
+警告针对的是现在可以正常工作、但以后可能会失效的情况。说明可能发生什么，以及人们可以如何处理。
 
-## Empty states
+## 空状态
 
-An empty state has a short heading and, when it helps, a description that points to the next step. Two kinds need different words:
+空状态（empty state）有一个简短的标题，并且在有帮助时，附上指向下一步操作的描述。有两种类型需要不同的措辞：
 
-- **Nothing yet**: the history panel says **Nothing to show yet**, and "Select areas, devices, entities or labels to see their history".
-- **No results**: it says **No results found**, and "No history for the current selection. Try changing the targets, filters, or time range."
+- **暂无内容**：历史面板显示**暂无可显示的内容**，以及“选择区域、设备、实体或标签以查看它们的历史记录”。
+- **无结果**：它显示**未找到结果**，以及“当前选择没有历史记录。请尝试更改目标、筛选器或时间范围。”
 
-See [Empty states](/design/patterns/empty-states/) for the pattern.
+相关模式请参阅[空状态](/design/patterns/empty-states/)。
 
-## Confirmations
+## 确认
 
-A confirmation dialog asks before something happens that can't be undone. People mostly read the title and the buttons, so those carry the message:
+确认对话框会在发生不可撤销的操作之前进行询问。人们主要阅读标题和按钮，因此由它们来传达信息：
 
-- The title asks the question: **Delete dashboard?**
-- The description says what will happen, plainly: "Dashboard Kitchen will be permanently deleted from Home Assistant."
-- The button repeats the action: **Delete**, next to **Cancel**.
+- 标题提出问题：**删除仪表盘？**
+- 描述直白地说明将会发生什么：“仪表盘 Kitchen 将从 Home Assistant 中永久删除。”
+- 按钮重复该操作：**删除**，旁边是**取消**。
 
-When people are about to lose unsaved work, say so, and give the choice. The automation editor asks **Save changes?**: "You have made some changes in this automation. You can save these changes, or discard them and leave. You can't undo this action."
+当人们即将丢失未保存的工作时，要明确说明，并给出选择。自动化编辑器会询问**保存更改？**：“你在此自动化中做了一些更改。你可以保存这些更改，或者放弃更改并离开。此操作无法撤销。”
 
-See [Confirmations and undo](/design/patterns/confirmations/) for the pattern.
+相关模式请参阅[确认和撤销](/design/patterns/confirmations/)。
 
-## Success
+## 成功
 
-Confirm that something worked when people can't see it otherwise. Keep it short: **Successfully saved**, **Successfully deleted**. If the action can be reverted, offer **Undo** with it.
+当人们无法以其他方式看到结果时，要确认操作成功。保持简短：**保存成功**、**删除成功**。如果该操作可以撤销，请同时提供**撤销**选项。
 
-## Related
+## 相关内容
 
-- [Buttons and labels](/design/ui-text/buttons-and-labels/)
-- [Remove, delete, add, or create](/design/ui-text/remove-delete/)
-- [Make your strings translatable](/translate/guides/developers/)
+- [按钮和标签](/design/ui-text/buttons-and-labels/)
+- [移除、删除、添加或创建](/design/ui-text/remove-delete/)
+- [让你的字符串可翻译](/translate/guides/developers/)

@@ -1,58 +1,58 @@
 ---
-title: UI text
-description: How the interface talks. The voice, style, and words of Home Assistant, for everyone who writes a label, a button, or an error.
+title: UI 文本
+description: 界面如何说话。Home Assistant 的语气、风格和用词，适用于每一位编写标签、按钮或错误信息的人。
 order: 30
 ---
 
-Every label, button, error, and empty state is a design decision. Good UI text helps people understand what is happening and what to do next, often without them noticing it.
+每一个标签、按钮、错误信息和空状态都是设计决策。好的 UI 文本能帮助人们理解正在发生什么、接下来该做什么，而且往往让人察觉不到它的存在。
 
-You write UI text when you design a screen, and also when you build one: in the frontend, and in the `strings.json` of an integration. The same guidelines apply in both places.
+当你设计一个界面时会编写 UI 文本，构建界面时同样会：在前端中，以及在集成的 `strings.json` 中。同样的准则适用于这两种场景。
 
-## How Home Assistant talks
+## Home Assistant 如何说话
 
-UI text follows the [personality](/brand/personality/) of Home Assistant. In the interface, the five traits show up in the small things:
+UI 文本遵循 Home Assistant 的[个性](/brand/personality/)。在界面中，这五个特质体现在细微之处：
 
-- **Welcoming**: meet people at their own level, and never talk down to them. It shows in how an error is explained.
-- **Candid**: say what you mean. Don't hide complexity behind false simplicity, or pretend a limitation doesn't exist.
-- **Supportive**: steer people forward, without taking over.
-- **Generous**: trust people with control and transparency. No deceptive patterns.
-- **Independent**: Home Assistant doesn't need to sound like an established tech brand.
+- **Welcoming（热情友好）**：以对方能理解的方式交流，绝不居高临下。这体现在错误信息的解释方式上。
+- **Candid（坦诚直率）**：有话直说。不要用虚假的简单性掩盖复杂性，也不要假装限制不存在。
+- **Supportive（乐于支持）**：引导人们向前，而不是越俎代庖。
+- **Generous（慷慨大方）**：给予人们控制权和透明度。不使用欺骗性设计。
+- **Independent（独立自主）**：Home Assistant 不需要听起来像一个老牌科技品牌。
 
-How the same voice sounds outside the interface, like in documentation and community replies, is in [Voice and tone](/brand/voice-and-tone/).
+同样的语气在界面之外（如文档和社区回复中）如何体现，请参阅[语气与风格](/brand/voice-and-tone/)。
 
-## Style
+## 风格
 
-- Write in American English, in a friendly and informational tone.
-- Talk to people directly, with "you" and "your" where it fits.
-- Be concise and clear. Use the active voice.
-- Write for technical and non-technical people alike. Avoid jargon where a familiar home automation term works.
-- Use sentence case for titles, headings, buttons, labels, and everything else in the interface: "Create new automation", not "Create New Automation". "Device settings", not "Device Settings".
-- Write "Home Assistant" in full. Never "HA" or "HASS".
-- Use "like" or "for example" instead of Latin abbreviations.
-- Use the Oxford comma in lists.
-- Don't use all caps for emphasis.
-- In the text of an integration, wrap code-like values, like entity IDs and file names, in backticks. Write brand and protocol names the way their owners do, like Z-Wave and MQTT, without backticks.
+- 使用美式英语写作，语气友好且信息明确。
+- 直接与用户对话，在合适的地方使用"你"和"你的"。
+- 简洁清晰。使用主动语态。
+- 同时为技术人员和非技术人员写作。在常用的家庭自动化术语可以表达清楚时，避免使用行话。
+- 标题、按钮、标签以及界面中的所有其他内容都使用句首大写（sentence case）："Create new automation"，而不是"Create New Automation"；"Device settings"，而不是"Device Settings"。
+- 完整地写"Home Assistant"。绝不使用"HA"或"HASS"。
+- 使用"like"或"for example"，而不是拉丁语缩写。
+- 在列表中使用牛津逗号（Oxford comma）。
+- 不要使用全大写来强调。
+- 在集成的文本中，用反引号包裹类似代码的值，例如实体（entity）ID 和文件名。品牌和协议名称按照其所有者的写法书写，例如 Z-Wave 和 MQTT，不加反引号。
 
-## Words
+## 用词
 
-- One thing has one name. The [glossary](/glossary/) lists the terms Home Assistant uses, and the old names you should not use anymore, like "service" for an [action](/glossary/action/).
-- Product terms are lowercase in a sentence: automation, entity, device.
-- Say "integration", not "component", when you talk to people using Home Assistant.
-- Pick the word that matches what people do. "Join" or "Apply" can say more than "Group".
+- 一个事物只有一个名称。[术语表](/glossary/)列出了 Home Assistant 使用的术语，以及不应再使用的旧名称，例如用"service"指代[操作（action）](/glossary/action/)。
+- 产品术语在句子中使用小写：automation、entity、device。
+- 在与 Home Assistant 用户交流时，说"integration"，而不是"component"。
+- 选择与用户实际操作相符的词。"Join"或"Apply"可能比"Group"表达得更准确。
 
-## Guides
+## 指南
 
-- [Buttons and labels](/design/ui-text/buttons-and-labels/): the words on buttons, in dialog titles, and next to fields.
-- [Messages](/design/ui-text/messages/): errors, warnings, empty states, confirmations, and success messages.
-- [Remove, delete, add, or create](/design/ui-text/remove-delete/): four words that are easy to mix up.
+- [按钮和标签](/design/ui-text/buttons-and-labels/)：按钮上的文字、对话框标题以及字段旁的说明。
+- [消息](/design/ui-text/messages/)：错误、警告、空状态、确认和成功消息。
+- [移除、删除、添加或创建](/design/ui-text/remove-delete/)：四个容易混淆的词。
 
-## Translations
+## 翻译
 
-All UI text is translated into dozens of languages, so it has to be written in a way translators can work with:
+所有 UI 文本都会被翻译成数十种语言，因此编写时必须让翻译人员能够顺利处理：
 
-- Every string that people see goes through the translation system. No text in the code itself.
-- Use placeholders for values, and keep sentences whole. Never glue translated pieces together.
-- Give translators context with clear key names and placeholder names.
-- In an integration, reuse a common translation key when one exists for the same text.
+- 用户看到的每个字符串都要经过翻译系统。代码本身不包含任何文本。
+- 使用占位符表示值，并保持句子完整。绝不将翻译后的片段拼接在一起。
+- 通过清晰的键名和占位符名称为翻译人员提供上下文。
+- 在集成中，如果已有适用于相同文本的通用翻译键，请复用它。
 
-[Make your strings translatable](/translate/guides/developers/) has the details. The [style guide](/writing/reference/style/) of the documentation applies to UI text too, like writing "select" instead of "click".
+[让你的字符串可翻译](/translate/guides/developers/)包含详细说明。文档的[风格指南](/writing/reference/style/)同样适用于 UI 文本，例如用"select"而不是"click"。

@@ -1,6 +1,6 @@
 ---
-title: Scene
-description: The more-info view of a scene, with an Activate button and the entities the scene controls.
+title: 场景（Scene）
+description: 场景的更多信息视图，包含一个“激活”按钮以及场景所控制的实体。
 sidebarGroup: Helpers
 ---
 
@@ -11,23 +11,23 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="scene.good_night"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 显示内容
 
-A scene has no state to change, only something to do: set a group of devices to how you saved them. So its view is a state row with an **Activate** button, and below it the entities that are part of the scene.
+场景没有可更改的状态，只有可执行的操作：将一组设备设置为你保存时的状态。因此它的视图是一行带有**激活**按钮的状态行，下方是场景中包含的实体。
 
-The state of a scene is the moment it was last activated, or unknown when it never was. The good night scene has never been activated, so its state is unknown.
+场景的状态是它最后一次被激活的时刻，如果从未激活过则为未知。这个晚安场景从未被激活过，所以它的状态是未知。
 
-The entities show as tile cards, one per row. Each tile shows the state of the entity, and gets a control when the entity has one that fits, like a brightness slider for a dimmable light. That way you can check and fine-tune what the scene did, without leaving the dialog.
+实体以磁贴卡片的形式显示，每行一个。每个磁贴显示实体的状态，并且当实体有适合的控件时会显示该控件，例如可调光灯具的亮度滑块。这样你无需离开对话框即可检查和微调场景所做的设置。
 
-## Design notes
+## 设计说明
 
-- **Activate** is a small text [button](/design/components/button/) at the end of the row. It is the only action, so it doesn't need more weight.
-- The tiles leave out what all members have in common. Everything in movie night is in the living room, so its tiles show no area. Good night spans the living room and the hallway, so its tiles do.
-- Entities that are hidden are left out of the list.
-- The dialog shows no history for a scene in the info view. History is one tap away, behind the **History** button in the header.
+- **激活**是行末的一个小型文本[按钮](/design/components/button/)。它是唯一的操作，因此不需要更高的视觉权重。
+- 磁贴会省略所有成员共有的信息。电影之夜场景中的所有内容都在客厅，所以它的磁贴不显示区域。晚安场景横跨客厅和走廊，所以它的磁贴会显示。
+- 隐藏的实体会从列表中省略。
+- 在信息视图中，对话框不显示场景的历史记录。历史记录只需点击一次即可查看，位于页眉的**历史**按钮后面。
 
-## In code
+## 代码实现
 
-The state row is `state-card-scene` in `src/state-summary/state-card-scene.ts`. The list of entities is rendered by `more-info-content` in `src/dialogs/more-info/more-info-content.ts`, for any entity with members. It builds a grid of tile cards from the `entity_id` attribute of the scene.
+状态行是 `src/state-summary/state-card-scene.ts` 中的 `state-card-scene`。实体列表由 `src/dialogs/more-info/more-info-content.ts` 中的 `more-info-content` 渲染，适用于任何包含成员的实体。它根据场景的 `entity_id` 属性构建磁贴卡片网格。
 
-Source: [`state-card-scene.ts`](https://github.com/home-assistant/frontend/blob/dev/src/state-summary/state-card-scene.ts)
+源码：[`state-card-scene.ts`](https://github.com/home-assistant/frontend/blob/dev/src/state-summary/state-card-scene.ts)

@@ -1,6 +1,6 @@
 ---
-title: Thermostat card
-description: The thermostat card shows a climate or water heater entity as a dial, to read the temperature and set the target.
+title: 恒温器卡片
+description: 恒温器卡片将气候或热水器实体显示为一个旋钮，用于读取温度并设置目标温度。
 sidebarGroup: Controls
 ---
 
@@ -10,48 +10,48 @@ import Demo from "../../../../components/docs/Demo.astro";
   <hui-card style="width: 340px" data-props='{"config": {"type": "thermostat", "entity": "climate.thermostat"}}'></hui-card>
 </Demo>
 
-## Usage
+## 用法
 
-The thermostat card is a big dial for one climate or water heater entity. The ring shows the target temperature, and you drag it, or use the minus and plus buttons, to change it. The big number in the middle is the target, with the current temperature and what the device is doing, like **Preheating**, around it. The menu button in the corner opens the more-info dialog, with all modes and settings.
+恒温器卡片是一个针对单个气候或热水器实体（entity）的大旋钮。圆环显示目标温度，你可以拖动它，或使用减号和加号按钮来更改温度。中间的大数字是目标温度，周围显示当前温度以及设备正在执行的操作，例如**预热中**。角落的菜单按钮会打开更多信息对话框，其中包含所有模式和设置。
 
-The dial takes the color of what the device does: orange when it heats, blue when it cools. When the device is off, the dial is gray and the controls step back.
+旋钮会根据设备的运行状态显示颜色：制热时为橙色，制冷时为蓝色。当设备关闭时，旋钮为灰色，控件也会退隐。
 
 <Demo hass>
   <hui-card style="width: 340px" data-props='{"config": {"type": "thermostat", "entity": "climate.bedroom_air_conditioner"}}'></hui-card>
   <hui-card style="width: 340px" data-props='{"config": {"type": "thermostat", "entity": "water_heater.water_heater"}}'></hui-card>
 </Demo>
 
-Use the thermostat card when changing the temperature is the reason people open the dashboard, like on a climate view or on a tablet in the hallway. The card is tall: in the sections view it takes five rows. When the temperature is one of many things in a room, a [tile card](/design/dashboards/tile-card/) with the target temperature feature takes one row and does the same job.
+当调整温度是人们打开仪表盘（dashboard）的主要原因时，可以使用恒温器卡片，例如在气候视图中，或放在走廊的平板电脑上。该卡片较高：在分区（sections）视图中它占据五行。当温度只是房间中众多信息之一时，带有目标温度功能的[磁贴卡片](/design/dashboards/tile-card/)只占一行，也能完成同样的工作。
 
-### Current temperature first
+### 当前温度优先
 
-With `show_current_as_primary: true`, the big number is the current temperature, and the target moves to the smaller line. Use it when people mostly want to know how warm it is, and only sometimes change the target.
+设置 `show_current_as_primary: true` 后，大数字显示当前温度，目标温度则移到较小的那一行。当人们主要想了解现在有多暖和，只是偶尔更改目标温度时，可以使用此选项。
 
 <Demo hass>
   <hui-card style="width: 340px" data-props='{"config": {"type": "thermostat", "entity": "climate.thermostat", "show_current_as_primary": true}}'></hui-card>
 </Demo>
 
-### Features
+### 功能
 
-Like the tile card, the thermostat card takes features below the dial. The modes of the device are a good fit: the HVAC modes, the presets, or the fan modes. Each feature adds rows to the card in the sections view, so add only what people change often. The rest is one tap away in the more-info dialog.
+与磁贴卡片一样，恒温器卡片可以在旋钮下方添加功能（feature）。设备的各种模式非常适合：HVAC 模式、预设模式或风扇模式。每个功能都会在分区视图中为卡片增加行数，因此只添加人们经常更改的功能即可。其余功能只需在更多信息对话框中轻点一下即可访问。
 
 <Demo hass>
   <hui-card style="width: 340px" data-props='{"config": {"type": "thermostat", "entity": "climate.thermostat", "features": [{"type": "climate-hvac-modes", "hvac_modes": ["off", "heat", "cool", "auto"]}]}}'></hui-card>
   <hui-card style="width: 340px" data-props='{"config": {"type": "thermostat", "entity": "climate.bedroom_air_conditioner", "features": [{"type": "climate-fan-modes", "style": "icons"}]}}'></hui-card>
 </Demo>
 
-### Content
+### 内容
 
-- The name sits at the top of the card. Keep it short, and leave it out when the section already says which room it is.
-- Pick the features that match the device. An air conditioner and a radiator valve have very different modes.
+- 名称显示在卡片顶部。请保持简短，如果所在分区已经说明了是哪个房间，则可以省略。
+- 选择与设备匹配的功能。空调和暖气片阀门的模式差异很大。
 
-## Configuration
+## 配置
 
-- `entity` (string, required): the entity to show. Only entities of the `climate` or `water_heater` domain work.
-- `name` (string): the name to show. Defaults to the name of the entity.
-- `show_current_as_primary` (boolean): shows the current temperature as the big number, and the target below it. Defaults to `false`.
-- `theme` (string): a theme to apply to this card only.
-- `features` (list): the features to show below the dial, each with a `type`.
+- `entity`（字符串，必填）：要显示的实体。仅支持 `climate` 或 `water_heater` 域的实体。
+- `name`（字符串）：要显示的名称。默认为实体的名称。
+- `show_current_as_primary`（布尔值）：将当前温度显示为大数字，目标温度显示在其下方。默认为 `false`。
+- `theme`（字符串）：仅应用于此卡片的主题。
+- `features`（列表）：在旋钮下方显示的功能，每个功能都有一个 `type`。
 
 ```yaml
 type: thermostat
@@ -65,10 +65,10 @@ features:
       - "auto"
 ```
 
-## In code
+## 代码实现
 
-The card lives in `src/panels/lovelace/cards/hui-thermostat-card.ts`, and the element is `<hui-thermostat-card>`. It does not draw the dial itself. It reuses the control of the more-info dialog: `<ha-state-control-climate-temperature>` for climate entities, and `<ha-state-control-water_heater-temperature>` for water heaters. Both are built on the [`<ha-control-circular-slider>`](/design/components/controls/). Fix something in the dial, and both the card and the dialog get it.
+该卡片位于 `src/panels/lovelace/cards/hui-thermostat-card.ts`，元素为 `<hui-thermostat-card>`。它本身并不绘制旋钮，而是复用更多信息对话框中的控件：气候实体使用 `<ha-state-control-climate-temperature>`，热水器使用 `<ha-state-control-water_heater-temperature>`。两者都基于 [`<ha-control-circular-slider>`](/design/components/controls/) 构建。修复旋钮中的问题后，卡片和对话框都会同步受益。
 
-The features render with `<hui-card-features>`, the same element the tile card uses. In the sections view, the card takes 12 columns and 5 rows, and can shrink to 6 columns and 2 rows. Features add rows on top of that.
+这些功能通过 `<hui-card-features>` 渲染，与磁贴卡片使用的元素相同。在分区视图中，该卡片占据 12 列 5 行，并可缩小为 6 列 2 行。功能会在此基础上增加行数。
 
-[Source](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-thermostat-card.ts)
+[源代码](https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/cards/hui-thermostat-card.ts)

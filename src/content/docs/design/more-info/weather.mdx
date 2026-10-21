@@ -1,6 +1,6 @@
 ---
-title: Weather
-description: The more-info view of a weather entity, with the current conditions, the details, and a forecast.
+title: 天气
+description: 天气实体的更多信息视图，包含当前状况、详细信息和预报。
 sidebarGroup: Information
 ---
 
@@ -10,26 +10,26 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="weather.home"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 显示内容
 
-There is nothing to control on a weather entity, so its view is all about reading. From top to bottom:
+天气实体没有任何可控制的内容，因此其视图纯粹用于阅读。从上到下依次为：
 
-- **Current conditions**: a weather picture, the condition, like **Partly cloudy**, and how long ago it changed. On the right, the temperature in large text, with the high and low of today below it when the forecast has them.
-- **Details**: a list of the current air pressure, humidity, wind speed with the direction, and visibility, each with an icon. A detail the weather service doesn't report is left out.
-- **Forecast**: a row of days or hours, each with a weather icon, the temperature, and the low.
-- **Attribution**: a line at the bottom with where the data comes from, like **Weather forecast from met.no**.
+- **当前状况**：一张天气图片、天气状况（例如 **局部多云**），以及多久之前发生了变化。右侧以大号文字显示温度，当预报包含当天最高和最低温度时，会在其下方显示。
+- **详细信息**：当前气压、湿度、风速及风向、能见度的列表，每项都带有图标。天气服务未报告的详细信息会被省略。
+- **预报**：一行天或小时，每项带有天气图标、温度和最低温度。
+- **数据来源**：底部一行显示数据来源，例如 **Weather forecast from met.no**。
 
-When the weather service has more than one kind of forecast, tabs above the forecast switch between them: **Daily**, **Hourly**, and **Twice daily**. The weather above has a daily and an hourly forecast, so it gets two tabs.
+当天气服务提供多种类型的预报时，预报上方的标签页可在它们之间切换：**每日**、**每小时**和**每日两次**。上方的天气有每日和每小时预报，因此会有两个标签页。
 
-## Design notes
+## 设计说明
 
-- Hover over the time below the condition to see when the state last changed and when it last updated.
-- Every value is shown in the units of the weather service, like °C and km/h.
-- The hourly and twice daily forecasts group their items by day, with a header for each day.
-- The forecast is fetched when the dialog opens, and a spinner shows until it arrives.
+- 将鼠标悬停在状况下方的时间上，可以查看状态（state）上次变化的时间和上次更新的时间。
+- 每个数值都以天气服务的单位显示，例如 °C 和 km/h。
+- 每小时和每日两次的预报会按天对其条目进行分组，每天有一个标题。
+- 预报在对话框打开时获取，在到达之前会显示加载指示器。
 
-## In code
+## 代码实现
 
-The view is `more-info-weather` in `src/dialogs/more-info/controls/more-info-weather.ts`. The forecast subscription, the units, and helpers like `getSecondaryWeatherAttribute` are in `src/data/weather.ts`.
+该视图是 `src/dialogs/more-info/controls/more-info-weather.ts` 中的 `more-info-weather`。预报订阅、单位以及 `getSecondaryWeatherAttribute` 等辅助函数位于 `src/data/weather.ts` 中。
 
-Source: [`more-info-weather.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-weather.ts)
+源码：[`more-info-weather.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-weather.ts)

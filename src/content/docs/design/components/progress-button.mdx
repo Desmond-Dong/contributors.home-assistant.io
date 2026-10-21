@@ -1,6 +1,6 @@
 ---
-title: Progress button
-description: A button that shows its action is running, and then whether it worked.
+title: 进度按钮
+description: 一种按钮，能显示其操作正在运行，以及运行是否成功。
 sidebarGroup: Actions
 ---
 
@@ -12,32 +12,32 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   <ha-progress-button progress>Restart</ha-progress-button>
 </Demo>
 
-## Overview
+## 概述
 
-A progress button is a [button](/design/components/button/) for actions that take a moment and finish in place: saving a setting, running a test, calling an action. While the action runs, it shows a spinner. When it is done, it briefly shows a check mark on a green button, or an alert icon on a red one. After two seconds, it returns to normal.
+进度按钮是一种[按钮](/design/components/button/)，用于需要一点时间并在原地完成的操作：保存设置、运行测试、调用动作（action）。当操作运行时，它会显示一个加载指示器（spinner）。完成后，它会在绿色按钮上短暂显示一个对勾图标，或在红色按钮上显示一个警告图标。两秒后，它会恢复正常。
 
-## When to use
+## 何时使用
 
-Use a progress button for:
+在以下情况使用进度按钮：
 
-- An action that takes a moment, where the result has nowhere else to show up, like **Test connection** or **Restart**
+- 需要一点时间的操作，且结果没有其他地方可以显示，例如**测试连接**或**重启**
 
-Don't use a progress button for:
+在以下情况不要使用进度按钮：
 
-- An action that opens a dialog or moves to another page. A regular [button](/design/components/button/) is enough.
-- Showing an error people need to read. The red flash says _that_ it failed, not _why_. Show the error as well, for example in an [alert](/design/components/alert/).
+- 会打开对话框或跳转到其他页面的操作。使用普通的[按钮](/design/components/button/)即可。
+- 显示需要用户阅读的错误。红色闪烁只表示操作*失败*了，而不是*为什么*失败。请同时显示错误，例如在[警告框（alert）](/design/components/alert/)中。
 
-## Anatomy
+## 结构
 
-A progress button is a regular button with one extra layer:
+进度按钮是一个普通按钮外加一层额外的层：
 
-1. **Button**: the regular button, with its container, optional icon, and label
-2. **Spinner**: replaces the label while the action runs
-3. **Result icon**: on top of the button after the action, a check mark for success or an alert icon for an error
+1. **按钮**：普通按钮，包含其容器、可选图标和标签
+2. **加载指示器**：在操作运行时替代标签
+3. **结果图标**：操作结束后显示在按钮之上，成功时为对勾图标，出错时为警告图标
 
-## Variants
+## 变体
 
-The progress button comes in the same appearances, variants, and sizes as a regular button, so it fits in next to one. During progress and while showing the result, it switches to the accent appearance.
+进度按钮具有与普通按钮相同的外观（appearance）、变体（variant）和尺寸，因此可以与普通按钮并排使用。在进度进行和显示结果期间，它会切换为强调（accent）外观。
 
 <Demo>
   <ha-progress-button appearance="filled">Test</ha-progress-button>
@@ -46,74 +46,74 @@ The progress button comes in the same appearances, variants, and sizes as a regu
   <ha-progress-button size="s">Check</ha-progress-button>
 </Demo>
 
-## Behavior
+## 行为
 
-- **Resting**: looks and behaves like a regular button with the same appearance, variant, and size.
-- **Progress**: the button switches to the accent appearance and shows a spinner instead of its label. It ignores pointer input, so people can't start the action twice.
-- **Success**: the button turns to the success variant, and a white check mark covers the faded label, for two seconds.
-- **Error**: the button turns to the danger variant, and a white alert icon covers the faded label, for two seconds.
-- **Disabled**: like a disabled regular button.
+- **静止**：外观和行为与具有相同外观、变体和尺寸的普通按钮一样。
+- **进行中**：按钮切换为强调（accent）外观，并显示加载指示器替代其标签。它会忽略指针输入，因此用户无法重复启动该操作。
+- **成功**：按钮变为成功（success）变体，一个白色对勾图标覆盖已淡化的标签，持续两秒。
+- **错误**：按钮变为危险（danger）变体，一个白色警告图标覆盖已淡化的标签，持续两秒。
+- **禁用**：与被禁用的普通按钮一样。
 
-The success and error states can only be triggered from code, so they are not shown here.
+成功和错误状态只能通过代码触发，因此这里没有展示。
 
-The hover, focus, and pressed states are those of the [button](/design/components/button/#behavior).
+悬停、聚焦和按下状态与[按钮](/design/components/button/#behavior)相同。
 
-## Specs
+## 规格
 
-The sizes, spacing, and colors are those of the [button](/design/components/button/#specs). On top of that:
+尺寸、间距和颜色与[按钮](/design/components/button/#specs)相同。除此之外：
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Appearance during progress and result | Accent | None |
-| Variant on success | Success | `--ha-color-fill-success-loud-resting` |
-| Variant on error | Danger | `--ha-color-fill-danger-loud-resting` |
-| Result icon color | White | `--white-color` |
-| Result icon size | 24px | None |
-| Icon size in extra small and small | 16px | `--mdc-icon-size` |
-| Result duration | 2 seconds | None |
+| 进行中和结果期间的外观 | Accent | None |
+| 成功时的变体 | Success | `--ha-color-fill-success-loud-resting` |
+| 出错时的变体 | Danger | `--ha-color-fill-danger-loud-resting` |
+| 结果图标颜色 | 白色 | `--white-color` |
+| 结果图标尺寸 | 24px | None |
+| 超小和小尺寸下的图标尺寸 | 16px | `--mdc-icon-size` |
+| 结果持续时间 | 2 秒 | None |
 
-## Guidelines
+## 指南
 
-<DoDont doText="Say what happens when you select the button." dontText="Use a label that could mean anything.">
+<DoDont doText="说明选择按钮后会发生什么。" dontText="使用含义不明的标签。">
   <ha-progress-button slot="do">Test connection</ha-progress-button>
   <ha-progress-button slot="dont">OK</ha-progress-button>
 </DoDont>
 
-- Keep labels short, and say what happens: **Save**, **Restart**, **Test connection**. See [UI text](/design/ui-text/).
-- When the action can fail with an error people need to read, show that error as well, for example in an [alert](/design/components/alert/).
+- 保持标签简短，并说明会发生什么：**保存**、**重启**、**测试连接**。参见 [UI 文本](/design/ui-text/)。
+- 当操作可能因需要用户阅读的错误而失败时，请同时显示该错误，例如在[警告框（alert）](/design/components/alert/)中。
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-| Key | Action |
+| 按键 | 操作 |
 | --- | --- |
-| <kbd>Tab</kbd> | Moves focus to the button, and away from it. A disabled button is skipped. |
-| <kbd>Enter</kbd> or <kbd>Space</kbd> | Selects the button. Does nothing while it shows progress. |
+| <kbd>Tab</kbd> | 将焦点移到按钮上，或从按钮移开。被禁用的按钮会被跳过。 |
+| <kbd>Enter</kbd> 或 <kbd>Space</kbd> | 选择按钮。在显示进度时不执行任何操作。 |
 
-### Target size
+### 目标尺寸
 
-The same as the [button](/design/components/button/#target-size): 40px high at the default size.
+与[按钮](/design/components/button/#target-size)相同：默认尺寸下高度为 40px。
 
-### Screen readers
+### 屏幕阅读器
 
-The button is announced with its label, also while the result shows. During progress it is announced as busy. The success and error states only change the look: nothing is announced, so show an error people need to know about as text too.
+按钮会连同其标签一起被播报，在显示结果时也是如此。在进度进行期间，它会被播报为忙碌。成功和错误状态只改变外观：不会有任何播报，因此对于用户需要了解的错误，请同时以文本形式显示。
 
-### In the code
+### 代码层面
 
-- The role is `button`, from the `<ha-button>` inside.
-- While the result icon shows, the label is faded out instead of hidden, so the button keeps its accessible name.
-- During progress, the inner button has `aria-busy="true"`.
+- 角色为 `button`，来自内部的 `<ha-button>`。
+- 当结果图标显示时，标签是淡出而不是隐藏，因此按钮保留其可访问名称。
+- 在进度进行期间，内部按钮具有 `aria-busy="true"`。
 
-## Related
+## 相关内容
 
-- [Button](/design/components/button/): the regular button this one wraps
-- [Spinner](/design/components/spinner/): progress on its own
-- [Alert](/design/components/alert/): showing an error people need to read
+- [按钮](/design/components/button/)：本组件所包装的普通按钮
+- [加载指示器](/design/components/spinner/)：独立显示进度
+- [警告框](/design/components/alert/)：显示需要用户阅读的错误
 
-## In code
+## 代码
 
-The element is `<ha-progress-button>`. It wraps `<ha-button>`. Set `progress` while the action runs, then call `actionSuccess()` or `actionError()` when it is done:
+该元素为 `<ha-progress-button>`。它包装了 `<ha-button>`。在操作运行期间设置 `progress`，完成后调用 `actionSuccess()` 或 `actionError()`：
 
 ```html
 <ha-progress-button>Restart</ha-progress-button>
@@ -134,28 +134,28 @@ private async _restart(ev) {
 }
 ```
 
-While `progress` is set, the button ignores pointer input, so people can't start the action twice.
+当设置了 `progress` 时，按钮会忽略指针输入，因此用户无法重复启动该操作。
 
-### Attributes
+### 属性
 
-- `progress`: shows the spinner. Reflected as an attribute.
-- `disabled`: disables the button.
-- `appearance`: `accent` (default), `filled`, `outlined`, or `plain`.
-- `variant`: `brand` (default), `neutral`, `success`, `warning`, or `danger`.
-- `size`: `xs`, `s`, `m` (default), `l`, or `xl`.
-- `label`: the label, used when the default slot is empty.
+- `progress`：显示加载指示器。以属性（attribute）形式反映。
+- `disabled`：禁用按钮。
+- `appearance`：`accent`（默认）、`filled`、`outlined` 或 `plain`。
+- `variant`：`brand`（默认）、`neutral`、`success`、`warning` 或 `danger`。
+- `size`：`xs`、`s`、`m`（默认）、`l` 或 `xl`。
+- `label`：标签，在默认插槽为空时使用。
 
-These can only be set as properties:
+以下只能作为属性（property）设置：
 
-- `iconPath`: SVG path data for an icon before the label.
+- `iconPath`：标签前图标的 SVG 路径数据。
 
-### Slots
+### 插槽
 
-- Default: the label.
+- 默认：标签。
 
-### Methods
+### 方法
 
-- `actionSuccess()`: shows the success state for two seconds.
-- `actionError()`: shows the error state for two seconds.
+- `actionSuccess()`：显示成功状态两秒。
+- `actionError()`：显示错误状态两秒。
 
-Source: [`src/components/buttons/ha-progress-button.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/buttons/ha-progress-button.ts)
+源码：[`src/components/buttons/ha-progress-button.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/buttons/ha-progress-button.ts)

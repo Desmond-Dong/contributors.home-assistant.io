@@ -1,6 +1,6 @@
 ---
-title: Sun
-description: The more-info view of the sun, with the next sunrise and sunset, the elevation, and the azimuth.
+title: 太阳
+description: 太阳的更多信息视图，包含下一次日出和日落、高度角和方位角。
 sidebarGroup: Information
 ---
 
@@ -10,24 +10,24 @@ import Demo from "../../../../components/docs/Demo.astro";
   <ha-demo-more-info entity="sun.sun"></ha-demo-more-info>
 </Demo>
 
-## What it shows
+## 显示内容
 
-The sun entity tells you where the sun is, and what it does next. Its view is a short list below the state row, which says whether the sun is **Above horizon** or **Below horizon**.
+太阳实体（entity）会告诉你太阳的位置，以及它接下来会做什么。其视图是状态行下方的一个简短列表，显示太阳是**在地平线以上**还是**在地平线以下**。
 
-- **Rising** and **Setting**: the next sunrise and sunset, each with how long until it happens on the left, and the time on the right. Whichever comes first is listed first.
-- **Elevation**: how high the sun is above the horizon, in degrees.
-- **Azimuth**: the compass direction of the sun, in degrees.
+- **日出**和**日落**：下一次日出和日落的时间，左侧是距离发生的剩余时间，右侧是具体时间。先发生的排在前面。
+- **高度角**：太阳在地平线以上的高度，以度为单位。
+- **方位角**：太阳的罗盘方向，以度为单位。
 
-The sun above sets in a few hours, so **Setting** comes before **Rising**.
+图中的太阳将在几小时后落下，因此**日落**排在**日出**之前。
 
-## Design notes
+## 设计说明
 
-- The times follow the time format of the user, like 24 hour or AM and PM.
-- Sorting by what comes next keeps the most useful line at the top, so you never read tomorrow's sunrise before tonight's sunset.
-- The sun has no newer more-info design, so the dialog shows the state row at the top, like the [person](/design/more-info/person/) view.
+- 时间遵循用户的时间格式，例如 24 小时制或上午/下午。
+- 按接下来发生的事情排序，可以将最有用的信息放在最上面，这样你就不会在今晚的日落之前先读到明天的日出。
+- 太阳没有较新的更多信息设计，因此对话框在顶部显示状态行，与[人员（person）](/design/more-info/person/)视图类似。
 
-## In code
+## 代码实现
 
-The view is `more-info-sun` in `src/dialogs/more-info/controls/more-info-sun.ts`.
+该视图位于 `src/dialogs/more-info/controls/more-info-sun.ts` 中的 `more-info-sun`。
 
-Source: [`more-info-sun.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-sun.ts)
+源码：[`more-info-sun.ts`](https://github.com/home-assistant/frontend/blob/dev/src/dialogs/more-info/controls/more-info-sun.ts)

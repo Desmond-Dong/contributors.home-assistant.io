@@ -1,6 +1,6 @@
 ---
-title: Textarea
-description: Textareas let people enter text that can run over several lines, like a description or a message.
+title: 文本域（Textarea）
+description: 文本域（textarea）让人们输入可以跨越多行的文本，例如描述或消息。
 sidebarGroup: Input
 ---
 
@@ -11,64 +11,64 @@ import DoDont from "../../../../components/docs/DoDont.astro";
   <ha-textarea label="Description" value="Turns on the hallway lights when someone comes home after sunset." resize="auto"></ha-textarea>
 </Demo>
 
-## Overview
+## 概述
 
-A textarea lets people enter free text that can be longer than a single line: the description of an automation, a label, or a calendar event, or a message to send to a voice assistant.
+文本域（textarea）让人们输入可以超过一行的自由文本：自动化的描述、标签、日历事件，或要发送给语音助手的消息。
 
-## When to use
+## 何时使用
 
-Use a textarea for:
+在以下情况使用文本域：
 
-- Free text that can run over several lines, like a description, notes, or a message
+- 可以跨越多行的自由文本，例如描述、备注或消息
 
-Don't use a textarea for:
+不要在以下情况使用文本域：
 
-- A short, single line value, like a name. Use a [text input](/design/components/input/).
-- Code or YAML. The frontend has a dedicated code editor for that.
+- 简短的单行值，例如名称。请使用[文本输入框](/design/components/input/)。
+- 代码或 YAML。前端有专门的代码编辑器。
 
-## Anatomy
+## 结构
 
-1. **Container**: the filled field, with a line at the bottom
-2. **Label**: names the text. It sits inside the field, and moves up when the field has focus or a value.
-3. **Text**: the native textarea where people type
-4. **Hint**: optional help text below the field, replaced by the validation message when the text is invalid
+1. **容器**：填充的字段，底部有一条线
+2. **标签**：为文本命名。它位于字段内部，当字段获得焦点或有值时会向上移动。
+3. **文本**：人们输入内容的原生文本域
+4. **提示**：字段下方的可选帮助文本，当文本无效时会被校验消息取代
 
-## Variants
+## 变体
 
-### Growing with the content
+### 随内容增长
 
-Most textareas in the frontend grow with their content: the field starts small, grows while people type, and starts scrolling when it reaches its maximum height (200 pixels by default). That keeps a short text compact, without hiding a long one.
+前端的大多数文本域会随内容增长：字段开始时很小，随着人们输入而增长，达到最大高度（默认 200 像素）后开始滚动。这样既能让短文本保持紧凑，又不会隐藏长文本。
 
 <Demo layout="stack">
   <ha-textarea label="Notes" resize="auto"></ha-textarea>
 </Demo>
 
-### Fixed height
+### 固定高度
 
-A textarea that does not grow has a fixed height, in rows of text (4 by default). Use that when you know roughly how much text to expect, and want the space to be there from the start.
+不随内容增长的文本域具有固定高度，以文本行数计算（默认 4 行）。当你大致知道预期的文本量，并希望从一开始就预留好空间时，可以使用这种方式。
 
 <Demo layout="stack">
   <ha-textarea label="Message" rows="6"></ha-textarea>
 </Demo>
 
-### With a hint
+### 带提示
 
-Use the hint for anything that helps people write the text, like whether formatting is supported.
+使用提示来提供任何有助于人们编写文本的信息，例如是否支持格式化。
 
 <Demo layout="stack">
   <ha-textarea label="Description" hint="Supports Markdown." resize="auto"></ha-textarea>
 </Demo>
 
-## Behavior
+## 行为
 
-- **Empty**: the label sits inside the field, at the size of the text.
-- **Hover**: the field changes to the hover background.
-- **Focus**: the line at the bottom gets thicker and turns the primary color, and so does the label.
-- **Filled**: once the field has a value or focus, the label moves up and gets smaller. With a placeholder, the label is always up. The label has the background of the field, so text that scrolls stays readable under it.
-- **Required**: the label gets a `*` marker. The field must have text for the form to be valid.
-- **Disabled**: the field gets the disabled background and is dimmed to half its opacity, and the text can't be changed or focused.
-- **Read-only**: shows text that people can read and copy, but not change.
-- **Invalid**: the label and the line at the bottom turn to the danger color, and the validation message takes the place of the hint. A field becomes invalid when the code marks it invalid, when a form check finds the text invalid, or, for a field that checks itself, when it loses focus. It turns valid again as soon as people type valid text.
+- **空**：标签位于字段内部，大小与文本相同。
+- **悬停**：字段变为悬停背景色。
+- **聚焦**：底部的线变粗并变为主色调，标签也是如此。
+- **已填写**：一旦字段有值或获得焦点，标签就会向上移动并变小。有占位符时，标签始终处于上方。标签具有字段的背景色，因此滚动的文本在其下方仍保持可读。
+- **必填**：标签会带有一个 `*` 标记。字段必须包含文本，表单才有效。
+- **禁用**：字段使用禁用背景色，不透明度减半，文本无法更改或聚焦。
+- **只读**：显示人们可以阅读和复制的文本，但不能更改。
+- **无效**：标签和底部的线变为危险色，校验消息取代提示。当代码将字段标记为无效、表单检查发现文本无效，或者（对于自校验的字段）失去焦点时，字段变为无效。一旦人们输入了有效的文本，它就会立即恢复为有效。
 
 <Demo layout="stack">
   <ha-textarea label="Description" required resize="auto"></ha-textarea>
@@ -76,108 +76,108 @@ Use the hint for anything that helps people write the text, like whether formatt
   <ha-textarea label="Message" invalid validation-message="Enter a message to send." resize="auto"></ha-textarea>
 </Demo>
 
-## Specs
+## 规格
 
-### Size
+### 尺寸
 
-| Property | Value | Token |
+| 属性 | 值 | Token |
 | --- | --- | --- |
-| Minimum height | 56px | None |
-| Maximum height when growing | 200px | `--ha-textarea-max-height` |
-| Rows at a fixed height | 4 | None |
-| Space above the text | 24px, 12px without a label | `--ha-space-6`, `--ha-space-3` |
-| Space below the text | 8px | `--ha-space-2` |
-| Padding left and right of the text | 16px | `--ha-space-4` |
-| Corner radius | 4px at the top, 0 at the bottom | `--ha-border-radius-sm`, `--ha-border-radius-square` |
-| Line at the bottom | 1px, 2px with focus | None |
+| 最小高度 | 56px | 无 |
+| 增长时的最大高度 | 200px | `--ha-textarea-max-height` |
+| 固定高度时的行数 | 4 | 无 |
+| 文本上方的间距 | 24px，无标签时为 12px | `--ha-space-6`, `--ha-space-3` |
+| 文本下方的间距 | 8px | `--ha-space-2` |
+| 文本左右内边距 | 16px | `--ha-space-4` |
+| 圆角半径 | 顶部 4px，底部 0 | `--ha-border-radius-sm`, `--ha-border-radius-square` |
+| 底部的线 | 1px，聚焦时 2px | 无 |
 
-### Type
+### 字体
 
-| Part | Size | Token |
+| 部分 | 大小 | Token |
 | --- | --- | --- |
-| Text | 14px | `--ha-font-size-m` |
-| Label, inside the field | 14px | `--ha-font-size-m` |
-| Label, moved up | 10px | `--ha-font-size-xs` |
-| Space above the label | 16px, 8px when moved up | `--ha-space-4`, `--ha-space-2` |
-| Label padding left and right | 12px | `--ha-space-3` |
-| Hint and validation message | 12px | `--ha-font-size-s` |
+| 文本 | 14px | `--ha-font-size-m` |
+| 标签，位于字段内部 | 14px | `--ha-font-size-m` |
+| 标签，上移后 | 10px | `--ha-font-size-xs` |
+| 标签上方的间距 | 16px，上移后为 8px | `--ha-space-4`, `--ha-space-2` |
+| 标签左右内边距 | 12px | `--ha-space-3` |
+| 提示和校验消息 | 12px | `--ha-font-size-s` |
 
-The text uses `--ha-font-family-body`. Changes in color, line, and label position take 150ms.
+文本使用 `--ha-font-family-body`。颜色、线条和标签位置的变化耗时 150ms。
 
-### Color
+### 颜色
 
-| Part | State | Token |
+| 部分 | 状态 | Token |
 | --- | --- | --- |
-| Background and label background | Resting | `--ha-color-form-background` |
-| Background and label background | Hover | `--ha-color-form-background-hover` |
-| Background and label background | Disabled | `--ha-color-form-background-disabled` |
-| Line at the bottom | Resting | `--ha-color-border-neutral-loud` |
-| Line at the bottom | Focus | `--primary-color` |
-| Line at the bottom | Invalid | `--ha-color-border-danger-normal` |
-| Label | Resting | `--secondary-text-color` |
-| Label | Focus | `--primary-color` |
-| Label | Invalid | `--ha-color-fill-danger-loud-resting` |
-| Hint | All | `--ha-color-text-secondary` |
-| Validation message | Invalid | `--ha-color-on-danger-quiet` |
+| 背景和标签背景 | 静止 | `--ha-color-form-background` |
+| 背景和标签背景 | 悬停 | `--ha-color-form-background-hover` |
+| 背景和标签背景 | 禁用 | `--ha-color-form-background-disabled` |
+| 底部的线 | 静止 | `--ha-color-border-neutral-loud` |
+| 底部的线 | 聚焦 | `--primary-color` |
+| 底部的线 | 无效 | `--ha-color-border-danger-normal` |
+| 标签 | 静止 | `--secondary-text-color` |
+| 标签 | 聚焦 | `--primary-color` |
+| 标签 | 无效 | `--ha-color-fill-danger-loud-resting` |
+| 提示 | 所有 | `--ha-color-text-secondary` |
+| 校验消息 | 无效 | `--ha-color-on-danger-quiet` |
 
-## Guidelines
+## 指南
 
-<DoDont doText="Always give a textarea a short label." dontText="Use a placeholder as the label. It disappears once people start typing.">
+<DoDont doText="始终为文本域提供一个简短的标签。" dontText="将占位符用作标签。一旦人们开始输入，它就会消失。">
   <ha-textarea slot="do" label="Description" resize="auto"></ha-textarea>
   <ha-textarea slot="dont" placeholder="Description" resize="auto"></ha-textarea>
 </DoDont>
 
-<DoDont doText="Say what is wrong, and how to fix it." dontText="Only say that the text is wrong.">
+<DoDont doText="说明哪里出错了，以及如何修复。" dontText="只说文本是错的。">
   <ha-textarea slot="do" label="Message" invalid validation-message="Enter a message to send." resize="auto"></ha-textarea>
   <ha-textarea slot="dont" label="Message" invalid validation-message="Invalid value." resize="auto"></ha-textarea>
 </DoDont>
 
-- Keep labels short: **Description**, **Notes**, **Message**.
+- 保持标签简短：**Description**、**Notes**、**Message**。
 
-## Accessibility
+## 无障碍
 
-### Keyboard
+### 键盘
 
-| Key | Action |
+| 按键 | 操作 |
 | --- | --- |
-| <kbd>Tab</kbd> | Moves focus to the textarea, and away from it. A disabled textarea is skipped. |
-| <kbd>Enter</kbd> | Starts a new line. |
+| <kbd>Tab</kbd> | 将焦点移至文本域，以及从文本域移出。禁用的文本域会被跳过。 |
+| <kbd>Enter</kbd> | 开始新的一行。 |
 
-Key presses in the textarea don't trigger keyboard shortcuts around it.
+在文本域中的按键操作不会触发其周围的键盘快捷键。
 
-### Focus
+### 焦点
 
-Focus shows as the primary color on the line at the bottom and on the label, instead of a separate focus ring.
+焦点以主色调显示在底部的线和标签上，而不是使用单独的焦点环。
 
-### Target size
+### 目标尺寸
 
-The field is at least 56px high, and as wide as its container.
+字段高度至少为 56px，宽度与其容器相同。
 
-### Screen readers
+### 屏幕阅读器
 
-A screen reader announces the textarea with its label, and reads the hint as its description. When the field turns invalid, the validation message is announced. Required, disabled, and read only are announced as well. Without a label, only the placeholder describes it, so always give it a label.
+屏幕阅读器会连同其标签一起播报文本域，并将提示作为其描述朗读。当字段变为无效时，会播报校验消息。必填、禁用和只读状态也会被播报。如果没有标签，则只有占位符来描述它，因此请始终为其提供标签。
 
-### In the code
+### 在代码中
 
-- Focus goes to the native textarea inside the component.
-- The component stops `keydown` events from leaving it.
+- 焦点会移到组件内部的原生文本域上。
+- 组件会阻止 `keydown` 事件向外传播。
 
-- The label is a native `<label>` connected to the textarea, so it is the accessible name.
-- Without a label, the `<label>` is empty and hidden from assistive technology. The placeholder is then the only text that describes the textarea.
-- The hint and the validation message are connected to the textarea with `aria-describedby`, so screen readers read them as the description.
-- The validation message is in a live region, and gets the role `alert` while the field is invalid, so screen readers announce it when it appears.
-- Required, disabled, and read-only are set on the native textarea, so assistive technology gets them as is.
+- 标签是一个连接到文本域的原生 `<label>`，因此它是可访问名称。
+- 没有标签时，`<label>` 为空并对辅助技术隐藏。此时占位符是描述文本域的唯一文本。
+- 提示和校验消息通过 `aria-describedby` 连接到文本域，因此屏幕阅读器会将它们作为描述朗读。
+- 校验消息位于一个实时区域（live region）中，并在字段无效时获得 `alert` 角色，因此屏幕阅读器会在它出现时播报。
+- 必填、禁用和只读状态设置在原生文本域上，因此辅助技术会按原样获取它们。
 
-## Related
+## 相关内容
 
-- [Text input](/design/components/input/): a single line of text
-- [Form](/design/components/form/): builds fields from a schema
-- [Selector](/design/components/selector/): the text selector with `multiline` shows a textarea
-- [UI text](/design/ui-text/): how to write labels, hints, and errors
+- [文本输入框](/design/components/input/)：单行文本
+- [表单](/design/components/form/)：根据 schema 构建字段
+- [选择器](/design/components/selector/)：带 `multiline` 的文本选择器会显示文本域
+- [UI 文本](/design/ui-text/)：如何编写标签、提示和错误信息
 
-## In code
+## 代码实现
 
-The element is `<ha-textarea>`. It is based on the [Web Awesome textarea](https://webawesome.com/docs/components/textarea/).
+该元素是 `<ha-textarea>`。它基于 [Web Awesome textarea](https://webawesome.com/docs/components/textarea/)。
 
 ```html
 <ha-textarea label="Description" resize="auto"></ha-textarea>
@@ -185,41 +185,41 @@ The element is `<ha-textarea>`. It is based on the [Web Awesome textarea](https:
 <ha-textarea label="Notes" hint="Supports Markdown." required></ha-textarea>
 ```
 
-### Attributes
+### 属性
 
-- `label`: the label.
-- `value`: the current value.
-- `hint`: help text below the textarea.
-- `placeholder`: text shown while the textarea is empty.
-- `rows`: the number of visible lines. Defaults to `4`.
-- `resize`: `none` (default), `vertical`, `horizontal`, `both`, or `auto`. With `auto`, the textarea grows with its content, up to `--ha-textarea-max-height`.
-- `required`: makes the field required, and adds a marker after the label.
-- `disabled`: disables the textarea.
-- `readonly`: makes the textarea read-only.
-- `invalid`: marks the textarea as invalid.
-- `validation-message`: the message shown when the textarea is invalid. Without it, the browser's own message is shown.
-- `auto-validate`: validates the textarea when it loses focus, instead of waiting for the form to be submitted.
-- `minlength` and `maxlength`: the minimum and maximum length of the value.
-- `name`, `autocomplete`, `autocapitalize`, `autofocus`, `spellcheck`, `inputmode`, and `enterkeyhint`: passed to the native textarea, and work the same as on a regular `<textarea>`.
+- `label`：标签。
+- `value`：当前值。
+- `hint`：文本域下方的帮助文本。
+- `placeholder`：文本域为空时显示的文本。
+- `rows`：可见行数。默认为 `4`。
+- `resize`：`none`（默认）、`vertical`、`horizontal`、`both` 或 `auto`。设为 `auto` 时，文本域会随内容增长，最大不超过 `--ha-textarea-max-height`。
+- `required`：将字段设为必填，并在标签后添加标记。
+- `disabled`：禁用文本域。
+- `readonly`：将文本域设为只读。
+- `invalid`：将文本域标记为无效。
+- `validation-message`：文本域无效时显示的消息。未设置时，显示浏览器自带的消息。
+- `auto-validate`：在文本域失去焦点时进行校验，而不是等待表单提交。
+- `minlength` 和 `maxlength`：值的最小和最大长度。
+- `name`、`autocomplete`、`autocapitalize`、`autofocus`、`spellcheck`、`inputmode` 和 `enterkeyhint`：传递给原生文本域，与普通 `<textarea>` 上的用法相同。
 
-The maximum height for `resize="auto"` only applies when `resize` is set as an attribute. The property does not reflect, so setting only `.resize` from code gives you a textarea that grows without limit.
+`resize="auto"` 的最大高度仅在 `resize` 作为属性设置时生效。该属性不会反射（reflect），因此仅从代码设置 `.resize` 会得到一个无限增长的文本域。
 
-### Slots
+### 插槽
 
-- `label`: a label with markup. Content in this slot replaces the text of the `label` attribute, including the required marker.
-- `hint`: a hint with markup, like a link. Only used when the `hint` attribute is not set.
+- `label`：带标记的标签。此插槽中的内容会取代 `label` 属性的文本，包括必填标记。
+- `hint`：带标记的提示，例如链接。仅在未设置 `hint` 属性时使用。
 
-### Events
+### 事件
 
-- `input`: fires on every change to the value, while people type.
-- `change`: fires when the value is committed, like when the textarea loses focus.
+- `input`：在人们输入时，值的每次变化都会触发。
+- `change`：在值被提交时触发，例如文本域失去焦点时。
 
-Read the new value from `value` on the element. Key presses do not bubble out of the textarea: it stops `keydown` events, so typing, or pressing Enter for a new line, does not trigger keyboard handlers around it.
+从元素的 `value` 读取新值。按键操作不会从文本域冒泡出去：它会阻止 `keydown` 事件，因此输入文字或按 Enter 换行都不会触发其周围的键盘处理器。
 
-### Styling
+### 样式
 
-- `--ha-textarea-max-height`: the maximum height with `resize="auto"`. Defaults to `200px`.
-- `--ha-textarea-padding-bottom`: the space below the textarea.
-- `--ha-textarea-required-marker`: the marker after the label of a required field. Defaults to `"*"`.
+- `--ha-textarea-max-height`：`resize="auto"` 时的最大高度。默认为 `200px`。
+- `--ha-textarea-padding-bottom`：文本域下方的间距。
+- `--ha-textarea-required-marker`：必填字段标签后的标记。默认为 `"*"`。
 
-Source: [`src/components/ha-textarea.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-textarea.ts)
+源码：[`src/components/ha-textarea.ts`](https://github.com/home-assistant/frontend/blob/dev/src/components/ha-textarea.ts)

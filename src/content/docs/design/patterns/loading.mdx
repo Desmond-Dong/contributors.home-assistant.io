@@ -1,28 +1,28 @@
 ---
-title: Loading
-description: How Home Assistant shows that something is on its way, from a spinner to a button that reports how its action went.
+title: 加载
+description: Home Assistant 如何提示某项内容正在到来，从加载指示器到能报告操作结果的按钮。
 order: 2
 ---
 
 import Demo from "../../../../components/docs/Demo.astro";
 
-Your home is not always instant. A device takes a moment to answer, history has to be fetched, a backup takes minutes. A good wait tells people that something is happening, and where the result will show up.
+你的家并不总是即时响应的。设备需要一点时间才能应答，历史记录需要获取，备份需要几分钟。良好的等待体验能告诉人们某件事正在发生，以及结果将出现在哪里。
 
-## When to use
+## 何时使用
 
-Show a loading state whenever people would otherwise look at a screen that seems stuck or empty. Pick the indicator by where the wait happens:
+每当人们可能会面对一个看起来卡住或空白的屏幕时，就应显示加载状态。根据等待发生的位置选择指示方式：
 
-- **A whole area loads, and you don't know how long it takes**: a [spinner](/design/components/spinner/).
-- **A button started an action that runs on the spot**: the button shows that it is busy.
-- **The action finishes in place and has nowhere else to show its result**: a [progress button](/design/components/progress-button/).
-- **Content loads into a layout you already know**, like rows of a table or the text of a tile: a skeleton, a grey placeholder in the shape of the content.
-- **An operation has several steps**: show progress through the steps, so people know how far along it is.
+- **整个区域在加载，而你不知道需要多久**：使用[加载指示器（spinner）](/design/components/spinner/)。
+- **一个按钮启动了就地运行的操作**：按钮显示它正在忙碌。
+- **操作就地完成，结果没有其他地方可以显示**：使用[进度按钮（progress button）](/design/components/progress-button/)。
+- **内容加载到你已经了解的布局中**，比如表格的行或磁贴的文字：使用骨架屏（skeleton），即内容形状的灰色占位符。
+- **一个操作包含多个步骤**：显示各步骤的进度，让人们知道进行到了哪一步。
 
-## How it works
+## 工作原理
 
-### Spinner
+### 加载指示器（Spinner）
 
-The spinner comes in four sizes: `tiny` (16 pixels), `small` (28), `medium` (48, the default), and `large` (68).
+加载指示器有四种尺寸：`tiny`（16 像素）、`small`（28）、`medium`（48，默认值）和 `large`（68）。
 
 <Demo>
   <ha-spinner size="tiny"></ha-spinner>
@@ -31,20 +31,20 @@ The spinner comes in four sizes: `tiny` (16 pixels), `small` (28), `medium` (48,
   <ha-spinner size="large"></ha-spinner>
 </Demo>
 
-### Busy buttons
+### 忙碌按钮
 
-A [button](/design/components/button/) with `loading` shows a spinner instead of its label and can't be selected again, so the action does not start twice. The confirmation dialogs of the frontend do this with their main button while the action runs.
+带有 `loading` 的[按钮（button）](/design/components/button/)会用加载指示器替代其标签，并且无法再次点击，从而避免操作被重复启动。前端的确认对话框在操作运行期间会对其主按钮这样做。
 
-A progress button goes one step further. When the action is done, it shows a check mark on a green button or an alert icon on a red one, for two seconds. It says *that* something failed, not *why*. When people need to know why, also show an [error](/design/patterns/errors/).
+进度按钮则更进一步。当操作完成时，它会在绿色按钮上显示对勾图标，或在红色按钮上显示警告图标，持续两秒钟。它只说明*发生了*失败，而不说明*原因*。当人们需要知道原因时，还应显示[错误（error）](/design/patterns/errors/)。
 
 <Demo>
   <ha-button loading>Save</ha-button>
   <ha-progress-button progress>Restart</ha-progress-button>
 </Demo>
 
-### Skeletons
+### 骨架屏（Skeleton）
 
-A skeleton keeps the layout in place while the content loads, so nothing jumps around when it arrives. The frontend has `ha-skeleton`, with `ha-skeleton-text` and `ha-skeleton-icon` for the common shapes. Data tables, tiles, and the devices dashboard use them.
+骨架屏在内容加载期间保持布局不变，这样内容到达时不会发生跳动。前端提供了 `ha-skeleton`，以及用于常见形状的 `ha-skeleton-text` 和 `ha-skeleton-icon`。数据表格、磁贴和设备仪表盘都使用了它们。
 
 <Demo layout="stack" caption="A row of a data table while it loads: ha-skeleton-icon and ha-skeleton-text.">
   <div style="display: flex; align-items: center; gap: 16px">
@@ -57,25 +57,25 @@ A skeleton keeps the layout in place while the content loads, so nothing jumps a
   </div>
 </Demo>
 
-### Where loading ends
+### 加载的终点
 
-A loading state always ends in one of three places: the content, an [empty state](/design/patterns/empty-states/), or an [error](/design/patterns/errors/). Never leave a spinner running when the request failed, and never show "nothing here" while the data is still on its way.
+加载状态总是以下列三种结果之一结束：内容、[空状态（empty state）](/design/patterns/empty-states/)，或[错误（error）](/design/patterns/errors/)。当请求失败时，绝不要让加载指示器一直转下去；当数据仍在途中时，也绝不要显示“这里什么都没有”。
 
-Dashboard cards follow the same rule. Every card handles loading, an error, an unavailable entity, and an entity that does not exist.
+仪表盘卡片遵循同样的规则。每张卡片都会处理加载、错误、不可用的实体（entity），以及不存在的实体。
 
-## Accessibility
+## 无障碍
 
-- The spinner has the role of a progress bar, with a translated "Loading" label.
-- Skeletons and spinners keep their meaning without motion. Skeletons stop pulsing when people ask for reduced motion. See [Motion](/design/foundations/motion/).
-- When loading ends in an error, show it as text people can read, not only as a red button.
+- 加载指示器具有进度条的角色，并带有翻译后的“Loading”标签。
+- 骨架屏和加载指示器在没有动画时仍保持其含义。当人们要求减少动画时，骨架屏会停止脉动。参见[动效（Motion）](/design/foundations/motion/)。
+- 当加载以错误结束时，应以人们可读的文字显示，而不仅仅是一个红色按钮。
 
-## Components
+## 组件
 
-- [Spinner](/design/components/spinner/)
-- [Button](/design/components/button/) and [progress button](/design/components/progress-button/)
-- [Alert](/design/components/alert/), when loading fails
+- [加载指示器（Spinner）](/design/components/spinner/)
+- [按钮（Button）](/design/components/button/)和[进度按钮（progress button）](/design/components/progress-button/)
+- [警告（Alert）](/design/components/alert/)，当加载失败时使用
 
-## In code
+## 代码实现
 
 ```ts
 html`
@@ -87,4 +87,4 @@ html`
 `;
 ```
 
-When the action of a progress button is done, call `actionSuccess()` or `actionError()` on it. The skeletons, `ha-skeleton`, `ha-skeleton-text`, and `ha-skeleton-icon`, live in `src/components/skeleton/`.
+当进度按钮的操作完成时，在其上调用 `actionSuccess()` 或 `actionError()`。骨架屏组件 `ha-skeleton`、`ha-skeleton-text` 和 `ha-skeleton-icon` 位于 `src/components/skeleton/` 中。
