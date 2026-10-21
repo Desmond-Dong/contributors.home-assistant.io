@@ -1,0 +1,15 @@
+---
+// 51.la analytics for the Chinese mirror of contributors.home-assistant.io.
+// Only rendered in production builds, so `pnpm dev` stays clean.
+// This file only exists on the Chinese branch, so upstream merges never touch it.
+const prod = import.meta.env.PROD;
+---
+
+{prod && (
+  <script
+    is:inline
+    charset="UTF-8"
+    id="LA_COLLECT"
+    src="//sdk.51.la/js-sdk-pro.min.js?id=3MhQABjxy4RZQ6Ig&ck=3MhQABjxy4RZQ6Ig"
+  ></script>
+)}

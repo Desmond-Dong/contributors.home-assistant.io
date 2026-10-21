@@ -1,0 +1,86 @@
+name: Sync upstream and translate
+
+on:
+  schedule:
+    # Every day at 02:30 UTC. Crontab.guru to adjust.
+    - cron: "30 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-and-translate
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      TRANSLATION_API_KEY: ${{ secrets.TRANSLATION_API_KEY }}
+      TRANSLATION_API_BASE: ${{ vars.TRANSLATION_API_BASE || 'https://api.openai.com/v1' }}
+      TRANSLATION_MODEL: ${{ vars.TRANSLATION_MODEL || 'gpt-4o-mini' }}
+    steps:
+      - name: Checkout Chinese branch
+        uses: actions/checkout@v4
+        with:
+          ref: Chinese
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch upstream
+        run: |
+          git remote add upstream https://github.com/home-assistant/contributors.home-assistant.io.git
+          git fetch upstream main
+          git config user.name "translate-bot"
+          git config user.email "actions@users.noreply.github.com"
+
+      - name: Merge upstream
+        run: |
+          set -e
+          UP=$(git rev-parse upstream/main)
+          git merge upstream/main -X theirs --no-edit -m "Sync from upstream $UP"
+          echo "UPSTREAM_SHA=$UP" >> "$GITHUB_ENV"
+
+      # -X theirs can drop our analytics line when Base.astro conflicts upstream.
+      # The script is idempotent: it only restores what is missing.
+      - name: Re-apply analytics include
+        run: node scripts/ensure-analytics.mjs
+
+      - name: List changed content files
+        id: files
+        run: |
+          UP=$(git rev-parse upstream/main)
+          if [ -f .github/translation/last-sync-sha.txt ]; then
+            LAST="$(cat .github/translation/last-sync-sha.txt)"
+          else
+            LAST=""
+          fi
+          if [ -z "$LAST" ]; then
+            FILES=$(git ls-files -c 'src/content/docs/**/*.md' 'src/content/docs/**/*.mdx' 'src/content/blog/*.md' | grep -v '^src/content/docs/index\.md$')
+          else
+            FILES=$(git diff --name-only --diff-filter=ACMRT "$LAST" "$UP" -- 'src/content/**/*.md' 'src/content/**/*.mdx' | grep -v '^src/content/docs/index\.md$')
+          fi
+          { echo 'files<<EOF'; echo "$FILES"; echo EOF; } >> "$GITHUB_OUTPUT"
+          echo "Last sync sha: ${LAST:-<none, full translation>}"
+          echo "Files to translate:"; echo "$FILES"
+
+      - name: Translate
+        run: node scripts/translate-upstream.mjs
+        env:
+          FILE_LIST: ${{ steps.files.outputs.files }}
+
+      - name: Persist last-sync commit
+        run: |
+          mkdir -p .github/translation
+          echo "$UPSTREAM_SHA" > .github/translation/last-sync-sha.txt
+
+      - name: Commit and push
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+          else
+            git commit -m "Translate content from upstream $UPSTREAM_SHA"
+            git push origin Chinese
+          fi
