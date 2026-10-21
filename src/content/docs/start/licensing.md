@@ -1,22 +1,22 @@
 ---
-title: Licensing and the CLA
-description: Which licenses Home Assistant uses, what the Contributor License Agreement says, and how you sign it.
+title: 许可与 CLA
+description: Home Assistant 使用哪些许可证，贡献者许可协议（Contributor License Agreement）的内容是什么，以及如何签署。
 sidebarLabel: Licensing and the CLA
 order: 8
 ---
 
-Everything you contribute to Home Assistant is shared with the world under an open source license. Before your first code contribution is merged, you confirm that you have the right to share it that way, by signing the Contributor License Agreement (CLA). You do that once.
+你为 Home Assistant 贡献的一切内容都会以开源许可证的形式与世界共享。在你的第一个代码贡献被合并之前，你需要通过签署贡献者许可协议（Contributor License Agreement，CLA）来确认你有权以这种方式分享它。这只需要做一次。
 
-## The licenses
+## 许可证
 
-- **Code** is released under the [Apache License 2.0](https://www.home-assistant.io/developers/license/). That includes Home Assistant Core, the frontend, and the other software repositories.
-- **Documentation** on home-assistant.io is released under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://github.com/home-assistant/home-assistant.io/blob/current/LICENSE.md).
+- **代码**以 [Apache License 2.0](https://www.home-assistant.io/developers/license/) 发布。这包括 Home Assistant Core、前端以及其他软件仓库。
+- home-assistant.io 上的**文档**以 [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://github.com/home-assistant/home-assistant.io/blob/current/LICENSE.md) 发布。
 
-Each repository has a `LICENSE` file at its root. When in doubt, that file is what counts for that repository.
+每个仓库的根目录下都有一个 `LICENSE` 文件。如有疑问，以该仓库中的这个文件为准。
 
-## The Contributor License Agreement
+## 贡献者许可协议
 
-The CLA is short. By making a contribution, you certify the following:
+CLA 很简短。做出贡献即表示你证明以下内容：
 
 ```txt
 By making a contribution to this project, I certify that:
@@ -41,18 +41,18 @@ By making a contribution to this project, I certify that:
     source license(s) involved.
 ```
 
-In plain words: you wrote it yourself, or it comes from open source work you're allowed to share. And you understand that your contribution is public, and stays public.
+简单来说：内容是你自己写的，或者它来自允许你分享的开源作品。同时你明白，你的贡献是公开的，并将保持公开。
 
-The CLA is based on the [Developer Certificate of Origin](https://elinux.org/Developer_Certificate_Of_Origin) of the Linux project, changed to name the Apache 2.0 license and to leave out the sign-off. Its text is available under the [Creative Commons Attribution-ShareAlike 3.0 Unported License](https://creativecommons.org/licenses/by-sa/3.0/). The full page, with its history, is [on home-assistant.io](https://www.home-assistant.io/developers/cla/).
+CLA 基于 Linux 项目的[开发者原产地证书（Developer Certificate of Origin）](https://elinux.org/Developer_Certificate_Of_Origin)，修改为指明 Apache 2.0 许可证，并去掉了签署（sign-off）部分。其文本根据 [Creative Commons Attribution-ShareAlike 3.0 Unported License](https://creativecommons.org/licenses/by-sa/3.0/) 授权使用。完整页面及其历史记录可在 [home-assistant.io](https://www.home-assistant.io/developers/cla/) 上查看。
 
-## Signing it
+## 签署
 
-You don't need to do anything up front. The code repositories of Home Assistant, like Core, the frontend, the companion apps, the Supervisor, Home Assistant OS, and the official apps, check every pull request for a signed CLA. The first time you open a pull request in one of them without having signed, a bot comments with a link. Follow it and the instructions there. Once signed, it covers your future contributions too.
+你无需提前做任何事情。Home Assistant 的代码仓库，例如 Core、前端、伴侣应用（companion apps）、Supervisor、Home Assistant OS 以及官方应用，都会检查每个拉取请求（pull request）是否已签署 CLA。当你第一次在其中某个仓库打开拉取请求而尚未签署时，一个机器人会发表评论并附上链接。按照该链接及其中的说明操作即可。签署一次后，它也将覆盖你未来的贡献。
 
-## Code from somewhere else
+## 来自其他地方的代码
 
-Point (b) matters when you bring in code you didn't write, like a snippet from another project. Only do that when its license allows it, and say where it comes from in your pull request. The same goes for code written with AI tools: you're responsible for what you submit. See the [AI policy](/start/ai-policy/).
+当你引入并非由你编写的代码时，第 (b) 条就很关键，例如来自其他项目的代码片段。只有在其许可证允许的情况下才这样做，并在你的拉取请求中说明其来源。使用 AI 工具编写的代码也是如此：你要对自己提交的内容负责。请参阅 [AI 政策](/start/ai-policy/)。
 
-## Credits
+## 致谢
 
-Home Assistant has a [credits page](https://www.home-assistant.io/developers/credits/) that lists the people who contributed across the repositories of the project.
+Home Assistant 有一个[致谢页面](https://www.home-assistant.io/developers/credits/)，列出了为该项目各个仓库做出贡献的人们。

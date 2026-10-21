@@ -1,26 +1,41 @@
 #!/usr/bin/env node
 /**
- * Machine translation of Astro content for the "zh" mirror.
+ * Machine translation of Astro content for the "Chinese" mirror.
  *
- * Usage (in CI, via scripts/sync-and-translate.yml):
+ * Usage (in CI, via .github/workflows/sync-and-translate.yml, or locally):
  *   env FILE_LIST="path/to/file.md\nanother.mdx" node scripts/translate-upstream.mjs
  *
  * Env:
- *   TRANSLATION_API_KEY  API key of the OpenAI-compatible provider
- *   TRANSLATION_API_BASE Base URL, e.g. https://api.openai.com/v1 or https://openrouter.ai/api/v1
- *   TRANSLATION_MODEL    Model ID, e.g. gpt-4o-mini or a DeepSeek/GLM model
+ *   TRANSLATION_API_KEY     API key of the OpenAI-compatible provider
+ *   TRANSLATION_API_BASE    Base URL, e.g. https://api.openai.com/v1 or https://integrate.api.nvidia.com/v1
+ *   TRANSLATION_MODEL       Model ID, e.g. gpt-4o-mini or z-ai/glm-5.3-flash
+ *   TRANSLATION_CONCURRENCY Parallel requests (default 2)
+ *   TRANSLATION_TIMEOUT_MS  Per-request timeout (default 600000)
+ *   TRANSLATION_PROXY       Optional proxy for curl, e.g. socks5h://127.0.0.1:10808
+ *
+ * Transport is curl (present on GitHub runners and on Windows) because the
+ * NVIDIA endpoint can take minutes before the first byte; curl's TCP
+ * keepalive probes survive that silent wait, and a socks5 proxy is easy to
+ * add when the direct route is unreliable.
  *
  * Rules:
  * - Prose is translated to Simplified Chinese; code, links, JSX, frontmatter structure are untouched.
  * - Files whose structure looks broken after translation are retried once, then skipped (kept English).
  */
 
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, unlink } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { randomBytes } from "node:crypto";
+import { execFile } from "node:child_process";
 
 const API_BASE = (process.env.TRANSLATION_API_BASE || "https://api.openai.com/v1").replace(/\/$/, "");
 const API_KEY = process.env.TRANSLATION_API_KEY || "";
 const MODEL = process.env.TRANSLATION_MODEL || "gpt-4o-mini";
-const CONCURRENCY = 4;
+const PROXY = process.env.TRANSLATION_PROXY || "";
+const REASONING_EFFORT = process.env.TRANSLATION_REASONING_EFFORT || "";
+const CONCURRENCY = Number(process.env.TRANSLATION_CONCURRENCY || 2);
+const REQUEST_TIMEOUT_MS = Number(process.env.TRANSLATION_TIMEOUT_MS || 900000);
 
 if (!API_KEY) {
   console.error("TRANSLATION_API_KEY is not set");
@@ -32,7 +47,7 @@ const files = (process.env.FILE_LIST || "")
   .map((line) => line.trim())
   .filter(Boolean);
 
-console.log(`${files.length} file(s) to translate`);
+console.log(`${files.length} file(s) to translate${PROXY ? ` via ${PROXY}` : ""}`);
 
 const SYSTEM_PROMPT = `You translate documentation pages from English into Simplified Chinese (zh-Hans) for the Home Assistant contributor website. You return ONLY the full translated file, never explanations and never a code fence around the output.
 
@@ -74,31 +89,91 @@ const fingerprintsMatch = (a, b) =>
     return Math.abs(value - b[i]) <= 2;
   });
 
-async function translateOnce(path, userPrompt) {
-  const response = await fetch(`${API_BASE}/chat/completions`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      temperature: 0,
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: userPrompt },
-      ],
-    }),
-  });
-  if (!response.ok) {
-    const detail = await response.text().catch(() => "");
-    throw new Error(`HTTP ${response.status} for ${path}: ${detail.slice(0, 300)}`);
+async function cleanup(path) {
+  await unlink(path).catch(() => {});
+}
+
+async function chatCompletion(bodyObject) {
+  const id = randomBytes(6).toString("hex");
+  const requestFile = join(tmpdir(), `tr-req-${id}.json`);
+  const responseFile = join(tmpdir(), `tr-res-${id}.json`);
+  await writeFile(requestFile, JSON.stringify(bodyObject), "utf8");
+  const args = [
+    "-sS",
+    "-N",
+    "--max-time",
+    String(Math.ceil(REQUEST_TIMEOUT_MS / 1000)),
+    "--keepalive-time",
+    "25",
+    ...(PROXY ? ["--proxy", PROXY] : []),
+    `${API_BASE}/chat/completions`,
+    "-H",
+    `Authorization: Bearer ${API_KEY}`,
+    "-H",
+    "Content-Type: application/json",
+    "-d",
+    `@${requestFile}`,
+    "-o",
+    responseFile,
+    "-w",
+    "%{http_code}",
+  ];
+  let stdout;
+  try {
+    stdout = await new Promise((resolve, reject) => {
+      execFile("curl", args, { timeout: REQUEST_TIMEOUT_MS + 15000, windowsHide: true, maxBuffer: 256 * 1024 * 1024 }, (error, out, errOut) => {
+        if (error) reject(new Error((errOut || error.message).slice(0, 300)));
+        else resolve(out.trim());
+      });
+    });
+  } finally {
+    await cleanup(requestFile);
   }
-  const data = await response.json();
-  let text = data?.choices?.[0]?.message?.content ?? "";
+  const body = await readFile(responseFile, "utf8").catch(() => "");
+  await cleanup(responseFile);
+  if (stdout !== "200") {
+    throw new Error(`HTTP ${stdout || "?"}: ${body.slice(0, 200)}`);
+  }
+  // Streaming responses arrive as SSE lines; accumulate the content deltas.
+  // Some providers ignore "stream" and return a plain JSON body, so fall back.
+  let text = "";
+  for (const rawLine of body.split("\n")) {
+    const line = rawLine.trim();
+    if (!line.startsWith("data:")) continue;
+    const payload = line.slice(5).trim();
+    if (payload === "[DONE]") continue;
+    try {
+      const chunk = JSON.parse(payload);
+      text += chunk.choices?.[0]?.delta?.content ?? "";
+    } catch {}
+  }
+  if (!text.trim()) {
+    try {
+      const json = JSON.parse(body);
+      text = json?.choices?.[0]?.message?.content ?? "";
+    } catch {}
+  }
+  return text.trim();
+}
+
+async function translateOnce(path, userPrompt) {
+  const data = await chatCompletion({
+    model: MODEL,
+    temperature: 0,
+    stream: true,
+    // Supported by NVIDIA's GLM/DeepSeek endpoints; without it, thinking
+    // models burn minutes of reasoning tokens per file.
+    ...(REASONING_EFFORT ? { reasoning_effort: REASONING_EFFORT } : {}),
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: userPrompt },
+    ],
+  });
+  let text = data;
   text = text.trim();
   if (/^```[^\n]*\n/.test(text)) text = text.replace(/^```[^\n]*\n/, "");
   if (/\n```$/.test(text)) text = text.replace(/\n```$/, "");
+  if (!text) throw new Error("empty content from model");
   return text;
 }
 
@@ -110,17 +185,20 @@ async function translateFile(path) {
     return { path, status: "missing (deleted upstream?)" };
   }
 
+  // The current content on the Chinese branch is the previous translation;
+  // including it keeps terminology consistent across updates.
   let previous = null;
   try {
     previous = await readFile(path, "utf8");
   } catch {}
 
   const fingerprint = structuralFingerprint(original);
+  const isEnglish = structuralFingerprint(original).join() === structuralFingerprint(previous ?? "").join() && previous === original;
 
   const parts = [
     `Translate this documentation page (${path}) into Simplified Chinese.`,
-    previous && previous !== original
-      ? `A previous Simplified Chinese translation of an older version follows after SOURCE. It stays consistent with terminology already used on the site: carry over translations of unchanged sentences, and translate the new or changed parts. In case of doubt, translate fresh rather than guessing. --- PREVIOUS TRANSLATION --- ${previous} --- END PREVIOUS TRANSLATION ---`
+    !isEnglish && previous
+      ? `A previous Simplified Chinese translation of an older version follows after SOURCE. Stay consistent with the terminology already used there: carry over translations of unchanged sentences, and translate the new or changed parts. In case of doubt, translate fresh rather than guessing. --- PREVIOUS TRANSLATION --- ${previous} --- END PREVIOUS TRANSLATION ---`
       : "",
     "--- SOURCE ---",
     original,
@@ -129,10 +207,7 @@ async function translateFile(path) {
   let translated = await translateOnce(path, parts.join("\n"));
 
   if (!fingerprintsMatch(structuralFingerprint(translated), fingerprint)) {
-    translated = await translateOnce(
-      path,
-      `${parts.join("\n")}\n--- ${RETRY_NOTE}`,
-    );
+    translated = await translateOnce(path, `${parts.join("\n")}\n--- ${RETRY_NOTE}`);
     if (!fingerprintsMatch(structuralFingerprint(translated), fingerprint)) {
       // Keep the English source: a partially wrong translation is worse than none.
       return { path, status: "skipped, structure mismatch" };
@@ -149,16 +224,16 @@ let index = 0;
 async function runner() {
   while (index < files.length) {
     const path = files[index++];
-    for (let attempt = 1; attempt <= 3; attempt++) {
+    for (let attempt = 1; attempt <= 5; attempt++) {
       try {
         const result = await translateFile(path);
         console.log(`${result.status}: ${result.path}`);
         break;
       } catch (error) {
         failures.push(`${path}: ${error.message}`);
-        console.error(`${error.message} (attempt ${attempt}/3)`);
-        await new Promise((resolve) => setTimeout(resolve, attempt * 5000));
-        if (attempt === 3) console.error(`Giving up on ${path}`);
+        console.error(`${error.message} (attempt ${attempt}/5)`);
+        await new Promise((resolve) => setTimeout(resolve, attempt * 10000));
+        if (attempt === 5) console.error(`Giving up on ${path}`);
       }
     }
   }

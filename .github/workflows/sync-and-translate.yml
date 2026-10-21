@@ -20,6 +20,7 @@ jobs:
       TRANSLATION_API_KEY: ${{ secrets.TRANSLATION_API_KEY }}
       TRANSLATION_API_BASE: ${{ vars.TRANSLATION_API_BASE || 'https://api.openai.com/v1' }}
       TRANSLATION_MODEL: ${{ vars.TRANSLATION_MODEL || 'gpt-4o-mini' }}
+      TRANSLATION_REASONING_EFFORT: ${{ vars.TRANSLATION_REASONING_EFFORT || '' }}
     steps:
       - name: Checkout Chinese branch
         uses: actions/checkout@v4

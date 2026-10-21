@@ -1,42 +1,42 @@
 ---
-title: Get started
-description: How the Home Assistant project works, where people talk, and how to make your first contribution, whatever your skills are.
+title: 快速上手
+description: Home Assistant 项目是如何运作的、大家在哪里交流，以及无论你的技能水平如何，如何做出你的第一次贡献。
 ---
 
-Home Assistant is built by thousands of people. Some write Python or TypeScript, many don't. They translate the interface, fix a sentence in the documentation, design a better dialog, help someone on the [forum](https://community.home-assistant.io/), or test a beta. Every one of those counts as contributing, and every one of them makes Home Assistant better for millions of homes.
+Home Assistant 由成千上万的人共同构建。有些人编写 Python 或 TypeScript，但很多人并不写代码。他们翻译界面、修改文档中的一句话、设计更好的对话框、在[论坛](https://community.home-assistant.io/)上帮助他人，或者测试 beta 版本。这些都可以算作贡献，而每一份贡献都让 Home Assistant 变得对数百万家庭更好。
 
-This area is for everyone who wants to join in. It explains how the project is organized, where people talk, and how your first contribution goes from idea to merged.
+这个板块面向所有想要参与进来的人。它介绍了项目是如何组织的、大家在哪里交流，以及你的第一次贡献如何从想法变为合并。
 
-## Start here
+## 从这里开始
 
-1. [Your first contribution](/start/first-contribution/): pick a path that fits your skills, and take the first step. Most paths don't need any code.
-2. [Use GitHub, without being a developer](/start/github/): the words you meet on GitHub, and how to make a change in your browser.
-3. [Where we talk](/start/where-we-talk/): Discord, the community forum, and GitHub, and where the people of each area can be found.
+1. [你的第一次贡献](/start/first-contribution/)：选择一条适合你技能的路径，迈出第一步。大多数路径都不需要编写任何代码。
+2. [使用 GitHub，而不必成为开发者](/start/github/)：你在 GitHub 上会遇到的术语，以及如何在浏览器中做出修改。
+3. [我们的交流场所](/start/where-we-talk/)：Discord、社区论坛和 GitHub，以及每个板块的人可以在哪里找到。
 
-## Guides
+## 指南
 
-- [Report a bug](/start/report-a-bug/): which repository to use, what the bug report forms ask, and what happens after you report.
-- [Pull requests and reviews](/start/pull-requests/): how to open a pull request that is easy to review, and what happens after you open it, in any repository.
-- [Grow as a contributor](/start/grow/): what comes after your first pull request, from reviewing and triaging to owning an integration or taking on a role.
+- [报告缺陷（bug）](/start/report-a-bug/)：应该使用哪个仓库、缺陷报告表单会询问什么，以及报告之后会发生什么。
+- [拉取请求（pull request）与代码评审](/start/pull-requests/)：如何创建一个易于评审的拉取请求，以及创建之后会发生什么，适用于任何仓库。
+- [作为贡献者不断成长](/start/grow/)：你的第一次拉取请求之后是什么，从评审和分类，到负责一个集成（integration）或承担一个角色。
 
-## Background
+## 背景知识
 
-You don't need to read these before your first contribution. They help once you want to know how things work.
+你不需要在第一次贡献之前阅读这些内容。当你想了解事物的运作方式时，它们会对你有所帮助。
 
-- [How the project is organized](/start/organization/): the Open Home Foundation, its commercial partners, the repositories, and the people who maintain them.
-- [From idea to release](/roadmap/how-it-works/): how larger work is planned, from a feature request to a release, and where you can join in.
-- [Our principles](/start/principles/): what Home Assistant stands for, and what that means for your work.
-- [Contribute with AI tools](/start/ai-tools/): the instructions and skills the repositories carry for agents, workflows for common tasks, and what to check yourself.
-- [AI policy](/start/ai-policy/): how you can, and can't, use AI tools when you contribute.
-- [Licensing and the CLA](/start/licensing/): the licenses, and the Contributor License Agreement you sign once for the code repositories.
-- [Code of conduct](/start/code-of-conduct/): how we treat each other, and how to report a problem.
+- [项目是如何组织的](/start/organization/)：Open Home Foundation、其商业合作伙伴、各个仓库，以及维护它们的人。
+- [从想法到发布](/roadmap/how-it-works/)：较大的工作是如何规划的，从一个功能请求到一个发布版本，以及你可以在哪里参与进来。
+- [我们的原则](/start/principles/)：Home Assistant 所代表的价值，以及这对你的工作意味着什么。
+- [使用 AI 工具做贡献](/start/ai-tools/)：仓库中为智能体（agent）提供的说明和技能、常见任务的工作流程，以及你需要自行检查的内容。
+- [AI 政策](/start/ai-policy/)：在贡献时你可以如何使用 AI 工具，以及哪些行为是不允许的。
+- [许可协议与 CLA](/start/licensing/)：各种许可证，以及你为代码仓库只需签署一次的贡献者许可协议（Contributor License Agreement）。
+- [行为准则](/start/code-of-conduct/)：我们如何彼此相待，以及如何报告问题。
 
-## Want to know how it all fits together?
+## 想知道这一切是如何组合在一起的？
 
-The [Architecture](/architecture/) area explains how the pieces of Home Assistant work together, from [the big picture](/architecture/big-picture/) to [how decisions are made](/architecture/decisions/). You don't need to read it before your first contribution, but it helps once you go further.
+[架构（Architecture）](/architecture/)板块介绍了 Home Assistant 的各个部分如何协同工作，从[整体概览](/architecture/big-picture/)到[决策是如何做出的](/architecture/decisions/)。你不需要在第一次贡献之前阅读它，但当你走得更远时，它会对你有所帮助。
 
-## Who to talk to
+## 找谁交流
 
-- Not sure where to start? Ask on the [Home Assistant Discord](https://www.home-assistant.io/join-chat/). People there are used to that question. Once you've joined, follow [Building in the open](discord:building-in-the-open), the announcement channel for contributors, to see what is happening in the project.
-- A question about a specific change? Ask it in the issue or pull request on GitHub, so the people who know that code can answer.
-- Every area of this site has its own "Who to talk to" section, with the channels for that kind of work.
+- 不确定从哪里开始？在 [Home Assistant Discord](https://www.home-assistant.io/join-chat/) 上提问。那里的人对这个问题习以为常。加入之后，请关注 [Building in the open](discord:building-in-the-open)——面向贡献者的公告频道，了解项目中正在发生的事情。
+- 关于某个具体修改的问题？请在 GitHub 上的 issue 或拉取请求中提问，这样了解那段代码的人才能回答。
+- 本网站的每个板块都有自己的"找谁交流"部分，列出了适合该类工作的交流渠道。

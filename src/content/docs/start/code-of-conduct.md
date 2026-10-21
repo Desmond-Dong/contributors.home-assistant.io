@@ -1,37 +1,37 @@
 ---
-title: Code of conduct
-description: How we treat each other in every space where we work together, and what to do when something isn't right.
+title: 行为准则
+description: 我们在所有协作空间中如何彼此相待，以及遇到不妥之事时该如何处理。
 order: 9
 ---
 
-Home Assistant is built by people from all over the world, with all kinds of backgrounds and levels of experience. The [Home Assistant code of conduct](https://www.home-assistant.io/code_of_conduct/) makes sure everyone can take part without harassment. By contributing, you agree to follow it.
+Home Assistant 由来自世界各地、拥有各种背景和经验水平的人们共同构建。[Home Assistant 行为准则](https://www.home-assistant.io/code_of_conduct/) 确保每个人都能在不受骚扰的情况下参与其中。参与贡献即表示您同意遵守该准则。
 
-## Where it applies
+## 适用范围
 
-Everywhere we work together: GitHub, [Discord](https://www.home-assistant.io/join-chat/), the [community forum](https://community.home-assistant.io/), social media, and events. It also applies when someone represents the project in public, like on an official account or at an event.
+适用于我们协作的所有场所：GitHub、[Discord](https://www.home-assistant.io/join-chat/)、[社区论坛](https://community.home-assistant.io/)、社交媒体以及各类活动。当有人以项目名义在公开场合出现时，例如使用官方账号或参加活动，本准则同样适用。
 
-## What we expect
+## 我们期望的行为
 
-- Be kind and show empathy.
-- Respect opinions, viewpoints, and experiences that differ from yours.
-- Give constructive feedback, and accept it gracefully.
-- Take responsibility for your mistakes, apologize to those affected, and learn from it.
-- Focus on what is best for the community, not only for yourself.
+- 友善待人，展现同理心。
+- 尊重与自己不同的意见、观点和经历。
+- 提出建设性的反馈，并优雅地接受反馈。
+- 为自己的错误承担责任，向受影响的人道歉，并从中吸取教训。
+- 关注对社区最有利的事情，而不仅仅是对自己有利的。
 
-## What isn't okay
+## 不可接受的行为
 
-- Sexualized language or imagery, and sexual attention or advances of any kind
-- Trolling, insults, and personal or political attacks
-- Harassment, in public or in private
-- Sharing someone's private information, like an address, without their permission
-- Anything else that would reasonably be considered inappropriate in a professional setting
+- 性化的语言或图像，以及任何形式的性关注或性挑逗
+- 恶意挑衅（trolling）、侮辱以及人身或政治攻击
+- 骚扰，无论公开还是私下
+- 未经许可分享他人的私人信息，例如住址
+- 其他在专业环境中会被合理地认为不适当的行为
 
-## Reporting a problem
+## 报告问题
 
-If you experience or see something that isn't okay, report it. Email [safety@home-assistant.io](mailto:safety@home-assistant.io), or use the report or flag feature of the platform you're on. Every report is reviewed and investigated, promptly and fairly, and the privacy of the person reporting is respected. How each platform handles reports, and what moderators do with them, is on [reporting a problem](/community/guides/reporting/) and [moderation](/community/guides/moderation/).
+如果您遭遇或看到不妥的行为，请进行报告。发送电子邮件至 [safety@home-assistant.io](mailto:safety@home-assistant.io)，或使用您所在平台的举报或标记功能。每一份报告都会得到及时、公正的审查和调查，报告者的隐私也会受到尊重。各平台如何处理报告，以及版主如何处理这些报告，请参阅[报告问题](/community/guides/reporting/)和[内容审核](/community/guides/moderation/)。
 
-## What happens then
+## 后续处理
 
-Community leaders decide on the consequences, depending on the impact. They range from a private, written warning, through a formal warning and a temporary ban, to a permanent ban for a pattern of serious violations. Leaders can also remove or edit comments, code, issues, and other contributions that don't follow the code of conduct.
+社区负责人会根据影响程度决定相应的后果。后果包括私下书面警告、正式警告、临时封禁，直至对屡次严重违规者实施永久封禁。负责人还可以删除或编辑不符合行为准则的评论、代码、议题（issue）及其他贡献。
 
-The [full code of conduct](https://www.home-assistant.io/code_of_conduct/) has the details of each step. It's adapted from version 2.0 of the [Contributor Covenant](https://www.contributor-covenant.org/version/2/0/code_of_conduct/).
+[完整的行为准则](https://www.home-assistant.io/code_of_conduct/) 包含每个步骤的详细信息。它改编自 [Contributor Covenant](https://www.contributor-covenant.org/version/2/0/code_of_conduct/) 2.0 版本。

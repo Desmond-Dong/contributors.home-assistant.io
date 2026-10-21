@@ -1,48 +1,48 @@
 ---
-title: Our principles
-description: What Home Assistant stands for, and how we work together. The values behind the decisions you'll see in reviews and discussions.
+title: 我们的原则
+description: Home Assistant 所坚持的理念，以及我们如何协作。这些价值观是你在评审和讨论中看到的各项决定背后的依据。
 sidebarLabel: Principles
 order: 6
 ---
 
-Home Assistant makes a lot of decisions every day: in reviews, in discussions, in what gets built next. Most of them go back to a few values. Knowing them helps you understand why a reviewer asks for a change, and helps you make the same calls yourself.
+Home Assistant 每天都要做出许多决定：在评审中、在讨论中、在决定接下来构建什么时。其中大部分都可以归结为几项价值观。了解它们有助于你理解评审者为什么要求修改，也有助于你自己做出同样的判断。
 
-## The Open Home
+## 开放之家
 
-Home Assistant is part of the [Open Home Foundation](/start/organization/), which stands for three values in the smart home:
+Home Assistant 是 [Open Home Foundation](/start/organization/) 的一部分，该基金会代表智能家居中的三项价值观：
 
-- **Privacy**: your home is yours. Home Assistant runs locally, and data about your home stays there unless you choose otherwise. The cloud is an option, never a requirement.
-- **Choice**: you pick your devices, from any brand, and combine them however you like. No vendor gets to lock you in.
-- **Sustainability**: a smart home should keep working for years, not stop when a company moves on.
+- **隐私**：你的家属于你自己。Home Assistant 在本地运行，关于你家的数据会留在本地，除非你选择其他方式。云是一种选项，绝不是必需品。
+- **选择**：你可以选择任何品牌的设备，并按自己喜欢的方式组合使用。任何厂商都无法把你锁死。
+- **可持续性**：智能家居应该能持续工作多年，而不是在公司转向后就停止工作。
 
-Every area applies these in its own way. [Architecture principles](/architecture/principles/) explains what they mean for the code, and [design principles](/design/principles/) what they mean for the interface.
+每个领域都会以自己的方式践行这些价值观。[架构原则](/architecture/principles/)解释了它们对代码意味着什么，[设计原则](/design/principles/)解释了它们对界面意味着什么。
 
-## How we work together
+## 我们如何协作
 
-### In the open
+### 公开透明
 
-Code, discussions, and decisions happen in public, on GitHub and in public channels. Anyone can read along, and anyone can join in. When you decide something in a private chat, write the outcome down where others can find it.
+代码、讨论和决定都在公开场合进行，在 GitHub 上和公开频道中。任何人都可以阅读，任何人都可以参与。当你在私下聊天中做出某个决定时，请把结果写在其他人能找到的地方。
 
-### The user comes first
+### 用户至上
 
-Home Assistant runs millions of homes. People rely on it for their lights, their heating, and their alarm. That is why changes that affect existing setups get extra care, and why a reviewer may ask you to keep something working that you'd rather remove.
+Home Assistant 运行在数百万个家庭中。人们依靠它来控制灯光、供暖和警报。因此，影响现有配置的更改会得到格外谨慎的对待，这也是为什么评审者可能会要求你保留某个你更想移除但仍在正常工作的功能。
 
-### Quality over quantity
+### 质量重于数量
 
-The project would rather do fewer things well. That's why reviews can feel strict, and why a pull request sometimes needs a few rounds. It's never personal: it's what keeps Home Assistant working for everyone.
+本项目宁愿少做一些事情，也要把它们做好。这就是为什么评审可能显得严格，为什么一个拉取请求（pull request）有时需要几轮修改。这绝不是针对个人：正是这一点让 Home Assistant 能为所有人正常工作。
 
-### Small steps
+### 小步前进
 
-A small, focused change is easier to understand, review, and merge. When in doubt, split it up. [Pull requests and reviews](/start/pull-requests/) explains why.
+一个小的、专注的更改更容易理解、评审和合并。拿不准的时候，就把它拆分。[拉取请求与评审](/start/pull-requests/)解释了原因。
 
-### Respect for people's time
+### 尊重他人的时间
 
-Many contributors give their free time, and reviewer time is limited. Make it count: test your work before you share it, fill out the templates, and understand what you submit. The [AI policy](/start/ai-policy/) follows from the same idea.
+许多贡献者贡献的是自己的空闲时间，而评审者的时间是有限的。请让这些时间发挥价值：在分享之前测试你的工作，填写模板，并理解你提交的内容。[AI 政策](/start/ai-policy/)正是基于同样的理念。
 
-### Everyone is welcome
+### 欢迎所有人
 
-You don't need to be an expert to contribute, and you don't need to know everything to ask. The [code of conduct](/start/code-of-conduct/) sets how we treat each other, everywhere.
+你不需要是专家才能做出贡献，也不需要什么都懂才能提问。[行为准则](/start/code-of-conduct/)规定了我们在任何地方应如何彼此相待。
 
-## How Home Assistant sounds
+## Home Assistant 的声音
 
-Home Assistant also has a personality: welcoming, candid, supportive, generous, and independent. It shows up in the interface, in the documentation, and in how we talk to each other. [Personality](/brand/personality/) describes each trait.
+Home Assistant 也有自己的个性：热情、坦率、支持、慷慨和独立。它体现在界面中、文档中，以及我们彼此交流的方式中。[个性](/brand/personality/)描述了每一项特质。

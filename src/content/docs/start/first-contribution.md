@@ -1,129 +1,129 @@
 ---
-title: Your first contribution
-description: Pick the path that fits your skills, and take one small first step. Most paths don't need any code.
+title: 你的第一次贡献
+description: 选择适合你技能的路径，迈出一小步作为开始。大多数路径不需要任何代码。
 order: 1
 ---
 
-Your first contribution doesn't need to be big. A typo fixed, ten strings translated, a question answered on the [forum](https://community.home-assistant.io/): that is a real contribution, and it teaches you how the project works. Start small, get through the loop once, and the next one is easier.
+你的第一次贡献不需要很大。修复一个错别字、翻译十个字符串、在[论坛](https://community.home-assistant.io/)上回答一个问题：这些都是实实在在的贡献，而且会让你了解这个项目是如何运作的。从小处着手，完整地走一遍这个循环，下一次就会更容易。
 
-Most of the ways to help don't involve writing code at all, so they come first on this page. Each path says which account you need, and links to a page with concrete steps.
+大多数帮助方式完全不需要编写代码，所以它们在本页中排在最前面。每条路径都说明了你需要什么账户，并链接到一个包含具体步骤的页面。
 
-## Before you start
+## 开始之前
 
-Two things are the same, whatever you pick:
+无论你选择哪条路径，有两件事是相同的：
 
-- **Read the [code of conduct](/start/code-of-conduct/).** It's short, and it applies everywhere.
-- **Know where to ask.** You don't need permission to start, but it helps to know where to go when you get stuck. The [Home Assistant Discord](https://www.home-assistant.io/join-chat/) is the quickest place for a question. Stuck on code? Ask in [general coding support](discord:coding-support). See [where we talk](/start/where-we-talk/) for the place that fits your area.
+- **阅读[行为准则](/start/code-of-conduct/)。**它很短，而且适用于所有地方。
+- **知道去哪里提问。**你不需要获得许可才能开始，但知道遇到困难时该去哪里会很有帮助。[Home Assistant Discord](https://www.home-assistant.io/join-chat/) 是提问能最快得到回应的地方。在代码上卡住了？可以在[通用编码支持](discord:coding-support)里提问。请参阅[我们在哪里交流](/start/where-we-talk/)，找到适合你所在领域的场所。
 
-Many paths use GitHub. Never used it, or never understood it? Read [Use GitHub, without being a developer](/start/github/) first. It explains the words, and walks you through a change in your browser.
+许多路径会用到 GitHub。从未用过，或者一直没弄明白？请先阅读[不是开发者也能使用 GitHub](/start/github/)。它解释了相关术语，并引导你在浏览器中完成一次修改。
 
-## Without writing code
+## 无需编写代码
 
-### You speak another language
+### 你会说其他语言
 
-Home Assistant is translated by the people who use it. If you're a native speaker, you can start in a few minutes. The interface is translated in your browser, on Lokalise.
+Home Assistant 由使用它的人来翻译。如果你的母语是其他语言，几分钟内就可以开始。界面翻译在你的浏览器中通过 Lokalise 完成。
 
-- **You need:** a free [Lokalise](/glossary/lokalise/) account. Lokalise asks you to create one when you join a project.
-- **Start here:** [Your first translation](/translate/first-contribution/).
+- **你需要：**一个免费的 [Lokalise](/glossary/lokalise/) 账户。当你加入项目时，Lokalise 会要求你创建一个。
+- **从这里开始：**[你的第一次翻译](/translate/first-contribution/)。
 
-Want Assist to understand your language when you talk to it? That work happens in YAML files on GitHub, through pull requests, so you need a free [GitHub](https://github.com/signup) account for that. Start with [Voice](/translate/voice/).
+想让 Assist 在你与它对话时听懂你的语言？这项工作在 GitHub 上的 YAML 文件中进行，通过拉取请求（pull request）提交，因此你需要为此准备一个免费的 [GitHub](https://github.com/signup) 账户。从[语音](/translate/voice/)开始。
 
-### You like to write
+### 你喜欢写作
 
-The documentation on home-assistant.io is written by the community. Fix something small, straight from your browser.
+home-assistant.io 上的文档由社区编写。直接在浏览器中就能修复一些小问题。
 
-- **You need:** a free [GitHub](https://github.com/signup) account.
-- **Start here:** [Your first docs fix](/writing/first-contribution/).
+- **你需要：**一个免费的 [GitHub](https://github.com/signup) 账户。
+- **从这里开始：**[你的第一次文档修复](/writing/first-contribution/)。
 
-### You design
+### 你做设计
 
-Flows, screens, components, and UI text. You don't need to write code to help shape how Home Assistant works.
+流程、界面、组件和 UI 文本。你不需要编写代码，也能帮助塑造 Home Assistant 的运作方式。
 
-- **You need:** a [Discord](https://www.home-assistant.io/join-chat-design) account to meet the designers in **#designers**, and a free [GitHub](https://github.com/signup) account to share proposals in discussions and issues.
-- **Start here:** [Your first design contribution](/design/first-contribution/).
+- **你需要：**一个 [Discord](https://www.home-assistant.io/join-chat-design) 账户，以便在 **#designers** 频道与设计师们交流；以及一个免费的 [GitHub](https://github.com/signup) 账户，以便在讨论和 issue 中分享提案。
+- **从这里开始：**[你的第一次设计贡献](/design/first-contribution/)。
 
-### You like helping people
+### 你喜欢帮助他人
 
-Answer questions on the forum and Discord, welcome newcomers, organize a meetup, or help share news.
+在论坛和 Discord 上回答问题、欢迎新成员、组织线下聚会，或者帮助分享新闻。
 
-- **You need:** a free account on the [community forum](https://community.home-assistant.io/).
-- **Start here:** [Answer your first question](/community/first-contribution/).
+- **你需要：**一个[社区论坛](https://community.home-assistant.io/)的免费账户。
+- **从这里开始：**[回答你的第一个问题](/community/first-contribution/)。
 
-### You want to test before everyone else
+### 你想在所有人之前进行测试
 
-Every month, a beta of the next release comes out a week before the release itself. Running it and reporting what breaks keeps bugs out of everyone else's home.
+每个月，下一个版本的 beta 版都会在正式发布前一周发布。运行它并报告哪里出了问题，就能让错误远离其他人的家。
 
-- **You need:** a Home Assistant installation where a problem is an annoyance, not a disaster, and a free [GitHub](https://github.com/signup) account to report the bugs you find.
-- **Start here:** [Join the beta](/releases/first-contribution/).
+- **你需要：**一个即使出问题也只是小麻烦而非灾难的 Home Assistant 安装实例，以及一个免费的 [GitHub](https://github.com/signup) 账户，用于报告你发现的错误。
+- **从这里开始：**[加入 beta 测试](/releases/first-contribution/)。
 
-Do you have a device or a browser that a pull request needs to be tested on? Some areas let you try a change before it's merged, without building anything. See [try out a frontend pull request](/frontend/development/builds/#try-out-a-pull-request) and [test an Android pull request build](/companion/android/get-started/#test-a-pull-request-build). Then leave a comment on the pull request with what you found. "I tried this with my device, and it works" is a useful review.
+你是否有拉取请求需要在上面进行测试的设备或浏览器？一些领域让你可以在更改被合并之前试用它，而无需构建任何东西。请参阅[试用前端拉取请求](/frontend/development/builds/#try-out-a-pull-request)和[测试 Android 拉取请求构建](/companion/android/get-started/#test-a-pull-request-build)。然后在拉取请求上留下评论，说明你的发现。“我用我的设备试过了，可以正常工作”就是一条很有用的评审意见。
 
-### You want to share data
+### 你想分享数据
 
-Turn on analytics in your own Home Assistant, and help the project see which integrations, versions, and installation types are in use. Nothing is shared unless you turn it on.
+在你自己的 Home Assistant 中打开分析功能，帮助项目了解正在使用哪些集成（integration）、版本和安装类型。除非你主动打开，否则不会共享任何内容。
 
-- **You need:** a Home Assistant installation. No account.
-- **Start here:** [Share your analytics](/data/first-contribution/).
+- **你需要：**一个 Home Assistant 安装实例。无需账户。
+- **从这里开始：**[分享你的分析数据](/data/first-contribution/)。
 
-### Report a bug well
+### 把错误报告好
 
-Something broken? A clear issue with steps to reproduce saves maintainers a lot of time. [Report a bug](/start/report-a-bug/) tells you which repository to use, what the forms ask, and where to find the logs and versions they need.
+有什么东西坏了吗？一个附带重现步骤的清晰 issue 能为维护者节省大量时间。[报告错误](/start/report-a-bug/)会告诉你应该使用哪个仓库、表单会询问什么，以及在哪里找到它们所需的日志和版本信息。
 
-- **You need:** a free [GitHub](https://github.com/signup) account.
+- **你需要：**一个免费的 [GitHub](https://github.com/signup) 账户。
 
-### Report a security problem
+### 报告安全问题
 
-Found something that could put people's homes at risk? Don't open an issue: issues are public. Report it privately, so the problem can be fixed before the details are out. [Report a vulnerability](/security/report-a-vulnerability/) tells you how, and what to include.
+发现了可能让人们家中的安全面临风险的问题？不要创建 issue：issue 是公开的。请私下报告，以便在细节公开之前把问题修复。[报告漏洞](/security/report-a-vulnerability/)会告诉你如何报告，以及需要包含哪些内容。
 
-- **You need:** a free [GitHub](https://github.com/signup) account.
+- **你需要：**一个免费的 [GitHub](https://github.com/signup) 账户。
 
-### You built something worth sharing
+### 你构建了值得分享的东西
 
-An automation that works well in your home can help others too. Turn it into a blueprint and share it. Built a dashboard card, a theme, or an integration of your own? Publishing it in the Marketplace is the recommended first step: you gain experience, and you can iterate faster. You don't need a pull request in a Home Assistant repository: it lives in your own.
+一个在你家里运行良好的自动化（automation）也能帮助他人。把它做成蓝图（blueprint）并分享出来。构建了自己的仪表盘（dashboard）卡片、主题或集成？将它发布到 Marketplace 是推荐的第一步：你可以积累经验，还能更快地迭代。你不需要在 Home Assistant 的仓库中提交拉取请求：它就放在你自己的仓库里。
 
-- **You need:** a free [GitHub](https://github.com/signup) account. For a blueprint, no programming.
-- **Start here:** [Share your first blueprint](/marketplace/first-contribution/).
+- **你需要：**一个免费的 [GitHub](https://github.com/signup) 账户。如果是蓝图，则不需要编程。
+- **从这里开始：**[分享你的第一个蓝图](/marketplace/first-contribution/)。
 
-## With code
+## 需要编写代码
 
-These paths end in a pull request on GitHub, in a repository where the [Contributor License Agreement](#the-contributor-license-agreement) applies. Building an app for yourself is the exception: you can publish it from your own repository. Each first contribution page tells you how to set up your development environment.
+这些路径最终都会以 GitHub 上的一次拉取请求收尾，并且所在仓库适用[贡献者许可协议（Contributor License Agreement）](#the-contributor-license-agreement)。为自己构建一个应用（app）是例外：你可以从自己的仓库发布它。每个首次贡献页面都会告诉你如何搭建开发环境。
 
-### You write Python
+### 你编写 Python
 
-Home Assistant Core is the Python application at the heart of everything: the automation engine and thousands of integrations. Start with a small bug fix or a missing test.
+Home Assistant Core 是处于一切核心的 Python 应用程序：自动化引擎和数千个集成都在其中。从修复一个小错误或补上一个缺失的测试开始。
 
-- **Start here:** [Your first contribution to Core](/core/first-contribution/).
+- **从这里开始：**[你对 Core 的第一次贡献](/core/first-contribution/)。
 
-### You write TypeScript or work on web interfaces
+### 你编写 TypeScript 或从事 Web 界面工作
 
-The frontend is everything you see in the browser and the companion apps: dashboards, settings, and dialogs. It's built with Lit and TypeScript.
+前端（frontend）是你在浏览器和伴侣应用（companion app）中看到的一切：仪表盘、设置和对话框。它使用 Lit 和 TypeScript 构建。
 
-- **Start here:** [Your first frontend contribution](/frontend/first-contribution/).
+- **从这里开始：**[你的第一次前端贡献](/frontend/first-contribution/)。
 
-### You build mobile apps
+### 你构建移动应用
 
-The companion apps for Android and iOS (also on macOS, Wear OS, and Apple Watch) are written in Kotlin and Swift.
+Android 和 iOS 的伴侣应用（也有 macOS、Wear OS 和 Apple Watch 版本）使用 Kotlin 和 Swift 编写。
 
-- **Start here:** [Your first companion app contribution](/companion/first-contribution/).
+- **从这里开始：**[你的第一次伴侣应用贡献](/companion/first-contribution/)。
 
-### You work on Linux, embedded systems, or containers
+### 你从事 Linux、嵌入式系统或容器方面的工作
 
-Home Assistant OS and the Supervisor install, update, and run everything. That work is about Linux, Docker, boards, and Python.
+Home Assistant OS 和 Supervisor 负责安装、更新和运行所有东西。这项工作涉及 Linux、Docker、开发板和 Python。
 
-- **Start here:** [Your first contribution to the Supervisor](/os/first-contribution/).
+- **从这里开始：**[你对 Supervisor 的第一次贡献](/os/first-contribution/)。
 
-### You want to package software
+### 你想打包软件
 
-Apps (formerly add-ons) are containers the Supervisor runs next to Home Assistant, like a database or a Zigbee bridge. You can build one for yourself, without anyone's approval.
+应用（app，旧称 add-on）是 Supervisor 在 Home Assistant 旁边运行的容器，比如数据库或 Zigbee 网桥。你可以为自己构建一个，不需要任何人的批准。
 
-- **Start here:** [Your first app](/apps/first-app/).
+- **从这里开始：**[你的第一个应用](/apps/first-app/)。
 
-## The Contributor License Agreement
+## 贡献者许可协议
 
-The code repositories of Home Assistant, like Core, the frontend, the companion apps, the Supervisor, Home Assistant OS, and the official apps, ask you to sign the [Contributor License Agreement](/start/licensing/). The first time you open a pull request in one of them, a bot comments with a link. You do that once, and it covers your future contributions too. Until you sign it, your pull request can't be merged.
+Home Assistant 的代码仓库，例如 Core、前端、伴侣应用、Supervisor、Home Assistant OS 和官方应用，都要求你签署[贡献者许可协议](/start/licensing/)。当你第一次在其中某个仓库里创建拉取请求时，会有一个机器人发表评论并附上链接。你只需要做一次，而且它也涵盖你未来的贡献。在你签署之前，你的拉取请求无法被合并。
 
-The paths without code don't need it: translating, fixing the documentation, contributing voice sentences, answering questions, testing betas, and sharing analytics.
+无需代码的路径不需要它：翻译、修复文档、贡献语音句子、回答问题、测试 beta 版本以及分享分析数据。
 
-## What happens next
+## 接下来会发生什么
 
-Opened a pull request? [Pull requests and reviews](/start/pull-requests/) tells you what to expect. Reviews take time, because there are more pull requests than reviewers. Be patient, and keep going. Once you're through it, [grow as a contributor](/start/grow/) shows where you can go from there.
+已经创建了拉取请求？[拉取请求与评审](/start/pull-requests/)会告诉你可以期待什么。评审需要时间，因为拉取请求比评审者更多。保持耐心，坚持下去。一旦你走完了这个过程，[作为贡献者成长](/start/grow/)会告诉你接下来可以走向何方。

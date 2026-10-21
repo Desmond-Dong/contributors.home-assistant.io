@@ -1,110 +1,110 @@
 ---
-title: Report a bug
-description: Which repository to report a bug in, what the bug report forms ask and where to find it, and what happens after you report.
+title: 报告缺陷（bug）
+description: 应该在哪个仓库报告缺陷、缺陷报告表单会询问什么内容以及在哪里找到这些信息，以及报告之后会发生什么。
 order: 3.5
 ---
 
-A good bug report is one of the most useful things you can give the project. You don't need to write code for it, only a free [GitHub](https://github.com/signup) account and a bit of patience. This page helps you pick the right place, gather what the form asks for, and know what to expect afterwards.
+一份好的缺陷报告是您能为项目做出的最有用的事情之一。您不需要为此编写代码，只需要一个免费的 [GitHub](https://github.com/signup) 账号和一点耐心。本页面帮助您选择正确的位置、收集表单所需的信息，并了解之后会发生什么。
 
-Bug reports are for things that don't work the way they should. A question about your own setup goes to the [help page](https://www.home-assistant.io/help/), and an idea for something new goes to [feature requests](https://github.com/home-assistant/feature-requests/discussions).
+缺陷报告用于那些没有按预期工作的问题。关于您自己配置的疑问请前往[帮助页面](https://www.home-assistant.io/help/)，新功能的想法请前往[功能请求](https://github.com/home-assistant/feature-requests/discussions)。
 
-## Before you report
+## 报告之前
 
-- **Update first.** Check that the problem still happens on the latest version. Several forms ask you to confirm this.
-- **Search for an existing issue.** Use the search box on the **Issues** tab of the repository. Found one that matches? Add a 👍, or a comment with anything new you know, instead of opening a second one.
-- **Security problem?** Don't report it here: issues are public. [Report a vulnerability](/security/report-a-vulnerability/) privately instead.
-- **Write in English.** Everyone can follow along that way. Using a translation tool is fine: see the [AI policy](/start/ai-policy/#non-native-english-speakers).
+- **先更新。** 确认问题在最新版本上仍然存在。多个表单都要求您确认这一点。
+- **搜索已有的 issue。** 使用仓库 **Issues** 标签页中的搜索框。找到了匹配的 issue？请添加 👍，或在评论中补充您知道的任何新信息，而不是再开一个新 issue。
+- **安全问题？** 不要在这里报告：issue 是公开的。请改为私下[报告漏洞](/security/report-a-vulnerability/)。
+- **用英文撰写。** 这样所有人都能看懂。使用翻译工具是可以的：请参阅 [AI 政策](/start/ai-policy/#non-native-english-speakers)。
 
-## Pick the repository
+## 选择仓库
 
-Each part of Home Assistant has its own issue tracker. Report the problem where the code lives:
+Home Assistant 的每个部分都有自己的 issue 跟踪器。请在代码所在的地方报告问题：
 
-| The problem is in | Report it in |
+| 问题所在位置 | 在此报告 |
 | --- | --- |
-| An integration, automations, or anything else in Home Assistant Core | [core](https://github.com/home-assistant/core/issues) |
-| The interface: dashboards, cards, settings screens, and dialogs | [frontend](https://github.com/home-assistant/frontend/issues) |
-| The Supervisor: updates, backups, and installing apps | [supervisor](https://github.com/home-assistant/supervisor/issues) |
-| Home Assistant OS, the operating system itself | [operating-system](https://github.com/home-assistant/operating-system/issues) |
-| One of the official apps | [addons](https://github.com/home-assistant/addons/issues) |
-| The Android app, Wear OS, or Android Auto | [android](https://github.com/home-assistant/android/issues) |
-| The iOS, iPadOS, watchOS, or macOS app | [iOS](https://github.com/home-assistant/iOS/issues) |
-| The documentation on home-assistant.io | [home-assistant.io](https://github.com/home-assistant/home-assistant.io/issues) |
+| 集成（integration）、自动化（automation）或 Home Assistant Core 中的其他任何内容 | [core](https://github.com/home-assistant/core/issues) |
+| 界面：仪表盘（dashboard）、卡片、设置页面和对话框 | [frontend](https://github.com/home-assistant/frontend/issues) |
+| Supervisor：更新、备份和安装应用 | [supervisor](https://github.com/home-assistant/supervisor/issues) |
+| Home Assistant OS，即操作系统本身 | [operating-system](https://github.com/home-assistant/operating-system/issues) |
+| 官方插件（add-on） | [addons](https://github.com/home-assistant/addons/issues) |
+| Android 应用、Wear OS 或 Android Auto | [android](https://github.com/home-assistant/android/issues) |
+| iOS、iPadOS、watchOS 或 macOS 应用 | [iOS](https://github.com/home-assistant/iOS/issues) |
+| home-assistant.io 上的文档 | [home-assistant.io](https://github.com/home-assistant/home-assistant.io/issues) |
 
-Not sure? A dashboard that looks wrong belongs to the frontend, even in a companion app. The iOS form suggests a quick test: if the problem also shows up in Safari, report it in the frontend. Still unsure where it fits? Ask on [Discord](https://www.home-assistant.io/join-chat/) first.
+不确定？看起来显示异常的仪表盘属于 frontend，即使在伴侣应用（companion app）中也是如此。iOS 表单建议了一个快速测试：如果问题在 Safari 中也出现，请在 frontend 中报告。仍然不确定它属于哪里？请先在 [Discord](https://www.home-assistant.io/join-chat/) 上询问。
 
-On the **New issue** page of a repository, select the bug report form. The other options on that page point you to the right place for support and feature requests.
+在仓库的 **New issue** 页面上，选择缺陷报告表单。该页面上的其他选项会指引您前往正确的支持与功能请求位置。
 
-## What the forms ask
+## 表单会询问什么
 
-Every form asks for a clear description of the problem, and most ask for the steps to reproduce it. Write those as numbered steps someone else can follow. Then each form asks for its own details.
+每个表单都要求对问题进行清晰的描述，大多数还要求提供重现步骤。请将步骤写成别人可以照着做的编号步骤。然后每个表单还会要求各自的详细信息。
 
 ### Home Assistant Core
 
-- The version of Home Assistant Core that has the problem, and the last version that worked, if you know it.
-- Your installation type: Home Assistant OS, Container, Supervised, or Core.
-- The integration that causes the problem, and a link to its documentation page on home-assistant.io. The link helps the right people find your issue.
-- [Diagnostics](/glossary/diagnostics/) of the device or integration, if it offers them.
-- A YAML example that reproduces the problem, if it applies, and anything useful from the logs.
+- 出现问题的 Home Assistant Core 版本，以及（如果您知道的话）最后一个正常的版本。
+- 您的安装类型：Home Assistant OS、Container、Supervised 或 Core。
+- 导致问题的集成，以及它在 home-assistant.io 上文档页面的链接。该链接能帮助相关的人找到您的 issue。
+- 设备或集成的[诊断信息](/glossary/diagnostics/)（如果它提供的话）。
+- 能重现问题的 YAML 示例（如果适用），以及日志中任何有用的内容。
 
 ### Frontend
 
-- A checklist: you updated Home Assistant, cleared the cache of your browser, tried another browser, and tried [safe mode](https://www.home-assistant.io/blog/2023/11/01/release-202311/#restarting-into-safe-mode) to rule out custom cards and other custom resources.
-- What you expected to happen, next to what happened.
-- The Home Assistant Core version, your browser and its version, and the operating system it runs on.
-- For a problem with how an entity is shown: its state and attributes, from the **Details** view of the more info dialog.
-- The YAML of the cards involved, and any errors in the console of your browser.
+- 一份检查清单：您已更新 Home Assistant、清除了浏览器缓存、尝试了其他浏览器，并尝试了[安全模式](https://www.home-assistant.io/blog/2023/11/01/release-202311/#restarting-into-safe-mode)以排除自定义卡片和其他自定义资源的影响。
+- 您期望发生什么，以及实际发生了什么。
+- Home Assistant Core 版本、您的浏览器及其版本，以及它运行的操作系统。
+- 对于实体（entity）显示方式的问题：其状态（state）和属性（attribute），可从更多信息对话框的 **Details** 视图中获取。
+- 相关卡片的 YAML，以及浏览器控制台中的任何错误。
 
 ### Supervisor
 
-- The form is for supported setups only. It still offers Home Assistant OS and Home Assistant Supervised as installation types, but Supervised is no longer a supported installation type. See [installation types](/os/installation-types/).
-- The Supervisor logs, the system information, and, if you can, the Supervisor diagnostics.
+- 该表单仅适用于受支持的安装方式。它仍然提供 Home Assistant OS 和 Home Assistant Supervised 作为安装类型，但 Supervised 已不再是受支持的安装类型。请参阅[安装类型](/os/installation-types/)。
+- Supervisor 日志、系统信息，以及（如果可以的话）Supervisor 诊断信息。
 
 ### Home Assistant OS
 
-- The image you use, like `generic-x86-64` or `rpi5-64`, and the version of Home Assistant OS.
-- Whether the problem started after an update of the operating system.
-- Hardware details, especially for bare-metal x86 installations, and any USB devices you have attached. In a virtual machine, the hypervisor and its version.
-- The Supervisor logs and the host logs.
+- 您使用的镜像，例如 `generic-x86-64` 或 `rpi5-64`，以及 Home Assistant OS 的版本。
+- 问题是否在操作系统更新之后才出现。
+- 硬件细节，尤其是裸机 x86 安装，以及您连接的任何 USB 设备。在虚拟机中，则是虚拟机管理程序（hypervisor）及其版本。
+- Supervisor 日志和主机（host）日志。
 
-The form asks you to test with the latest version first. If it looks like a regression, check that the problem goes away on the previous version. You can go back with `ha os update --version x.y`, where `x.y` is the version you want.
+表单会要求您先在最新版本上测试。如果看起来像是回归问题（regression），请确认问题在之前的版本上是否消失。您可以使用 `ha os update --version x.y` 回退，其中 `x.y` 是您想要的版本。
 
 ### Android
 
-- The version of the app, the Android version, and the device model. For Wear OS, list both the phone and the watch.
-- The Home Assistant version, and the last version that worked.
-- The logs of the app, and a screenshot or video of the problem. For a notification problem, the YAML you used.
+- 应用版本、Android 版本和设备型号。对于 Wear OS，请同时列出手机和手表。
+- Home Assistant 版本，以及最后一个正常的版本。
+- 应用的日志，以及问题的截图或视频。对于通知问题，请附上您使用的 YAML。
 
-### iOS and macOS
+### iOS 和 macOS
 
-- The device model and software version, from **Settings** > **General** > **About** on your device.
-- The app version, from **App Configuration** > **About** in the app. Include the number in brackets.
-- The Home Assistant Core version, what you expected to happen, and screenshots.
+- 设备型号和软件版本，可在设备的 **Settings** > **General** > **About** 中找到。
+- 应用版本，可在应用中的 **App Configuration** > **About** 中找到。请包含括号中的数字。
+- Home Assistant Core 版本、您期望发生什么，以及截图。
 
-## Where to find it
+## 在哪里找到这些信息
 
-Home Assistant shows most of what the forms ask for, if you know where to look.
+只要您知道去哪里找，Home Assistant 会显示表单所需的大部分信息。
 
-- **Versions and installation type:** go to **Settings** > **System** > **Repairs**, open the three dots menu in the top right, and select **System information**. The copy button at the bottom copies all of it, for forms that ask for the full system information.
-- **Diagnostics:** go to **Settings** > **Devices & services**, open the integration or the device, and select **Download diagnostics** in its three dots menu. Drag the downloaded file into the form. Don't paste its contents. [Debug logs and diagnostics](https://www.home-assistant.io/docs/configuration/troubleshooting/#debug-logs-and-diagnostics) on home-assistant.io explains more.
-- **Logs:** go to **Settings** > **System** > **Logs**. Choose **Supervisor** or **Host** in the top right for those logs. In the Home Assistant CLI, `ha supervisor logs` and `ha host logs` show the same.
-- **Android app logs:** in the app, go to **Settings** > **Companion App Troubleshooting** > **Show and Share Logs**. For Wear OS, the form asks for the LogCat logs of the watch.
-- **Browser errors:** open the developer tools of your browser, and copy the errors from its console.
+- **版本和安装类型：** 前往 **Settings** > **System** > **Repairs**，打开右上角的三点菜单，选择 **System information**。底部的复制按钮可以复制全部内容，适用于要求提供完整系统信息的表单。
+- **诊断信息：** 前往 **Settings** > **Devices & services**，打开该集成或设备，在其三点菜单中选择 **Download diagnostics**。将下载的文件拖入表单。不要粘贴其内容。home-assistant.io 上的 [Debug logs and diagnostics](https://www.home-assistant.io/docs/configuration/troubleshooting/#debug-logs-and-diagnostics) 有更多说明。
+- **日志：** 前往 **Settings** > **System** > **Logs**。在右上角选择 **Supervisor** 或 **Host** 以查看相应日志。在 Home Assistant CLI 中，`ha supervisor logs` 和 `ha host logs` 显示相同内容。
+- **Android 应用日志：** 在应用中，前往 **Settings** > **Companion App Troubleshooting** > **Show and Share Logs**。对于 Wear OS，表单要求提供手表的 LogCat 日志。
+- **浏览器错误：** 打开浏览器的开发者工具，并从其控制台复制错误。
 
-Before you paste anything, remove passwords, private URLs, and other personal details.
+在粘贴任何内容之前，请删除密码、私有 URL 和其他个人隐私信息。
 
-## After you report
+## 报告之后
 
-The bug report forms of the frontend, Android, and iOS add the `bug` label by themselves. Home Assistant Core does more:
+frontend、Android 和 iOS 的缺陷报告表单会自动添加 `bug` 标签。Home Assistant Core 会做更多事情：
 
-- **A label for the integration.** A bot adds a [label](/glossary/label/) like `integration: hue`, using the documentation link from your report. It also mentions the [integration owners](/glossary/integration-owner/) of that integration, so they know about your issue.
-- **A duplicate check.** Once an integration label is added, a workflow compares your issue with other issues for the same integration from the last six months, using an AI model. If it finds likely duplicates, it lists them in a comment and adds the `potential-duplicate` label. Look at them: if one is the same problem, close yours and add your details there. If yours is different, say how.
-- **A language check.** An issue that isn't in English is closed with the `non-english` label, and a comment asks you to open it again in English.
-- **Questions.** An integration owner or maintainer may ask for more details, like logs or diagnostics, or add the `needs-more-information` label. Answer when you can. Without answers, an issue can't move forward.
+- **集成标签。** 一个机器人会根据您报告中的文档链接添加类似 `integration: hue` 的[标签](/glossary/label/)。它还会提及该集成的[集成负责人](/glossary/integration-owner/)，让他们知道您的 issue。
+- **重复检查。** 一旦添加了集成标签，一个工作流会使用 AI 模型将您的 issue 与同一集成在过去六个月内的其他 issue 进行比较。如果发现可能的重复项，它会在评论中列出它们，并添加 `potential-duplicate` 标签。请查看它们：如果其中一个是相同的问题，请关闭您的 issue 并在那里补充您的详细信息。如果您的不同，请说明不同之处。
+- **语言检查。** 非英文的 issue 会被关闭并添加 `non-english` 标签，同时会有评论要求您用英文重新提交。
+- **提问。** 集成负责人或维护者可能会要求更多详细信息，例如日志或诊断信息，或添加 `needs-more-information` 标签。请尽可能回复。没有回复，issue 就无法推进。
 
-### Keep it alive
+### 保持 issue 活跃
 
-An issue without activity for a while gets the `stale` label, and is closed if nothing happens after that. In Home Assistant Core, that's after 90 days, and the issue closes 7 days later. Still have the problem? Check that it happens on the latest version, and say so in a comment. That resets the clock. Once an issue is closed, a bot locks it after a while. [Stale and locked](/start/pull-requests/#stale-and-locked) has the timings of every repository.
+一段时间没有活动的 issue 会被添加 `stale` 标签，如果之后仍无动静则会被关闭。在 Home Assistant Core 中，这个期限是 90 天，之后 7 天 issue 会被关闭。问题仍然存在？请确认它在最新版本上仍然出现，并在评论中说明。这会重置计时。issue 关闭后，机器人会在一段时间后将其锁定。[Stale and locked](/start/pull-requests/#stale-and-locked) 列出了每个仓库的时限。
 
-### When it's fixed
+### 修复之后
 
-A fix comes in a pull request, from whoever picks it up. That can be you. Once it's merged, it reaches everyone in the next release. An urgent fix can go into a patch release sooner: the reviewer decides that, and adds the pull request to the milestone of the next patch release. Want to try the next release before everyone else? [Join the beta](/releases/first-contribution/).
+修复会以拉取请求（pull request）的形式提交，由接手的人完成。那个人可以是您。一旦合并，它会在下一个版本中到达所有用户。紧急修复可以更早进入补丁版本：由审查者决定，并将该拉取请求添加到下一个补丁版本的里程碑中。想比别人先体验下一个版本？[加入 beta 测试](/releases/first-contribution/)。
