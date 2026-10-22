@@ -33,7 +33,6 @@ const API_BASE = (process.env.LLM_API_URL || process.env.TRANSLATION_API_BASE ||
 const API_KEY = process.env.LLM_API_KEY || process.env.TRANSLATION_API_KEY || "";
 const MODEL = process.env.LLM_MODEL || process.env.TRANSLATION_MODEL || "gpt-4o-mini";
 const PROXY = process.env.TRANSLATION_PROXY || "";
-const REASONING_EFFORT = process.env.TRANSLATION_REASONING_EFFORT || "";
 const CONCURRENCY = Number(process.env.TRANSLATION_CONCURRENCY || 2);
 const REQUEST_TIMEOUT_MS = Number(process.env.TRANSLATION_TIMEOUT_MS || 900000);
 
@@ -183,9 +182,7 @@ async function translateOnce(path, userPrompt) {
     model: MODEL,
     temperature: 0,
     stream: true,
-    // Supported by NVIDIA's GLM/DeepSeek endpoints; without it, thinking
-    // models burn minutes of reasoning tokens per file.
-    ...(REASONING_EFFORT ? { reasoning_effort: REASONING_EFFORT } : {}),
+    reasoning_effort: "low",  // 关闭思考链
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userPrompt },
