@@ -7,6 +7,7 @@
 // The filters work on the posts of the year on the page. The timeline knows
 // every post, so it shows how many posts each year has that match the
 // filters, and keeps the filters when you go to another year.
+import { withBase } from "../lib/base";
 import AuthorFilter from "./AuthorFilter.astro";
 import Icon from "./Icon.astro";
 import PostCard from "./PostCard.astro";
@@ -32,7 +33,7 @@ const posts = allPosts.filter((post) => yearOf(post) === year && !onTop.includes
 
 const years = [...new Set(allPosts.map(yearOf))];
 const postsPerYear = (y: number) => allPosts.filter((post) => yearOf(post) === y).length;
-const yearHref = (y: number) => (y === years[0] ? "/blog/" : `/blog/${y}/`);
+const yearHref = (y: number) => (y === years[0] ? withBase("/blog/") : withBase(`/blog/${y}/`));
 
 // The filters only offer topics and authors that have posts: topics in the
 // order of the site, authors by name.
@@ -62,6 +63,7 @@ const timelineData = JSON.stringify(
 );
 
 const title = showLatest ? BLOG_TITLE : `Blog posts from ${year}`;
+const BASE = import.meta.env.BASE_URL;
 ---
 
 <Base title={title} description={BLOG_DESCRIPTION} image={ogImagePath("blog")}>
@@ -70,7 +72,7 @@ const title = showLatest ? BLOG_TITLE : `Blog posts from ${year}`;
       <h1>{showLatest ? "Contributors blog" : year}</h1>
       <p>
         News for contributors. Every area has its own feed, or follow
-        <a href="/blog/rss.xml"><Icon name="rss" size={16} /> all posts</a>.
+        <a href={`${BASE}blog/rss.xml`}><Icon name="rss" size={16} /> all posts</a>.
       </p>
     </header>
 

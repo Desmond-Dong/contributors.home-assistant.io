@@ -2,9 +2,9 @@
 title: 物联网与现代 Web
 description: "Home Assistant 是世界上最大的开源家庭自动化平台。它支持超过 1000 种设备和服务，并且被广泛应用于各种场景：家庭、船只和博物馆。"
 date: 2019-05-22
-author:
+authors:
   - Paulus Schoutsen
-taxonomy:
+areas:
   - core
 ---
 

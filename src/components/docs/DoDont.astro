@@ -23,6 +23,7 @@ interface Props {
 }
 
 const { doText, dontText, hass = false } = Astro.props;
+const BASE = import.meta.env.BASE_URL;
 ---
 
 <div class="dodont" data-pagefind-ignore>
@@ -36,7 +37,7 @@ const { doText, dontText, hass = false } = Astro.props;
   </figure>
 </div>
 
-<script is:inline type="module" src="/components/loader.js"></script>
+<script is:inline type="module" src={`${BASE}components/loader.js`}></script>
 
 <style>
   .dodont {

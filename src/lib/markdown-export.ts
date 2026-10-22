@@ -26,7 +26,12 @@ import { createResolver, sourcePathUrl } from "./source-paths.mjs";
 export const SITE_URL = import.meta.env.SITE.replace(/\/$/, "");
 
 export function absoluteUrl(href: string): string {
-  return `${SITE_URL}${href}`;
+  // Hrefs may arrive with the deployment base ("/contributors/...") or
+  // without it ("/..."), from hrefOf or from literals. Normalize both to a
+  // plain path, then prefix everything with base and site.
+  const base = (import.meta.env.BASE_URL as string).replace(/\/$/, "");
+  const path = base && href.startsWith(`${base}/`) ? href.slice(base.length) : href;
+  return `${SITE_URL}${base}${path}`;
 }
 
 export async function pageMarkdown(entry: DocsEntry): Promise<string> {

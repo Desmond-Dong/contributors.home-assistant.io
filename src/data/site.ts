@@ -1,7 +1,7 @@
 export const SITE = {
-  title: "Home Assistant Contributors",
+  title: "Home Assistant 贡献者",
   description:
-    "Everything you need to contribute to Home Assistant: code, design, documentation, translations, and community.",
+    "为 Home Assistant 做贡献所需的一切：代码、设计、文档、翻译与社区。",
   repository: "https://github.com/home-assistant/contributors.home-assistant.io",
   branch: "main",
 };

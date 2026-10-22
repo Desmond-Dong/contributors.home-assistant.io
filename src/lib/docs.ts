@@ -1,4 +1,5 @@
 import { type CollectionEntry, getCollection, render } from "astro:content";
+import { withBase } from "./base";
 import { slug } from "github-slugger";
 
 export type DocsEntry = CollectionEntry<"docs">;
@@ -36,7 +37,7 @@ export function isIndex(entry: DocsEntry): boolean {
 }
 
 export function hrefOf(entry: DocsEntry): string {
-  return `/${pathOf(entry)}/`;
+  return withBase(`/${pathOf(entry)}/`);
 }
 
 // The Markdown version of a page, for agents: next to its index.html. See
@@ -291,8 +292,8 @@ export async function buildBreadcrumbs(entry: DocsEntry, areaTitle: string): Pro
   const byPath = await entriesByPath();
 
   const crumbs: Crumb[] = [
-    { label: "Contributors", href: "/" },
-    { label: areaTitle, href: `/${segments[0]}/` },
+    { label: "贡献者", href: withBase("/") },
+    { label: areaTitle, href: withBase(`/${segments[0]}/`) },
   ];
 
   for (let depth = 2; depth < segments.length; depth++) {
@@ -300,7 +301,7 @@ export async function buildBreadcrumbs(entry: DocsEntry, areaTitle: string): Pro
     const index = byPath.get(folderPath);
     crumbs.push({
       label: index?.data.sidebarLabel ?? index?.data.title ?? titleFromName(segments[depth - 1]),
-      href: index ? `/${folderPath}/` : undefined,
+      href: index ? withBase(`/${folderPath}/`) : undefined,
     });
   }
 
@@ -312,7 +313,7 @@ export async function buildBreadcrumbs(entry: DocsEntry, areaTitle: string): Pro
     const anchor = overview?.anchors.get(group);
     crumbs.push({
       label: group,
-      href: overview ? `/${folderPath}/${anchor ? `#${anchor}` : ""}` : undefined,
+      href: overview ? withBase(`/${folderPath}/${anchor ? `#${anchor}` : ""}`) : undefined,
     });
   }
 

@@ -3,6 +3,7 @@
 // page in the middle, and "On this page" on the right. Built for long
 // reference pages, so it uses the full width of the window.
 import type { MarkdownHeading } from "astro";
+import { withBase } from "../lib/base";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
 import GroupSections from "../components/GroupSections.astro";
 import Icon from "../components/Icon.astro";
@@ -120,7 +121,7 @@ const searchAliases = term
 
   <div class:list={["layout", { "has-toc": hasToc }]}>
     <aside class="sidebar-wide" id="sidebar">
-      <a class:list={["area", `area--${area.group}`]} href={`/${area.id}/`}>
+      <a class:list={["area", `area--${area.group}`]} href={withBase(`/${area.id}/`)}>
         <span class="badge"><Icon name={area.icon} size={18} /></span>
         {area.title}
       </a>

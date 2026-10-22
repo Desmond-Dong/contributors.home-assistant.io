@@ -59,6 +59,7 @@ const latestPosts = (await getPosts()).slice(0, 3);
 // block stays, with the links to subscribe to it.
 const calendar = await getUpcomingEvents();
 const showEvents = !calendar.loaded || calendar.events.length > 0;
+const BASE = import.meta.env.BASE_URL;
 ---
 
 <Base title={SITE.title} description={SITE.description} image={ogImagePath("index")}>
@@ -67,21 +68,20 @@ const showEvents = !calendar.loaded || calendar.events.length > 0;
       <div class="container hero-inner">
         <div class="hero-text">
           <h1>
-            <span class="line">Help build</span>
-            <span class="line">the open home</span>
+            <span class="line">帮助构建</span>
+            <span class="line">开放之家</span>
           </h1>
 
           <p class="intro">
-            Code, design, documentation, translations, or community.
-            Whatever you bring, this is where you start.
+            代码、设计、文档、翻译，或者社区。无论你贡献什么，都从这里开始。
           </p>
 
           <div class="actions">
-            <a class="button button-mint" href="/start/first-contribution/">
+            <a class="button button-mint" href={`${BASE}start/first-contribution/`}>
               <span class="button-icon"><Icon name="chevron-right" size={18} /></span>
-              Make your first contribution
+              开始你的第一次贡献
             </a>
-            <a class="button button-quiet" href="#areas">Browse all areas</a>
+            <a class="button button-quiet" href="#areas">浏览全部领域</a>
           </div>
         </div>
         <span class="tree" aria-hidden="true" set:html={tree} />
@@ -89,7 +89,7 @@ const showEvents = !calendar.loaded || calendar.events.length > 0;
     </section>
 
     <section id="areas" class="container index">
-      <h2>What do you want to do?</h2>
+      <h2>你想做什么？</h2>
       <div class="groups">
         {
           sections.map((section) => (
@@ -122,30 +122,30 @@ const showEvents = !calendar.loaded || calendar.events.length > 0;
 
     <section class="container steps-section">
       <div class="steps-panel">
-        <h2>New here? Four steps.</h2>
+        <h2>初次来访？四步上手。</h2>
         <ol class="steps">
           <li>
             <a class="step-link" href="#areas">
-              <span class="step-title">Pick an area</span>
-              <span class="step-text">Most areas have a first contribution guide of their own.</span>
+              <span class="step-title">选择一个领域</span>
+              <span class="step-text">大多数领域都有各自的“首次贡献”指南。</span>
             </a>
           </li>
           <li>
-            <a class="step-link" href="/start/where-we-talk/">
-              <span class="step-title">Join the conversation</span>
-              <span class="step-text">Find the people working on it, and say hi.</span>
+            <a class="step-link" href={`${BASE}start/where-we-talk/`}>
+              <span class="step-title">加入讨论</span>
+              <span class="step-text">找到正在做这件事的人，打个招呼。</span>
             </a>
           </li>
           <li>
-            <a class="step-link" href="/start/first-contribution/">
-              <span class="step-title">Find something small</span>
-              <span class="step-text">A good first issue, a typo, a missing translation.</span>
+            <a class="step-link" href={`${BASE}start/first-contribution/`}>
+              <span class="step-title">找点小事做</span>
+              <span class="step-text">一个适合新手的 issue、一个错别字、一处缺失的翻译。</span>
             </a>
           </li>
           <li>
-            <a class="step-link" href="/start/pull-requests/">
-              <span class="step-title">Ship it</span>
-              <span class="step-text">Get feedback, iterate, and see it land in a release.</span>
+            <a class="step-link" href={`${BASE}start/pull-requests/`}>
+              <span class="step-title">提交成果</span>
+              <span class="step-text">获得反馈、迭代改进，看着它随版本发布。</span>
             </a>
           </li>
         </ol>
@@ -156,8 +156,8 @@ const showEvents = !calendar.loaded || calendar.events.length > 0;
       latestPosts.length > 0 && (
         <section class="container blog">
           <div class="blog-header">
-            <h2>From the blog</h2>
-            <a href="/blog/">All posts</a>
+            <h2>来自博客</h2>
+            <a href={`${BASE}blog/`}>全部文章</a>
           </div>
           <ul class="posts">
             {latestPosts.map((post) => (
@@ -174,19 +174,18 @@ const showEvents = !calendar.loaded || calendar.events.length > 0;
       showEvents && (
         <section class="container coming-up">
           <div class="blog-header">
-            <h2>Coming up</h2>
-            <a href="/community/reference/events/">All events and how to join</a>
+            <h2>近期活动</h2>
+            <a href={`${BASE}community/reference/events/`}>全部活动及参与方式</a>
           </div>
           <p class="events-intro">
-            Release days, meetups, and community syncs: video calls about one project, open to everyone who is
-            interested. Select an event to see what it is about and how to join.
+            发布日、见面会和社区同步会：围绕单个项目的视频会议，向所有感兴趣的人开放。选择一个活动，了解它的内容和参与方式。
           </p>
           <div class="events-card">
             <EventList limit={3} />
             {!calendar.loaded && (
               <p class="subscribe">
-                <a href={CALENDAR.google}>Add to Google Calendar</a>
-                <a href={CALENDAR.ics}>Calendar feed for other apps</a>
+                <a href={CALENDAR.google}>添加到 Google 日历</a>
+                <a href={CALENDAR.ics}>其他应用的日历订阅源</a>
               </p>
             )}
           </div>

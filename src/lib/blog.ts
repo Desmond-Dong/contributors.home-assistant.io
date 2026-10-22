@@ -1,4 +1,5 @@
 import { type CollectionEntry, getCollection } from "astro:content";
+import { withBase } from "./base";
 
 export type BlogPost = CollectionEntry<"blog">;
 
@@ -32,7 +33,7 @@ export function postPath(post: BlogPost): string {
 }
 
 export function postHref(post: BlogPost): string {
-  return `/blog/${postPath(post)}/`;
+  return withBase(`/blog/${postPath(post)}/`);
 }
 
 export function formatDate(date: Date): string {

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "pnpm redirects && astro dev",
-    "build": "pnpm redirects && astro build && pagefind --site dist",
+    "build": "pnpm redirects && astro build && pagefind --site dist && node scripts/collect-subpath.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "check:demos": "node scripts/check-demos.mjs",

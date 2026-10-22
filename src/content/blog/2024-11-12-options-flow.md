@@ -1,6 +1,6 @@
 ---
 title: 新的选项流程（options flow）属性
-description: "新代码：`python @staticmethod @callback def async_get_options_flow( config_entry:`
+description: "新代码：`python @staticmethod @callback def async_get_options_flow( config_entry:"
 date: 2024-11-12
 authors:
   - epenet

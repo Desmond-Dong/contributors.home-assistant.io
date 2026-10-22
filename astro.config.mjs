@@ -4,6 +4,8 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
 import satteriCallouts from "satteri-callouts";
+import { basePath } from "./src/lib/base-path.mjs";
+import { BASE_PATH, SITE_URL } from "./src/config-base.mjs";
 import { codeBlocks, codeBlockTitle } from "./src/lib/code-blocks.mjs";
 import { codeSymbols, codeSymbolsWatch } from "./src/lib/code-symbols.mjs";
 import { discordLinks, discordLinksWatch } from "./src/lib/discord-links.mjs";
@@ -13,7 +15,8 @@ import { redirectFragments } from "./src/lib/redirect-fragments.mjs";
 import { sourcePaths, sourcePathsWatch } from "./src/lib/source-paths.mjs";
 
 export default defineConfig({
-  site: "https://contributors.home-assistant.io",
+  site: SITE_URL,
+  base: BASE_PATH,
   trailingSlash: "always",
   // Old anchors of redirected pages find their new heading, and changes to
   // the autolink words of the glossary, the code symbols, the source paths,
@@ -47,6 +50,7 @@ export default defineConfig({
         discordLinks(),
         codeBlocks(),
         headingAnchors(),
+        basePath(),
       ],
       // Smart punctuation turns `--` into an em dash, which mangles CLI
       // flags written in running text.

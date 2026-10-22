@@ -3,6 +3,7 @@
 // post lists them under `areas`.
 
 import { AREAS } from "./areas";
+import { withBase } from "../lib/base";
 
 export interface BlogTopic {
   id: string;
@@ -15,8 +16,8 @@ const BLOG_ONLY_TOPICS = [{ id: "announcements", title: "Announcements" }];
 
 // In the order the blog filters show them: the topics of the blog first.
 export const BLOG_TOPICS: BlogTopic[] = [
-  ...BLOG_ONLY_TOPICS.map((topic) => ({ ...topic, href: `/blog/?area=${topic.id}` })),
-  ...AREAS.map((area) => ({ id: area.id, title: area.title, href: `/${area.id}/` })),
+  ...BLOG_ONLY_TOPICS.map((topic) => ({ ...topic, href: withBase(`/blog/?area=${topic.id}`) })),
+  ...AREAS.map((area) => ({ id: area.id, title: area.title, href: withBase(`/${area.id}/`) })),
 ];
 
 export const BLOG_TOPIC_IDS = BLOG_TOPICS.map((topic) => topic.id) as [string, ...string[]];

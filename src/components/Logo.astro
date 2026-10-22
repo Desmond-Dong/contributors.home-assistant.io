@@ -1,4 +1,6 @@
 ---
+import { withBase } from "../lib/base";
+
 // The Home Assistant Contributors logo. It comes in two layouts, each as one
 // SVG for light and one for dark backgrounds, in public/images/:
 //
@@ -26,7 +28,7 @@ const SIZES = {
 const NARROW = "(max-width: 440px)";
 
 const tones = variant === "white" ? ["dark"] : ["light", "dark"];
-const src = (shape: "inline" | "stacked", tone: string) => `/images/contributors-logo-${shape}-on-${tone}.svg`;
+const src = (shape: "inline" | "stacked", tone: string) => withBase(`/images/contributors-logo-${shape}-on-${tone}.svg`);
 const alt = "Home Assistant Contributors";
 ---
 

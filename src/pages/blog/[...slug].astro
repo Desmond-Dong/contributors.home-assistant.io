@@ -38,6 +38,7 @@ interface Props {
 
 const { post, newer, older, related } = Astro.props;
 const { Content } = await render(post);
+const BASE = import.meta.env.BASE_URL;
 ---
 
 <Base
@@ -51,7 +52,7 @@ const { Content } = await render(post);
       <meta data-pagefind-filter="area[content]" content="blog" />
       <meta data-pagefind-meta="trail[content]" content="Blog" />
       <header>
-        <p class="back"><a href="/blog/">Blog</a></p>
+        <p class="back"><a href={`${BASE}blog/`}>Blog</a></p>
         <h1 data-pagefind-meta="title">
           {titleParts(post.data.title).map((part) => (part.code ? <code>{part.text}</code> : part.text))}
         </h1>

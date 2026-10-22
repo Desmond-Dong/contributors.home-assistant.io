@@ -8,6 +8,7 @@ import { authorAvatar } from "../data/authors";
 import { SITE } from "../data/site";
 import { BLOG_DESCRIPTION, BLOG_TITLE, type BlogPost, formatDate, postHref, postPath } from "./blog";
 import { areaOf, type DocsEntry, hrefOf, pathOf } from "./docs";
+import { withBase } from "./base";
 
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
@@ -15,7 +16,7 @@ export const OG_HEIGHT = 630;
 // The image of a page, by the path of the card: "design/foundations/color"
 // is /og/design/foundations/color.png.
 export function ogImagePath(slug: string): string {
-  return `/og/${slug}.png`;
+  return withBase(`/og/${slug}.png`);
 }
 
 export interface CardLabel {

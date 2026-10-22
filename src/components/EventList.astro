@@ -5,6 +5,7 @@
 // The build writes every time in UTC. The script below rewrites them in the
 // time zone of the visitor, so the page is right wherever it is read, no
 // matter where it was built. All-day events are dates, and stay as they are.
+import { withBase } from "../lib/base";
 import { type CalendarEvent, getUpcomingEvents } from "../lib/events";
 
 interface Props {
@@ -20,7 +21,7 @@ const full = !limit;
 
 // In the short list, an event links to itself on the events page, where its
 // details are.
-const EVENTS_PAGE = "/community/reference/events/";
+const EVENTS_PAGE = withBase("/community/reference/events/");
 const { loaded, events: allEvents } = await getUpcomingEvents();
 const events = limit ? allEvents.slice(0, limit) : allEvents;
 

@@ -1,6 +1,7 @@
 ---
 import { PLAUSIBLE, SITE } from "../data/site";
 import { SOCIAL_LINKS } from "../data/social";
+import { withBase } from "../lib/base";
 import Logo from "./Logo.astro";
 
 interface Props {
@@ -12,42 +13,43 @@ const { flush = false } = Astro.props;
 
 const COLUMNS = [
   {
-    title: "Contribute",
+    title: "参与贡献",
     links: [
-      { label: "Get started", href: "/start/" },
-      { label: "All areas", href: "/#areas" },
-      { label: "Glossary", href: "/glossary/" },
-      { label: "Data and analytics", href: "/data/" },
-      { label: "Code of conduct", href: "/start/code-of-conduct/" },
-      { label: "Contributor License Agreement", href: "/start/licensing/" },
+      { label: "快速上手", href: withBase("/start/") },
+      { label: "全部领域", href: withBase("/#areas") },
+      { label: "术语表", href: withBase("/glossary/") },
+      { label: "数据与分析", href: withBase("/data/") },
+      { label: "行为准则", href: withBase("/start/code-of-conduct/") },
+      { label: "贡献者许可协议", href: withBase("/start/licensing/") },
     ],
   },
   {
-    title: "Stay up to date",
+    title: "保持关注",
     links: [
-      { label: "Blog", href: "/blog/" },
-      { label: "Blog RSS feed", href: "/blog/rss.xml" },
-      { label: "Newsletter", href: "https://newsletter.openhomefoundation.org/" },
-      { label: "Integration alerts", href: "https://alerts.home-assistant.io/" },
-      { label: "System status", href: "https://status.home-assistant.io/" },
+      { label: "博客", href: withBase("/blog/") },
+      { label: "博客 RSS 订阅", href: withBase("/blog/rss.xml") },
+      { label: "通讯邮件", href: "https://newsletter.openhomefoundation.org/" },
+      { label: "集成状态提醒", href: "https://alerts.home-assistant.io/" },
+      { label: "系统状态", href: "https://status.home-assistant.io/" },
     ],
   },
   {
-    title: "More Home Assistant",
+    title: "更多 Home Assistant",
     links: [
       { label: "Home Assistant", href: "https://www.home-assistant.io/" },
-      { label: "Community forum", href: "https://community.home-assistant.io/" },
-      { label: "Creator Network", href: "https://creators.home-assistant.io/" },
-      { label: "Works With Home Assistant", href: "https://works-with.home-assistant.io/" },
+      { label: "社区论坛", href: "https://community.home-assistant.io/" },
+      { label: "创作者网络", href: "https://creators.home-assistant.io/" },
+      { label: "支持 Home Assistant 的产品", href: "https://works-with.home-assistant.io/" },
     ],
   },
 ];
+const BASE = import.meta.env.BASE_URL;
 ---
 
 <footer data-pagefind-ignore class:list={{ flush }}>
   <div class="inner">
     <div class="brand">
-      <a class="home" href="/" aria-label="Home Assistant Contributors, homepage">
+      <a class="home" href={BASE} aria-label="Home Assistant Contributors, homepage">
         <Logo variant="white" layout="responsive" />
       </a>
       <p>
@@ -99,7 +101,7 @@ const COLUMNS = [
         <li><a href={SITE.repository}>Source on GitHub</a></li>
       </ul>
       <a class="netlify" href="https://www.netlify.com">
-        <img src="/images/netlify-badge.svg" alt="Deploys by Netlify" width="114" height="51" />
+        <img src={`${BASE}images/netlify-badge.svg`} alt="Deploys by Netlify" width="114" height="51" />
       </a>
     </div>
   </div>

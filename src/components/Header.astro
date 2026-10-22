@@ -11,11 +11,12 @@ interface Props {
 }
 
 const { area, wide = false } = Astro.props;
+const BASE = import.meta.env.BASE_URL;
 ---
 
 <header data-pagefind-ignore data-site-header class:list={{ wide }}>
   <div class="inner">
-    <a href="/" class="home" aria-label="Home Assistant Contributors, homepage">
+    <a href={BASE} class="home" aria-label="Home Assistant 贡献者，首页">
       <Logo layout="responsive" />
     </a>
 
@@ -25,16 +26,16 @@ const { area, wide = false } = Astro.props;
           <AreaSwitcher current={area} />
           {/* The blog is not an area, so it gets its own link next to the
               switcher. On a phone it lives in the switcher instead. */}
-          <nav aria-label="Main" class="nav--area">
-            <a href="/blog/">Blog</a>
+          <nav aria-label="主导航" class="nav--area">
+            <a href={`${BASE}blog/`}>博客</a>
           </nav>
         </>
       ) : (
-        <nav aria-label="Main">
-          <a href="/start/">Get started</a>
-          <a href="/#areas">Areas</a>
-          <a href="/glossary/">Glossary</a>
-          <a href="/blog/">Blog</a>
+        <nav aria-label="主导航">
+          <a href={`${BASE}start/`}>快速上手</a>
+          <a href={`${BASE}#areas`}>领域</a>
+          <a href={`${BASE}glossary/`}>术语表</a>
+          <a href={`${BASE}blog/`}>博客</a>
         </nav>
       )
     }

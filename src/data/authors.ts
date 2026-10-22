@@ -6,6 +6,8 @@
 // your name and GitHub username here, then run `pnpm avatars`. An author
 // without a username gets their initial instead.
 
+import { withBase } from "../lib/base";
+
 export const AUTHORS: Record<string, string> = {
   "Abílio Costa": "abmantis",
   "Aidan Timson": "timmo001",
@@ -54,5 +56,5 @@ export const AUTHORS: Record<string, string> = {
 /** The path of an author's avatar in public/, like /images/authors/frenck.png. */
 export function authorAvatar(name: string): string | undefined {
   const username = AUTHORS[name];
-  return username ? `/images/authors/${username.toLowerCase()}.png` : undefined;
+  return username ? withBase(`/images/authors/${username.toLowerCase()}.png`) : undefined;
 }

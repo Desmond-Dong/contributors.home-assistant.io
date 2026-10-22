@@ -1,6 +1,6 @@
 ---
 title: REST API
-description: `/api/` 下的 HTTP 端点，用于读取状态、调用动作、触发事件和渲染模板，并列出每个端点所需的权限。
+description: "`/api/` 下的 HTTP 端点，用于读取状态、调用动作、触发事件和渲染模板，并列出每个端点所需的权限。"
 sidebarGroup: APIs
 order: 30
 ---
