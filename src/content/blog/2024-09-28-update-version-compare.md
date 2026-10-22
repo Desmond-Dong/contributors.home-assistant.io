@@ -1,6 +1,6 @@
 ---
-title: Version compare for Update platform can now be overwritten
-description: "With the merge of core PR #124797, which will land in Home Assistant Core 2024.10, there is a new method in the update platform: version_is_newer()."
+title: Update 平台的版本比较现在可以被覆盖
+description: "随着 core PR #124797 的合并，该更改将随 Home Assistant Core 2024.10 一同发布，更新平台（update platform）中新增了一个方法：version_is_newer()。"
 date: 2024-09-28
 authors:
   - Simone Chemelli
@@ -8,9 +8,9 @@ areas:
   - core
 ---
 
-With the merge of [core PR #124797](https://github.com/home-assistant/core/pull/124797), which will land in Home Assistant Core 2024.10, there is a new method in the update platform: `version_is_newer()`.
+随着 [core PR #124797](https://github.com/home-assistant/core/pull/124797) 的合并（它将包含在 Home Assistant Core 2024.10 中），更新平台（update platform）中新增了一个方法：`version_is_newer()`。
 
-Before this change, the compare logic between firmware installed version, new available version and beta version was hardcoded:
+在此更改之前，固件已安装版本、新的可用版本与 beta 版本之间的比较逻辑是硬编码的：
 
 ```python
 def version_is_newer(self, latest_version: str, installed_version: str) -> bool:
@@ -18,8 +18,8 @@ def version_is_newer(self, latest_version: str, installed_version: str) -> bool:
     return AwesomeVersion(latest_version) > installed_version
 ```
 
-Now the new method allows developers to customize this comparison, writing their own method.
-Here's an example (implemented for Shelly gen1 devices):
+现在，这个新方法允许开发者通过编写自己的方法来自定义此比较。
+以下是一个示例（为 Shelly gen1 设备实现）：
 
 ```python
 def version_is_newer(self, latest_version: str, installed_version: str) -> bool:

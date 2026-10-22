@@ -1,6 +1,6 @@
 ---
-title: New options flow properties
-description: "New code: `python @staticmethod @callback def async_get_options_flow( config_entry:"
+title: 新的选项流程（options flow）属性
+description: "新代码：`python @staticmethod @callback def async_get_options_flow( config_entry:`
 date: 2024-11-12
 authors:
   - epenet
@@ -8,15 +8,15 @@ areas:
   - core
 ---
 
-### Summary of changes
-New helper properties have been added to the `OptionsFlow`:
-- `self._config_entry_id` provides the config entry ID
-- `self.config_entry` returns the config entry
+### 变更摘要
+已为 `OptionsFlow` 添加了新的辅助属性：
+- `self._config_entry_id` 提供配置条目（config entry）ID
+- `self.config_entry` 返回配置条目
 
-### Backwards compatibility
-Until Home Assistant Core 2025.12, it is possible to set `self.config_entry` manually, but doing so will log a warning asking users to open an issue on the custom integration's bug tracker.
+### 向后兼容性
+在 Home Assistant Core 2025.12 之前，仍然可以手动设置 `self.config_entry`，但这样做会记录一条警告，要求用户在该自定义集成（custom integration）的 bug 跟踪器中提交 issue。
 
-New code:
+新代码：
 ```python
 @staticmethod
 @callback
@@ -34,7 +34,7 @@ class OptionsFlowHandler(OptionsFlow):
         self._conf_app_id: str | None = None
 ```
 
-Old code with `OptionsFlow` properties:
+使用 `OptionsFlow` 属性的旧代码：
 ```python
 @staticmethod
 @callback
@@ -53,14 +53,14 @@ class OptionsFlowHandler(OptionsFlow):
         self._conf_app_id: str | None = None
 ```
 
-### Special handling of OptionsFlowWithConfigEntry
-The main purpose of the `OptionsFlowWithConfigEntry` class was to provide the `self.config_entry` property, which is now already provided by the parent class.
-There are currently no plans to remove the `OptionsFlowWithConfigEntry` class, but it is kept for backward compatibility only and it should be avoided in new code.
+### OptionsFlowWithConfigEntry 的特殊处理
+`OptionsFlowWithConfigEntry` 类的主要用途是提供 `self.config_entry` 属性，而该属性现在已由父类提供。
+目前尚无移除 `OptionsFlowWithConfigEntry` 类的计划，但它仅为向后兼容而保留，在新代码中应避免使用。
 
-Custom integrations that wish to drop references to `OptionsFlowWithConfigEntry` will need to consider how they are referencing `self.options`:
-- if `self.options` is not referenced, then the migration to `OptionsFlow` is straightforward (see [PR #129651](https://github.com/home-assistant/core/pull/129651))
-- if you are only reading the options values, then it is recommended that you adjust the reads to `self.config_entry.options` (see [PR #129895](https://github.com/home-assistant/core/pull/129895))
-- if you are updating/mutating the options values inside a single step, then it may be necessary to first copy the options (`options = deepcopy(dict(self.config_entry.options))` (see [PR #129928](https://github.com/home-assistant/core/pull/129928))
-- if you are updating/mutating the options values through multiple step, then it may be necessary to copy the options inside the class initialisation (`self.options = deepcopy(dict(config_entry.options))` (see [PR #129890]( https://github.com/home-assistant/core/pull/129890))
+希望移除 `OptionsFlowWithConfigEntry` 引用的自定义集成需要考虑它们引用 `self.options` 的方式：
+- 如果未引用 `self.options`，则迁移到 `OptionsFlow` 非常简单（参见 [PR #129651](https://github.com/home-assistant/core/pull/129651)）
+- 如果只是读取选项值，建议将读取部分调整为 `self.config_entry.options`（参见 [PR #129895](https://github.com/home-assistant/core/pull/129895)）
+- 如果在单个步骤中更新/修改选项值，则可能需要先复制选项（`options = deepcopy(dict(self.config_entry.options))`（参见 [PR #129928](https://github.com/home-assistant/core/pull/129928)）
+- 如果跨多个步骤更新/修改选项值，则可能需要在类初始化时复制选项（`self.options = deepcopy(dict(config_entry.options))`（参见 [PR #129890]( https://github.com/home-assistant/core/pull/129890)）
 
-More details can be found in the [options flow](/core/integrations/options-flow/) documentation.
+更多详细信息可在[选项流程](/core/integrations/options-flow/)文档中找到。

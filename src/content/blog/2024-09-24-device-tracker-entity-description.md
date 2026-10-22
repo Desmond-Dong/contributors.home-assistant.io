@@ -1,6 +1,6 @@
 ---
-title: Enforce SourceType and add shorthand attributes and EntityDescription to device_tracker
-description: The source_type property of device_tracker entities is now always expected to be a SourceType enum value.
+title: 在 device_tracker 中强制使用 SourceType 并添加简写属性和 EntityDescription
+description: device_tracker 实体（entity）的 source_type 属性现在始终应为 SourceType 枚举值。
 date: 2024-09-24
 authors:
   - epenet
@@ -8,22 +8,22 @@ areas:
   - core
 ---
 
-The `source_type` property of device_tracker entities is now always expected to be a `SourceType` enum value. Standard strings are no longer valid.
+device_tracker 实体（entity）的 `source_type` 属性现在始终应为 `SourceType` 枚举值。标准字符串不再有效。
 
-`TrackerEntity` and `ScannerEntity` now have a dedicated `ScannerEntityDescription` and `TrackerEntityDescription`, which need to be used as base class when associating an `EntityDescription` to the `Entity`.
+`TrackerEntity` 和 `ScannerEntity` 现在拥有专用的 `ScannerEntityDescription` 和 `TrackerEntityDescription`，在将 `EntityDescription` 关联到 `Entity` 时，需要将它们用作基类。
 
-The `source_type` for these entities now also defaults to `SourceType.GPS` and `SourceType.ROUTER`, and it may be possible to drop the overriding property.
+这些实体的 `source_type` 现在也默认为 `SourceType.GPS` 和 `SourceType.ROUTER`，因此有可能可以省略重写的属性。
 
-The following shorthand attributes have also been added:
+同时还添加了以下简写属性：
 - `BaseTrackerEntity._attr_source_type`
 - `TrackerEntity._attr_latitude`
 - `TrackerEntity._attr_location_accuracy`
 - `TrackerEntity._attr_location_name`
 - `TrackerEntity._attr_longitude`
-- `TrackerEntity._attr_source_type` (defaults to `SourceType.GPS`)
+- `TrackerEntity._attr_source_type`（默认为 `SourceType.GPS`）
 - `ScannerEntity._attr_hostname`
 - `ScannerEntity._attr_ip_address`
 - `ScannerEntity._attr_mac_address`
-- `ScannerEntity._attr_source_type` (defaults to `SourceType.ROUTER`)
+- `ScannerEntity._attr_source_type`（默认为 `SourceType.ROUTER`）
 
-More details can be found in the [device-tracker documentation](/core/entities/device-tracker/).
+更多详情请参阅 [device-tracker 文档](/core/entities/device-tracker/)。

@@ -1,6 +1,6 @@
 ---
-title: Changed config entry state transitions
-description: "Config entry state transitions when unloading and removing entries has been modified:"
+title: 配置项（config entry）状态转换的变更
+description: "卸载和移除配置项时的状态转换已被修改："
 date: 2025-02-19
 authors:
   - Erik Montnémery
@@ -8,16 +8,16 @@ areas:
   - core
 ---
 
-Config entry state transitions when unloading and removing entries has been modified:
+卸载和移除配置项（config entry）时的状态转换已被修改：
 
-- A new state `ConfigEntryState.UNLOAD_IN_PROGRESS` is added, which is set before calling the integration's `async_unload_entry`<br />
-  Rationale:
-    - Make it easier to write cleanup code which should run after the last config entry has been unloaded
-    - Improve debugging of issues related to reload and unload of config entries
+- 新增了状态 `ConfigEntryState.UNLOAD_IN_PROGRESS`，它会在调用集成的 `async_unload_entry` 之前被设置<br />
+  原因：
+    - 让编写需要在最后一个配置项卸载完成后运行的清理代码变得更加容易
+    - 改进与配置项重载和卸载相关问题的调试
 
-- The config entry state is set to `ConfigEntryState.FAILED_UNLOAD` when the integration's `async_unload_entry` returns False<br />
-  Rationale:
-    - If `async_unload_entry` returns `False`, we can't assume the integration is still loaded, most likely it has partially unloaded itself, especially considering this is the pattern we recommend:
+- 当集成的 `async_unload_entry` 返回 False 时，配置项状态会被设置为 `ConfigEntryState.FAILED_UNLOAD`<br />
+  原因：
+    - 如果 `async_unload_entry` 返回 `False`，我们不能假设集成仍处于已加载状态，它很可能已经部分卸载了自己，尤其是考虑到这是我们推荐的模式：
   ```py
   async def async_unload_entry(hass: HomeAssistant, entry: MyConfigEntry) -> bool:
     """Unload a config entry."""
@@ -28,12 +28,12 @@ Config entry state transitions when unloading and removing entries has been modi
     return unload_ok
     ```
 
-- The config entry is removed from `hass.config_entries` before calling the integration's `async_remove_entry` is called<br />
-  Rationale:
-    - Make it easier to write cleanup code which should run after the last config entry has been removed
+- 在调用集成的 `async_remove_entry` 之前，配置项会先被从 `hass.config_entries` 中移除<br />
+  原因：
+    - 让编写需要在最后一个配置项移除完成后运行的清理代码变得更加容易
 
-Custom integration authors need to review and update their integrations' `async_unload_entry` and `async_remove_entry` if needed.
-The most common pattern which requires an update is this:
+自定义集成的作者需要检查并在必要时更新其集成的 `async_unload_entry` 和 `async_remove_entry`。
+最常见的需要更新的模式是这样的：
 
 ```python
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -48,7 +48,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         ...
 ```
 
-This can now be simplified, if the custom integration's minimum Home Assistant version is set to 2025.3.0:
+如果自定义集成的最低 Home Assistant 版本设置为 2025.3.0，现在可以将其简化为：
 ```python
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
@@ -58,7 +58,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 ```
 
 
-If the custom integration needs to be backwards compatible with previous releases of Home Assistant Core:
+如果自定义集成需要向后兼容 Home Assistant Core 的早期版本：
 ```python
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
@@ -72,4 +72,4 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         ...
 ```
 
-Check the [config entry documentation](/core/integrations/config-entries/), and the [home assistant core PR #138522](https://github.com/home-assistant/core/pull/138522) for additional background.
+更多背景信息请查看[配置项文档](/core/integrations/config-entries/)，以及 [home assistant core PR #138522](https://github.com/home-assistant/core/pull/138522)。

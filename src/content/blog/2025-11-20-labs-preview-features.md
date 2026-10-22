@@ -1,6 +1,6 @@
 ---
-title: "Introducing Labs: Preview features before they become standard"
-description: "We're excited to announce a new system for shipping preview features in Home Assistant:"
+title: "隆重推出 Labs：在功能成为标准之前抢先体验预览功能"
+description: "我们很高兴地宣布，Home Assistant 中推出了一套用于发布预览功能的新系统："
 date: 2025-11-20
 authors:
   - Franck Nijhof
@@ -8,59 +8,59 @@ areas:
   - core
 ---
 
-We're excited to announce a new system for shipping preview features in Home Assistant: **Labs**. Labs provides a standardized way for integrations to offer fully tested features that users can opt into before they become standard, allowing us to gather feedback and refine the design based on real-world usage.
+我们很高兴地宣布，Home Assistant 推出了一项用于发布预览功能（preview features）的新系统：**Labs**。Labs 为集成（integration）提供了一种标准化方式，使其能够在功能成为标准功能之前，向用户提供可选择启用的、经过完整测试的功能，从而让我们能够收集反馈，并根据实际使用情况完善设计。
 
-## What are Labs preview features?
+## 什么是 Labs 预览功能？
 
-Labs preview features are different from beta testing. While beta testing evaluates the stability of upcoming Home Assistant releases, Labs is about refining user interfaces and design. Labs features are fully tested and functional, but their design and behavior may still change as we gather real-world usage and feedback. This means they might have breaking changes, be extended with new functionality, or even be removed if they don't work out.
+Labs 预览功能与 beta 测试不同。beta 测试评估的是即将发布的 Home Assistant 版本的稳定性，而 Labs 关注的是完善用户界面和设计。Labs 功能经过了完整的测试且功能完备，但随着我们收集实际使用情况和反馈，其设计和行为仍可能发生变化。这意味着它们可能会包含破坏性变更（breaking changes）、增加新功能，甚至在效果不佳时被移除。
 
-Think of it this way:
+可以这样理解：
 
-- **Beta**: Evaluates the stability of upcoming Home Assistant releases
-- **Labs**: Fully tested features with evolving design and user interface, refined through real-world usage and feedback
+- **Beta（测试版）**：评估即将发布的 Home Assistant 版本的稳定性
+- **Labs**：经过完整测试的功能，其设计和用户界面会不断演进，并通过实际使用和反馈加以完善
 
-## How it works
+## 工作原理
 
-Integrations declare preview features in their `manifest.json` with links for feedback, documentation, and issue reporting. Users can then enable these features in **Settings** → **System** → **Labs**, and they activate immediately without requiring a restart. The integration code checks whether a feature is enabled and responds accordingly.
+集成在其 `manifest.json` 中声明预览功能，并提供用于反馈、文档和问题报告的链接。用户随后可以在**设置**（Settings） → **系统**（System） → **Labs** 中启用这些功能，功能会立即激活，无需重启。集成代码会检查某项功能是否已启用，并据此做出相应处理。
 
-## Why Labs?
+## 为什么选择 Labs？
 
-Many of our most significant improvements benefit from real-world testing before becoming standard. Labs provides:
+我们的许多重大改进在成为标准功能之前，都受益于实际环境中的测试。Labs 提供了：
 
-1. **Structured feedback channels**: Each feature has dedicated URLs for feedback, documentation, and issue reporting
-2. **Runtime activation**: Features enable and disable instantly, no configuration updates or restart required
-3. **Clear expectations**: Users know they're trying fully tested features whose design may change based on feedback
-4. **Iterative development**: Integrate user feedback directly into the development process
+1. **结构化的反馈渠道**：每项功能都有专用于反馈、文档和问题报告的 URL
+2. **运行时激活**：功能可即时启用和禁用，无需更新配置或重启
+3. **明确的预期**：用户知道自己正在试用经过完整测试的功能，其设计可能会根据反馈而变化
+4. **迭代式开发**：将用户反馈直接融入开发过程
 
-## Example: Kitchen Sink special repair
+## 示例：Kitchen Sink 特殊维修
 
-The [Kitchen Sink](https://www.home-assistant.io/integrations/kitchen_sink/) demo integration includes a working example. When enabled, the "special repair" feature creates a repair issue to demonstrate how Labs features can interact with other Home Assistant integrations. See the [developer documentation](/core/development/labs/) for the complete implementation.
+[Kitchen Sink](https://www.home-assistant.io/integrations/kitchen_sink/) 演示集成中包含一个可运行的示例。启用后，“special repair”（特殊维修）功能会创建一个修复（repair）事项，以展示 Labs 功能如何与其他 Home Assistant 集成进行交互。完整实现请参阅[开发者文档](/core/development/labs/)。
 
-## Getting started
+## 快速开始
 
-Ready to add a Labs preview feature to your integration? Check out our [comprehensive guide](/core/development/labs/) which covers:
+准备好为你的集成添加 Labs 预览功能了吗？请查看我们的[详尽指南](/core/development/labs/)，其中涵盖：
 
-- When to use Labs (and when not to)
-- How to define features in your manifest
-- Implementation patterns for backend and frontend features
-- Runtime activation requirements
-- Testing approaches
-- Feature lifecycle (preview → standard or removal)
+- 何时使用 Labs（以及何时不使用）
+- 如何在 manifest 中定义功能
+- 后端和前端功能的实现模式
+- 运行时激活的要求
+- 测试方法
+- 功能生命周期（预览 → 标准或移除）
 
-## What's next?
+## 下一步计划？
 
-We encourage integration developers to consider Labs for:
+我们鼓励集成开发者考虑将 Labs 用于以下场景：
 
-- Major UI changes or redesigns
-- Significant architectural changes that benefit from real-world testing
-- Features where user feedback will shape the final design
+- 重大的 UI 变更或界面重新设计
+- 受益于实际测试的重大架构变更
+- 最终设计将由用户反馈塑造的功能
 
-Labs is **not** for:
+Labs **不**适用于：
 
-- Permanent configuration options (use integration options instead)
-- Minor changes that can go directly into releases
-- Features with critical bugs or that are fundamentally incomplete
+- 永久性的配置选项（请改用集成选项）
+- 可以直接进入发布版本的小改动
+- 存在严重缺陷或从根本上就不完整的功能
 
-## Try it yourself
+## 亲自体验
 
-Want to see Labs in action? Install the Kitchen Sink demo integration and enable the "Special repair" feature in Settings → System → Labs. You'll see firsthand how preview features work.
+想看看 Labs 的实际效果吗？安装 Kitchen Sink 演示集成，然后在设置 → 系统 → Labs 中启用 “Special repair”（特殊维修）功能。你将亲身体验预览功能的工作方式。

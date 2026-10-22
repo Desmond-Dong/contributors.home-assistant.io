@@ -1,6 +1,6 @@
 ---
-title: Backup agents can now report upload progress
-description: The BackupAgent.async_upload_backup method now receives a new on_progress callback parameter.
+title: 备份代理现在可以报告上传进度
+description: BackupAgent.async_upload_backup 方法现在接收一个新的 on_progress 回调参数。
 date: 2026-03-11
 authors:
   - Josef Zweck
@@ -8,7 +8,7 @@ areas:
   - core
 ---
 
-The `BackupAgent.async_upload_backup` method now receives a new `on_progress` callback parameter. Backup agents can call this callback periodically during upload to report the number of bytes uploaded so far:
+`BackupAgent.async_upload_backup` 方法现在接收一个新的 `on_progress` 回调参数。备份代理（backup agent）可以在上传过程中定期调用此回调，以报告目前已上传的字节数：
 
 ```python
 class ExampleBackupAgent(BackupAgent):
@@ -31,6 +31,6 @@ class ExampleBackupAgent(BackupAgent):
         ...
 ```
 
-The backup manager uses these progress reports to fire `UploadBackupEvent` events, enabling the frontend to display real-time upload progress to the user.
+备份管理器（backup manager）会使用这些进度报告来触发 `UploadBackupEvent` 事件，使前端能够向用户显示实时的上传进度。
 
-Check the [backup agent documentation](/core/integrations/backup/#add-a-backup-agent) for more details.
+详情请查看[备份代理文档](/core/integrations/backup/#add-a-backup-agent)。

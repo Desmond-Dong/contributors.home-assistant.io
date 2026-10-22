@@ -1,6 +1,6 @@
 ---
-title: Standardize encoding of μ in units of measurement
-description: "The unit prefix μ is used by unit of measurement constants like μV and μS. There are however two different Unicode encodings of μ:"
+title: 统一测量单位中 μ 的编码
+description: "单位前缀 μ 用于 μV 和 μS 等测量单位常量。然而 μ 存在两种不同的 Unicode 编码："
 date: 2025-08-20
 authors:
   - Jan Bouwhuis
@@ -8,27 +8,27 @@ areas:
   - core
 ---
 
-## One preferred encoding to represent μ in units of measurement
+## 统一使用一种首选编码来表示测量单位中的 μ
 
-The unit prefix μ is used by unit of measurement constants like μV and μS.
-There are however two different Unicode encodings of μ:
+单位前缀 μ 用于 μV 和 μS 等测量单位常量。
+然而，μ 存在两种不同的 Unicode 编码：
 
-1. The [MICRO SIGN](https://www.compart.com/en/unicode/U+00B5)
-2. The [Greek Small Letter Mu](https://www.compart.com/en/unicode/U+03BC)
+1. [MICRO SIGN（微符号）](https://www.compart.com/en/unicode/U+00B5)
+2. [Greek Small Letter Mu（希腊小写字母 Mu）](https://www.compart.com/en/unicode/U+03BC)
 
-Home Assistant previously mixed the two encodings, which caused issues because string comparisons between the two encodings would fail causing unit of measurement validations to fail.
+Home Assistant 此前混用了这两种编码，这导致了问题，因为两种编码之间的字符串比较会失败，从而使测量单位验证失败。
 
-We chose the "Greek Small Letter Mu" because the "MICRO SIGN" encoding is there for compatibility with old 8-bit western European character sets, and the unicode consortium recommends against using it.
+我们选择了“Greek Small Letter Mu”，因为“MICRO SIGN”编码是为了兼容旧的 8 位西欧字符集而存在的，而且 Unicode 联盟（Unicode Consortium）建议不要使用它。
 
-With [#144853](https://github.com/home-assistant/core/pull/144853) we have fixed this in the core of Home Assistant by consequently using the Greek Small Letter Mu version to encode μ. In Python literal strings this variant is encoded as `"\u03bc"`.
+通过 [#144853](https://github.com/home-assistant/core/pull/144853)，我们已在 Home Assistant 的核心中修复了此问题，统一使用 Greek Small Letter Mu 版本来编码 μ。在 Python 字面量字符串中，该变体编码为 `"\u03bc"`。
 
-Developers should check if their code and libraries have a dependency with the ambiguous MICRO SIGN (μ) `"\u00b5"`, and migrate their code to use the Greek Small Letter Mu `"\u03bc"` instead to avoid issues.
+开发者应检查其代码和所用的库是否依赖于有歧义的 MICRO SIGN（μ）`"\u00b5"`，并将代码迁移为使用 Greek Small Letter Mu `"\u03bc"`，以避免出现问题。
 
-The `sensor` and `number` entity platforms now include a built-in feature to automatically convert units that use the ambiguous MICRO SIGN (μ) encoding.
+`sensor` 和 `number` 实体（entity）平台现在内置了一项功能，可自动转换单位中使用有歧义的 MICRO SIGN（μ）编码的情况。
 
-## Find instances in Visual Studio Code
+## 在 Visual Studio Code 中查找出现位置
 
-In Visual Studio Code, enable **Match Case** in the **Search** (files) panel to find only the chosen encoding. Copy the exact μ character from above and paste it into the search box. The editor’s page search matches all variants; use the global search instead.
-## New linter
+在 Visual Studio Code 中，在**搜索**（文件）面板中启用**区分大小写**（Match Case），以仅查找所选的编码。从上方复制确切的 μ 字符，并将其粘贴到搜索框中。编辑器内的页面搜索会匹配所有变体；请改用全局搜索。
+## 新增 linter
 
-To avoid issues with new or changed code, [#144853](https://github.com/home-assistant/core/pull/144853) adds a linter that warns about incorrect literal assignments using the non-preferred encoding of μ.
+为避免新增或修改的代码出现问题，[#144853](https://github.com/home-assistant/core/pull/144853) 添加了一个 linter，当使用非首选编码的 μ 进行不正确的字面量赋值时，它会发出警告。

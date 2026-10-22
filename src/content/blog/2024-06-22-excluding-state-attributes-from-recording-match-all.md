@@ -1,6 +1,6 @@
 ---
-title: Excluding all state attributes from recording using MATCH_ALL
-description: The way how state attributes are excluded from the recording was previously changed in September 2023.
+title: 使用 MATCH_ALL 将所有状态属性排除在记录之外
+description: 2023 年 9 月曾对将状态属性排除在记录之外的方式进行过更改。
 date: 2024-06-22
 authors:
   - G Johansson
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-The way how state attributes are excluded from the recording was previously changed in September 2023.
+将状态属性（state attributes）排除在记录之外的方式此前已于 2023 年 9 月进行了更改。
 
-The previous implementation was limited as there was no way to handle dynamic attributes or any easy way to simply exclude all attributes instead of listing them individually.
+之前的实现存在局限性，因为无法处理动态属性，也没有一种简单的方法可以直接排除所有属性，而无需逐个列出。
 
-It is now possible within an integration to tell recording to not record any attribute by using the `MATCH_ALL` constant, which will automatically remove all attributes from recording except `device_class`, `state_class`, `unit_of_measurement`, and `friendly_name.`
+现在，集成（integration）内部可以使用 `MATCH_ALL` 常量告诉记录器（recorder）不记录任何属性，这将自动从记录中移除除 `device_class`、`state_class`、`unit_of_measurement` 和 `friendly_name.` 之外的所有属性。
 
 ```python
 from homeassistant.const import MATCH_ALL
@@ -24,6 +24,6 @@ class ExampleEntity(Entity):
 
 ```
 
-More details can be found in the [entity documentation](/core/entities/state-attributes/#keep-attributes-out-of-the-history).
+更多详情请参阅[实体文档](/core/entities/state-attributes/#keep-attributes-out-of-the-history)。
 
-Background for the original change is in [architecture discussion #964](https://github.com/home-assistant/architecture/discussions/964).
+最初更改的背景信息见[架构讨论 #964](https://github.com/home-assistant/architecture/discussions/964)。

@@ -1,6 +1,6 @@
 ---
-title: Introducing description placeholders for service action translations
-description: It is now possible to use translation placeholders for (custom) service actions.
+title: 为服务动作翻译引入描述占位符
+description: 现在可以为（自定义）服务动作使用翻译占位符了。
 date: 2025-11-27
 authors:
   - Jan Bouwhuis
@@ -8,8 +8,8 @@ areas:
   - core
 ---
 
-It is now possible to use translation placeholders for (custom) service actions.
+现在可以为（自定义）服务动作（service action）使用翻译占位符（translation placeholder）了。
 
-The [service action example](/core/quality-scale/action-setup/) now shows how to supply the available description placeholders during the registration of the service action.
+[服务动作示例](/core/quality-scale/action-setup/)现在展示了如何在注册服务动作时提供可用的描述占位符（description placeholder）。
 
-Move URLs from service descriptions and translation strings into description placeholders.
+将 URL 从服务描述和翻译字符串中移入描述占位符。

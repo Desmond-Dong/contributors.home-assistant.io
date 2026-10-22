@@ -86,7 +86,7 @@ Home Assistant 以独立的 Python 软件包形式发布，同时也打包在 Do
 
 通过利用 wheel，我们成功把 Hass.io 所用的 Home Assistant 容器的构建时间从 1 小时缩短到了 10 分钟（数据来自 amd64 构建）。
 
-_（题外话：Python 得名于 Monty Python，而软件包索引则根据他们著名小品中的一出被命名为“奶酪店”（the Cheese Shop）。因此 Wheel 格式得名于一整轮奶酪，而不是汽车的车轮。5000 轮奶酪可是好大一堆奶酪。）_
+_（题外话：Python 得名于 Monty Python，而软件包索引则根据他们著名小品中的一出被命名为“奶酪店”。因此 Wheel 格式得名于一整轮奶酪，而不是汽车的车轮。5000 轮奶酪可是好大一堆奶酪。）_
 
 ## 构建 Home Assistant 版本发布
 
@@ -98,7 +98,7 @@ Home Assistant 每三周发布一个稳定版。在稳定版发布之前，我�
 
 ## 构建 Hass.io 插件
 
-Hass.io 的一个特色功能就是插件。插件让开发者可以复用 Home Assistant 在 Hass.io 内部运行时所用的同一套基础设施，用来运行你想要在网络中运行的任何其他程序。这些插件可以与 Home Assistant 紧密集成。例如，你可以一键从[社区插件（Community Add-ons）](https://github.com/hassio-addons/repository)安装 AdGuard，并让它的数据可以在 Home Assistant 内部访问。
+Hass.io 的一个特色功能就是插件。插件让开发者可以复用 Home Assistant 在 Hass.io 内部运行时所用的同一套基础设施，用来运行你想要在网络中运行的任何其他程序。这些插件可以与 Home Assistant 紧密集成。例如，你可以一键从[社区插件](https://github.com/hassio-addons/repository)安装 AdGuard，并让它的数据可以在 Home Assistant 内部访问。
 
 Hass.io 自带几个核心插件。这些插件的每个版本同样需要为全部五种架构进行构建。我们把所有插件都保存在一个仓库中，但每个插件都有各自的流水线定义，只有在该插件发生变化时才会触发（[示例](https://github.com/home-assistant/hassio-addons/blob/master/mosquitto/azure-pipelines.yml)）。
 

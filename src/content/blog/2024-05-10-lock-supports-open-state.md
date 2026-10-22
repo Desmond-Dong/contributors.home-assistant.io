@@ -1,6 +1,6 @@
 ---
-title: LockEntity supports open/opening state
-description: Recently we have added an open and opening state to LockEntity
+title: LockEntity 支持 open/opening 状态
+description: 最近我们为 LockEntity 添加了 open 和 opening 状态
 date: 2024-05-10
 authors:
   - G Johansson
@@ -8,13 +8,13 @@ areas:
   - core
 ---
 
-Recently we have added an `open` and `opening` state to `LockEntity`
+最近我们为 `LockEntity` 添加了 `open` 和 `opening` 状态
 
-This is useful if you have locks which can differentiate between `unlocked` (not locked but latched) state and `open` (unlocked and latch withdrawn) state.
+如果您拥有的锁能够区分 `unlocked`（未上锁但锁舌已扣上）状态和 `open`（未上锁且锁舌已收回）状态，这将非常有用。
 
-`LockEntity` already supports the [`open` method](/core/entities/lock/) by implementing the feature flag `LockEntityFeature.OPEN`
+`LockEntity` 已经通过实现功能标志 `LockEntityFeature.OPEN` 来支持 [`open` 方法](/core/entities/lock/)
 
-Example (default implementation):
+示例（默认实现）：
 
 ```python
 class MyLock(LockEntity):

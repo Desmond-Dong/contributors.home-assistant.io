@@ -1,6 +1,6 @@
 ---
-title: How uv saves Home Assistant 215 compute hours per month
-description: By replacing pip with uv in our production images, our build pipeline (and therefore releasing a new version) is a lot faster.
+title: uv 如何每月为 Home Assistant 节省 215 个计算小时
+description: 通过在生产镜像中用 uv 替换 pip，我们的构建流水线（以及发布新版本）的速度大幅提升。
 date: 2024-04-03
 authors:
   - Robert Resch
@@ -8,12 +8,12 @@ areas:
   - core
 ---
 
-By replacing `pip` with `uv` in our production images, our build pipeline (and therefore releasing a new version) is a lot faster.
-`Uv` is an extremely fast Python package installer and resolver written in Rust. It is developed by [Astral](https://astral.sh/) and it's open source. Check it out on [GitHub](https://github.com/astral-sh/uv).
+通过在生产镜像中用 `uv` 替换 `pip`，我们的构建流水线（以及发布新版本）的速度大幅提升。
+`Uv` 是一个用 Rust 编写、速度极快的 Python 包安装器（installer）和解析器（resolver）。它由 [Astral](https://astral.sh/) 开发，并且是开源的。欢迎在 [GitHub](https://github.com/astral-sh/uv) 上查看。
 
-In the following table, you can see that we can save around 5 hours of execution time on each build.
+在下面的表格中，可以看到我们在每次构建中可以节省大约 5 个小时的执行时间。
 
-| Arch      | Pip          | UV       | Savings  |
+| 架构      | Pip          | UV       | 节省     |
 |-----------|--------------|----------|----------|
 | aarch64   | 1h 24m 53s   | 5m 18s   | ~1h 20m  |
 | armhf     | 1h 52m 20s   | 6m 2s    | ~1h 46m  |
@@ -21,17 +21,17 @@ In the following table, you can see that we can save around 5 hours of execution
 | amd64     | 22m 10s      | 3m 20s   | ~19m     |
 | i386      | 17m 37s      | 3m 11s   | ~14m     |
 
-On average, we run the build pipeline 43 times as we create
-- 31 nightlies (one nightly per day)
-- 7 beta releases
-- 5 stable releases (including patch ones)
+平均而言，我们会运行构建流水线 43 次，因为我们会创建
+- 31 个夜间构建版本（nightly，每天一个）
+- 7 个 beta 版本
+- 5 个稳定版本（包括补丁版本）
 
-In total, we save around 215 hours per month.
-With this massive improvement, we can now ship hotfixes even faster, as the pipeline to ship a new version now takes around 20 minutes instead of 2.5 hours.
+总的来说，我们每月可以节省大约 215 个小时。
+凭借这一巨大的改进，我们现在可以更快地发布热修复（hotfix），因为发布新版本的流水线现在只需大约 20 分钟，而不是 2.5 个小时。
 
-The 215 monthly saved execution hours can be used by other jobs and make the CI experience for all developers and our community better.
-By replacing `pip` with `uv`, we improve our sustainability by using fewer resources to build our images.
+每月节省下来的这 215 个执行小时可以供其他任务使用，让所有开发者以及我们社区的 CI 体验变得更好。
+通过用 `uv` 替换 `pip`，我们以更少的资源来构建镜像，从而提升了可持续性。
 
 
-**A big thank you to Astral for developing this amazing tool.**
-Please check out their [website](https://astral.sh/) and products as they offer, for example, a "lightning" fast linter/formatter for Python too.
+**非常感谢 Astral 开发出这款了不起的工具。**
+欢迎访问他们的[网站](https://astral.sh/)并了解他们的产品，例如，他们还提供了一款“闪电”般快速的 Python 代码检查器/格式化工具。

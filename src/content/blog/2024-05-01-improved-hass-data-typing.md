@@ -1,6 +1,6 @@
 ---
-title: Improved typing for hass.data
-description: In the past, one of the challenges with hass.data was to correctly assign type information.
+title: hass.data 的类型标注改进
+description: 过去，hass.data 面临的挑战之一是如何正确地指定类型信息。
 date: 2024-05-01
 authors:
   - Marc Mueller
@@ -8,18 +8,18 @@ areas:
   - core
 ---
 
-In the past, one of the challenges with `hass.data` was to correctly assign type information. Since it was typed as `dict[str, Any]`, the only options were annotation assignments or `cast` like:
+过去，`hass.data` 面临的挑战之一是如何正确地指定类型信息。由于它的类型被标注为 `dict[str, Any]`，唯一的选择就是使用注解赋值或 `cast`，例如：
 
 ```py
 data: MyData = hass.data[SOME_KEY]
 ```
 
-This had several disadvantages. Not only was it necessary to annotate every assignment, but type checkers also basically pretended that the annotation would always be correct. Especially during refactoring, it could easily happen that one instance was missed, and while type-checking still succeeded, the actual code would be broken.
+这种方式有几个缺点。不仅每次赋值都需要添加注解，而且类型检查器基本上会假定注解始终是正确的。尤其是在重构时，很容易漏掉某一处，虽然类型检查仍然通过，但实际代码已经出错了。
 
-To fix that, it's now possible to use two new key types `HassKey` and `HassEntryKey`. With a little bit of magic, type checkers are now able to infer the type and make sure it's correct. Even when storing data.
+为了解决这个问题，现在可以使用两个新的键类型 `HassKey` 和 `HassEntryKey`。借助一点小小的魔法，类型检查器现在能够推断类型并确保其正确性，即使在存储数据时也是如此。
 
 
-An example could look like this:
+一个示例如下：
 ```py
 # <integration>/__init__.py
 from homeassistant.util.hass_dict import HassKey
@@ -54,7 +54,7 @@ async def async_setup_platform(
     async_add_entities([MySwitch(data.client)])
 ```
 
-Storing data in a dict by `entry.entry_id`? It's often better to just store it inside the `ConfigEntry` directly. See the recent [blog post](/blog/2024/04/30/store-runtime-data-inside-config-entry) about it. If that isn't an option, use `HassEntryKey`.
+通过 `entry.entry_id` 将数据存储在字典中？通常更好的做法是直接将数据存储在 `ConfigEntry` 中。请参阅最近关于此的[博客文章](/blog/2024/04/30/store-runtime-data-inside-config-entry)。如果这不可行，请使用 `HassEntryKey`。
 
 ```py
 # <integration>/__init__.py

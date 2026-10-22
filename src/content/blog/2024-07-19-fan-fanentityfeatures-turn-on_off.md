@@ -1,6 +1,6 @@
 ---
-title: New entity feature flags in FanEntity
-description: "As of Home Assistant Core 2024.8, we have added two new flags to FanEntityFeature:"
+title: FanEntity 中的新实体特性标志
+description: "自 Home Assistant Core 2024.8 起，我们为 FanEntityFeature 新增了两个标志："
 date: 2024-07-19
 authors:
   - G Johansson
@@ -8,14 +8,14 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2024.8, we have added two new flags to `FanEntityFeature`: `TURN_ON`, `TURN_OFF`.
+自 Home Assistant Core 2024.8 起，我们为 `FanEntityFeature` 新增了两个新的特性标志（feature flag）：`TURN_ON`、`TURN_OFF`。
 
-Integrations implementing the `turn_on` service call need to set the `TURN_ON` feature flag.
-Integrations implementing the `turn_off` service call need to set the `TURN_OFF` feature flag.
+实现了 `turn_on` 服务调用的集成（integration）需要设置 `TURN_ON` 特性标志。
+实现了 `turn_off` 服务调用的集成需要设置 `TURN_OFF` 特性标志。
 
-There will be a 6-month deprecation period (2025.2) during which `FanEntity` will set these on behalf of the integrations implementing the respective methods. From 2025.2, integrations will be unable to use the respective methods if entity features have not been set accordingly.
+将有一个为期 6 个月的弃用期（2025.2），在此期间，`FanEntity` 将代表实现了相应方法的集成来设置这些标志。从 2025.2 起，如果未相应地设置实体特性（entity features），集成将无法使用相应的方法。
 
-Implementing the methods without setting the respective feature flag, will create a warning log entry guiding the user to create an issue for the integration.
+在未设置相应特性标志的情况下实现这些方法，将会创建一条警告日志条目，引导用户为该集成创建 issue。
 
-Integrations should set the attribute `_enable_turn_on_off_backwards_compatibility` in your `FanEntity` subclass instance to `False` once it has been migrated into using or not using the new feature flags.
-This will stop the automatic setting of the new feature flags during the deprecation period, and should be removed once deprecation has ended.
+一旦集成已迁移为使用或不使用新的特性标志，就应在其 `FanEntity` 子类实例中将属性 `_enable_turn_on_off_backwards_compatibility` 设置为 `False`。
+这将在弃用期间停止自动设置新的特性标志，并且应在弃用结束后将其移除。

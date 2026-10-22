@@ -1,6 +1,6 @@
 ---
-title: Deprecate hass.helpers usage
-description: As of Home Assistant 2024.5, we deprecate the use of hass.helpers. Using hass.helpers will issue a warning in the logs.
+title: 弃用 hass.helpers 的使用
+description: 自 Home Assistant 2024.5 起，我们弃用了 hass.helpers 的使用。使用 hass.helpers 将会在日志中发出警告。
 date: 2024-03-30
 authors:
   - Jan-Philipp Benecke
@@ -8,17 +8,17 @@ areas:
   - core
 ---
 
-As of Home Assistant 2024.5, we deprecate the use of `hass.helpers`.
-Using `hass.helpers` will issue a warning in the logs.
-Authors of custom integrations are encouraged to update their code 
-to prevent any issues before Home Assistant 2024.11.
+自 Home Assistant 2024.5 起，我们弃用了 `hass.helpers` 的使用。
+使用 `hass.helpers` 将会在日志中发出警告。
+建议自定义集成（integration）的作者更新其代码，
+以在 Home Assistant 2024.11 之前避免任何问题。
 
-Starting from Home Assistant 2024.11, `hass.helpers` will be removed and will no longer work.
+从 Home Assistant 2024.11 开始，`hass.helpers` 将被移除，届时将无法继续使用。
 
-Integrations that use `hass.helpers` should be updated to import the functions and classes directly
-from the integration package and pass the `hass` object as first parameter.
+使用 `hass.helpers` 的集成应更新为直接从集成包导入函数和类，
+并将 `hass` 对象作为第一个参数传入。
 
-### New example
+### 新示例
 
 ```python
 from homeassistant.core import HomeAssistant
@@ -29,7 +29,7 @@ async def async_setup(hass: HomeAssistant, config):
     client = async_get_clientsession(hass)
 ```
 
-### Old example
+### 旧示例
 
 ```python
 from homeassistant.core import HomeAssistant

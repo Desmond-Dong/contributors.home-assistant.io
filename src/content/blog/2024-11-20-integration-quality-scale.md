@@ -1,6 +1,6 @@
 ---
-title: Integration quality scale
-description: Since the original quality scale was introduced in 2020, Home Assistant changed quite a lot.
+title: 集成质量等级
+description: 自 2020 年推出最初的质量等级以来，Home Assistant 发生了相当大的变化。
 date: 2024-11-20
 authors:
   - Joost Lekkerkerker
@@ -8,25 +8,25 @@ areas:
   - core
 ---
 
-Since the original quality scale was introduced in 2020, Home Assistant changed quite a lot.
-Both in how integrations are developed and what features they can provide.
-The quality scale, however, has not been updated to reflect these changes.
+自 2020 年推出最初的质量等级（quality scale）以来，Home Assistant 发生了相当大的变化。
+无论是集成（integration）的开发方式，还是它们能够提供的功能。
+然而，质量等级一直没有更新，未能反映这些变化。
 
-For the last couple of months, we have been working with the community on a new integration quality scale that fits the current state of Home Assistant.
-To give an overview of the changes:
+在过去几个月里，我们一直在与社区合作，制定一套符合 Home Assistant 现状的全新集成质量等级。
+以下是这些变更的概览：
 
-- The quality scale now has four scaled tiers: Bronze, Silver, Gold, and Platinum. The newly added Bronze tier is the new minimum requirement for new core integrations going forward. This does lower the bar for new integrations for a bit, but it does make it clear upfront what is expected from a core integration in this day and age.
-- A new non-scaled tier, legacy, has been added for integrations that are not configurable via the UI yet. This tier would indicate to the user that the integration might not meet their expectation compared to integrations configurable via the UI.
-- To allow the scale to grow with Home Assistant and to avoid another major rework in the future, we have designed a rulebook for the scale so it's known what needs to happen when a rule is added.
-- To show that the project has a commitment on keeping the scale up to date, we have created an architecture decision record (ADR) that describes the goal and the process of keeping the scale up to date.
-- The developer documentation now has [a brand new section](/core/quality-scale/) dedicated to the Integration Quality Scale. It includes the rules and the reasoning for every rule, and it provides examples that can be used to give an idea of how to implement it. There is also [a checklist](/core/quality-scale/rules/#checklist) that can be used for changing the scale of an integration.
-- Documentation now also plays a role in the quality of the integrations, since the user experience of an integration goes beyond code.
-- To track the progress of integration, we have added [a `quality_scale.yaml` file](https://github.com/home-assistant/core/blob/dev/homeassistant/components/airgradient/quality_scale.yaml) to the integration folder. This will contain a list of all the rules the integration is adhering to and notes of possible exemptions and the reasons behind them.
+- 质量等级现在有四个可评定的层级：铜牌（Bronze）、银牌（Silver）、金牌（Gold）和白金（Platinum）。新增的铜牌层级是今后新的核心集成的最低要求。这确实在一定程度上降低了新集成的门槛，但它也让人从一开始就清楚地知道，在当今时代对核心集成有哪些期望。
+- 新增了一个不可评定的层级 legacy，用于那些尚无法通过 UI 配置的集成。该层级向用户表明，与可通过 UI 配置的集成相比，该集成可能无法满足他们的期望。
+- 为了让质量等级能够随着 Home Assistant 一起成长，并避免未来再次进行大规模重构，我们为质量等级设计了一套规则手册，这样在添加规则时，大家都清楚需要做些什么。
+- 为了表明项目承诺保持质量等级的及时更新，我们创建了一份架构决策记录（ADR），描述了保持质量等级最新的目标和流程。
+- 开发者文档现在有了[一个全新的章节](/core/quality-scale/)，专门介绍集成质量等级。其中包含各项规则以及每条规则背后的原因，并提供了示例，帮助了解如何实现这些规则。此外还有一个[检查清单](/core/quality-scale/rules/#checklist)，可用于更改集成的质量等级。
+- 文档现在也会影响集成的质量，因为集成的用户体验不仅仅在于代码。
+- 为了跟踪集成的进度，我们在集成文件夹中添加了[一个 `quality_scale.yaml` 文件](https://github.com/home-assistant/core/blob/dev/homeassistant/components/airgradient/quality_scale.yaml)。该文件将包含集成所遵循的所有规则的列表，以及可能的豁免情况及其背后原因的说明。
 
-With this in place, you might wonder what the next steps are.
-Because this is a major rework of the scale, we have decided to drop the scale of the current integrations.
-This means that those integrations have to create a PR to get their scale back to the level they think it should be.
+有了这些之后，您可能想知道接下来的步骤是什么。
+由于这是对质量等级的一次重大重构，我们决定移除现有集成的质量等级。
+这意味着这些集成必须创建一个 PR（拉取请求），才能将其质量等级恢复到他们认为应该达到的水平。
 
-I would also like to motivate the community to help out with getting as many integrations to Bronze (or above) as possible.
-I also want to thank the community for their input in the quality scale and their effort in maintaining the integrations.
-Home Assistant would not be where it is today without the community ❤️.
+我也想鼓励社区提供帮助，让尽可能多的集成达到铜牌或更高等级。
+我还要感谢社区为质量等级提出的宝贵意见，以及他们在维护集成方面付出的努力。
+没有社区，就没有今天的 Home Assistant ❤️。

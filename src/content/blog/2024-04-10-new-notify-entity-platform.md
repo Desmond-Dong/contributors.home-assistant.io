@@ -1,6 +1,6 @@
 ---
-title: New notify entity platform
-description: The notify platform is now available as an entity platform. The MVP for the new notify platform implements the method and service send_message.
+title: 新的 notify 实体平台
+description: notify 平台现在已作为实体平台提供。新 notify 平台的 MVP 实现了 send_message 方法和服务。
 date: 2024-04-10
 authors:
   - Jan Bouwhuis
@@ -8,16 +8,16 @@ areas:
   - core
 ---
 
-### New notify entity platform
+### 新的 notify 实体平台
 
-The notify platform is now available as an [entity platform](/core/entities/notify/). The MVP for the new `notify` platform [implements](https://github.com/home-assistant/core/pull/110950) the method and service `send_message`. It accepts `message` as a required attribute.
-Unlike the legacy `notify.notify` service we have no targets as argument, as it is an entity we can target multiple `notify` entities when calling `send_message`.
+notify 平台现在已作为[实体平台（entity platform）](/core/entities/notify/)提供。新 `notify` 平台的 MVP [实现了](https://github.com/home-assistant/core/pull/110950) `send_message` 方法和服务（service）。它接受 `message` 作为必需的属性。
+与旧版的 `notify.notify` 服务不同，我们不再将目标（targets）作为参数；由于它是一个实体（entity），我们在调用 `send_message` 时可以指定多个 `notify` 实体。
 
-The [architecture discussion](https://github.com/home-assistant/architecture/discussions/1041) is ongoing, and is about the device classes to implement and the implementation of recipient support in the form of [contacts via a contact registry](https://github.com/home-assistant/architecture/discussions/1041#discussioncomment-8947842).
+[架构讨论](https://github.com/home-assistant/architecture/discussions/1041)仍在进行中，主要涉及要实现的设备类（device class），以及以[通过联系人注册表（contact registry）实现的联系人](https://github.com/home-assistant/architecture/discussions/1041#discussioncomment-8947842)的形式来支持收件人（recipient）。
 
-Existing integrations that implement the legacy `notify` services will be migrated in phases. The first step is to migrate the integrations than only use `message` as a parameter to notify.
+实现旧版 `notify` 服务的现有集成（integration）将分阶段迁移。第一步是迁移那些仅使用 `message` 作为通知参数的集成。
 
-The integrations identified for migration are:
+已确定需要迁移的集成包括：
 
 - circuit
 - clickatell
@@ -30,6 +30,6 @@ The integrations identified for migration are:
 - knx
 - mastodon
 
-As soon as we have `title` and/or `recipient` support we can migrate more integrations to use the new platform.
+一旦我们提供了 `title` 和/或 `recipient` 支持，就可以迁移更多集成来使用新平台。
 
-When integrations are migrated, users will need to use the new `notify.send_message` service, so the migration changes will cause automations to break after the deprecation period is over.
+当集成迁移完成后，用户将需要使用新的 `notify.send_message` 服务，因此这些迁移更改将导致自动化（automation）在弃用期结束后失效。

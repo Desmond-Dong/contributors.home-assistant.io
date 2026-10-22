@@ -1,6 +1,6 @@
 ---
-title: New checks for config flow unique ID
-description: Creating a config entry with a unique ID already present in the registry is deprecated, and will now log a warning.
+title: 针对配置流程唯一 ID 的新检查
+description: 创建带有注册表中已存在唯一 ID 的配置条目已被弃用，并且现在会记录一条警告。
 date: 2025-03-01
 authors:
   - epenet
@@ -8,16 +8,16 @@ areas:
   - core
 ---
 
-### Summary of changes
+### 变更摘要
 
-Creating a config entry with a unique ID already present in the registry is deprecated, and will now log a warning.
+创建带有注册表中已存在唯一 ID（unique ID）的配置条目（config entry）已被弃用，并且现在会记录一条警告。
 
-### Details
+### 详细信息
 
-When a config flow creates an entry with a colliding unique ID, the old entry is currently automatically removed and replaced with the new config entry.
-This can lead to unexpected behavior, and integrations should be adjusted to instead abort the flow.
+当配置流程（config flow）创建的条目带有冲突的唯一 ID 时，目前旧条目会被自动移除并替换为新的配置条目。
+这可能导致意外行为，因此应调整集成（integration），使其改为中止该流程。
 
-In case of manual flows, integrations should implement options, reauth, reconfigure to allow the user to change settings.
-In case of non user visible flows, the integration should optionally update the existing entry before aborting.
+对于手动流程，集成应实现选项（options）、重新认证（reauth）和重新配置（reconfigure），以允许用户更改设置。
+对于用户不可见的流程，集成可以选择在中止前更新现有条目。
 
-More details can be found in the [config flow](/core/integrations/config-flow/#unique-ids) documentation.
+更多详细信息可在[配置流程](/core/integrations/config-flow/#unique-ids)文档中找到。

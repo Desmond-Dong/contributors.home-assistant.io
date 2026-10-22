@@ -1,6 +1,6 @@
 ---
-title: Deprecate hass argument in service helpers
-description: "Providing hass argument to the following service helpers is deprecated: verify_domain_control, extract_entity_ids, async_extract_entities, async_extract_entity_ids, and async_extract_config_entry_ids."
+title: 弃用服务辅助函数中的 hass 参数
+description: "已弃用向以下服务辅助函数（service helpers）提供 hass 参数的做法：verify_domain_control、extract_entity_ids、async_extract_entities、async_extract_entity_ids 和 async_extract_config_entry_ids。"
 date: 2025-09-22
 authors:
   - epenet
@@ -8,23 +8,23 @@ areas:
   - core
 ---
 
-### Summary of changes
+### 变更摘要
 
-Providing `hass` argument to the following service helpers is deprecated:
-`verify_domain_control`, `extract_entity_ids`, `async_extract_entities`, 
-`async_extract_entity_ids`, and `async_extract_config_entry_ids`.
+已弃用向以下服务辅助函数（service helpers）传递 `hass` 参数的做法：
+`verify_domain_control`、`extract_entity_ids`、`async_extract_entities`、
+`async_extract_entity_ids` 和 `async_extract_config_entry_ids`。
 
-Since release `2025.1` (via core PR [#133062](https://github.com/home-assistant/core/pull/133062)),
-a reference to `HomeAssistant` is available as a property of the `ServiceCall` object,
-and it became redundant to pass the `hass` object to the above helpers.
+自 `2025.1` 版本发布以来（通过 core PR [#133062](https://github.com/home-assistant/core/pull/133062)），
+`HomeAssistant` 的引用已可以作为 `ServiceCall` 对象的一个属性使用，
+因此再向上述辅助函数传递 `hass` 对象就变得多余了。
 
-To update your integration, just remove the `hass` argument.
+要更新您的集成（integration），只需移除 `hass` 参数即可。
 
-Support for the `hass` argument will be removed in Home Assistant 2026.10.
+对 `hass` 参数的支持将在 Home Assistant 2026.10 中被移除。
 
-### Examples
+### 示例
 
-#### ID extraction helpers
+#### ID 提取辅助函数
 
 ```python
 # Old
@@ -38,7 +38,7 @@ entity_ids = await async_extract_entity_ids(service_call)
 entities = await service.async_extract_entities(platform_entities.values(), service_call)
 ```
 
-#### Decorator helper
+#### 装饰器辅助函数
 
 ```python
 # Old

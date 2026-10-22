@@ -1,6 +1,6 @@
 ---
-title: New infrared entity platform for IR device integrations
-description: Home Assistant now has an infrared entity platform that decouples IR emitter hardware from the devices they control.
+title: 面向红外设备集成的全新红外实体平台
+description: Home Assistant 现在拥有一个红外实体平台，可将红外发射硬件与其控制的设备解耦。
 date: 2026-03-30
 authors:
   - Abílio Costa
@@ -8,24 +8,24 @@ areas:
   - core
 ---
 
-Home Assistant now has an `infrared` entity platform that decouples IR emitter hardware from the devices they control. Instead of each device integration talking directly to specific IR hardware, emitter integrations (like `esphome`) expose `InfraredEntity` instances, and device integrations (like `lg_infrared`) send commands through them via helper functions.
+Home Assistant 现在拥有一个 `infrared` 实体（entity）平台，它将红外（IR）发射硬件与其所控制的设备解耦。每个设备集成不再直接与特定的红外硬件通信，而是由发射器集成（如 `esphome`）暴露 `InfraredEntity` 实例，设备集成（如 `lg_infrared`）通过辅助函数（helper functions）经由这些实例发送命令。
 
-See the [architecture discussion](https://github.com/home-assistant/architecture/discussions/1316) for the full background.
+完整的背景信息请参阅[架构讨论](https://github.com/home-assistant/architecture/discussions/1316)。
 
 <!--truncate-->
 
-## Architecture
+## 架构
 
-The infrared domain sits between two types of integrations:
+红外域位于两类集成之间：
 
-- **Emitter integrations** (ESPHome, Broadlink, …) implement the `InfraredEntity` base class to provide hardware-specific IR transmission.
-- **Consumer integrations** (LG, Samsung, Daikin, …) use helper functions to send device-specific IR commands through available emitters.
+- **发射器集成**（ESPHome、Broadlink 等）实现 `InfraredEntity` 基类，以提供特定于硬件的红外发送。
+- **消费端集成**（LG、Samsung、Daikin 等）使用辅助函数通过可用的发射器发送特定于设备的红外命令。
 
-Users select which emitter to use during the consumer integration's config flow.
+用户会在消费端集成的配置流程中选择使用哪个发射器。
 
-## Implementing an emitter integration
+## 实现发射器集成
 
-Emitter integrations provide the `infrared` platform by subclassing `InfraredEntity` and implementing `async_send_command`. The command's `get_raw_timings()` method returns protocol-agnostic timing data that the hardware can transmit:
+发射器集成通过子类化 `InfraredEntity` 并实现 `async_send_command` 来提供 `infrared` 平台。该命令的 `get_raw_timings()` 方法返回硬件可以发送的与协议无关的时序数据：
 
 ```python
 from homeassistant.components.infrared import InfraredCommand, InfraredEntity
@@ -46,13 +46,13 @@ class MyInfraredEntity(InfraredEntity):
         )
 ```
 
-The raw protocol-agnostic timings should be converted to the specific format required by the hardware.
+原始的与协议无关的时序数据应转换为硬件所需的特定格式。
 
-## Building a consumer integration
+## 构建消费端集成
 
-Consumer integrations control IR devices by sending commands through an emitter entity. They don't interact with IR hardware directly.
+消费端集成通过发射器实体发送命令来控制红外设备。它们不直接与红外硬件交互。
 
-**1. Declare the dependency** in `manifest.json`:
+**1. 声明依赖**（位于 `manifest.json` 中）：
 
 ```json
 {
@@ -60,7 +60,7 @@ Consumer integrations control IR devices by sending commands through an emitter 
 }
 ```
 
-**2. Let the user pick an emitter** in the config flow:
+**2. 让用户选择发射器**（在配置流程中）：
 
 ```python
 from homeassistant.components import infrared
@@ -70,7 +70,7 @@ if not emitters:
     return self.async_abort(reason="no_emitters")
 ```
 
-**3. Send IR commands** using the helper function and the [`infrared-protocols`](https://github.com/home-assistant-libs/infrared-protocols) library:
+**3. 发送红外命令**，使用辅助函数和 [`infrared-protocols`](https://github.com/home-assistant-libs/infrared-protocols) 库：
 
 ```python
 from infrared_protocols.codes.lg.tv import LGTVCode, make_lg_tv_command
@@ -84,8 +84,8 @@ await infrared.async_send_command(
 )
 ```
 
-## IR protocols and codes
+## 红外协议与代码
 
-IR protocol encoders and device code sets live outside Home Assistant in the [`infrared-protocols`](https://github.com/home-assistant-libs/infrared-protocols) library. Common protocols (NEC, Samsung, etc.) and well-known device codes used by core integrations should be contributed there. For niche or proprietary protocols, a separate third-party library can also be used.
+红外协议编码器和设备代码集位于 Home Assistant 之外的 [`infrared-protocols`](https://github.com/home-assistant-libs/infrared-protocols) 库中。核心集成所使用的常见协议（NEC、Samsung 等）和知名设备代码应贡献到该库中。对于小众或专有协议，也可以使用单独的第三方库。
 
-For full details, see the [infrared entity documentation](/core/entities/infrared/).
+完整详情请参阅[红外实体文档](/core/entities/infrared/)。

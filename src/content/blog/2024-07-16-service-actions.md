@@ -1,6 +1,6 @@
 ---
-title: Services are now actions
-description: The term "Services" has been a source of confusion for many users, as it is not immediately clear what it refers to; it could be a web or STT service, but in the context of Home Assistant, it means something entirely different (service calls).
+title: 服务现已更名为动作
+description: “服务”（service）一词一直让许多用户感到困惑，因为人们无法立刻明白它指的是什么；它可能是指某个 Web 服务或 STT 服务，但在 Home Assistant 的语境中，它指的却是完全不同的东西（服务调用）。
 date: 2024-07-16
 authors:
   - Franck Nijhof
@@ -8,12 +8,12 @@ areas:
   - core
 ---
 
-The term "Services" has been a source of confusion for many users, as it is not immediately clear what it refers to; it could be a web or STT service, but in the context of Home Assistant, it means something entirely different (service calls).
+“服务”（service）一词一直让许多用户感到困惑，因为人们无法立刻明白它指的是什么；它可能是指某个 Web 服务或 STT 服务，但在 Home Assistant 的语境中，它指的却是完全不同的东西（服务调用）。
 
-In Home Assistant 2024.8, "Services" (as in service calls) will be renamed to "Actions". This change is part of our ongoing effort to make Home Assistant more user-friendly and easier for new users to understand. The term fits in with the UI changes we have been implementing over the past months (call services no longer exist in our automations and script editors). Effectively, one is performing actions in one's automations.
+在 Home Assistant 2024.8 中，“服务”（即服务调用）将更名为“动作”（action）。这一更改是我们持续努力的一部分，旨在让 Home Assistant 更加易用，让新用户更容易理解。该术语与我们过去几个月一直在实施的 UI 改动相契合（在我们的自动化和脚本编辑器中，“调用服务”已不复存在）。实际上，用户在自动化中执行的就是动作。
 
-This change will be reflected in the Home Assistant UI, documentation, and other places where the term "Services" is used. For example, the **"Services"** tab in the Developer Tools will be renamed to **"Actions"**.
+这一更改将体现在 Home Assistant 的 UI、文档以及其他所有使用“服务”一词的地方。例如，开发者工具中的 **“服务”** 标签页将更名为 **“动作”**。
 
-For developers, there is no need to worry about this change. In the developer documentation, we will update all references to "services" to "service actions", as we have different types of actions in our backend (for example, device actions). The underlying functionality will remain the same, and the transition is seamless.
+对于开发者来说，无需为此更改担心。在开发者文档中，我们会将所有对“服务”的引用更新为“服务动作”（service action），因为我们的后端中存在不同类型的动作（例如设备动作）。底层功能将保持不变，过渡将是无缝的。
 
-This is, just like the end-user change, a terminology change only.
+与面向最终用户的更改一样，这仅仅是一次术语上的更改。

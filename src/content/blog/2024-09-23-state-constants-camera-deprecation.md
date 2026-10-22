@@ -1,6 +1,6 @@
 ---
-title: Deprecating state constants for camera
-description: As of Home Assistant Core 2024.10, the constants used to return state in Camera are deprecated and replaced by the CameraState enum.
+title: 弃用摄像头的状态常量
+description: 自 Home Assistant Core 2024.10 起，Camera 中用于返回状态的常量已被弃用，并由 CameraState 枚举取代。
 date: 2024-09-23
 authors:
   - G Johansson
@@ -8,8 +8,8 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2024.10, the constants used to return state in `Camera` are deprecated and replaced by the `CameraState` enum.
+自 Home Assistant Core 2024.10 起，`Camera` 中用于返回状态的常量已被弃用，并由 `CameraState` 枚举取代。
 
-There is a one-year deprecation period, and the constants will stop working from 2025.10 to ensure all custom integration authors have time to adjust.
+弃用期为一年，这些常量将从 2025.10 起停止工作，以确保所有自定义集成（integration）作者都有时间进行调整。
 
-As the `state` property is not meant to be overwritten, in most cases this change will only affect other Entity properties or tests.
+由于 `state` 属性本不应被覆盖，因此在大多数情况下，此变更只会影响其他实体（entity）属性或测试。

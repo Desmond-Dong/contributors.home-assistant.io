@@ -1,6 +1,6 @@
 ---
-title: Set up your DataUpdateCoordinator with a setup method
-description: In Home Assistant 2024.8, we are introducing the _async_setup method for the data update coordinator.
+title: 使用 setup 方法设置你的 DataUpdateCoordinator
+description: 在 Home Assistant 2024.8 中，我们为数据更新协调器（data update coordinator）引入了 _async_setup 方法。
 date: 2024-08-05
 authors:
   - Josef Zweck
@@ -8,16 +8,15 @@ areas:
   - core
 ---
 
-In Home Assistant 2024.8, we are introducing the `_async_setup` method for the data update coordinator. 
-This method allows you to run asynchronous code to prepare your `DataUpdateCoordinator` instance
-or to load data that only needs to be loaded once.
+在 Home Assistant 2024.8 中，我们为数据更新协调器（data update coordinator）引入了 `_async_setup` 方法。
+该方法允许你运行异步代码来准备你的 `DataUpdateCoordinator` 实例，
+或加载只需加载一次的数据。
 
-You can override `_async_setup` in your coordinator, and it will be automatically
-called during `coordinator.async_config_entry_first_refresh()`.
-It offers the same error handling as `_async_update_data` and will handle `ConfigEntryError`
-and `ConfigEntryAuthFailed` accordingly.
+你可以在协调器中重写 `_async_setup`，它会在 `coordinator.async_config_entry_first_refresh()` 期间被自动调用。
+它提供与 `_async_update_data` 相同的错误处理，并会相应地处理 `ConfigEntryError`
+和 `ConfigEntryAuthFailed`。
 
-## Example
+## 示例
 
 ```python
 
@@ -43,10 +42,9 @@ class MyUpdateCoordinator(DataUpdateCoordinator[MyDataType]):
         return await self.my_api.update(self.prereq_data)
 ```
 
-## Avoiding checks for initialization status
+## 避免检查初始化状态
 
-This change allows you to refactor code that loaded the initial data in 
-the `_async_update_data` method by checking an initialization variable, like
+此更改使你能够重构通过检查初始化变量来在 `_async_update_data` 方法中加载初始数据的代码，例如
 
 ```python
 async def _async_update_data(self) -> ...:
@@ -55,7 +53,7 @@ async def _async_update_data(self) -> ...:
     return self.client.fetch_data()
 ```
 
-into
+改为
 
 ```python
 async def _async_setup(self) -> None:
@@ -65,6 +63,6 @@ async def _async_update_data(self) -> ...:
     return self.client.fetch_data()
 ```
 
-## More information
+## 更多信息
 
-Read more about this in the [documentation](/core/integrations/fetching-data/)
+欲了解更多信息，请阅读[文档](/core/integrations/fetching-data/)

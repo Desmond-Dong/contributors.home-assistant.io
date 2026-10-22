@@ -1,6 +1,6 @@
 ---
-title: Config Entries can now provide a reconfigure step
-description: As of Home Assistant Core 2024.4, config entries can now be reconfigured by adding a reconfigure step in their config flows.
+title: 配置条目现在可以提供重新配置步骤
+description: 自 Home Assistant Core 2024.4 起，配置条目（config entry）现在可以通过在其配置流程中添加重新配置（reconfigure）步骤来重新配置。
 date: 2024-03-21
 authors:
   - G Johansson
@@ -8,23 +8,23 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2024.4, config entries can now be reconfigured by adding a `reconfigure` step in their config flows.
+自 Home Assistant Core 2024.4 起，配置条目（config entry）现在可以通过在其配置流程（config flow）中添加 `reconfigure` 步骤来重新配置。
 
-This is not to replace the optional configuration (`OptionsFlow`) but instead to allow the user to change the setup configuration after a config entry has been created.
+这并不是要取代可选配置（`OptionsFlow`），而是为了让用户能够在配置条目创建之后更改其初始设置配置。
 
-### Reconfiguration vs. Reauthentication
+### 重新配置 vs. 重新认证
 
-The `reconfigure` step does not replace a `reauth` step and they have different purposes.
+`reconfigure` 步骤并不能取代 `reauth` 步骤，它们有着不同的用途。
 
-Reauthentication should be started automatically by the integration in the case of a login/token/etc. is invalidated, so the user has an option to adjust those settings.
+当登录凭证、token 等失效时，集成（integration）应自动启动重新认证（reauthentication），以便用户可以选择调整这些设置。
 
-Reconfiguration is started by the user from the config entry options menu and should be implemented to update config entry data which are not optional for the integration to work. Authentication issues are handled with a re-authentication flow. ([See reauthentication](/core/integrations/reauth-reconfigure/#reauthentication)).
+重新配置由用户从配置条目的选项菜单中启动，应用于更新集成正常工作所必需的（非可选的）配置条目数据。身份验证问题则通过重新认证流程处理。（[参见重新认证](/core/integrations/reauth-reconfigure/#reauthentication)）。
 
-### Example
+### 示例
 
-Examples could be changing the latitude and longitude of a `WeatherEntity` when moving between homes or having a mobile home, changing the communication port of a local device, etc.
+例如，在搬家或居住在移动房屋时更改 `WeatherEntity` 的纬度和经度，或者更改本地设备的通信端口等。
 
-To implement the `reconfigure` step, include it in your config flow as:
+要实现 `reconfigure` 步骤，请将其包含在你的配置流程中：
 
 ```python
 import voluptuous as vol

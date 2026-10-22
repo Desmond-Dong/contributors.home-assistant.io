@@ -1,6 +1,6 @@
 ---
-title: Custom integrations can now ship their own brand images
-description: Starting with Home Assistant 2026.3, custom integrations can include their own brand images (icons and logos) directly in the integration directory.
+title: 自定义集成现在可以自带品牌图片了
+description: 从 Home Assistant 2026.3 开始，自定义集成可以直接在集成目录中包含自己的品牌图片（图标和标志）。
 date: 2026-02-24
 authors:
   - Franck Nijhof
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-Starting with Home Assistant 2026.3, custom integrations can include their own brand images (icons and logos) directly in the integration directory. No more submitting to a separate repository — just drop your images in a `brand/` folder and they show up in the UI.
+从 Home Assistant 2026.3 开始，自定义集成可以直接在集成目录中包含自己的品牌图片（图标和标志）。无需再提交到单独的仓库——只需将图片放入 `brand/` 文件夹，它们就会显示在 UI 中。
 
-## Local brand images for custom integrations
+## 自定义集成的本地品牌图片
 
-Add a `brand/` directory to your custom integration with your icon and logo files:
+在你的自定义集成中添加一个 `brand/` 目录，并放入你的图标和标志文件：
 
 ```text
 custom_components/my_integration/
@@ -23,33 +23,33 @@ custom_components/my_integration/
     └── logo.png
 ```
 
-The following image filenames are supported:
+支持以下图片文件名：
 
 - `icon.png` / `dark_icon.png`
 - `logo.png` / `dark_logo.png`
 - `icon@2x.png` / `dark_icon@2x.png`
 - `logo@2x.png` / `dark_logo@2x.png`
 
-Local brand images automatically take priority over images from the brands CDN. That's it — no extra configuration needed.
+本地品牌图片会自动优先于来自品牌 CDN 的图片。就这么简单——无需任何额外配置。
 
-For more details, see the [integration file structure documentation](/core/integrations/file-structure/#brand-images-in-custom-integrations).
+更多详情，请参阅[集成文件结构文档](/core/integrations/file-structure/#brand-images-in-custom-integrations)。
 
-## Brand images now served through a local API
+## 品牌图片现在通过本地 API 提供
 
-To make local brand images possible, all brand images are now served through the Home Assistant local API instead of being fetched directly from the CDN by the browser.
+为了实现本地品牌图片，所有品牌图片现在都通过 Home Assistant 本地 API 提供，而不是由浏览器直接从 CDN 获取。
 
-A new `brands` system integration proxies brand images through two endpoints:
+一个新的 `brands` 系统集成通过两个端点代理品牌图片：
 
-- `/api/brands/integration/{domain}/{image}` — Integration icons and logos
-- `/api/brands/hardware/{category}/{image}` — Hardware images
+- `/api/brands/integration/{domain}/{image}` — 集成图标和标志
+- `/api/brands/hardware/{category}/{image}` — 硬件图片
 
-Images are cached locally on disk and served with a stale-while-revalidate strategy, so they remain available during internet outages.
+图片会缓存在本地磁盘上，并采用 stale-while-revalidate 策略提供服务，因此在断网期间仍然可用。
 
-### Impact on the frontend
+### 对前端的影响
 
-The `brandsUrl()` and `hardwareBrandsUrl()` helpers in `src/util/brands-url.ts` now return local API paths instead of CDN URLs. If your custom card or panel uses these helpers, no changes are needed.
+`src/util/brands-url.ts` 中的 `brandsUrl()` 和 `hardwareBrandsUrl()` 辅助函数现在返回本地 API 路径而不是 CDN URL。如果你的自定义卡片或面板使用了这些辅助函数，则无需进行任何更改。
 
-If you are constructing brand image URLs manually, update them:
+如果你在手动构建品牌图片 URL，请更新它们：
 
 ```typescript
 // Old
@@ -60,4 +60,4 @@ import { brandsUrl } from "../util/brands-url";
 const url = brandsUrl({ domain, type: "icon" });
 ```
 
-These endpoints require authentication. The `brandsUrl()` helper handles this automatically by appending an access token. If you construct URLs manually, obtain a token via the `brands/access_token` WebSocket command and append it as a `token` query parameter.
+这些端点需要身份验证。`brandsUrl()` 辅助函数会自动通过附加访问令牌来处理这一点。如果你手动构建 URL，请通过 `brands/access_token` WebSocket 命令获取令牌，并将其作为 `token` 查询参数附加。

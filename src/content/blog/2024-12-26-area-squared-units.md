@@ -1,6 +1,6 @@
 ---
-title: New area device class
-description: More details can be found in the Number documentation and Sensor documentation
+title: 新增面积设备类别
+description: 更多详情请参阅 Number 文档和 Sensor 文档
 date: 2024-12-26
 authors:
   - Michael Arthur
@@ -8,12 +8,12 @@ areas:
   - core
 ---
 
-### Summary of changes
-A new `AREA` device class is now available for number and sensor entities, together with automatic unit conversion based on the unit system.
-A corresponding `UnitOfArea` unit enumerator, and `AreaConverter` converter class have been added to support the new device class.
+### 变更摘要
+数字（number）和传感器（sensor）实体现在可以使用新的 `AREA` 设备类别（device class），并支持基于单位系统的自动单位转换。
+为支持新的设备类别，还添加了相应的 `UnitOfArea` 单位枚举器和 `AreaConverter` 转换器类。
 
-### Backward compatibility
-The `AREA_SQUARE_METERS` constant has been deprecated and will be removed in Home Assistant `2025.12`.
-Custom integrations should be adjusted to use `UnitOfArea.SQUARE_METERS`.
+### 向后兼容性
+`AREA_SQUARE_METERS` 常量已被弃用，并将在 Home Assistant `2025.12` 中移除。
+自定义集成应调整为使用 `UnitOfArea.SQUARE_METERS`。
 
-More details can be found in the [Number documentation](/core/entities/number/#device-classes) and [Sensor documentation](/core/entities/sensor/#device-classes)
+更多详情请参阅 [Number 文档](/core/entities/number/#device-classes)和 [Sensor 文档](/core/entities/sensor/#device-classes)

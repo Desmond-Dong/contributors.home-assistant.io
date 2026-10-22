@@ -1,6 +1,6 @@
 ---
-title: Changes to the update entity
-description: "The update entity has been adjusted:"
+title: 更新实体的变更
+description: "更新实体（update entity）已进行调整："
 date: 2024-10-31
 authors:
   - Erik Montnémery
@@ -8,23 +8,23 @@ areas:
   - core
 ---
 
-### Summary of changes
+### 变更摘要
 
-The `update` entity has been adjusted:
-- The `in_progress` property and the corresponding state attribute should now only be a `bool` indicating if an update is in progress, or `None` if unknown.
-- A new property and a corresponding state attribute `update_percentage` has been added which can either return an `int` or `float` indicating the progress from 0 to 100% or None.
-- A new property and a corresponding state attribute `display_precision` has been added to control the number of decimals to display in the frontend when `update_percentage` is a `float`.
+`update` 实体已进行调整：
+- `in_progress` 属性（property）及对应的状态属性（state attribute）现在应仅为一个 `bool` 值，用于指示更新是否正在进行中；如未知，则为 `None`。
+- 新增了一个属性及对应的状态属性 `update_percentage`，它可以返回 `int` 或 `float`，以表示 0 到 100% 的进度，或返回 `None`。
+- 新增了一个属性及对应的状态属性 `display_precision`，用于在 `update_percentage` 为 `float` 时控制前端显示的小数位数。
 
-### Backwards compatibility
+### 向后兼容性
 
-Until Home Assistant Core 2025.12, a numerical value in the `in_progress` property will be automatically copied to the `update_percentage` state attribute.
+在 Home Assistant Core 2025.12 之前，`in_progress` 属性中的数值将被自动复制到 `update_percentage` 状态属性。
 
-### Documentation and core implementation
+### 文档与核心实现
 
-See the [update entity developer documentation](/core/entities/update/) for details.
+详情请参阅[更新实体开发文档](/core/entities/update/)。
 
-PRs:
-- PR adding the [`update_percentage` state attribute](https://github.com/home-assistant/core/pull/128877)
-- PR adding the [`update_percentage` property](https://github.com/home-assistant/core/pull/128908)
-- PR adding the [`display_precision` state attribute and property](https://github.com/home-assistant/core/pull/128930)
-- An example of [updating an integration's update entity](https://github.com/home-assistant/core/pull/129380)
+PR：
+- 添加 [`update_percentage` 状态属性](https://github.com/home-assistant/core/pull/128877)的 PR
+- 添加 [`update_percentage` 属性](https://github.com/home-assistant/core/pull/128908)的 PR
+- 添加 [`display_precision` 状态属性和属性](https://github.com/home-assistant/core/pull/128930)的 PR
+- [更新集成的更新实体](https://github.com/home-assistant/core/pull/129380)的示例

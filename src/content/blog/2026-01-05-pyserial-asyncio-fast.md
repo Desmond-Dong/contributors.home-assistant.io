@@ -1,6 +1,6 @@
 ---
-title: Solving pyserial-asyncio blocking the event loop
-description: Starting in 2026.7, installation of pyserial-asyncio will be blocked in Home Assistant.
+title: 解决 pyserial-asyncio 阻塞事件循环的问题
+description: 从 2026.7 开始，Home Assistant 将阻止安装 pyserial-asyncio。
 date: 2026-01-05
 authors:
   - epenet
@@ -8,23 +8,23 @@ areas:
   - core
 ---
 
-### Summary of changes
+### 变更概要
 
-Starting in `2026.7`, installation of `pyserial-asyncio` will be blocked in Home Assistant.
+从 `2026.7` 开始，Home Assistant 将阻止安装 `pyserial-asyncio`。
 
-Library maintainers and custom integrations are advised to migrate to `pyserial-asyncio-fast`.
+建议库维护者和自定义集成（integration）迁移到 `pyserial-asyncio-fast`。
 
-### Background
+### 背景
 
-`pyserial-asyncio` blocks the event loop because it does a blocking `sleep`. The library is also not maintained so efforts to improve the situation haven't been released.
+`pyserial-asyncio` 会阻塞事件循环（event loop），因为它执行了阻塞式的 `sleep`。该库也无人维护，因此改进此情况的努力一直未能发布。
 
-`pyserial-asyncio-fast` was created as a drop-in replacement (see [the repository](https://github.com/home-assistant-libs/pyserial-asyncio-fast)), and all core integrations have now been migrated.
+`pyserial-asyncio-fast` 是作为直接替代品（drop-in replacement）而创建的（参见[该代码库](https://github.com/home-assistant-libs/pyserial-asyncio-fast)），目前所有核心集成都已完成迁移。
 
-### Migration
+### 迁移
 
-`pyserial-asyncio-fast` was designed as a drop-in replacement of `pyserial-asyncio`, and the necessary changes are trivial.
+`pyserial-asyncio-fast` 被设计为 `pyserial-asyncio` 的直接替代品，所需的改动非常简单。
 
-#### Requirements
+#### 依赖要求
 
 ```python
 # Old
@@ -39,7 +39,7 @@ Library maintainers and custom integrations are advised to migrate to `pyserial-
 ```
 
 
-#### Usage
+#### 用法
 
 ```python
 # Old
@@ -55,4 +55,4 @@ async def connect():
     conn = await serial_asyncio_fast.open_serial_connection(**self.serial_settings)
 ```
 
-More examples are available in [the tracking pull request](https://github.com/home-assistant/core/pull/116635).
+更多示例请参见[跟踪拉取请求（pull request）](https://github.com/home-assistant/core/pull/116635)。

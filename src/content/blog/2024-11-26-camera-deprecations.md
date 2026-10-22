@@ -1,6 +1,6 @@
 ---
-title: Camera API changes
-description: With Home Assistant 2024.11 we added WebRTC for most cameras. To add support for it we needed to refactor and improve the camera entity.
+title: 摄像头 API 变更
+description: 在 Home Assistant 2024.11 中，我们为大多数摄像头添加了 WebRTC 支持。为了添加对该功能的支持，我们需要重构并改进摄像头实体。
 date: 2024-11-26
 authors:
   - Robert Resch
@@ -8,13 +8,13 @@ areas:
   - core
 ---
 
-With Home Assistant `2024.11` we added WebRTC for most cameras. To add support for it we needed to refactor and improve the camera entity.
-Today we would like to announce that with the upcoming Home Assistant release `2024.12` the following methods are deprecated and will be removed with Home Assistant version `2025.6`:
+在 Home Assistant `2024.11` 中，我们为大多数摄像头添加了 WebRTC 支持。为了添加对该功能的支持，我们需要重构并改进摄像头实体（camera entity）。
+今天我们想宣布，在即将发布的 Home Assistant `2024.12` 版本中，以下方法已被弃用，并将在 Home Assistant `2025.6` 版本中被移除：
 
-- The property `frontend_stream_type` will be removed. As of `2024.11` Home assistant will identify the frontend stream type by checking if the camera entity implements the native WebRTC methods ([#130932](https://github.com/home-assistant/core/pull/130932)). Card developers can use the new websocket command `camera/capabilities` to get the frontend stream types.
+- 属性 `frontend_stream_type` 将被移除。从 `2024.11` 开始，Home Assistant 将通过检查摄像头实体是否实现了原生 WebRTC 方法来识别前端流类型（[#130932](https://github.com/home-assistant/core/pull/130932)）。卡片开发者可以使用新的 websocket 命令 `camera/capabilities` 来获取前端流类型。
 
-- The method `async_handle_web_rtc_offer` will be removed. Please use `async_handle_async_webrtc_offer` and the async WebRTC signaling approach ([#131285](https://github.com/home-assistant/core/pull/131285)).
+- 方法 `async_handle_web_rtc_offer` 将被移除。请使用 `async_handle_async_webrtc_offer` 以及异步 WebRTC 信令方式（[#131285](https://github.com/home-assistant/core/pull/131285)）。
 
-- The method `async_register_rtsp_to_web_rtc_provider` has been deprecated. Please use `async_register_webrtc_provider`, which offers more flexibility and supports the async WebRTC signaling approach ([#131462](https://github.com/home-assistant/core/pull/131462)).
+- 方法 `async_register_rtsp_to_web_rtc_provider` 已被弃用。请使用 `async_register_webrtc_provider`，它提供了更大的灵活性，并支持异步 WebRTC 信令方式（[#131462](https://github.com/home-assistant/core/pull/131462)）。
 
-More information about the replacements can be found in the [camera entity documentation](/core/entities/camera/).
+有关替代方案的更多信息，请参阅[摄像头实体文档](/core/entities/camera/)。

@@ -1,6 +1,6 @@
 ---
-title: async_listen in Labs is deprecated
-description: The async_listen helper in the labs integration has been deprecated in favor of async_subscribe_preview_feature.
+title: Labs 中的 async_listen 已弃用
+description: labs 集成中的 async_listen 辅助元素已被弃用，取而代之的是 async_subscribe_preview_feature。
 date: 2026-02-16
 authors:
   - Artur Pragacz
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-The `async_listen` helper in the `labs` integration has been deprecated in favor of `async_subscribe_preview_feature`.
+`labs` 集成中的 `async_listen` 辅助元素已被弃用，取而代之的是 `async_subscribe_preview_feature`。
 
-The new `async_subscribe_preview_feature` function provides a more consistent API, where the listener callback receives an `EventLabsUpdatedData` parameter containing the updated feature state. This eliminates the need to separately call `async_is_preview_feature_enabled` inside the listener to check the current value.
+新的 `async_subscribe_preview_feature` 函数提供了更一致的 API，监听器回调会接收一个包含更新后功能状态的 `EventLabsUpdatedData` 参数。这样就无需再在监听器内单独调用 `async_is_preview_feature_enabled` 来检查当前值。
 
-### Old usage
+### 旧用法
 
 ```python
 from homeassistant.components.labs import async_is_preview_feature_enabled, async_listen
@@ -30,7 +30,7 @@ async_listen(
 )
 ```
 
-### New usage
+### 新用法
 
 ```python
 from homeassistant.components.labs import EventLabsUpdatedData, async_subscribe_preview_feature
@@ -48,8 +48,8 @@ async_subscribe_preview_feature(
 )
 ```
 
-Note that the new listener is a coroutine function and receives `EventLabsUpdatedData` as a parameter.
+请注意，新的监听器是一个协程函数（coroutine function），并接收 `EventLabsUpdatedData` 作为参数。
 
-`async_listen` will be removed in Home Assistant 2027.3.
+`async_listen` 将在 Home Assistant 2027.3 中被移除。
 
-For more details, see [core PR #162648](https://github.com/home-assistant/core/pull/162648).
+更多详情，请参阅 [core PR #162648](https://github.com/home-assistant/core/pull/162648)。

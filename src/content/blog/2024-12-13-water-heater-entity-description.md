@@ -1,6 +1,6 @@
 ---
-title: Changed name of WaterHeaterEntityDescription
-description: A naming error of the entity description was found in the Water Heater integration, and we have now renamed WaterHeaterEntityEntityDescription to WaterHeaterEntityDescription in the 2025.1 release.
+title: WaterHeaterEntityDescription 名称变更
+description: 在热水器（Water Heater）集成中发现了一个实体描述（entity description）的命名错误，我们已在 2025.1 版本中将 WaterHeaterEntityEntityDescription 重命名为 WaterHeaterEntityDescription。
 date: 2024-12-13
 authors:
   - Ludovic Boué
@@ -8,7 +8,7 @@ areas:
   - core
 ---
 
-A naming error of the entity description was found in the Water Heater integration, and we have now renamed `WaterHeaterEntityEntityDescription` to `WaterHeaterEntityDescription` in the 2025.1 release.
-The old `WaterHeaterEntityEntityDescription` is deprecated, due for removal in 2026.1, and developpers are advised to use the new `WaterHeaterEntityDescription` instead.
+在热水器（Water Heater）集成中发现了一个实体描述（entity description）的命名错误，我们已在 2025.1 版本中将 `WaterHeaterEntityEntityDescription` 重命名为 `WaterHeaterEntityDescription`。
+旧的 `WaterHeaterEntityEntityDescription` 已被弃用，计划于 2026.1 版本移除，建议开发者改用新的 `WaterHeaterEntityDescription`。
 
-See details in the core PR: [#132888](https://github.com/home-assistant/core/pull/132888).
+详情请参阅 core PR：[#132888](https://github.com/home-assistant/core/pull/132888)。

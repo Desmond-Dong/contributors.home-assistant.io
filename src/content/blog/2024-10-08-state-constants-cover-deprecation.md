@@ -1,6 +1,6 @@
 ---
-title: Deprecating state constants for cover
-description: As of Home Assistant Core 2024.11, the constants used to return state in CoverEntity are deprecated and replaced by the CoverState enum.
+title: 弃用窗帘（cover）的状态常量
+description: 自 Home Assistant Core 2024.11 起，CoverEntity 中用于返回状态的常量已被弃用，并由 CoverState 枚举取代。
 date: 2024-10-08
 authors:
   - G Johansson
@@ -8,10 +8,10 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2024.11, the constants used to return state in `CoverEntity` are deprecated and replaced by the `CoverState` enum.
+自 Home Assistant Core 2024.11 起，`CoverEntity` 中用于返回状态的常量已被弃用，并由 `CoverState` 枚举（enum）取代。
 
-There is a one-year deprecation period, and the constants will stop working from 2025.11 to ensure all custom integration authors have time to adjust.
+弃用期为一年，这些常量将从 2025.11 起停止工作，以确保所有自定义集成（custom integration）的作者都有时间进行调整。
 
-As the `state` property is not meant to be overwritten, in most cases this change will only affect other Entity properties or tests rather than the `state` property.
+由于 `state` 属性本不应被覆盖，在大多数情况下，此更改只会影响其他 Entity 属性或测试，而不会影响 `state` 属性。
 
-More details can be found in the [cover documentation](/core/entities/cover/#states).
+更多详情请参阅[窗帘文档](/core/entities/cover/#states)。

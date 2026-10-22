@@ -1,6 +1,6 @@
 ---
-title: Remove deprecated light features
-description: In October 2022, Home Assistant migrated the preferred color temperature unit from mired to kelvin.
+title: 移除已弃用的灯功能
+description: 2022年10月，Home Assistant 将首选的色温单位从 mired（微倒度）迁移为开尔文（kelvin）。
 date: 2026-02-23
 authors:
   - epenet
@@ -8,26 +8,26 @@ areas:
   - core
 ---
 
-### Summary of changes
+### 变更摘要
 
-In October 2022, Home Assistant migrated the preferred color temperature unit from mired to kelvin.
+2022年10月，Home Assistant 将首选的色温单位从 mired（微倒度）迁移为开尔文（kelvin）。
 
-In [February 2024](/blog/2024/02/12/light-color-mode-mandatory), Home Assistant requested explicit `supported_color_modes` and `color_mode` properties (triggering deprecation of legacy fallback color mode support).
+在[2024年2月](/blog/2024/02/12/light-color-mode-mandatory)，Home Assistant 要求显式提供 `supported_color_modes` 和 `color_mode` 特性（从而弃用了旧版回退颜色模式支持）。
 
-In [December 2024](/blog/2024/12/14/kelvin-preferred-color-temperature-unit), Home Assistant requested explicit Kelvin support (triggering deprecation of mired support).
+在[2024年12月](/blog/2024/12/14/kelvin-preferred-color-temperature-unit)，Home Assistant 要求显式支持开尔文（Kelvin）（从而弃用了 mired 支持）。
 
-It is now time to clean up the legacy code and remove the corresponding attributes, constants and properties:
-* Remove deprecated `ATTR_COLOR_TEMP`, `ATTR_MIN_MIREDS`, `ATTR_MAX_MIREDS`, `ATTR_KELVIN`, `COLOR_MODE_***`, and `SUPPORT_***` constants
-* Remove deprecated state attributes `ATTR_COLOR_TEMP`, `ATTR_MIN_MIREDS` and `ATTR_MAX_MIREDS`
-* Remove deprecated support for `ATTR_KELVIN` and `ATTR_COLOR_TEMP` arguments from the `light.turn_on` service call
-* Remove deprecated support for `LightEntity.color_temp`, `LightEntity.min_mireds` and `LightEntity.max_mireds` properties from the entity
-* Remove deprecated support for `LightEntity._attr_color_temp`, `LightEntity._attr_min_mireds` and `LightEntity._attr_max_mireds` shorthand attributes from the entity
+现在是时候清理这些旧代码，并移除相应的属性、常量和特性了：
+* 移除已弃用的 `ATTR_COLOR_TEMP`、`ATTR_MIN_MIREDS`、`ATTR_MAX_MIREDS`、`ATTR_KELVIN`、`COLOR_MODE_***` 和 `SUPPORT_***` 常量
+* 移除已弃用的状态属性 `ATTR_COLOR_TEMP`、`ATTR_MIN_MIREDS` 和 `ATTR_MAX_MIREDS`
+* 从 `light.turn_on` 服务调用中移除对已弃用的 `ATTR_KELVIN` 和 `ATTR_COLOR_TEMP` 参数的支持
+* 从实体（entity）中移除对已弃用的 `LightEntity.color_temp`、`LightEntity.min_mireds` 和 `LightEntity.max_mireds` 特性的支持
+* 从实体中移除对已弃用的 `LightEntity._attr_color_temp`、`LightEntity._attr_min_mireds` 和 `LightEntity._attr_max_mireds` 简写属性的支持
 
-Additionally, failing to provide valid `supported_color_modes` and `color_mode` properties no longer works and will raise an error.
+此外，未能提供有效的 `supported_color_modes` 和 `color_mode` 特性将不再可行，并会引发错误。
 
-### Examples
+### 示例
 
-#### Custom minimum/maximum color temperature
+#### 自定义最小/最大色温
 
 ```python
 class MyLight(LightEntity):
@@ -42,7 +42,7 @@ class MyLight(LightEntity):
     _attr_max_color_temp_kelvin = 5000 # 200 mireds
 ```
 
-#### Default minimum/maximum color temperature
+#### 默认最小/最大色温
 
 ```python
 from homeassistant.components.light import DEFAULT_MAX_KELVIN, DEFAULT_MIN_KELVIN
@@ -56,7 +56,7 @@ class MyLight(LightEntity):
     _attr_max_color_temp_kelvin = DEFAULT_MAX_KELVIN
 ```
 
-#### Dynamic minimum/maximum color temperature
+#### 动态最小/最大色温
 
 ```python
 from homeassistant.util import color as color_util
@@ -83,7 +83,7 @@ class MyLight(LightEntity):
         return color_util.color_temperature_mired_to_kelvin(device.coldest_temperature)
 ```
 
-#### Checking color temperature in service call
+#### 在服务调用中检查色温
 
 ```python
 from homeassistant.components.light import ATTR_COLOR_TEMP_KELVIN
@@ -109,9 +109,9 @@ class MyLight(LightEntity):
             color_temp_mired = color_util.color_temperature_kelvin_to_mired(color_temp_kelvin)
 ```
 
-### Background information
+### 背景信息
 
-* [Community discussion about Kelvin temperature](https://community.home-assistant.io/t/wth-is-light-temperature-not-in-kelvin/467449/6)
-* [Core PR #79591: Migration to Kelvin](https://github.com/home-assistant/core/pull/79591)
-* [Architecture discussion #564](https://github.com/home-assistant/architecture/discussions/564)
-* [Color modes documentation](/core/entities/light/#color-modes)
+* [关于开尔文温度的社区讨论](https://community.home-assistant.io/t/wth-is-light-temperature-not-in-kelvin/467449/6)
+* [核心 PR #79591：迁移至开尔文](https://github.com/home-assistant/core/pull/79591)
+* [架构讨论 #564](https://github.com/home-assistant/architecture/discussions/564)
+* [颜色模式文档](/core/entities/light/#color-modes)

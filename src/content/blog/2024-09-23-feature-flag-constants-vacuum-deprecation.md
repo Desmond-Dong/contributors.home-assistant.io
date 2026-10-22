@@ -1,6 +1,6 @@
 ---
-title: Deprecating feature flag constants for Vacuum
-description: As of Home Assistant Core 2022.5, the feature flag constants used in StateVacuumEntity were deprecated and replaced by the VacuumEntityFeature enum.
+title: 弃用 Vacuum 的功能标志常量
+description: 自 Home Assistant Core 2022.5 起，StateVacuumEntity 中使用的功能标志常量已被弃用，并由 VacuumEntityFeature 枚举取代。
 date: 2024-09-23
 authors:
   - G Johansson
@@ -8,6 +8,6 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2022.5, the feature flag constants used in `StateVacuumEntity` were deprecated and replaced by the `VacuumEntityFeature` enum.
+自 Home Assistant Core 2022.5 起，`StateVacuumEntity` 中使用的功能标志常量（feature flag constants）已被弃用，并由 `VacuumEntityFeature` 枚举取代。
 
-However, there was no proper deprecation done and therefore now in 2024.10 we start the one-year deprecation period. The constants will stop working from 2025.10, to ensure all custom integration authors have time to adjust.
+然而，当时并未进行正式的弃用处理，因此现在在 2024.10 中，我们开启了为期一年的弃用期。这些常量将从 2025.10 起停止工作，以确保所有自定义集成（custom integration）的作者都有时间进行调整。

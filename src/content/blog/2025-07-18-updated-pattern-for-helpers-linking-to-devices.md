@@ -1,6 +1,6 @@
 ---
-title: Updated guidelines for helper integrations linking to other integration's device
-description: Helper integrations should not add their own config entries to the source entity's device or to a user selected device.
+title: 辅助元素集成关联其他集成设备的最新指南
+description: 辅助元素（helper）集成不应将其自身的配置条目（config entry）添加到源实体（entity）的设备（device）上，也不应添加到用户选择的设备上。
 date: 2025-07-18
 authors:
   - Erik Montnémery
@@ -8,19 +8,19 @@ areas:
   - core
 ---
 
-Helper integrations should not add their own config entries to the source entity's device or to a user selected device. Instead, they should just link their entities to the device of the source entity.
+辅助元素集成不应将其自身的配置条目添加到源实体的设备上，也不应添加到用户选择的设备上。相反，它们应只需将自己的实体（entity）链接到源实体的设备。
 
-Adding the helper config entry to another integration's device is no longer supported and will stop working in Home Assistant Core 2026.8.
+将辅助元素的配置条目添加到其他集成的设备上已不再受支持，并将在 Home Assistant Core 2026.8 版本中停止工作。
 
-### Background
+### 背景
 
-The architecture proposal [home-assistant/architecture#1226](https://github.com/home-assistant/architecture/discussions/1226) makes device connections and identifiers unique per integration domain instead of globally unique. This is not an issue for most integrations, but helper integrations with config flows are an exception.
+架构提案 [home-assistant/architecture#1226](https://github.com/home-assistant/architecture/discussions/1226) 使设备的连接和标识符按集成（integration）域唯一，而不是全局唯一。这对大多数集成来说不是问题，但带配置流程的辅助元素集成是个例外。
 
-### Suggested change
+### 建议的更改
 
-#### Link the helper entity directly to the source integration's device
+#### 将辅助元素实体直接链接到源集成的设备
 
-In the helper entity's constructor, set `self.device_entry` to the source device
+在辅助元素实体的构造函数中，将 `self.device_entry` 设置为源设备
 ```py
 class HelperEntity(Entity)
 
@@ -31,9 +31,9 @@ class HelperEntity(Entity)
         )
 ```
 
-#### Do not add the helper config entry to the source device directly
+#### 不要直接将辅助元素配置条目添加到源设备
 
-Do not add the config entry to the source device directly, meaning that this pattern is no longer allowed
+不要直接将配置条目添加到源设备，也就是说，这种模式已不再被允许
 ```py
 device_registry.async_update_device(
     source_device.id,
@@ -41,20 +41,20 @@ device_registry.async_update_device(
 )
 ```
 
-#### Do not add the helper config entry to the source device implicitly
+#### 不要隐式地将辅助元素配置条目添加到源设备
 
-Don’t set `self._attr_device_info` and don’t override `device_info` to return identifiers and connections for a device from another integration as that will mean the helper config entry is added to the source device. Instead, Set `self.device_entry` in the helper entity to link the helper entity to another integration's device as in the example above.
+不要设置 `self._attr_device_info`，也不要重写 `device_info` 来返回来自其他集成的设备的标识符和连接，因为这意味着辅助元素配置条目会被添加到源设备上。相反，请在辅助元素实体中设置 `self.device_entry`，以将辅助元素实体链接到其他集成的设备，如上例所示。
 
-#### Cleaning up the device registry
+#### 清理设备注册表
 
-A helper function, `homeassistant.helpers.helper_integration.async_remove_helper_config_entry_from_source_device` is available to aid the clean up. Core integrations have been modified to call this helper from a config entry migration step.
+有一个辅助函数 `homeassistant.helpers.helper_integration.async_remove_helper_config_entry_from_source_device` 可用于协助清理。核心集成已被修改为在配置条目迁移步骤中调用此辅助函数。
 
-#### Handling removed devices
+#### 处理已移除的设备
 
-It is up to the helper integration to decide how to handle a removed device; most core helpers set `self.device_entry` to `None`. Note that `DeviceRegistry.async_get` returns `None` if passed a `device_id` which doesn't exist.
+如何处理已移除的设备由辅助元素集成自行决定；大多数核心辅助元素会将 `self.device_entry` 设置为 `None`。请注意，如果传入不存在的 `device_id`，`DeviceRegistry.async_get` 会返回 `None`。
 
-#### Sample implementations
+#### 示例实现
 
-The derivative core integration, which previously added its config entry to the source entity's device, has been updated to just link the helper entity to the source entity's device in core [PR #148674](https://github.com/home-assistant/core/pull/148674).
+derivative 核心集成此前将其配置条目添加到源实体的设备上，现已在核心 [PR #148674](https://github.com/home-assistant/core/pull/148674) 中更新为仅将辅助元素实体链接到源实体的设备。
 
-The template core integration, which previously added its config entry to a user selected device, has been updated to just link the helper entity to the user selected device in core [PR #148756](https://github.com/home-assistant/core/pull/148756).
+template 核心集成此前将其配置条目添加到用户选择的设备上，现已在核心 [PR #148756](https://github.com/home-assistant/core/pull/148756) 中更新为仅将辅助元素实体链接到用户选择的设备。

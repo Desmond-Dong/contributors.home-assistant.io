@@ -1,6 +1,6 @@
 ---
-title: Standard event type for doorbell event entities
-description: Doorbell event entities now have a standard ring event type. Integrations that use EventDeviceClass.DOORBELL must include DoorbellEventType.RING in their event_types list.
+title: 门铃事件实体的标准事件类型
+description: 门铃事件实体现在有了标准的 ring 事件类型。使用 EventDeviceClass.DOORBELL 的集成必须在其 event_types 列表中包含 DoorbellEventType.RING。
 date: 2026-04-15
 authors:
   - Abílio Costa
@@ -8,21 +8,21 @@ areas:
   - core
 ---
 
-Doorbell event entities now have a standard `ring` event type. Integrations that use `EventDeviceClass.DOORBELL` must include `DoorbellEventType.RING` in their `event_types` list.
+门铃事件实体（event entity）现在有了标准的 `ring` 事件类型。使用 `EventDeviceClass.DOORBELL` 的集成（integration）必须在其 `event_types` 列表中包含 `DoorbellEventType.RING`。
 
-See the [architecture discussion](https://github.com/home-assistant/architecture/discussions/1363) for the full background.
+完整背景请参阅[架构讨论](https://github.com/home-assistant/architecture/discussions/1363)。
 
 <!--truncate-->
 
-## Why
+## 原因
 
-Previously, each integration used its own string for the "doorbell was pressed" event — `ding`, `ring`, `doorbell_chime`, `single_press`, etc. This inconsistency made it impossible to build generic doorbell automations that work across all integrations.
+此前，每个集成都使用自己的字符串来表示“门铃被按下”事件——`ding`、`ring`、`doorbell_chime`、`single_press` 等。这种不一致性导致无法构建适用于所有集成的通用门铃自动化（automation）。
 
-The new `DoorbellEventType.RING` standard event type solves this by ensuring every doorbell integration fires a common `ring` event when the doorbell is pressed.
+新的 `DoorbellEventType.RING` 标准事件类型解决了这个问题，它确保每个门铃集成在门铃被按下时都会触发一个通用的 `ring` 事件。
 
-## What to do
+## 需要做什么
 
-Import `DoorbellEventType` from `homeassistant.components.event` and include `DoorbellEventType.RING` in your doorbell entity's `event_types`. Fire it whenever the doorbell is pressed:
+从 `homeassistant.components.event` 导入 `DoorbellEventType`，并在门铃实体的 `event_types` 中包含 `DoorbellEventType.RING`。每当门铃被按下时触发该事件：
 
 ```python
 from homeassistant.components.event import DoorbellEventType, EventDeviceClass, EventEntity
@@ -40,8 +40,8 @@ class MyDoorbellEvent(EventEntity):
         self.async_write_ha_state()
 ```
 
-Additional custom event types (e.g., `double_press`, `long_press`) are still allowed alongside the standard `ring` type.
+除了标准的 `ring` 类型之外，仍然允许添加额外的自定义事件类型（例如 `double_press`、`long_press`）。
 
-Doorbell entities that do not include `DoorbellEventType.RING` will log a deprecation warning and will **stop working in Home Assistant 2027.4**.
+未包含 `DoorbellEventType.RING` 的门铃实体将记录弃用警告，并将在 **Home Assistant 2027.4** 中停止工作。
 
-For full details, see the [event entity documentation](/core/entities/event/).
+完整详情请参阅[事件实体文档](/core/entities/event/)。

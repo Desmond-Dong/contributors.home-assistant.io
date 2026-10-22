@@ -1,6 +1,6 @@
 ---
-title: Changes to the icon translations schema
-description: The icon translations schema has been adjusted to allow assigning icons for sections in services.
+title: 图标翻译架构（schema）的变更
+description: 图标翻译架构已进行调整，允许为服务中的分区指定图标。
 date: 2024-08-27
 authors:
   - Erik Montnémery
@@ -8,10 +8,10 @@ areas:
   - core
 ---
 
-The icon translations schema has been adjusted to allow assigning icons for [sections in services](/core/integrations/actions/).
-Icons for services should now be provided according to a more explicit schema, which allows specifying icons for sections.
+图标翻译架构（schema）已进行调整，允许为[服务中的分区](/core/integrations/actions/)指定图标。
+服务的图标现在应按照更明确的架构提供，该架构允许为分区指定图标。
 
-This allows specifying service icons like this:
+这样就可以像下面这样指定服务图标：
 ```json
   "services": {
     "test_service_1": {
@@ -23,15 +23,15 @@ This allows specifying service icons like this:
   }
 ```
 
-The old format is supported during a deprecation period of one year, to give time for custom integrations to migrate to the new schema:
+旧格式将在一年的弃用期内继续受支持，以便为自定义集成留出迁移到新架构的时间：
 ```json
   "services": {
     "test_service_1": "mdi:flask"
   }
 ```
 
-See [core PR #124656](https://github.com/home-assistant/core/pull/124656) for implementation details.
+实现细节请参见 [core PR #124656](https://github.com/home-assistant/core/pull/124656)。
 
-### Impact on custom cards
+### 对自定义卡片的影响
 
-Icons data sent to the frontend will always be according to the new format, custom cards displaying service icons need to be adjusted.
+发送到前端的图标数据将始终采用新格式，显示服务图标的自定义卡片需要进行相应调整。

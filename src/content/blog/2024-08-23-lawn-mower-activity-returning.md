@@ -1,6 +1,6 @@
 ---
-title: New returning type in LawnMowerActivity
-description: As of Home Assistant Core 2024.9, integrations implementing LawnMowerEntity can indicate that their mower is returning to the dock by using the new LawnMowerActivity.RETURNING state.
+title: LawnMowerActivity 中新增的 returning 类型
+description: 自 Home Assistant Core 2024.9 起，实现了 LawnMowerEntity 的集成可以使用新的 LawnMowerActivity.RETURNING 状态来指示其割草机正在返回充电座。
 date: 2024-08-23
 authors:
   - Michael Arthur
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2024.9, integrations implementing `LawnMowerEntity` can indicate that their mower is returning to the dock by using the new `LawnMowerActivity.RETURNING` state.
+自 Home Assistant Core 2024.9 起，实现了 `LawnMowerEntity` 的集成（integration）可以通过使用新的 `LawnMowerActivity.RETURNING` 状态（state）来指示其割草机正在返回充电座。
 
-More details can be found in the [documentation](/core/entities/lawn-mower/)
+更多详情请参阅[文档](/core/entities/lawn-mower/)。
 
-## Example
+## 示例
 
 ```python
     async def async_dock(self) -> None:
@@ -21,7 +21,7 @@ More details can be found in the [documentation](/core/entities/lawn-mower/)
         self.async_write_ha_state()
 ```
 
-or by returning `LawnMowerActivity.RETURNING` in the activity property of your `lawn_mower` entity.
+或者在 `lawn_mower` 实体（entity）的 activity 属性中返回 `LawnMowerActivity.RETURNING`。
 
 ```python
     @property

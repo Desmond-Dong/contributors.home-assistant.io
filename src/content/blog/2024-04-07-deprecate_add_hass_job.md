@@ -1,6 +1,6 @@
 ---
-title: Deprecating `async_add_hass_job`
-description: As part of an effort to improve performance and simplify the core job API, async_add_hass_job is deprecated and will be removed from Home Assistant in 2025.5.
+title: 弃用 `async_add_hass_job`
+description: 作为提升性能和简化核心任务 API 的一部分，async_add_hass_job 已被弃用，并将于 2025.5 从 Home Assistant 中移除。
 date: 2024-04-07
 authors:
   - J. Nick Koston
@@ -8,6 +8,6 @@ areas:
   - core
 ---
 
-As part of an effort to improve performance and simplify the core job API, `async_add_hass_job` is deprecated and will be removed from Home Assistant in 2025.5.
+作为提升性能和简化核心任务 API 的一部分，`async_add_hass_job` 已被弃用，并将于 2025.5 从 Home Assistant 中移除。
 
-Calls should be replaced with `async_run_hass_job` instead.
+调用应改用 `async_run_hass_job`。

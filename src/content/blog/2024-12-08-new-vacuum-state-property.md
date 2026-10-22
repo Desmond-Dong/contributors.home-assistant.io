@@ -1,6 +1,6 @@
 ---
-title: New vacuum state property
-description: As of Home Assistant Core 2025.1, the constants used to return state in StateVacuumEntity are deprecated and replaced by the VacuumActivity enum.
+title: 新的吸尘器状态属性
+description: 自 Home Assistant Core 2025.1 起，StateVacuumEntity 中用于返回状态的常量已被弃用，并由 VacuumActivity 枚举取代。
 date: 2024-12-08
 authors:
   - G Johansson
@@ -8,13 +8,13 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2025.1, the constants used to return state in `StateVacuumEntity` are deprecated and replaced by the `VacuumActivity` enum.
+自 Home Assistant Core 2025.1 起，`StateVacuumEntity` 中用于返回状态的常量已被弃用，并由 `VacuumActivity` 枚举取代。
 
-Also with this change, integrations should set the `activity` property instead of directly setting the `state` property.
+同时，随着此变更，集成（integration）应设置 `activity` 属性，而不是直接设置 `state` 属性。
 
-There is a one-year deprecation period, and the constants will stop working from 2026.1 to ensure all custom integration authors have time to adjust.
+弃用期为一年，这些常量将从 2026.1 起停止工作，以确保所有自定义集成作者都有时间进行调整。
 
-### Example
+### 示例
 
 ```python
 
@@ -32,4 +32,4 @@ class MyVacuumCleaner(StateVacuumEntity):
 
 ```
 
-More details can be found in the [vacuum documentation](/core/entities/vacuum/#states).
+更多详情请参阅[吸尘器文档](/core/entities/vacuum/#states)。

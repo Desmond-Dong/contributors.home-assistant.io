@@ -1,6 +1,6 @@
 ---
-title: Climate entity now supports independent horizontal swing
-description: As of Home Assistant Core 2024.12, we have implemented an independent property and method for controlling horizontal swing in ClimateEntity.
+title: 气候（climate）实体现已支持独立的水平摆动
+description: 自 Home Assistant Core 2024.12 起，我们在 ClimateEntity 中实现了一个用于控制水平摆动的独立属性和方法。
 date: 2024-12-03
 authors:
   - G Johansson
@@ -8,16 +8,16 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2024.12, we have implemented an independent property and method for controlling horizontal swing in `ClimateEntity`.
+自 Home Assistant Core 2024.12 起，我们在 `ClimateEntity` 中实现了一个用于控制水平摆动的独立属性和方法。
 
-Integrations that support completely independent control and state for vertical and horizontal swing can now use the previous `swing_mode` for vertical swing only and use the new `swing_horizontal_mode` for providing the horizontal swing state and control.
+对于垂直摆动和水平摆动支持完全独立控制与状态的集成，现在可以仅将原来的 `swing_mode` 用于垂直摆动，并使用新的 `swing_horizontal_mode` 来提供水平摆动的状态和控制。
 
-Integrations that don't have independent control should still keep using the current `swing_mode` for both vertical and horizontal support.
+不具备独立控制的集成仍应继续使用现有的 `swing_mode` 来同时支持垂直和水平摆动。
 
 
-### Example
+### 示例
 
-Example requirements to implement `swing` and `swing_horizontal` in your climate entity.
+在你的气候实体中实现 `swing` 和 `swing_horizontal` 的示例要求。
 
 ```python
 
@@ -71,5 +71,4 @@ class MyClimateEntity(ClimateEntity):
 
 ```
 
-More details can be found in the [climate documentation](/core/entities/climate/).
-
+更多详细信息请参阅[气候（climate）文档](/core/entities/climate/)。

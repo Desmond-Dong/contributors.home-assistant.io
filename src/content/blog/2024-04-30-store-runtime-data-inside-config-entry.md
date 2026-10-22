@@ -1,6 +1,6 @@
 ---
-title: Store runtime data inside the config entry
-description: Integrations often need to set up and track custom data, such as coordinators, API connections, or code objects.
+title: 在配置条目（config entry）中存储运行时数据
+description: 集成（integration）通常需要设置和跟踪自定义数据，例如协调器（coordinator）、API 连接或代码对象。
 date: 2024-04-30
 authors:
   - Marc Mueller
@@ -8,13 +8,13 @@ areas:
   - core
 ---
 
-Integrations often need to set up and track custom data, such as coordinators, API connections, or code objects. Previously, those were all stored inside `hass.data`, which made tracking them difficult.
+集成通常需要设置和跟踪自定义数据，例如协调器（coordinator）、API 连接或代码对象。以前，这些数据都存储在 `hass.data` 中，这使得跟踪它们变得困难。
 
-With recent changes, it's now possible to use `entry.runtime_data` for that. The config entry is already available when setting up platforms and gets cleaned up automatically. No more deleting the key from `hass.data` after unloading.
+随着近期的改动，现在可以使用 `entry.runtime_data` 来实现这一点。配置条目在设置平台时已经可用，并且会被自动清理。再也不用在卸载后从 `hass.data` 中删除对应的键了。
 
-It also better supports type-checking. `ConfigEntry` is generic now, so passing the data type along is possible. Use a typed data structure like `dataclass` for that. To simplify the annotation, it's recommended to define a type alias for it.
+它还更好地支持了类型检查。`ConfigEntry` 现在是泛型的，因此可以传递数据类型。为此请使用类型化的数据结构，例如 `dataclass`。为了简化注解，建议为其定义一个类型别名（type alias）。
 
-An example could look like this:
+示例如下：
 ```py
 # <integration>/__init__.py
 

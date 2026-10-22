@@ -1,6 +1,6 @@
 ---
-title: Changes in setup entity platforms with group integration
-description: By default, the group integration allows entities to be grouped. If the default ON/OFF states for an entity default to on and off, then grouping is supported by default.
+title: group 集成中实体平台设置的更改
+description: 默认情况下，group 集成允许将实体（entity）分组。如果实体的默认 ON/OFF 状态默认为 on 和 off，则默认支持分组。
 date: 2024-05-10
 authors:
   - Jan Bouwhuis
@@ -8,15 +8,15 @@ areas:
   - core
 ---
 
-## Changes in setup entity platforms with group integration
+## group 集成中实体平台设置的更改
 
-By default, the `group` integration allows entities to be grouped. If the default `ON`/`OFF` states for an entity default to `on` and `off`, then `grouping` is supported by default. The setup changes, though, for Entity platforms that can be grouped but have alternative states, e.g., `cover` (`open`/`closed`) or `person` (`home`/`not_home`), or platforms that are meant to be excluded, such as `sensor`. These entity platforms must implement `async_describe_on_off_states` in the `group.py` module.
+默认情况下，`group` 集成允许将实体（entity）分组。如果实体的默认 `ON`/`OFF` 状态默认为 `on` 和 `off`，则默认支持 `grouping`。不过，对于可以被分组但具有替代状态的实体平台（例如 `cover`（`open`/`closed`）或 `person`（`home`/`not_home`）），以及打算排除在外的平台（例如 `sensor`），设置方式则有所变化。这些实体平台必须在 `group.py` 模块中实现 `async_describe_on_off_states`。
 
-In `async_describe_on_off_states`, the `domain` needs to be the first argument passed to the `registry` methods `on_off_states` and `exclude_domain`. When registering alternative `ON`/`OFF` states with `registry.on_off_state`, in addition to the `ON` states, the default `ON` state needs to be passed.
+在 `async_describe_on_off_states` 中，`domain` 需要作为传给 `registry` 方法 `on_off_states` 和 `exclude_domain` 的第一个参数。使用 `registry.on_off_state` 注册替代 `ON`/`OFF` 状态时，除了各个 `ON` 状态之外，还需要传入默认的 `ON` 状态。
 
-### Example registering alternative states
+### 注册替代状态的示例
 
-New signature for `registry.on_off_states`:
+`registry.on_off_states` 的新签名：
 
 ```python
     @callback
@@ -27,7 +27,7 @@ New signature for `registry.on_off_states`:
     ...
 ```
 
-Example `group.py` for the `vacuum` entity platform registering alternative `ON`/`OFF` states. Note the the first `ON` state now is considered to be the default `ON` state.
+用于 `vacuum` 实体平台注册替代 `ON`/`OFF` 状态的 `group.py` 示例。注意，第一个 `ON` 状态现在被视为默认的 `ON` 状态。
 
 ```python
 """Describe group states."""
@@ -62,9 +62,9 @@ def async_describe_on_off_states(
     )
 ```
 
-### Example excluding an entity platform from group entities
+### 将实体平台排除在 group 实体之外的示例
 
-New signature for `registry.exclude_domain`:
+`registry.exclude_domain` 的新签名：
 
 ```python
     @callback
@@ -73,7 +73,7 @@ New signature for `registry.exclude_domain`:
         ...
 ```
 
-Example `group.py` for the `sensor` entity platform to exclude sensor entities from `group` entities.
+用于 `sensor` 实体平台将传感器实体排除在 `group` 实体之外的 `group.py` 示例。
 
 ```python
 """Describe group states."""

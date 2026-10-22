@@ -1,6 +1,6 @@
 ---
-title: Changes in OAuth 2.0 helper error handling
-description: Starting as of 2026.3, we're enhancing how the OAuth 2.0 helper handles token request and refresh token failures.
+title: OAuth 2.0 辅助元素错误处理的变更
+description: 从 2026.3 开始，我们将改进 OAuth 2.0 辅助元素处理令牌请求和刷新令牌失败的方式。
 date: 2026-02-19
 authors:
   - Erwin Douna
@@ -8,40 +8,40 @@ areas:
   - core
 ---
 
-## Summary of changes
+## 变更摘要
 
-Starting as of `2026.3`, we're enhancing how the OAuth 2.0 helper handles token request and refresh token failures. This change makes error handling more robust, decoupled from the aiohttp library and helps integrations, that utilize the [Data Update Coordinator](/core/integrations/fetching-data/), to automatically trigger the right error handling.
+从 `2026.3` 开始，我们将改进 OAuth 2.0 辅助元素（helper）处理令牌请求（token request）和刷新令牌（refresh token）失败的方式。此变更使错误处理更加健壮，与 aiohttp 库解耦，并帮助使用[数据更新协调器（Data Update Coordinator）](/core/integrations/fetching-data/)的集成自动触发正确的错误处理。
 
-## What changes
+## 变更内容
 
-When an OAuth 2.0 token request or token refresh failed, Home Assistant would allow the underlying `aiohttp.ClientResponseError` to propagate directly to the integration. This behavior is being changed and enhanced. 
+当 OAuth 2.0 令牌请求或令牌刷新失败时，Home Assistant 会允许底层的 `aiohttp.ClientResponseError` 直接传播到集成。我们正在对这一行为进行修改和增强。
 
-We're introducing three new exceptions that provide clearer semantics:
-- `OAuth2TokenRequestTransientError` - Recoverable errors, that can be retried.
-- `OAuth2TokenRequestReauthError` - Non-recoverable errors, that require a reauthentication.
-- `OAuth2TokenRequestError` - Base exception for when the above two criteria aren't met or to enable the integration to catch all token request exceptions.
+我们引入了三个新的异常，以提供更清晰的语义：
+- `OAuth2TokenRequestTransientError` - 可恢复的错误，可以重试。
+- `OAuth2TokenRequestReauthError` - 不可恢复的错误，需要重新认证（reauthentication）。
+- `OAuth2TokenRequestError` - 基础异常，用于上述两个条件都不满足的情况，或用于让集成能够捕获所有令牌请求异常。
 
-### Data Update Coordinator
+### 数据更新协调器（Data Update Coordinator）
 
-Most integrations that use the OAuth 2.0 helper, also use the Data Update Coordinator. When a token request or refresh token fails, the exceptions will bubble up in the Data Update Coordinator and now triggers the following error handling:
+大多数使用 OAuth 2.0 辅助元素的集成也使用数据更新协调器。当令牌请求或刷新令牌失败时，异常会在数据更新协调器中向上冒泡，现在会触发以下错误处理：
 
-For unrecoverable errors (400+, except 429 (rate limit)):
+对于不可恢复的错误（400 及以上，429（速率限制）除外）：
 
-- `OAuth2TokenRequestReauthError`: Data Update Coordinator raises `ConfigEntryAuthFailed` if exceptions should be raised or starts a reauthentication flow.
+- `OAuth2TokenRequestReauthError`：数据更新协调器会在应当抛出异常时引发 `ConfigEntryAuthFailed`，否则会启动重新认证流程。
 
-For transient errors (500+ and 429):
+对于临时错误（500 及以上和 429）：
 
-- `OAuth2TokenRequestTransientError`: Data Update Coordinator treats it as an `UpdateFailed` and the retry mechanism will be triggered.
+- `OAuth2TokenRequestTransientError`：数据更新协调器会将其视为 `UpdateFailed`，并触发重试机制。
 
-This means that integrations that use the OAuth 2.0 helper in combination with the Data Update Coordinator don’t need to do any special handling of the new exceptions.
+这意味着同时使用 OAuth 2.0 辅助元素和数据更新协调器的集成无需对新异常进行任何特殊处理。
 
-### Migration
+### 迁移
 
-Integrations that today use the OAuth 2.0 helper and handle `aiohttp.ClientResponseError` explicitly should adjust their error handling to deal with the new exceptions. To ease this transition, we have added a compatibility layer by having the new OAuth exceptions inherit from `aiohttp.ClientResponseError`. Existing code that catches this exception type should continue to work. It is however encouraged to refactor the code to use the new exceptions. See the code example for details.
+目前使用 OAuth 2.0 辅助元素并显式处理 `aiohttp.ClientResponseError` 的集成，应调整其错误处理方式以应对新的异常。为了简化这一过渡，我们添加了一个兼容层，让新的 OAuth 异常继承自 `aiohttp.ClientResponseError`。捕获此异常类型的现有代码应能继续正常工作。不过，我们鼓励重构代码以使用新的异常。详见代码示例。
 
-#### Code example of migration
+#### 迁移代码示例
 
-Update the exception handling and then continue to work out if it's a (non-)recoverable error in the integration. For example:
+更新异常处理，然后在集成中继续判断这是（非）可恢复错误。例如：
 
 ```python
     try:

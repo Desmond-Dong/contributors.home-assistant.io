@@ -1,6 +1,6 @@
 ---
-title: Frontend new way of dialogs
-description: Each dialog managed by the dialog manager was only opened once and stayed in the DOM for the lifetime of the application.
+title: 前端实现对话框的新方式
+description: 由对话框管理器管理的每个对话框只会被打开一次，并在应用程序的整个生命周期中保留在 DOM 中。
 date: 2026-03-25
 authors:
   - Wendelin Peleska
@@ -8,22 +8,22 @@ areas:
   - frontend
 ---
 
-## The Problem
+## 问题
 
-Each dialog managed by the dialog manager was only opened once and stayed in the DOM for the lifetime of the application. This causes:
+由对话框管理器管理的每个对话框只会被打开一次，并在应用程序的整个生命周期中保留在 DOM 中。这会导致：
 
-- **More memory usage**: Dialogs accumulate in the DOM even when not visible
-- **More bugs because of missing state reset**: Dialog state persists between opens, leading to stale data or unexpected behavior
+- **内存占用更高**：即使不可见，对话框也会在 DOM 中不断累积
+- **因缺少状态重置而产生更多错误**：对话框状态在多次打开之间持续保留，导致过期的数据或意外行为
 
-## The Solution: DialogMixin
+## 解决方案：DialogMixin
 
-We implemented a new way of handling dialogs using `DialogMixin`. With this approach:
+我们使用 `DialogMixin` 实现了一种处理对话框的新方式。通过这种方式：
 
-- **Dialogs are created when opened and destroyed when closed**: No need to manually reset the state of the dialog when it is closed
-- **Closed events are automatically handled**: The dialog mixin takes care of cleanup
-- **Subscribe mixin can now be used in dialogs**: Since dialogs are properly destroyed, subscriptions are cleaned up automatically
-- **Use normal Lit lifecycle methods**: Use `connectedCallback` to initialize when the dialog is opened instead of relying on the `showDialog` method
+- **对话框在打开时创建，在关闭时销毁**：无需在对话框关闭时手动重置其状态
+- **关闭事件会被自动处理**：对话框 mixin 会负责清理工作
+- **Subscribe mixin 现在可以在对话框中使用**：由于对话框会被正确销毁，订阅会被自动清理
+- **使用正常的 Lit 生命周期方法**：使用 `connectedCallback` 在对话框打开时进行初始化，而不是依赖 `showDialog` 方法
 
-## Example
+## 示例
 
-Check out `ha-dialog-date-picker` for a reference implementation. `DialogMixin` adds dialog params to `this.params` if available.
+请查看 `ha-dialog-date-picker` 作为参考实现。如果可用，`DialogMixin` 会将对话框参数添加到 `this.params` 中。

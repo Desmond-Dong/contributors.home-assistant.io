@@ -1,6 +1,6 @@
 ---
-title: Changes to the UnitOfConductivity enum
-description: "The UnitOfConductivity enum has been changed from:"
+title: UnitOfConductivity 枚举的变更
+description: "UnitOfConductivity 枚举已从以下内容更改为："
 date: 2024-10-08
 authors:
   - Erik Montnémery
@@ -8,7 +8,7 @@ areas:
   - core
 ---
 
-The `UnitOfConductivity` enum has been changed from:
+`UnitOfConductivity` 枚举已从以下内容更改为：
 
 ```py
   class UnitOfConductivity(StrEnum):
@@ -19,7 +19,7 @@ The `UnitOfConductivity` enum has been changed from:
     MILLISIEMENS = "mS/cm"
 ```
 
-To:
+更改为：
 
 ```py
   class UnitOfConductivity(StrEnum):
@@ -30,6 +30,6 @@ To:
     MILLISIEMENS_PER_CM = "mS/cm"
 ```
 
-The old enum members can be used during a deprecation period of one year, to give time for custom integrations to migrate to the new enum members.
+旧的枚举成员可以在一年的弃用期（deprecation period）内继续使用，以便为自定义集成（custom integrations）留出时间迁移到新的枚举成员。
 
-See [core PR #127919](https://github.com/home-assistant/core/pull/127919) for implementation details.
+实现细节请参见 [core PR #127919](https://github.com/home-assistant/core/pull/127919)。

@@ -1,6 +1,6 @@
 ---
-title: Vacuum battery properties are deprecated
-description: As of Home Assistant Core 2025.8, the two properties for battery in StateVacuumEntity, battery_level and battery_icon, have been deprecated.
+title: 吸尘器电池属性已弃用
+description: 自 Home Assistant Core 2025.8 起，StateVacuumEntity 中与电池相关的两个属性 battery_level 和 battery_icon 已被弃用。
 date: 2025-07-02
 authors:
   - G Johansson
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2025.8, the two properties for battery in `StateVacuumEntity`, `battery_level` and `battery_icon`, have been deprecated.
+自 Home Assistant Core 2025.8 起，`StateVacuumEntity` 中与电池相关的两个属性 `battery_level` 和 `battery_icon` 已被弃用。
 
-The `battery_level` and `battery_icon` properties should be replaced by a separate sensor with the `battery` sensor device class and optionally a customized icon if the default icon of the battery sensor device class isn't wanted.
-Optionally consider to also provide a binary sensor with the `charging` device class if it's currently charging or not.
+`battery_level` 和 `battery_icon` 属性应替换为一个使用 `battery` 传感器设备类别（device class）的独立传感器，如果不想要电池传感器设备类别的默认图标，还可以选择自定义图标。
+此外，还可以考虑提供一个使用 `charging` 设备类别的二进制传感器（binary sensor），用于指示当前是否正在充电。
 
-There is a one-year deprecation period, and the two battery properties will stop working from 2026.8 to ensure all custom integration authors have time to adjust.
+弃用期为一年，这两个电池属性将从 2026.8 起停止工作，以确保所有自定义集成（custom integration）作者都有时间进行调整。
 
-More details can be found in the [architectural decision](https://github.com/home-assistant/architecture/discussions/938).
+更多详情请参阅[架构决策](https://github.com/home-assistant/architecture/discussions/938)。

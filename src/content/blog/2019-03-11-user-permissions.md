@@ -12,7 +12,7 @@ areas:
 
 在 Home Assistant 0.90 之前，我们并没有使用其中任何功能。相反，所有用户都属于 admin 组，因为该组提供的访问权限与我们拥有权限系统之前相同。在 0.90 中，我们将允许在系统组 "admin" 和 "users" 之间切换用户组。当用户属于 "users" 组时，他们将无法管理 Home Assistant。UI 会隐藏用于打开配置面板或开发者工具的菜单项。
 
-![Screenshot showing a user in the users group](/img/en/blog/2019-03-user-permissions/screenshot.png)
+![显示 users 组中用户的屏幕截图](/img/en/blog/2019-03-user-permissions/screenshot.png)
 
 然而，这项功能尚未完成。我们需要审计 Home Assistant 的代码，以确保所有 API 和服务（service）调用都会检查用户权限。因此，尽管用户将无法使用 UI 进行更改，但仍可能存在可以在没有权限的情况下访问的 API。而且我们不仅需要检查 Home Assistant 的代码，注册了服务或 API 的自定义组件也必须更新。
 

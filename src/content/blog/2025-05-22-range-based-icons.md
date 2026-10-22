@@ -1,6 +1,6 @@
 ---
-title: Icon translations now support ranges
-description: Icon translations now support defining icons based on numeric ranges. This means integration authors can define icons that change based on numeric values without implementing custom logic in their code.
+title: 图标翻译现已支持范围
+description: 图标翻译现在支持基于数值范围定义图标。这意味着集成作者可以定义随数值变化而变化的图标，而无需在其代码中实现自定义逻辑。
 date: 2025-05-22
 authors:
   - Franck Nijhof
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-Icon translations now support defining icons based on numeric ranges. This means integration authors can define icons that change based on numeric values without implementing custom logic in their code.
+图标翻译（icon translations）现在支持基于数值范围来定义图标。这意味着集成（integration）作者可以定义随数值变化而变化的图标，而无需在其代码中实现自定义逻辑。
 
-Previously, icon translations only supported state-based icons, where specific states would map to specific icons. While this works well for discrete states like "on"/"off", it required custom code to handle numeric values like battery levels or signal strength indicators.
+此前，图标翻译仅支持基于状态（state）的图标，即特定状态映射到特定图标。虽然这种方式对于“开”/“关”等离散状态效果很好，但要处理电池电量或信号强度指示等数值，则需要自定义代码。
 
-Range-based icons are defined in the `icons.json` file:
+基于范围的图标定义在 `icons.json` 文件中：
 
 ```json
 {
@@ -39,10 +39,10 @@ Range-based icons are defined in the `icons.json` file:
 }
 ```
 
-The system selects the icon associated with the highest range value that's less than or equal to the entity's current value. For example:
+系统会选择与小于或等于实体（entity）当前值的最大范围值相关联的图标。例如：
 
-- A value of 15 will show the `mdi:battery-10` icon
-- A value of 45 will show the `mdi:battery-40` icon
-- A value of 100 will show the `mdi:battery` icon
+- 值为 15 时将显示 `mdi:battery-10` 图标
+- 值为 45 时将显示 `mdi:battery-40` 图标
+- 值为 100 时将显示 `mdi:battery` 图标
 
-For implementation details, see the [icon translations documentation](/core/quality-scale/icon-translations/).
+有关实现细节，请参阅[图标翻译文档](/core/quality-scale/icon-translations/)。

@@ -1,6 +1,6 @@
 ---
-title: The result attribute has been removed from the FlowResult typed dict
-description: The result attribute has been removed from the homeassistant.data_entry_flow.FlowResult typed dict, and is now present only when needed, i.e. homeassistant.auth.models.AuthFlowResult and homeassistant.config_entries.ConfigFlowResult.
+title: result 属性已从 FlowResult typed dict 中移除
+description: result 属性已从 homeassistant.data_entry_flow.FlowResult typed dict 中移除，现在仅在需要时才存在，即 homeassistant.auth.models.AuthFlowResult 和 homeassistant.config_entries.ConfigFlowResult。
 date: 2025-07-31
 authors:
   - Erik Montnémery
@@ -8,6 +8,6 @@ areas:
   - core
 ---
 
-The result attribute has been removed from the `homeassistant.data_entry_flow.FlowResult` typed dict, and is now present only when needed, i.e. `homeassistant.auth.models.AuthFlowResult` and `homeassistant.config_entries.ConfigFlowResult`.
+result 属性已从 `homeassistant.data_entry_flow.FlowResult` typed dict 中移除，现在仅在需要时才存在，即 `homeassistant.auth.models.AuthFlowResult` 和 `homeassistant.config_entries.ConfigFlowResult`。
 
-The change is not expected to affect runtime behavior of custom integrations, but custom integration authors may need to update tests and any classes derived from `homeassistant.data_entry_flow.FlowResult` that use a `result` attribute, to silence type-checker warnings.
+此更改预计不会影响自定义集成的运行时行为，但自定义集成开发者可能需要更新测试，以及更新任何派生自 `homeassistant.data_entry_flow.FlowResult` 且使用了 `result` 属性的类，以消除类型检查器的警告。

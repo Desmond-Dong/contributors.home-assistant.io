@@ -1,6 +1,6 @@
 ---
-title: Alarm Control Panel Entity code validation
-description: The AlarmControlPanelEntity is now enforcing validation of code for alarm control panel entities, which set code_arm_required to True (default behavior).
+title: 报警控制面板实体代码验证
+description: AlarmControlPanelEntity 现在会对将 code_arm_required 设置为 True（默认行为）的报警控制面板实体强制执行代码验证。当需要代码时，如果未提供代码，服务调用将失败。
 date: 2024-05-22
 authors:
   - G Johansson
@@ -8,8 +8,8 @@ areas:
   - core
 ---
 
-The `AlarmControlPanelEntity` is now enforcing validation of code for alarm control panel entities, which set `code_arm_required` to `True` (default behavior). Service calls fail if no code is provided when a code is required.
+`AlarmControlPanelEntity` 现在会对报警控制面板（alarm control panel）实体强制执行代码验证，这些实体将 `code_arm_required` 设置为 `True`（默认行为）。当需要代码时，如果未提供代码，服务调用（service call）将失败。
 
-Previously this was entirely optional, and a user could skip code entry regardless of it was needed by the integration or not (and as such each integration needed to implement its own check).
+以前这完全是可选的，用户可以跳过代码输入，而不管集成（integration）是否需要代码（因此每个集成都需要自行实现检查）。
 
-As the default behavior is that code is required, custom integrations that don't require a code input need to set `code_arm_required` to `False` or the user will always have to input a code regardless of if it's needed by the service calls.
+由于默认行为是需要代码，不需要代码输入的自定义集成需要将 `code_arm_required` 设置为 `False`，否则无论服务调用是否需要，用户都将始终需要输入代码。

@@ -1,6 +1,6 @@
 ---
-title: Translating units of measurement
-description: Home Assistant 2024.12 will support the translation of custom units of measurement.
+title: 翻译计量单位
+description: Home Assistant 2024.12 将支持自定义计量单位的翻译。
 date: 2024-11-21
 authors:
   - Abílio Costa
@@ -8,9 +8,9 @@ areas:
   - core
 ---
 
-Home Assistant 2024.12 will support the translation of custom units of measurement. Previously, those would have been hardcoded in their integrations.
+Home Assistant 2024.12 将支持自定义计量单位的翻译。此前，这些单位都是硬编码在各自的集成（integration）中的。
 
-Just like for entity names, integrations just need to set the `translation_key` on the entity definition and provide the unit designation in the `strings.json` file (with the new `unit_of_measurement` key):
+与实体（entity）名称一样，集成只需在实体定义中设置 `translation_key`，并在 `strings.json` 文件中提供单位名称（使用新的 `unit_of_measurement` 键）：
 
 ```json
 {
@@ -24,4 +24,4 @@ Just like for entity names, integrations just need to set the `translation_key` 
 }
 ```
 
-Check our [backend localization documentation](/core/integrations/translations/) for details.
+详情请查看我们的[后端本地化文档](/core/integrations/translations/)。

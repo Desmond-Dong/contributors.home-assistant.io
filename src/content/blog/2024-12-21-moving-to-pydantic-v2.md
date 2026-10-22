@@ -1,6 +1,6 @@
 ---
-title: Moving to Pydantic v2
-description: Pydantic is a widely used library in Python for data validation. On June 30, 2023, Pydantic v2 was released, introducing significant changes that are not backward compatible with Pydantic v1.
+title: 迁移至 Pydantic v2
+description: Pydantic 是 Python 中广泛使用的数据验证库。2023 年 6 月 30 日，Pydantic v2 正式发布，带来了许多重大变化，这些变化与 Pydantic v1 不向后兼容。
 date: 2024-12-21
 authors:
   - Joost Lekkerkerker
@@ -8,10 +8,10 @@ areas:
   - core
 ---
 
-Pydantic is a widely used library in Python for data validation. On June 30, 2023, Pydantic v2 was released, introducing significant changes that are not backward compatible with Pydantic v1.
+Pydantic 是 Python 中广泛使用的数据验证库。2023 年 6 月 30 日，Pydantic v2 正式发布，带来了许多重大变化，这些变化与 Pydantic v1 不向后兼容。
 
-Starting with Home Assistant Core 2025.1, Pydantic v2 will replace v1. If your custom integration uses Pydantic, it must be updated to support Pydantic v2 to keep working in the upcoming release.
+从 Home Assistant Core 2025.1 开始，Pydantic v2 将取代 v1。如果您的自定义集成（custom integration）使用了 Pydantic，则必须进行更新以支持 Pydantic v2，才能在即将发布的版本中继续正常工作。
 
-Over the past year, our community has worked hard to ensure that the libraries used by Home Assistant Core are compatible with both Pydantic v1 and v2. This dual compatibility has helped make our transition to Pydantic v2 as smooth as possible.
+在过去的一年里，我们的社区付出了大量努力，确保 Home Assistant Core 所使用的库能够同时兼容 Pydantic v1 和 v2。这种双重兼容性帮助我们的 Pydantic v2 迁移过程尽可能顺利。
 
-For a quick migration, you can use the Pydantic v1 shims included in Pydantic v2. Detailed information about using these shims in a v1/v2 environment can be found in the [Pydantic migration guide](https://docs.pydantic.dev/latest/migration/#using-pydantic-v1-features-in-a-v1v2-environment).
+如需快速迁移，您可以使用 Pydantic v2 中内置的 Pydantic v1 shim（兼容垫片）。有关在 v1/v2 环境中使用这些 shim 的详细信息，请参阅 [Pydantic 迁移指南](https://docs.pydantic.dev/latest/migration/#using-pydantic-v1-features-in-a-v1v2-environment)。

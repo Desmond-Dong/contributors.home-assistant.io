@@ -1,6 +1,6 @@
 ---
-title: Changes to ConfigSubentryFlow
-description: ConfigSubentryFlow._reconfigure_entry_id has been renamed to ConfigSubentryFlow._entry_id and ConfigSubentryFlow._get_reconfigure_entry has been renamed to ConfigSubentryFlow._get_entry.
+title: ConfigSubentryFlow 的变更
+description: ConfigSubentryFlow._reconfigure_entry_id 已重命名为 ConfigSubentryFlow._entry_id，ConfigSubentryFlow._get_reconfigure_entry 已重命名为 ConfigSubentryFlow._get_entry。
 date: 2025-03-24
 authors:
   - Erik Montnémery
@@ -8,10 +8,10 @@ areas:
   - core
 ---
 
-`ConfigSubentryFlow._reconfigure_entry_id` has been renamed to `ConfigSubentryFlow._entry_id` and `ConfigSubentryFlow._get_reconfigure_entry` has been renamed to `ConfigSubentryFlow._get_entry`.
+`ConfigSubentryFlow._reconfigure_entry_id` 已重命名为 `ConfigSubentryFlow._entry_id`，`ConfigSubentryFlow._get_reconfigure_entry` 已重命名为 `ConfigSubentryFlow._get_entry`。
 
-The reason for the change is that both sub entry user flows and subentry reconfigure flows need access to parent config entry, e.g. getting options, data, etc.
+进行此更改的原因是，子项（subentry）用户流程和子项重新配置流程都需要访问父级配置项（config entry），例如获取选项、数据等。
 
-Custom integrations which call either of the renamed methods need to update their implementations.
+调用了上述任一被重命名方法的自定义集成（custom integration）需要更新其实现。
 
-The change is introduced in the [home assistant core PR #141017](https://github.com/home-assistant/core/pull/141017).
+此更改已在 [home assistant core PR #141017](https://github.com/home-assistant/core/pull/141017) 中引入。

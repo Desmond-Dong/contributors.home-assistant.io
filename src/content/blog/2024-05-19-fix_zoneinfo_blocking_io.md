@@ -1,6 +1,6 @@
 ---
-title: Handling time zones without blocking the event loop
-description: Constructing ZoneInfo objects may do blocking I/O to load the zone info from disk if the timezone passed is not in the cache.
+title: 在不阻塞事件循环的情况下处理时区
+description: 如果传入的时区不在缓存中，构造 ZoneInfo 对象可能会执行阻塞 I/O 以从磁盘加载时区信息。
 date: 2024-05-19
 authors:
   - J. Nick Koston
@@ -8,12 +8,12 @@ areas:
   - core
 ---
 
-Constructing `ZoneInfo` objects may do blocking I/O to load the zone info from disk if the timezone passed is not in the cache.
+如果传入的时区不在缓存中，构造 `ZoneInfo` 对象可能会执行阻塞 I/O 以从磁盘加载时区信息。
 
-`dt_util.async_get_time_zone` is now available to replace `dt_util.get_time_zone` to fetch a time zone in the event loop which is async safe and will not do blocking I/O in the event loop.
+`dt_util.async_get_time_zone` 现已可用，用于替代 `dt_util.get_time_zone`，以便在事件循环（event loop）中获取时区。它是异步安全的，并且不会在事件循环中执行阻塞 I/O。
 
-`hass.config.set_time_zone` is deprecated and replaced with `hass.config.async_set_time_zone`. `hass.config.set_time_zone` will be removed in 2025.6. Setting the time zone only affects tests, as no integration should be calling this function in production. 
+`hass.config.set_time_zone` 已弃用，并由 `hass.config.async_set_time_zone` 取代。`hass.config.set_time_zone` 将在 2025.6 中被移除。设置时区仅影响测试，因为任何集成（integration）都不应在生产环境中调用此函数。
 
-Examining `dt_util.DEFAULT_TIME_ZONE` directly is deprecated and `dt_util.get_default_time_zone()` should be used instead.
+直接检查 `dt_util.DEFAULT_TIME_ZONE` 的做法已弃用，应改用 `dt_util.get_default_time_zone()`。
 
-If your integration needs to construct `ZoneInfo` objects in the event loop, it is recommended to use the [`aiozoneinfo` library](https://pypi.org/project/aiozoneinfo/).
+如果您的集成需要在事件循环中构造 `ZoneInfo` 对象，建议使用 [`aiozoneinfo` 库](https://pypi.org/project/aiozoneinfo/)。

@@ -1,6 +1,6 @@
 ---
-title: New HVACAction DEFROSTING
-description: The ClimateEntity has an hvac_action property, which describes what the climate entity is currently doing (which is not the same as its mode).
+title: 新增 HVACAction DEFROSTING
+description: ClimateEntity 有一个 hvac_action 属性，用于描述气候实体（climate entity）当前正在执行的操作（这与其模式并不相同）。
 date: 2024-07-07
 authors:
   - G Johansson
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-The `ClimateEntity` has an `hvac_action` property, which describes what the climate entity is currently doing (which is not the same as its mode).
+`ClimateEntity` 有一个 `hvac_action` 属性，用于描述气候实体（climate entity）当前正在执行的操作（这与其模式并不相同）。
 
-We have added `DEFROSTING` as a possible `HVACAction` to represent when an entity is currently defrosting.
+我们添加了 `DEFROSTING` 作为 `HVACAction` 的一个可能取值，用于表示实体当前正在进行除霜。
 
-Defrosting is when the system runs in reverse for some time to melt down accumulated ice. It occurs typically in colder environments and should not be mixed with, for example, cars that are defrosting by heating their windows.
+除霜是指系统反向运行一段时间，以融化积聚的冰。这种情况通常发生在较寒冷的环境中，不应与例如汽车通过加热车窗来进行除霜的情况相混淆。
 
 ```python
 from homeassistant.components.climate.const import HVACAction
@@ -26,6 +26,6 @@ class MyClimateEntity(ClimateEntity):
 
 ```
 
-More details can be found in the [climate entity documentation](/core/entities/climate/#hvac-actions)
+更多详细信息可在[气候实体文档](/core/entities/climate/#hvac-actions)中找到
 
-Background for the original change is in [architecture discussion #1090](https://github.com/home-assistant/architecture/discussions/1090).
+最初变更的背景信息可在[架构讨论 #1090](https://github.com/home-assistant/architecture/discussions/1090)中找到。

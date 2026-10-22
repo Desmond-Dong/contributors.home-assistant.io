@@ -1,6 +1,6 @@
 ---
-title: Device tracker TrackerEntity location accuracy attribute type change
-description: The type of location_accuracy attribute (short hand _attr_location_accuracy) of the TrackerEntity class of the device_tracker entity component has been changed from int to float.
+title: Device tracker TrackerEntity 位置精度属性类型变更
+description: device_tracker 实体组件的 TrackerEntity 类的 location_accuracy 属性（简写 _attr_location_accuracy）的类型已从 int 更改为 float。
 date: 2025-04-24
 authors:
   - Jan Bouwhuis
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-The type of `location_accuracy` attribute (short hand `_attr_location_accuracy`) of the `TrackerEntity` class of the `device_tracker` entity component has been changed from `int` to `float`.
+`device_tracker` 实体组件（entity component）的 `TrackerEntity` 类的 `location_accuracy` 属性（简写为 `_attr_location_accuracy`）的类型已从 `int` 更改为 `float`。
 
-Type conversions in case the source value is a `float` are no longer needed.
+如果源值为 `float`，则不再需要进行类型转换。
 
-### Example
+### 示例
 
 ```python
 class ExampleTrackerEntity(TrackerEntity):

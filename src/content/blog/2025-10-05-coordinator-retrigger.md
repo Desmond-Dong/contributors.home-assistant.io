@@ -1,6 +1,6 @@
 ---
-title: Update coordinator now allows retriggering
-description: The update coordinator with debouncer active will now accept a request for an update while an update is currently in progress.
+title: 更新协调器现在支持重新触发
+description: 启用防抖器（debouncer）的更新协调器（update coordinator）现在可以在一次更新正在进行时接受新的更新请求。
 date: 2025-10-05
 authors:
   - Joakim Plate
@@ -8,11 +8,9 @@ areas:
   - core
 ---
 
-The update coordinator with debouncer active will now accept a request for an update
-while an update is currently in progress. The request will be queued up to be performed
-after the current update finishes.
+启用防抖器（debouncer）的更新协调器（update coordinator）现在可以在一次更新正在进行时接受新的更新请求。该请求会被排入队列，在当前更新完成后执行。
 
-Consider the following case:
+考虑以下情形：
 
 ```python
 async def _update():
@@ -22,14 +20,8 @@ async def _update():
     return (a,b)
 ```
 
-A user or code that request an updates at timestamp `A` expects that the entities linked will
-all get new data from that time. However, since we previously ignored that request, entities
-would have data for the value of `a` that is from a time before the update request that was ignored.
+在时间戳 `A` 发起更新请求的用户或代码，期望所关联的实体会全部获取从那一刻起的新数据。然而，由于我们之前会忽略该请求，实体所拥有的 `a` 值数据可能来自被忽略的那次更新请求之前的时间。
 
-To make sure we avoid this case, the update coordinator will now schedule an additional
-update, if a request is received while currently executing an update.
+为了避免这种情况，更新协调器现在会在正在执行更新的过程中收到请求时，额外调度一次更新。
 
-A side effect of this is that it is now possible to schedule an update from inside an update
-function of the coordinator. That is useful if for example a connection is lost mid update,
-and we want all entities to indicate directly as unavailable, yet we want to attempt a
-re-connect as quick as possible but do that in the next update cycle.
+这样做的一个附带效果是，现在可以在协调器的更新函数内部调度一次更新。这在例如更新过程中连接中断时会很有用：我们希望所有实体立即显示为不可用（unavailable），同时又希望尽快尝试重新连接，但把重连放在下一个更新周期中进行。

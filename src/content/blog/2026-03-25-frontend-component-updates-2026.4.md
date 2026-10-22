@@ -1,6 +1,6 @@
 ---
-title: Frontend component updates 2026.4
-description: We keep migrating our Material Design based components to Web Awesome based. This time we migrated the input components, which leads to an API change but the look and feel stays the same for now.
+title: 前端组件更新 2026.4
+description: 我们持续将基于 Material Design 的组件迁移到基于 Web Awesome 的组件。这次我们迁移了输入组件，这带来了 API 变更，但外观和体验暂时保持不变。
 date: 2026-03-25
 authors:
   - Wendelin Peleska
@@ -9,20 +9,20 @@ areas:
 ---
 
 > [!NOTE]
-> We do not officially support or encourage custom card developers to use our built in components. This component APIs can always change and you should build your card as independent component.
+> 我们不官方支持也不鼓励自定义卡片开发者使用我们内置的组件。这些组件的 API 可能随时变更，您应该将卡片构建为独立的组件。
 
 ## ha-input
 
-We keep migrating our Material Design based components to Web Awesome based. This time we migrated the input components, which leads to an API change but the look and feel stays the same for now.
+我们持续将基于 Material Design 的组件迁移到基于 Web Awesome 的组件。这次我们迁移了输入组件，这带来了 API 变更，但外观和体验暂时保持不变。
 
-- `ha-input` is the successor of `ha-textfield`
-  - `ha-textfield` API stays but the component is migrated to use `ha-input` internally and will be removed in 2026.5
-  - Also replaces `ha-outlined-text-field`
-- `ha-input-search` replaces `search-input` and `search-input-outlined`
-- `ha-input-multi` replaces `ha-multi-textfield`
-- `ha-input-copy` replaces `copy-textfield`
+- `ha-input` 是 `ha-textfield` 的后继者
+  - `ha-textfield` 的 API 保持不变，但该组件已迁移为在内部使用 `ha-input`，并将在 2026.5 中被移除
+  - 同时也替代了 `ha-outlined-text-field`
+- `ha-input-search` 替代了 `search-input` 和 `search-input-outlined`
+- `ha-input-multi` 替代了 `ha-multi-textfield`
+- `ha-input-copy` 替代了 `copy-textfield`
 
-This component also introduces new semantic theme variables for form backgrounds:  
+该组件还为表单背景引入了新的语义化主题变量：  
 
 ```css
 --ha-color-form-background: var(--ha-color-neutral-95);
@@ -30,6 +30,6 @@ This component also introduces new semantic theme variables for form backgrounds
 --ha-color-form-background-disabled: var(--ha-color-neutral-80);
 ```
 
-## Date picker
+## 日期选择器
 
-We finally removed the Vue 2 dependency by replacing the date and date range picker with [Cally](https://wicky.nillia.ms/cally/).
+我们通过用 [Cally](https://wicky.nillia.ms/cally/) 替代日期和日期范围选择器，最终移除了 Vue 2 依赖。

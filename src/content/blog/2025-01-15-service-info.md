@@ -1,6 +1,6 @@
 ---
-title: Relocate dhcp/ssdp/usb/zeroconf ServiceInfo models
-description: "To reduce current reliance on optional integrations for names that are in essence used as helpers, the following ServiceInfo models have been relocated:"
+title: 迁移 dhcp/ssdp/usb/zeroconf ServiceInfo 模型
+description: "为了减少当前对可选集成（integration）的依赖——这些名称本质上是被用作辅助元素（helper）的——以下 ServiceInfo 模型已被迁移："
 date: 2025-01-15
 authors:
   - epenet
@@ -8,23 +8,23 @@ areas:
   - core
 ---
 
-### Summary of changes
+### 变更摘要
 
-To reduce current reliance on optional integrations for names that are in essence used as helpers, the following ServiceInfo models have been relocated:
-- `DhcpServiceInfo` from `homeassistant.components.dhcp` to `homeassistant.helpers.service_info.dhcp`
-- `SsdpServiceInfo` from `homeassistant.components.ssdp` to `homeassistant.helpers.service_info.ssdp`
-- `UsbServiceInfo` from `homeassistant.components.usb` to `homeassistant.helpers.service_info.usb`
-- `ZeroconfServiceInfo` from `homeassistant.components.zeroconf` to `homeassistant.helpers.service_info.zeroconf`
-
-
-To update your integration:
-1. Replace the import statements as shown in the examples below
-2. Test your integration with the new imports
-
-The old import locations are deprecated and will be removed in Home Assistant 2026.2.
+为了减少当前对可选集成（integration）的依赖——这些名称本质上是被用作辅助元素（helper）的——以下 ServiceInfo 模型已被迁移：
+- `DhcpServiceInfo` 从 `homeassistant.components.dhcp` 迁移至 `homeassistant.helpers.service_info.dhcp`
+- `SsdpServiceInfo` 从 `homeassistant.components.ssdp` 迁移至 `homeassistant.helpers.service_info.ssdp`
+- `UsbServiceInfo` 从 `homeassistant.components.usb` 迁移至 `homeassistant.helpers.service_info.usb`
+- `ZeroconfServiceInfo` 从 `homeassistant.components.zeroconf` 迁移至 `homeassistant.helpers.service_info.zeroconf`
 
 
-### Examples
+要更新您的集成：
+1. 按照下方示例替换 import 语句
+2. 使用新的 import 测试您的集成
+
+旧的 import 位置已被弃用，并将在 Home Assistant 2026.2 中移除。
+
+
+### 示例
 
 ```python
 # Old

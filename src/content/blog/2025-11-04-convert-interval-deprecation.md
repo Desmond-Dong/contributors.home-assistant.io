@@ -1,6 +1,6 @@
 ---
-title: TemperatureConverter.convert_interval deprecation
-description: The method convert_interval in TemperatureConverter (allowing conversions between °F and °C intervals) has been deprecated in favor of TemperatureDeltaConverter.convert.
+title: TemperatureConverter.convert_interval 已弃用
+description: TemperatureConverter 中的 convert_interval 方法（用于在 °F 和 °C 温度区间之间进行换算）已被弃用，推荐改用 TemperatureDeltaConverter.convert。
 date: 2025-11-04
 authors:
   - Davide Perteghella
@@ -8,7 +8,7 @@ areas:
   - core
 ---
 
-The method `convert_interval` in `TemperatureConverter` (allowing conversions between °F and °C intervals) has been deprecated in favor of `TemperatureDeltaConverter.convert`.
-The new converter and device class are now the preferred way to deal with temperature intervals.
+`TemperatureConverter` 中的 `convert_interval` 方法（用于在 °F 和 °C 温度区间之间进行换算）已被弃用，取而代之的是 `TemperatureDeltaConverter.convert`。
+现在，新的转换器和设备类（device class）已成为处理温度区间的首选方式。
 
-For details, see [core PR 155689](https://github.com/home-assistant/core/pull/155689) and [core PR 147358](https://github.com/home-assistant/core/pull/147358).
+详情请参阅 [core PR 155689](https://github.com/home-assistant/core/pull/155689) 和 [core PR 147358](https://github.com/home-assistant/core/pull/147358)。
