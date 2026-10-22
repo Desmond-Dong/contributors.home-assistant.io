@@ -29,9 +29,9 @@ import { join } from "node:path";
 import { randomBytes } from "node:crypto";
 import { execFile } from "node:child_process";
 
-const API_BASE = (process.env.TRANSLATION_API_BASE || "https://api.openai.com/v1").replace(/\/$/, "");
-const API_KEY = process.env.TRANSLATION_API_KEY || "";
-const MODEL = process.env.TRANSLATION_MODEL || "gpt-4o-mini";
+const API_BASE = (process.env.LLM_API_URL || process.env.TRANSLATION_API_BASE || "https://api.openai.com/v1").replace(/\/$/, "");
+const API_KEY = process.env.LLM_API_KEY || process.env.TRANSLATION_API_KEY || "";
+const MODEL = process.env.LLM_MODEL || process.env.TRANSLATION_MODEL || "gpt-4o-mini";
 const PROXY = process.env.TRANSLATION_PROXY || "";
 const REASONING_EFFORT = process.env.TRANSLATION_REASONING_EFFORT || "";
 const CONCURRENCY = Number(process.env.TRANSLATION_CONCURRENCY || 2);
