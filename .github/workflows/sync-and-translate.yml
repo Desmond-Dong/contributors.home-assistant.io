@@ -18,9 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
-      LLM_API_URL: ${{ vars.LLM_API_URL || 'https://api.openai.com/v1' }}
-      LLM_MODEL: ${{ vars.LLM_MODEL || 'gpt-4o-mini' }}
-      TRANSLATION_REASONING_EFFORT: ${{ vars.TRANSLATION_REASONING_EFFORT || '' }}
+      LLM_API_URL: ${{ secrets.LLM_API_URL }}
+      LLM_MODEL: ${{ secrets.LLM_MODEL }}
     steps:
       - name: Checkout Chinese branch
         uses: actions/checkout@v4
