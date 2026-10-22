@@ -185,16 +185,24 @@ async function chatCompletion(bodyObject) {
 }
 
 async function translateOnce(path, userPrompt) {
-  const data = await chatCompletion({
+  const reasoning = process.env.LLM_REASONING; // "none" | "low" | "high" | "max"
+  const params = {
     model: MODEL,
     temperature: 0,
     stream: true,
-    enable_thinking: false,  // 硅基流动关闭思考链
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userPrompt },
     ],
-  });
+  };
+  // 硅基流动等端点用 enable_thinking；有些端点不支持关闭，只能用
+  // reasoning_effort: low/high/max（此时省略 enable_thinking 参数）。
+  if (!reasoning || reasoning === "none") {
+    params.enable_thinking = false;
+  } else {
+    params.reasoning_effort = reasoning;
+  }
+  const data = await chatCompletion(params);
   let text = data;
   text = text.trim();
   if (/^```[^\n]*\n/.test(text)) text = text.replace(/^```[^\n]*\n/, "");
@@ -227,6 +235,9 @@ async function translateFile(path) {
       await translateOnce(path, `${parts.join("\n")}${extra ? `\n--- ${extra}` : ""}`),
       blocks,
     );
+
+  const RETRY_NOTE =
+    "Your previous translation did not preserve the structure exactly: keep every heading, list, table, paragraph and inline code one-to-one with the source, translate only the prose, and never merge, split, add or drop elements.";
 
   let translated = await attemptTranslate();
 
