@@ -1,6 +1,6 @@
 ---
-title: New device and state class selectors
-description: New selectors are available to choose a device class or sensor state class.
+title: 新的设备类别和状态类别选择器
+description: 新增了用于选择设备类别或传感器状态类别的选择器。
 date: 2026-09-04
 authors:
   - Jan Bouwhuis
@@ -8,13 +8,13 @@ areas:
   - core
 ---
 
-New [selectors](https://www.home-assistant.io/docs/blueprint/selectors/) are available to choose a device class or sensor state class.
+新增了[选择器](https://www.home-assistant.io/docs/blueprint/selectors/)，可用于选择设备类别或传感器状态类别。
 
-These selectors can be used in config flows and blueprints when requesting a device or state class from the user.
+在向用户请求设备类别或状态类别时，这些选择器可用于配置流程和蓝图中。
 
-## Device class selector
+## 设备类别选择器
 
-The new `DeviceClassSelector` is available for selecting device classes in config flows and blueprints. It supports device classes for the following platforms:
+新的 `DeviceClassSelector` 可用于在配置流程和蓝图中选择设备类别。它支持以下平台的设备类别：
 
 ```python
 Platform.BINARY_SENSOR: BinarySensorDeviceClass
@@ -31,9 +31,9 @@ Platform.UPDATE: UpdateDeviceClass
 Platform.VALVE: ValveDeviceClass
 ```
 
-### Device class selector examples
+### 设备类别选择器示例
 
-Example of a device class selector that returns a single device class:
+返回单个设备类别的设备类别选择器示例：
 
 ```python
 vol.Schema(
@@ -45,7 +45,7 @@ vol.Schema(
 )
 ```
 
-Example of a device class selector that returns multiple device classes as a list:
+以列表形式返回多个设备类别的设备类别选择器示例：
 
 ```python
 vol.Schema(
@@ -60,13 +60,13 @@ vol.Schema(
 )
 ```
 
-## Sensor state class selector
+## 传感器状态类别选择器
 
-The new `StateClassSelector` is available for selecting sensor state classes in config flows and blueprints.
+新的 `StateClassSelector` 可用于在配置流程和蓝图中选择传感器状态类别。
 
-### Sensor state class selector examples
+### 传感器状态类别选择器示例
 
-Example of a sensor state class selector that returns a single state class:
+返回单个状态类别的传感器状态类别选择器示例：
 
 ```python
 vol.Schema(
@@ -76,7 +76,7 @@ vol.Schema(
 )
 ```
 
-Example of a sensor state class selector that returns a single state class with only a filtered subset of available state classes:
+返回单个状态类别且仅包含可用状态类别过滤子集的传感器状态类别选择器示例：
 
 ```python
 vol.Schema(
@@ -93,7 +93,7 @@ vol.Schema(
 )
 ```
 
-Example of a state class selector that returns multiple state classes as a list:
+以列表形式返回多个状态类别的状态类别选择器示例：
 
 ```python
 vol.Schema(
@@ -105,10 +105,10 @@ vol.Schema(
 )
 ```
 
-## Migrating existing device and state class selectors
+## 迁移现有的设备类别和状态类别选择器
 
-Unlike using a generic `SelectSelector`, the `DeviceClassSelector` allows the frontend to automatically translate device classes into user-friendly names.
+与使用通用的 `SelectSelector` 不同，`DeviceClassSelector` 允许前端自动将设备类别翻译为用户友好的名称。
 
-Existing implementations that select a device or state class using `SelectSelector` should be migrated to use `DeviceClassSelector` or `StateClassSelector`. After migration, any stale translations related to the old selector values should be removed.
+使用 `SelectSelector` 选择设备类别或状态类别的现有实现应迁移为使用 `DeviceClassSelector` 或 `StateClassSelector`。迁移后，应删除与旧选择器值相关的任何过时翻译。
 
-The [Selectors](https://www.home-assistant.io/docs/blueprint/selectors/) documentation has been updated to include the new selectors.
+[选择器](https://www.home-assistant.io/docs/blueprint/selectors/)文档已更新，包含了这些新的选择器。

@@ -1,6 +1,6 @@
 ---
-title: Introducing new unit enumerators
-description: "As of Home Assistant Core 2026.7, the following unit constants are deprecated and replaced by a corresponding enum:"
+title: 引入新的单位枚举
+description: "自 Home Assistant Core 2026.7 起，以下单位常量已被弃用，并由相应的枚举替代："
 date: 2026-06-30
 authors:
   - epenet
@@ -8,16 +8,13 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2026.7, the following unit constants are deprecated and replaced 
-by a corresponding enum:
+自 Home Assistant Core 2026.7 起，以下单位常量已被弃用，并由相应的枚举替代：
 
-  - `UnitOfDensity` enumerator replaces mass over volume `CONCENTRATION_***` constants
-    (`"g/m³"`, `"mg/m³"`, `"μg/m³"`, `"μg/ft³"`)
-  - `UnitOfRatio` enumerator replaces unit-less ratio `CONCENTRATION_***` constants
-    (`"ppm"`, `"ppb"`)
+  - `UnitOfDensity` 枚举替代了质量除以体积的 `CONCENTRATION_***` 常量
+    （`"g/m³"`、`"mg/m³"`、`"μg/m³"`、`"μg/ft³"`）
+  - `UnitOfRatio` 枚举替代了无单位比率的 `CONCENTRATION_***` 常量
+    （`"ppm"`、`"ppb"`）
 
-`CONCENTRATION_PARTS_PER_CUBIC_METER` was only used by a single integration and is deprecated
-without a replacement unit.
+`CONCENTRATION_PARTS_PER_CUBIC_METER` 仅被单个集成（integration）使用，现已被弃用且没有替代单位。
 
-Please note that the use of `PERCENTAGE` constant is also deprecated when used as a unit of 
-measurement, even if the constant itself is not deprecated.
+请注意，当 `PERCENTAGE` 常量用作测量单位时，其使用也已被弃用，即使该常量本身并未被弃用。

@@ -1,6 +1,6 @@
 ---
-title: Frontend component updates in 2026.8
-description: We added ha-split-panel, a Home Assistant wrapper around the Web Awesome split panel component.
+title: 2026.8 前端组件更新
+description: 我们新增了 ha-split-panel，这是 Web Awesome 分屏组件的 Home Assistant 封装。
 date: 2026-07-31
 authors:
   - Jan-Philipp Benecke
@@ -8,13 +8,13 @@ areas:
   - frontend
 ---
 
-## Component updates
+## 组件更新
 
 ### ha-split-panel
 
-We added `ha-split-panel`, a Home Assistant wrapper around the Web Awesome split panel component.
+我们新增了 `ha-split-panel`，这是 Web Awesome 分屏组件的 Home Assistant 封装。
 
-Use it when a Home Assistant page, dialog, or tool needs a resizable two-pane layout. Custom card authors can use Home Assistant frontend components, but internal Home Assistant UI APIs may change.
+当 Home Assistant 页面、对话框或工具需要可调整大小的双窗格布局时，可以使用它。自定义卡片作者可以使用 Home Assistant 前端组件，但 Home Assistant 内部 UI API 可能会发生变化。
 
 ```html
 <ha-split-panel position="40" snap="50%">
@@ -23,7 +23,7 @@ Use it when a Home Assistant page, dialog, or tool needs a resizable two-pane la
 </ha-split-panel>
 ```
 
-New component-specific tokens:
+新的组件专属令牌：
 
 ```css
 --ha-split-panel-divider-width
@@ -33,11 +33,11 @@ New component-specific tokens:
 --ha-split-panel-grip-display
 ```
 
-### ha-tile-info updates
+### ha-tile-info 更新
 
-`ha-tile-info` gained more layout controls for custom cards and tile-like surfaces.
+`ha-tile-info` 为自定义卡片和类磁贴界面增加了更多布局控制。
 
-New component-specific tokens:
+新的组件专属令牌：
 
 ```css
 --ha-tile-info-gap
@@ -46,13 +46,13 @@ New component-specific tokens:
 --ha-tile-info-primary-line-clamp
 ```
 
-Use `--ha-tile-info-primary-line-clamp` when the primary text should wrap to more than one line, and use the min-height tokens to keep rows aligned when some tiles have secondary text and others do not.
+当主文本需要换行到多行时，请使用 `--ha-tile-info-primary-line-clamp`；当部分磁贴有副文本而其他磁贴没有时，请使用最小高度令牌以保持行对齐。
 
-## Form and selector updates
+## 表单和选择器更新
 
-### Conditional ha-form fields
+### 条件性 ha-form 字段
 
-`ha-form` schemas now support conditional field visibility with `visible`.
+`ha-form` 模式现在支持通过 `visible` 控制字段的条件可见性。
 
 ```ts
 [
@@ -68,7 +68,7 @@ Use `--ha-tile-info-primary-line-clamp` when the primary text should wrap to mor
 ]
 ```
 
-Supported operators are:
+支持的操作符包括：
 
 ```ts
 "eq"
@@ -79,13 +79,13 @@ Supported operators are:
 "not_exists"
 ```
 
-You can also combine conditions with `and`, `or`, and `not`.
+你还可以使用 `and`、`or` 和 `not` 组合条件。
 
-Hidden fields are not rendered and are skipped during validation, so use `visible` instead of custom frontend-only hiding logic when a form field depends on another value.
+隐藏字段不会被渲染，并且在验证时会被跳过，因此当表单字段依赖于另一个值时，请使用 `visible` 而不是自定义的仅前端隐藏逻辑。
 
-### Selector additions
+### 选择器新增
 
-The text selector now supports HTML pattern validation:
+文本选择器现在支持 HTML pattern 验证：
 
 ```ts
 {
@@ -96,9 +96,9 @@ The text selector now supports HTML pattern validation:
 }
 ```
 
-This works for both single-value and multiple-value text selectors.
+这适用于单值和多值文本选择器。
 
-Entity selectors can now filter by properties of the entity's device:
+实体（entity）选择器现在可以根据实体所属设备的属性进行过滤：
 
 ```ts
 {
@@ -114,15 +114,15 @@ Entity selectors can now filter by properties of the entity's device:
 }
 ```
 
-A new `ui_clock_date_format` selector was also added for the clock card date format editor.
+还为时钟卡片日期格式编辑器新增了一个 `ui_clock_date_format` 选择器。
 
-## Lovelace updates
+## Lovelace 更新
 
-### state_color is moving to color
+### state_color 迁移至 color
 
-The `entities` and `glance` cards now support `color` as the replacement for `state_color`.
+`entities` 和 `glance` 卡片现在支持使用 `color` 来替代 `state_color`。
 
-Before:
+修改前：
 
 ```yaml
 type: entities
@@ -131,7 +131,7 @@ entities:
   - light.kitchen
 ```
 
-After:
+修改后：
 
 ```yaml
 type: entities
@@ -140,15 +140,15 @@ entities:
   - light.kitchen
 ```
 
-Use `color: state` for the old `state_color: true` behavior, and `color: none` for `state_color: false`.
+使用 `color: state` 实现旧的 `state_color: true` 行为，使用 `color: none` 实现 `state_color: false` 行为。
 
-## Custom panels and apps
+## 自定义面板和应用
 
-### Safe-area handling
+### 安全区域处理
 
-Custom panels and add-on app iframes now get safe-area padding by default, so content stays clear of notches, status bars, and home indicators.
+自定义面板和附加组件应用 iframe 现在默认获得安全区域内边距，因此内容会避开刘海、状态栏和主屏幕指示条。
 
-Custom panels that already handle safe areas themselves can opt out:
+已经自行处理安全区域的自定义面板可以选择退出：
 
 ```yaml
 panel_custom:
@@ -157,7 +157,7 @@ panel_custom:
     handle_safe_area: true
 ```
 
-For iframe-based custom panels, Home Assistant forwards the resolved safe-area values into the iframe document as CSS variables:
+对于基于 iframe 的自定义面板，Home Assistant 会将解析后的安全区域值作为 CSS 变量转发到 iframe 文档中：
 
 ```css
 --safe-area-inset-top
@@ -166,7 +166,7 @@ For iframe-based custom panels, Home Assistant forwards the resolved safe-area v
 --safe-area-inset-left
 ```
 
-Add-on app iframes can also opt into managing the safe area themselves when subscribing to Home Assistant properties:
+附加组件应用 iframe 在订阅 Home Assistant 属性时，也可以选择自行管理安全区域：
 
 ```js
 window.parent.postMessage(
@@ -178,15 +178,15 @@ window.parent.postMessage(
 );
 ```
 
-The properties message then includes `safeAreaInsets`.
+此时属性消息将包含 `safeAreaInsets`。
 
-## Context and editor infrastructure
+## 上下文和编辑器基础设施
 
-### Global dirty state
+### 全局脏状态
 
-`DirtyStateProviderMixin` now also publishes a global dirty state.
+`DirtyStateProviderMixin` 现在还会发布全局脏状态。
 
-When any connected dirty-state provider has unsaved changes, `window.isDirtyState` is set and Home Assistant fires a `dirty-state-changed` event.
+当任何已连接的脏状态提供者存在未保存的更改时，将设置 `window.isDirtyState` 并且 Home Assistant 会触发 `dirty-state-changed` 事件。
 
 ```ts
 window.addEventListener("dirty-state-changed", (ev) => {
@@ -194,4 +194,4 @@ window.addEventListener("dirty-state-changed", (ev) => {
 });
 ```
 
-This is useful for shared infrastructure that needs to avoid disrupting active editors or dialogs with unsaved changes.
+这对于需要避免中断带有未保存更改的活动编辑器或对话框的共享基础设施非常有用。

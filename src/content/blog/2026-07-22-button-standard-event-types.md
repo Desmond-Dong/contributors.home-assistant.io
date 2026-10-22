@@ -1,6 +1,6 @@
 ---
-title: Standard event types for button event entities
-description: Button event entities now have a set of standard event types, provided by the new ButtonEventType enum.
+title: 按钮事件实体的标准事件类型
+description: 按钮事件实体现在拥有一组标准事件类型，由新的 ButtonEventType 枚举提供。
 date: 2026-07-22
 authors:
   - Abílio Costa
@@ -8,36 +8,36 @@ areas:
   - core
 ---
 
-Button event entities now have a set of standard event types, provided by the new `ButtonEventType` enum. Integrations that use `EventDeviceClass.BUTTON` should use these types instead of custom strings whenever the interaction maps to one of them.
+按钮事件实体（entity）现在拥有一组标准事件类型，由新的 `ButtonEventType` 枚举提供。使用 `EventDeviceClass.BUTTON` 的集成（integration）在交互映射到这些标准类型之一时，应使用这些类型而不是自定义字符串。
 
-See the [architecture discussion](https://github.com/home-assistant/architecture/discussions/1377) for the full background.
+有关完整背景信息，请参阅[架构讨论](https://github.com/home-assistant/architecture/discussions/1377)。
 
 <!--truncate-->
 
-## Why
+## 原因
 
-Previously, each integration picked its own strings for button interactions — `single`, `click`, `hold`, `double_press`, and so on. This inconsistency made it impossible to build generic button automations that work across integrations, and prevented the frontend from offering meaningful trigger suggestions.
+以前，每个集成（integration）都会为按钮交互选择自己的字符串——例如 `single`、`click`、`hold`、`double_press` 等等。这种不一致性导致无法构建跨集成通用的按钮自动化（automation），也阻止了前端提供有意义的触发器建议。
 
-The new `ButtonEventType` standard event types solve this by giving every button integration a shared vocabulary for the common interactions.
+新的 `ButtonEventType` 标准事件类型通过为每个按钮集成提供通用交互的共享词汇表来解决这一问题。
 
-## The event types
+## 事件类型
 
-`ButtonEventType` defines six standard event types:
+`ButtonEventType` 定义了六种标准事件类型：
 
-- `ButtonEventType.PRESS_START`: the button was pressed down.
-- `ButtonEventType.PRESS_END`: the button was released after a brief press (the standard "click").
-- `ButtonEventType.LONG_PRESS_START`: the button was held past a duration threshold.
-- `ButtonEventType.LONG_PRESS_END`: the button was released after a long hold.
-- `ButtonEventType.MULTI_PRESS_ONGOING`: an intermediate press in a multi-press sequence was detected.
-- `ButtonEventType.MULTI_PRESS_END`: a multi-press sequence completed.
+- `ButtonEventType.PRESS_START`：按钮被按下。
+- `ButtonEventType.PRESS_END`：按钮在短暂按下后被释放（标准的“点击”）。
+- `ButtonEventType.LONG_PRESS_START`：按钮被按住并超过了持续时间阈值。
+- `ButtonEventType.LONG_PRESS_END`：按钮在长时间按住后被释放。
+- `ButtonEventType.MULTI_PRESS_ONGOING`：检测到多次按压序列中的中间按压。
+- `ButtonEventType.MULTI_PRESS_END`：多次按压序列完成。
 
-The `MULTI_PRESS_ONGOING` and `MULTI_PRESS_END` events include a `multi_press_count` attribute in their event data (the `ATTR_MULTI_PRESS_COUNT` constant) with the number of presses.
+`MULTI_PRESS_ONGOING` 和 `MULTI_PRESS_END` 事件在其事件数据中包含一个 `multi_press_count` 属性（即 `ATTR_MULTI_PRESS_COUNT` 常量），表示按压次数。
 
-**None of these are mandatory.** Unlike the doorbell `ring` event, there is no required type here. Each integration maps only the interactions its hardware can actually produce, and lists just those in `event_types`.
+**这些都不是强制性的。** 与门铃的 `ring` 事件不同，这里没有必需的类型。每个集成仅映射其硬件实际能够产生的交互，并且只在 `event_types` 中列出这些交互。
 
-## What to do
+## 具体操作
 
-Import `ButtonEventType` from `homeassistant.components.event` and include the types your device supports in the entity's `event_types`. Fire them as the interactions happen:
+从 `homeassistant.components.event` 导入 `ButtonEventType`，并将设备（device）支持的类型包含在实体的 `event_types` 中。在交互发生时触发它们：
 
 ```python
 from homeassistant.components.event import (
@@ -67,12 +67,12 @@ class MyButtonEvent(EventEntity):
         self.async_write_ha_state()
 ```
 
-### Single-event devices
+### 单事件设备
 
-If a device only emits a single event per interaction, with no separate press and release, map it to the matching `_end` type (`PRESS_END` for short presses, `LONG_PRESS_END` for holds, and so on). This keeps the "button was pressed" trigger consistent across devices without synthesizing events the hardware never sends.
+如果设备在每次交互时仅发出单个事件，没有单独的按下和释放，请将其映射到相应的 `_end` 类型（短按对应 `PRESS_END`，长按对应 `LONG_PRESS_END`，依此类推）。这可以使“按钮被按下”的触发器在不同设备间保持一致，而无需合成硬件从未发送过的事件。
 
-## No migration required
+## 无需迁移
 
-This change only adds the shared constants; nothing is deprecated and no integration is forced to migrate. Custom event types are still allowed alongside the standard ones. Adopt `ButtonEventType` when it fits your device.
+此更改仅添加了共享常量；没有弃用任何内容，也不强制任何集成进行迁移。自定义事件类型仍然可以与标准类型一起使用。在适合您的设备时采用 `ButtonEventType`。
 
-For full details, see the [event entity documentation](/core/entities/event/).
+有关完整详细信息，请参阅[事件实体文档](/core/entities/event/)。

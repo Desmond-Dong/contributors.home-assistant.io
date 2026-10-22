@@ -1,6 +1,6 @@
 ---
-title: Probatio is our validation engine
-description: Since Home Assistant Core 2026.9, schema validation runs on Probatio instead of voluptuous.
+title: Probatio 是我们的验证引擎
+description: 自 Home Assistant Core 2026.9 起，模式验证在 Probatio 上运行，而不再使用 voluptuous。
 date: 2026-09-30
 authors:
   - Franck Nijhof
@@ -8,37 +8,37 @@ areas:
   - core
 ---
 
-Since Home Assistant Core 2026.9, schema validation runs on [Probatio](https://probatio.frenck.dev) instead of voluptuous. This went in quietly because it was meant to change nothing, and for most integrations it changed nothing. That is worth saying out loud anyway, along with what it does change and what you can now reach for.
+自 Home Assistant Core 2026.9 起，模式验证在 [Probatio](https://probatio.frenck.dev) 上运行，而不再使用 voluptuous。这一变更悄然进行，因为它本意是不改变任何东西，对大多数集成（integration）来说也确实没有改变任何东西。但这依然值得大声宣布，同时说明它改变了什么，以及你现在可以使用哪些新功能。
 
-## Your existing code keeps working
+## 你现有的代码依然可以正常工作
 
-Probatio is a clean-room reimplementation of voluptuous with the same public API. `import voluptuous as vol` still works: Home Assistant aliases the name in `sys.modules` at startup, so the import resolves to Probatio. Custom integrations need no changes, and voluptuous is no longer installed at all.
+Probatio 是 voluptuous 的净室重新实现，具有相同的公共 API。`import voluptuous as vol` 依然有效：Home Assistant 在启动时会在 `sys.modules` 中为该名称创建别名，因此导入会解析为 Probatio。自定义集成无需任何更改，且 voluptuous 已完全不再安装。
 
-Core itself has moved to importing Probatio directly, and `import voluptuous` is now banned there by a lint rule. That ban applies to our own source. Your integration can keep the old import for as long as you like.
+Core 本身已转向直接导入 Probatio，并且通过 lint 规则禁止在其中使用 `import voluptuous`。该禁令仅适用于我们自己的源代码。你的集成可以随心所欲地保留旧的导入方式。
 
-## Why we switched
+## 我们为何切换
 
-voluptuous has been effectively unmaintained for a long time, and it sits under every integration in Home Assistant. Probatio is maintained, MIT licensed, pure Python, and holds behavioral compatibility with voluptuous as its primary correctness target.
+voluptuous 实际上已经长期无人维护，而它却支撑着 Home Assistant 中的每一个集成。Probatio 有人维护，采用 MIT 许可证，纯 Python 编写，并将与 voluptuous 的行为兼容性作为其首要的正确性目标。
 
-It is also quicker. The project measures the interpreted engine at roughly 2.3 to 3.4 times voluptuous, and an optional compiled path at roughly 6.7 to 7.4 times, on [its own benchmarks](https://probatio.frenck.dev/reference/performance/). Those are single-machine numbers and the project says not to treat them as guarantees, so take them as a direction rather than a promise. Home Assistant builds a great many schemas and validates a fraction of them per run, so we set a lazy build policy: a schema compiles when it is first validated, not when it is constructed.
+它的速度也更快。根据[其自身的基准测试](https://probatio.frenck.dev/reference/performance/)，该项目测得解释引擎的速度大约是 voluptuous 的 2.3 到 3.4 倍，可选的编译路径大约是 6.7 到 7.4 倍。这些是单机数据，项目方也声明不要将其视为保证，因此请将其视为一个方向而非承诺。Home Assistant 会构建大量的模式，并在每次运行时验证其中的一小部分，因此我们制定了延迟构建策略：模式在首次被验证时进行编译，而不是在构建时。
 
-## What changed for you
+## 对你有什么改变
 
-Two things are worth knowing, because both produced real issues after 2026.9.
+有两件事值得了解，因为它们在 2026.9 之后都引发了实际问题。
 
-**Error messages are worded differently.** If your tests assert on validation error text, they may need updating. Probatio also suggests a close match for an unknown key, and 2026.9.1 raised the bar for when it offers one, so weak guesses no longer appear.
+**错误信息的措辞有所不同。** 如果你的测试对验证错误文本进行了断言，则可能需要进行更新。Probatio 还会为未知键建议一个相近的匹配项，而 2026.9.1 提高了提供建议的门槛，因此不再出现牵强的猜测。
 
-**Validation is stricter in a few places, which surfaced data that was quietly wrong before.** The clearest case was the KNX config store, which was validated before writing but not on load. Entries written by hand or by third-party tooling had been passed through untouched for years, and started failing at setup. The data was always invalid. Nothing told anyone until something checked.
+**在少数地方验证更加严格，这暴露了以前悄然出错的数据。** 最明显的例子是 KNX 配置存储，它在写入前会进行验证，但在加载时不会。多年来，手动或通过第三方工具写入的条目一直未经检查地通过，直到在设置时才开始失败。这些数据一直都是无效的。直到有东西进行检查时，才有人被告知。
 
-If your integration stores structured data and only validates it on the way in, this is worth a look.
+如果你的集成存储结构化数据并且仅在数据进入时进行验证，这值得看一看。
 
-## What you can use now
+## 你现在可以使用什么
 
-The compatibility layer only exposes voluptuous's surface, so reaching any of this means importing `probatio` directly.
+兼容层仅暴露了 voluptuous 的表面，因此要使用以下任何功能都意味着需要直接导入 `probatio`。
 
-**Typing that survives the call.** Validators that hand their input back keep the caller's type, so `probatio.EnsureList()(names)` on a `list[str]` gives you a `list[str]` rather than a `list[Any]`.
+**调用后保留类型。** 将输入原样返回的验证器会保留调用者的类型，因此对 `list[str]` 使用 `probatio.EnsureList()(names)` 会返回 `list[str]` 而不是 `list[Any]`。
 
-**Dataclass and TypedDict schemas.** Build schemas from annotations. `DataclassSchema` returns a typed dataclass instance, while `TypedDictSchema` returns a validated dict typed as the `TypedDict`:
+**Dataclass 和 TypedDict 模式。** 从注解构建模式。`DataclassSchema` 返回一个类型化的 dataclass 实例，而 `TypedDictSchema` 返回一个验证过的、类型化为 `TypedDict` 的字典：
 
 ```python
 from dataclasses import dataclass
@@ -56,7 +56,7 @@ schema = probatio.DataclassSchema(Server)
 schema({"host": "nas", "port": 8080})  # Server(host="nas", port=8080)
 ```
 
-**Markers voluptuous never had.** `Secret` redacts a key's value from error output, which matters when a schema holds a password. `Forbidden` requires a key's absence, `Alias` accepts a value under an old name and emits it under the canonical one, and `TaggedUnion` routes on one key's value instead of trying every branch and reporting all of them.
+**voluptuous 从未有过的标记。** `Secret` 会从错误输出中删减键的值，当模式包含密码时这很重要。`Forbidden` 要求键不存在，`Alias` 接受旧名称下的值并以规范名称输出，而 `TaggedUnion` 根据一个键的值进行路由，而不是尝试每个分支并报告所有分支。
 
 ```python
 probatio.Schema(
@@ -66,7 +66,7 @@ probatio.Schema(
 )
 ```
 
-**Structured errors, including translation keys.** Every `Invalid` carries a stable `code`, a `translation_key`, `placeholders` for interpolation, the `path` to the offending value, and a `secret` flag. `as_dict()` serializes the lot. That means a validation failure can be branched on programmatically and rendered in the user's language, rather than parsed out of an English sentence.
+**结构化错误，包括翻译键。** 每个 `Invalid` 都包含一个稳定的 `code`、一个 `translation_key`、用于插值的 `placeholders`、指向违规值的 `path` 以及一个 `secret` 标志。`as_dict()` 会将它们全部序列化。这意味着验证失败可以在程序中进行分支处理，并以用户的语言进行渲染，而不是从英语句子中解析出来。
 
 ```python
 {
@@ -80,12 +80,12 @@ probatio.Schema(
 }
 ```
 
-**Cross-field rules**, like `AtLeastOne`, `ExactlyOne`, `AllOrNone`, `RequiredWith` and `RequiredIf`, which previously had to be hand-rolled per integration.
+**跨字段规则**，如 `AtLeastOne`、`ExactlyOne`、`AllOrNone`、`RequiredWith` 和 `RequiredIf`，这些以前必须在每个集成中手动编写。
 
-**Codecs.** `to_json_schema`, `to_openapi` and `from_openapi` convert between a schema and a document, which is how we describe LLM tools.
+**编解码器。** `to_json_schema`、`to_openapi` 和 `from_openapi` 在模式和文档之间进行转换，这也是我们描述 LLM 工具的方式。
 
-## Documentation, and a note for AI tooling
+## 文档，以及给 AI 工具的说明
 
-The full documentation lives at [probatio.frenck.dev](https://probatio.frenck.dev), including a [compatibility matrix](https://probatio.frenck.dev/reference/compatibility-matrix/) listing everything Probatio adds beyond voluptuous.
+完整文档位于 [probatio.frenck.dev](https://probatio.frenck.dev)，其中包括一个[兼容性矩阵](https://probatio.frenck.dev/reference/compatibility-matrix/)，列出了 Probatio 在 voluptuous 基础上增加的所有内容。
 
-The site also publishes [llms.txt](https://probatio.frenck.dev/llms.txt), a machine-readable index of the documentation. If you use an AI assistant while working on an integration, pointing it at that file is worth doing. Probatio is newer than most model training data, so an assistant left to its own devices will write voluptuous, guess at the API, or invent a validator that does not exist. There are abridged and complete variants alongside it, plus separate indexes for the guides, the recipes and the API reference.
+该网站还发布了 [llms.txt](https://probatio.frenck.dev/llms.txt)，这是文档的机器可读索引。如果你在开发集成时使用 AI 助手，让它指向该文件是值得做的。Probatio 比大多数模型的训练数据更新，因此如果让助手自行其是，它会编写 voluptuous 代码、猜测 API，或者发明一个不存在的验证器。除了该文件，还有简略版和完整版变体，以及指南、配方和 API 参考的独立索引。

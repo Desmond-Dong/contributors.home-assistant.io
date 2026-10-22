@@ -1,6 +1,6 @@
 ---
-title: Use Config Entry exceptions in integration migration method
-description: Integration migration async_migrate_entry method can now raise config entry exceptions instead of only being limited to return False.
+title: 在集成迁移方法中使用配置条目异常
+description: 集成迁移 async_migrate_entry 方法现在可以抛出配置条目异常，而不再仅限于返回 False。
 date: 2026-09-17
 authors:
   - G Johansson
@@ -8,19 +8,19 @@ areas:
   - core
 ---
 
-Integration migration `async_migrate_entry` method can now raise config entry exceptions instead of only being limited to return `False`. This is preferred to provide more context and being translatable.
+集成迁移 `async_migrate_entry` 方法现在可以抛出配置条目异常，而不再仅限于返回 `False`。推荐这样做，因为它能提供更多上下文信息并且支持翻译。
 
-Integrations that fetch data from other services during migration can raise `ConfigEntryNotReady` to have the migration retried automatically later (as during setup), which helps with timeouts and other errors that may resolve on their own.
+在迁移期间从其他服务获取数据的集成可以抛出 `ConfigEntryNotReady`，以便稍后自动重试迁移（与设置期间一样），这有助于处理超时和其他可能自行恢复的错误。
 
-By returning `False` or raising any other exception than `ConfigEntryNotReady` the migration stops and the config entry state is set to `migration_error` which is a non-recoverable state.
-This previously required the user to restart Home Assistant to retry the migration.
-The new correct way to handle it is to create a repair issue. After the user fixes the issue, call `hass.config_entries.async_retry_migration(entry_id)` to retry the migration.
+通过返回 `False` 或抛出 `ConfigEntryNotReady` 以外的任何其他异常，迁移将停止，并且配置条目状态将被设置为 `migration_error`，这是一个不可恢复的状态。
+以前这需要用户重启 Home Assistant 才能重试迁移。
+现在正确的处理方法是创建一个修复问题。用户修复该问题后，调用 `hass.config_entries.async_retry_migration(entry_id)` 来重试迁移。
 
-More info in the [config flow documentation](/core/integrations/config-flow/).
+更多信息请参阅[配置流程文档](/core/integrations/config-flow/)。
 
-## Example migration function which raises if client has an issue
+## 客户端出现问题时抛出异常的迁移函数示例
 
-The migration function lives in the integration's `__init__.py`.
+迁移函数位于集成的 `__init__.py` 中。
 
 ```python
 from homeassistant.helpers.issue_registry import IssueSeverity, async_create_issue
@@ -65,9 +65,9 @@ async def async_migrate_entry(hass, config_entry: ConfigEntry):
     return True
 ```
 
-## Example repair which will retry the migration
+## 将重试迁移的修复示例
 
-The repair flow lives in the integration's `repairs.py`.
+修复流程位于集成的 `repairs.py` 中。
 
 ```python
 class MigrationRepairFlow(RepairsFlow):

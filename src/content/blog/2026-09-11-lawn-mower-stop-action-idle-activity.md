@@ -1,6 +1,6 @@
 ---
-title: New stop action and idle activity for lawn mowers
-description: As of Home Assistant Core 2026.10, LawnMowerEntity supports a stop action and an IDLE activity.
+title: 割草机新增停止动作和空闲活动
+description: 自 Home Assistant Core 2026.10 起，LawnMowerEntity 支持停止动作和 IDLE 活动。
 date: 2026-09-11
 authors:
   - Paul Bottein
@@ -8,15 +8,15 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2026.10, `LawnMowerEntity` supports a `stop` action and an `IDLE` activity.
+自 Home Assistant Core 2026.10 起，`LawnMowerEntity` 支持 `stop` 动作和 `IDLE` 活动。
 
-`stop` cancels the current mowing task without returning the mower to the dock. It differs from `pause`, which keeps the task so it can be resumed, and from `dock`, which sends the mower home. To support it, add `LawnMowerEntityFeature.STOP` to the supported features and implement `stop` or `async_stop`.
+`stop` 会取消当前的割草任务，但不会让割草机返回充电座。它不同于 `pause`（保留任务以便恢复），也不同于 `dock`（让割草机返回充电座）。要支持此功能，请将 `LawnMowerEntityFeature.STOP` 添加到支持的功能中，并实现 `stop` 或 `async_stop`。
 
-`LawnMowerActivity.IDLE` describes a mower that is stopped, but neither docked nor paused. Integrations that mapped such a state to `PAUSED` or `ERROR` should now use `IDLE`.
+`LawnMowerActivity.IDLE` 描述的是已停止但既未返回充电座也未暂停的割草机。将此类状态映射为 `PAUSED` 或 `ERROR` 的集成（integration）现在应使用 `IDLE`。
 
-More details can be found in the [documentation](/core/entities/lawn-mower/).
+更多详细信息，请参阅[文档](/core/entities/lawn-mower/)。
 
-## Example
+## 示例
 
 ```python
 class MyLawnMower(LawnMowerEntity):

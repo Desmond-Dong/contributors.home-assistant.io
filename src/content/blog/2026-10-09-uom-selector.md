@@ -1,6 +1,6 @@
 ---
-title: New unit of measurement selector
-description: A new UnitOfMeasurementSelector lets users pick a unit of measurement in a config, options, or subentry flow, and in blueprints.
+title: 新的测量单位选择器
+description: 新的 UnitOfMeasurementSelector 允许用户在配置、选项或子条目流程以及蓝图中选择测量单位。
 date: 2026-10-09
 authors:
   - Jan Bouwhuis
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-A new `UnitOfMeasurementSelector` lets users pick a unit of measurement in a config, options, or subentry flow, and in blueprints. Until now, flows had to build a `SelectSelector` with a hand-made list of units, often rebuilt from the previous step's input. The new selector gets its units from the sensor unit tables, so the options always match what a sensor entity accepts.
+新的 `UnitOfMeasurementSelector` 允许用户在配置、选项或子条目流程以及蓝图（blueprint）中选择测量单位。在此之前，流程必须使用手工制作的单位列表来构建 `SelectSelector`，通常需要根据上一步的输入重新构建。新的选择器从传感器单位表中获取其单位，因此选项始终与传感器实体（entity）所接受的内容相匹配。
 
-## Limit the units
+## 限制单位
 
-The selector config has two optional keys, `device_classes` and `state_classes`. Both take a single sensor device class or state class, or a list of them.
+选择器配置有两个可选键：`device_classes` 和 `state_classes`。两者都接受单个传感器设备类或状态类，或者它们的列表。
 
 ```python
 import probatio
@@ -36,26 +36,26 @@ DATA_SCHEMA = probatio.Schema(
 )
 ```
 
-The allowed units follow the rules for sensor entities:
+允许的单位遵循传感器实体的规则：
 
-- **Device classes:** the selector allows the units of all the listed device classes, taken from `DEVICE_CLASS_UNITS`. A non-numeric device class, like `date`, `enum`, or `timestamp`, allows only no unit. A device class without a unit table, like `monetary`, doesn't limit the units.
-- **State classes:** the selector allows the units of all the listed state classes, taken from `STATE_CLASS_UNITS`, but only those that are also allowed by the device classes. A state class without a unit table, like `measurement` or `total`, doesn't limit the units.
-- **No limit:** without a device class or state class limit, the selector accepts any string, so the user can enter a custom unit.
+- **设备类（device classes）：** 选择器允许所有列出的设备类的单位，这些单位取自 `DEVICE_CLASS_UNITS`。非数值设备类（如 `date`、`enum` 或 `timestamp`）仅允许无单位。没有单位表的设备类（如 `monetary`）不会限制单位。
+- **状态类（state classes）：** 选择器允许所有列出的状态类的单位，这些单位取自 `STATE_CLASS_UNITS`，但仅限于设备类也允许的那些单位。没有单位表的状态类（如 `measurement` 或 `total`）不会限制单位。
+- **无限制：** 如果没有设备类或状态类限制，选择器接受任何字符串，因此用户可以输入自定义单位。
 
-The selector returns the unit as a string, or `None` when the user picks no unit.
+选择器将单位作为字符串返回，如果用户未选择单位则返回 `None`。
 
-## Filter the units on other fields
+## 根据其他字段过滤单位
 
-Often the user picks the device class and state class in the same form as the unit, using the [device class and state class selectors](/blog/2026/09/04/device-and-state-class-selectors). Use the `context` key in the selector config to tell the frontend which fields hold these values. The frontend then narrows the list of units as soon as the user changes one of those fields.
+通常，用户使用[设备类和状态类选择器](/blog/2026/09/04/device-and-state-class-selectors)在与单位相同的表单中选择设备类和状态类。使用选择器配置中的 `context` 键来告诉前端哪些字段包含这些值。然后，一旦用户更改这些字段之一，前端就会缩小单位列表。
 
-The unit of measurement selector supports these context keys:
+测量单位选择器支持以下上下文键：
 
-| Context key           | Field selector type |
+| 上下文键              | 字段选择器类型      |
 | --------------------- | ------------------- |
 | `filter_device_class` | `device_class`      |
 | `filter_state_class`  | `state_class`       |
 
-The value of each key is the name of the field in the same schema.
+每个键的值是同一架构中字段的名称。
 
 ```python
 import probatio
@@ -91,15 +91,15 @@ DATA_SCHEMA = probatio.Schema(
 )
 ```
 
-The context is validated with the rest of the selector config. It only accepts the context keys listed above, with a string value. A context key can't be combined with the matching fixed limit: you can't use `filter_device_class` together with `device_classes`, or `filter_state_class` together with `state_classes`.
+上下文与选择器配置的其余部分一起进行验证。它仅接受上面列出的上下文键，且值为字符串。上下文键不能与匹配的固定限制结合使用：不能将 `filter_device_class` 与 `device_classes` 一起使用，也不能将 `filter_state_class` 与 `state_classes` 一起使用。
 
-The context only affects the frontend. The selector validates the submitted unit against its `device_classes` and `state_classes` config, not against the values of the other fields. Your flow still needs to check that the unit is valid for the device class and state class that the user picked, and return an error if it isn't.
+上下文仅影响前端。选择器根据其 `device_classes` 和 `state_classes` 配置验证提交的单位，而不是根据其他字段的值。您的流程仍然需要检查该单位对用户选择的设备类和状态类是否有效，如果无效则返回错误。
 
-## Use the selector in blueprints
+## 在蓝图中使用选择器
 
-The selector is also available in blueprints and service descriptions as the `unit_of_measurement` selector. It takes the same config as in Python: `device_classes`, `state_classes`, and `context`.
+该选择器在蓝图和服务描述中也可作为 `unit_of_measurement` 选择器使用。它采用与 Python 中相同的配置：`device_classes`、`state_classes` 和 `context`。
 
-Because the context is part of the selector config, it also works in blueprints. The value of each context key is the name of another input of the blueprint. In this example, the units offered for the `unit` input follow the device class and state class that the user picked in the `device_class` and `state_class` inputs:
+由于上下文是选择器配置的一部分，因此它在蓝图中也有效。每个上下文键的值是蓝图中另一个输入的名称。在此示例中，为 `unit` 输入提供的单位遵循用户在 `device_class` 和 `state_class` 输入中选择的设备类和状态类：
 
 ```yaml
 blueprint:
@@ -124,10 +124,10 @@ blueprint:
             filter_state_class: state_class
 ```
 
-The [Selectors](https://www.home-assistant.io/docs/blueprint/selectors/) documentation will describe the selector once [home-assistant.io PR #48587](https://github.com/home-assistant/home-assistant.io/pull/48587) is merged.
+一旦 [home-assistant.io PR #48587](https://github.com/home-assistant/home-assistant.io/pull/48587) 合并，[选择器](https://www.home-assistant.io/docs/blueprint/selectors/)文档将描述该选择器。
 
-## Migrating existing unit of measurement selectors
+## 迁移现有的测量单位选择器
 
-Flows that let the user pick a unit with a `SelectSelector` built from `DEVICE_CLASS_UNITS` or `STATE_CLASS_UNITS` should be migrated to use `UnitOfMeasurementSelector`. You no longer need to build the unit list from the previous submission. Instead, add a context so the frontend filters the units for you.
+允许用户使用从 `DEVICE_CLASS_UNITS` 或 `STATE_CLASS_UNITS` 构建的 `SelectSelector` 选择单位的流程，应迁移为使用 `UnitOfMeasurementSelector`。您不再需要根据之前的提交构建单位列表。相反，添加一个上下文，让前端为您过滤单位。
 
-For more information, see [core PR #183337](https://github.com/home-assistant/core/pull/183337) and the [data entry flow documentation](/core/integrations/flow-steps/#options-that-depend-on-another-field).
+有关更多信息，请参阅 [core PR #183337](https://github.com/home-assistant/core/pull/183337) 和[数据录入流程文档](/core/integrations/flow-steps/#options-that-depend-on-another-field)。

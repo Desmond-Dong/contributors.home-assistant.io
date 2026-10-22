@@ -1,6 +1,6 @@
 ---
-title: A new home for every contributor
-description: The developer docs, the design portal, and the data science portal are now one site, for everyone who helps build Home Assistant, code or no code.
+title: 每位贡献者的新家
+description: 开发者文档、设计门户和数据科学门户现已合并为一个网站，面向每一位帮助构建 Home Assistant 的人——无论你是否编写代码。
 date: 2026-10-16
 authors:
   - Franck Nijhof
@@ -9,56 +9,56 @@ areas:
   - start
 ---
 
-Welcome to [contributors.home-assistant.io](/): one place for everyone who helps build Home Assistant.
+欢迎访问 [contributors.home-assistant.io](/)：这里是每一位帮助构建 Home Assistant 的人的共同家园。
 
-For years, the information you needed to contribute lived in a lot of places. The developer documentation on developers.home-assistant.io. The design guidelines on design.home-assistant.io. The data science portal on data.home-assistant.io. And a whole lot more scattered across READMEs, pull request templates, and the heads of the people who have been around for a while.
+多年来，参与贡献所需的信息散落在许多地方。developers.home-assistant.io 上的开发者文档。design.home-assistant.io 上的设计指南。data.home-assistant.io 上的数据科学门户。还有大量内容散落在 README、拉取请求（pull request）模板，以及那些在社区里待了很久的人的脑海之中。
 
-The developer docs in particular grew the way documentation grows: page by page, over many years. A lot of it was still correct. Some of it described ways of working we stopped using a long time ago. And almost none of it took you by the hand if you were new.
+尤其是开发者文档，它以文档惯有的方式生长：历经多年，一页一页地累积。其中很多内容依然正确。有些内容描述的工作方式我们早已弃用。而如果你是新手，几乎没有内容会手把手地引导你。
 
-So we started over.
+于是，我们从头再来。
 
-## Not just for developers
+## 不仅仅面向开发者
 
-Home Assistant is built by far more than developers. People translate it into their language. They write and fix the documentation. They design the interface, test the betas, moderate the forum, and answer questions from people who just got started. All of that is contributing, and all of it now has a place here.
+构建 Home Assistant 的远不止开发者。有人将它翻译成自己的语言，有人编写和修正文档，还有人设计界面、测试 Beta 版、管理论坛，并解答刚入门用户的疑问。这些都是贡献，而现在它们在这里都有了归属。
 
-The site is organized in areas, one for each way you can help: [Core and integrations](/core/), the [frontend](/frontend/), [apps](/apps/), the [companion apps](/companion/), the [operating system](/os/), [design](/design/), [writing documentation](/writing/), [translations](/translate/), the [community](/community/), [beta testing and releases](/releases/), and [data](/data/). Next to those are the topics that matter to everyone: the [architecture](/architecture/), the [roadmap](/roadmap/), [security](/security/), our [brand](/brand/), and a [glossary](/glossary/).
+本网站按板块（area）组织，每种贡献方式各有一个板块：[Core 与集成](/core/)、[前端](/frontend/)、[应用](/apps/)、[伴侣应用](/companion/)、[操作系统](/os/)、[设计](/design/)、[编写文档](/writing/)、[翻译](/translate/)、[社区](/community/)、[Beta 测试与发布](/releases/)，以及[数据](/data/)。除此之外，还有一些与每个人息息相关的主题：[架构](/architecture/)、[路线图](/roadmap/)、[安全](/security/)、我们的[品牌](/brand/)，以及[术语表](/glossary/)。
 
-Every area follows the same shape. It tells you what it is about and who it is for, gives you one concrete first contribution, and then the guides and the reference material. Once you know your way around one area, you know your way around all of them.
+每个板块都遵循相同的结构：先介绍它的内容和适用人群，再给你一个具体的首个贡献任务，然后是各类指南和参考资料。一旦你熟悉了其中一个板块，就等于熟悉了所有板块。
 
-## Start small, and we'll walk with you
+## 从小事做起，我们与你同行
 
-If you have never contributed to an open source project before, [Get started](/start/) is the place to begin. [Your first contribution](/start/first-contribution/) lists the paths that need no code first: translating, fixing a docs page, testing a beta, helping on the forum. For each path, it tells you which account you need and what happens after you take the step.
+如果你以前从未参与过开源项目，[开始上手](/start/)是你的起点。[你的第一次贡献](/start/first-contribution/)优先列出了无需编写代码的参与路径：翻译、修正文档页面、测试 Beta 版、在论坛上提供帮助。对于每条路径，它都会告诉你需要哪个账号，以及迈出这一步之后会发生什么。
 
-Never used GitHub? [Use GitHub, without being a developer](/start/github/) explains the words you will run into, like fork, branch, and pull request, and walks you through your first change entirely in the browser.
+从未用过 GitHub？[不是开发者也能用 GitHub](/start/github/) 解释了你会遇到的那些词，比如 fork、branch 和拉取请求，并全程在浏览器中引导你完成第一次修改。
 
-And once your first pull request is merged, there is more. [Grow as a contributor](/start/grow/) describes what comes next: reviewing, becoming an integration owner, and the roles that exist in the different areas.
+而当你的第一个拉取请求被合并之后，还有更多内容。[成长为贡献者](/start/grow/)介绍了接下来的路：审查代码、成为某个集成（integration）的负责人，以及各个板块中存在的角色。
 
-## Real components, right on the page
+## 真实组件，直接呈现在页面上
 
-The design area replaces design.home-assistant.io, and it does something the old site couldn't. The components on its pages are the real components from the Home Assistant frontend, running in your browser. The buttons, sliders, pickers, dashboard cards, and more-info dialogs are the actual thing, connected to a small fake home, so you can try them out while you read how to use them.
+设计板块取代了 design.home-assistant.io，并且做到了旧网站做不到的事情：页面上的组件就是来自 Home Assistant 前端的真实组件，直接在你的浏览器中运行。按钮、滑块、选择器、仪表盘卡片和更多信息（more-info）对话框都是实物，连接到一个虚拟的小型家庭环境，让你在阅读使用方法的同时就能亲手尝试。
 
-Every component page follows the same order: what it is and when to use it, its parts and variants, its measurements, do's and don'ts you can see, and how it works with a keyboard and a screen reader. The code comes last, for the developers who build with it.
+每个组件页面都遵循相同的顺序：它是什么、何时使用，它的组成部分和变体，它的尺寸规格，可以直观看到的该做与不该做，以及它如何配合键盘和屏幕阅读器使用。代码放在最后，供基于它进行开发的开发者参考。
 
-## One term, one meaning
+## 一个术语，一种含义
 
-Home Assistant has its own words, and some of them changed names over the years. A service became an action. An add-on became an app. The [glossary](/glossary/) gives every term one page that says what it means, and what it is called in the code, in the interface, and in the past.
+Home Assistant 有一套自己的词汇，其中一些多年来改了名字。服务（service）变成了动作（action）。附加组件（add-on）变成了应用（app）。[术语表](/glossary/)为每个术语提供一个页面，说明它的含义，以及它在代码中、界面中和过去的叫法。
 
-You don't have to go looking for it. When a page uses a glossary term, it is underlined with a dotted line. Point at it, and you see what it means.
+你无需特意去查找。当页面使用了术语表中的术语时，它会以虚线下划线标注。将鼠标指向它，你就能看到它的含义。
 
-## Find it, without anyone watching
+## 找到所需，无人窥探
 
-Search runs fully in your browser. Nothing you type leaves your computer. It searches within the area you are in, or across everything, and it takes you straight to the right section of a page.
+搜索完全在你的浏览器中运行。你输入的任何内容都不会离开你的电脑。它可以在你当前所在的板块内搜索，也可以全站搜索，并直接带你跳转到页面的相应章节。
 
-## Where we are heading
+## 我们的前进方向
 
-The [roadmap](/roadmap/) explains how an idea becomes planned work at the Open Home Foundation: from a feature request to an opportunity on the roadmap, an epic, and the tasks and pull requests that ship it. It follows one real feature from start to finish, and shows where you can join in at every step.
+[路线图](/roadmap/)解释了在 Open Home Foundation，一个想法如何变成有计划的工作：从功能请求，到路线图上的一个机会（opportunity）、一个 epic（史诗），再到将其交付的任务和拉取请求。它跟踪了一个真实功能从开始到结束的全过程，并展示了在每一步你可以在哪里参与进来。
 
-## Old links keep working
+## 旧链接依然有效
 
-If you have bookmarked a page on developers.home-assistant.io, design.home-assistant.io, or data.home-assistant.io, it takes you to its new home here. The developer blog moved too, with its posts at the same addresses.
+如果你收藏过 developers.home-assistant.io、design.home-assistant.io 或 data.home-assistant.io 上的页面，它们会将你带到这些页面在这里的新家。开发者博客也已迁移，文章地址保持不变。
 
-## This is a start
+## 这只是一个开始
 
-A site this size is never done, and this one is brand new. We checked the content against the code of our projects, but you will find things that are wrong, outdated, or unclear. When you do, please tell us, or better: fix it. The site is open source, like everything else we build, and [improving it](/writing/this-site/) works the same as contributing anywhere else in the project.
+这种规模的网站永远没有完工的一天，何况这个网站还是全新的。我们已经将内容与各项目的代码进行了核对，但你仍会发现错误、过时或不清晰的地方。遇到时，请告诉我们，或者更好的做法：直接修正它。本网站是开源的，就像我们构建的其他一切一样，[改进它](/writing/this-site/)的方式与在项目其他任何地方贡献完全相同。
 
-We can't wait to see what you build.
+我们迫不及待想看到你构建的作品。

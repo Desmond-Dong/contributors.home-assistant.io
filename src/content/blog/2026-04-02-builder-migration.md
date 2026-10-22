@@ -1,6 +1,6 @@
 ---
-title: Migrating app builds to Docker BuildKit
-description: The legacy home-assistant/builder container and the old home-assistant/builder GitHub Action have been retired.
+title: 将应用构建迁移到 Docker BuildKit
+description: 旧版 home-assistant/builder 容器和旧的 home-assistant/builder GitHub Action 已停用。
 date: 2026-04-02
 authors:
   - Jan Čermák
@@ -8,31 +8,31 @@ areas:
   - apps
 ---
 
-The legacy `home-assistant/builder` container and the old `home-assistant/builder` GitHub Action have been retired. We recommend migrating all GitHub workflows and Dockerfiles for apps (formerly add-ons) as described in this post.
+旧版 `home-assistant/builder` 容器和旧的 `home-assistant/builder` GitHub Action 已停用。我们建议按照本文所述，迁移所有应用（apps，原加载项）的 GitHub 工作流和 Dockerfile。
 
-## What changed and why
+## 变更内容与原因
 
-The old builder ran every architecture build inside a single privileged Docker-in-Docker container using QEMU emulation. This was slow, required elevated privileges, and those who were already familiar with Docker needed to learn how to use the custom Home Assistant's builder container. The old builder also had unnecessary maintenance overhead. Today, what the builder does can be fully replaced with Docker BuildKit, which is natively supported on GitHub Actions runners and has built-in multi-arch support with QEMU emulation if needed.
+旧的 builder 在单个特权 Docker-in-Docker 容器内使用 QEMU 模拟运行每个架构的构建。这种方式速度慢、需要提升的权限，而且已经熟悉 Docker 的用户还需要学习如何使用 Home Assistant 自定义的 builder 容器。旧的 builder 还带来了不必要的维护开销。如今，builder 所做的工作完全可以由 Docker BuildKit 取代，它在 GitHub Actions 运行器上受到原生支持，并且在需要时内置了基于 QEMU 模拟的多架构支持。
 
-For your CI, the replacement is a set of focused [composite GitHub Actions](https://github.com/home-assistant/builder) that delegate building to the runner's native Docker with Docker BuildKit. Outside the CI, the migration means that your `Dockerfile` is now the single source of truth for building your app image, and you can use `docker build` directly to build and test your app locally without needing to use the builder container.
+对于您的 CI 来说，替代方案是一组职责专一的[复合 GitHub Actions](https://github.com/home-assistant/builder)，它们将构建工作委托给运行器上原生支持 Docker BuildKit 的 Docker。在 CI 之外，这次迁移意味着您的 `Dockerfile` 现在是构建应用镜像的唯一事实来源，您可以直接使用 `docker build` 在本地构建和测试您的应用，而无需使用 builder 容器。
 
-## Migration process
+## 迁移过程
 
-The migration has two parts: updating your Dockerfiles and updating your GitHub Actions workflows.
+迁移分为两部分：更新您的 Dockerfile 和更新您的 GitHub Actions 工作流。
 
-### Update Dockerfiles
+### 更新 Dockerfile
 
-The new build workflow doesn't use `build.yaml` anymore. Move the content into your `Dockerfile` as follows:
+新的构建工作流不再使用 `build.yaml`。请按照以下方式将其内容移入您的 `Dockerfile`：
 
-- **`build_from`** - replace the `build_from` key in `build.yaml` with a `FROM` statement in your `Dockerfile`:
+- **`build_from`** - 将 `build.yaml` 中的 `build_from` 键替换为 `Dockerfile` 中的 `FROM` 语句：
 
   ```dockerfile
   FROM ghcr.io/home-assistant/base:latest
   ```
 
-   As the base images are now published as multi-platform manifests, there is usually no need to define per-arch base images anymore. The `build-image` action still supplies `BUILD_ARCH` as a build argument though, so you can use that in your `Dockerfile` if you need to use it in the template for the base image name.
+   由于基础镜像现在以多平台清单（multi-platform manifest）的形式发布，通常不再需要为每个架构定义单独的基础镜像。不过，`build-image` action 仍会提供 `BUILD_ARCH` 作为构建参数，因此如果您需要在基础镜像名称的模板中使用它，就可以在 `Dockerfile` 中使用该参数。
 
-- **`labels`** - move any custom Docker labels directly into your `Dockerfile` with a `LABEL` statement:
+- **`labels`** - 使用 `LABEL` 语句将任何自定义 Docker 标签直接移入您的 `Dockerfile`：
 
   ```dockerfile
   LABEL \
@@ -42,37 +42,37 @@ The new build workflow doesn't use `build.yaml` anymore. Move the content into y
       org.opencontainers.image.licenses="Apache License 2.0"
     ```
 
-  If you are creating a custom workflow, note that the legacy builder used to add the `io.hass.type`, `io.hass.name`, `io.hass.description`, and `io.hass.url` labels automatically. The new actions do not infer these values, so add them explicitly via the `labels` input of the `build-image` (or similar) action.
+  如果您正在创建自定义工作流，请注意旧版 builder 会自动添加 `io.hass.type`、`io.hass.name`、`io.hass.description` 和 `io.hass.url` 标签。新的 action 不会推断这些值，因此请通过 `build-image`（或类似）action 的 `labels` 输入显式添加它们。
 
-- **`args`** - move custom build arguments into your `Dockerfile` as `ARG` definitions with default values:
+- **`args`** - 将自定义构建参数作为带有默认值的 `ARG` 定义移入您的 `Dockerfile`：
 
   ```dockerfile
   ARG MY_BUILD_ARG="default-value"
   ```
 
-  Default values in `ARG` replace what was previously supplied via `build.yaml`'s `args` dictionary. They can still be overridden at build time with `--build-arg` if needed.
+  `ARG` 中的默认值取代了之前通过 `build.yaml` 的 `args` 字典提供的值。如有需要，它们仍然可以在构建时通过 `--build-arg` 进行覆盖。
 
-With the content of `build.yaml` migrated, you can delete the file from your repository.
+将 `build.yaml` 的内容迁移完毕后，您就可以从仓库中删除该文件。
 
-### Update GitHub Actions workflows
+### 更新 GitHub Actions 工作流
 
-Remove any workflow steps using `home-assistant/builder@master` and replace them with the new composite actions. See the [example workflow](https://github.com/home-assistant/apps-example/blob/main/.github/workflows/builder.yaml) in our example app repository for a complete working example. Alternatively, use the [individual actions](https://github.com/home-assistant/builder?tab=readme-ov-file#example-workflow) in a more custom workflow as needed.
+删除所有使用 `home-assistant/builder@master` 的工作流步骤，并用新的复合 action 替换它们。完整可用的示例请参见我们示例应用仓库中的[示例工作流](https://github.com/home-assistant/apps-example/blob/main/.github/workflows/builder.yaml)。或者，根据需要在更加自定义的工作流中使用[各个独立的 action](https://github.com/home-assistant/builder?tab=readme-ov-file#example-workflow)。
 
-### Image naming
+### 镜像命名
 
-The preferred way to reference a published app image is now the **generic (multi-arch) name** without an architecture prefix:
+现在，引用已发布应用镜像的首选方式是使用不带架构前缀的**通用（多架构）名称**：
 
 ```yaml
 # config.yaml
 image: "ghcr.io/my-org/my-app"
 ```
 
-The `{arch}` placeholder (e.g. `ghcr.io/my-org/{arch}-my-app`) is still supported as a compatibility fallback, but it's encouraged to use the generic name and let the manifest handle the platform resolution.
+`{arch}` 占位符（例如 `ghcr.io/my-org/{arch}-my-app`）仍作为兼容性后备方案受支持，但建议使用通用名称，让清单来处理平台解析。
 
-### Local builds
+### 本地构建
 
-After updating your `Dockerfile`, you can use `docker build` to build the app image directly - you can refer to [Local app testing](/apps/guides/testing/) for more details.
+更新 `Dockerfile` 后，您可以直接使用 `docker build` 构建应用镜像 - 更多详情请参阅[本地应用测试](/apps/guides/testing/)。
 
-## Apps built locally by Supervisor
+## 由 Supervisor 在本地构建的应用
 
-For backward compatibility, Supervisor still reads `build.yaml` file if it's present and populates the image build arguments with values read from this file. This will produce warnings and eventually be removed in the future, so it's recommended to migrate to the new Dockerfile-based approach as described above.
+为了向后兼容，如果 `build.yaml` 文件存在，Supervisor 仍会读取它，并使用从该文件中读取的值填充镜像构建参数。这会产生警告，并且将来最终会被移除，因此建议按照上述说明迁移到新的基于 Dockerfile 的方法。

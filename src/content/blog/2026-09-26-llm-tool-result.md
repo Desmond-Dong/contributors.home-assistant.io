@@ -1,6 +1,6 @@
 ---
-title: LLM tools return a ToolResult and declare their integration
-description: As of Home Assistant Core 2026.10, an LLM tool returns an llm.ToolResult instead of a plain JSON object.
+title: LLM 工具返回 ToolResult 并声明其集成
+description: 自 Home Assistant Core 2026.10 起，LLM 工具返回 llm.ToolResult 而不是纯 JSON 对象。
 date: 2026-09-26
 authors:
   - Paulus Schoutsen
@@ -8,17 +8,17 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2026.10, an LLM tool returns an `llm.ToolResult` instead of a plain JSON object. `ToolResult` carries the tool's `data` and an `error` flag that says whether the call failed. On the chat log side, `ToolResultContent.tool_result` is replaced by `ToolResultContent.result`, which holds the `ToolResult`.
+自 Home Assistant Core 2026.10 起，LLM 工具将返回 `llm.ToolResult` 而不是纯 JSON 对象。`ToolResult` 包含工具的 `data` 和一个指示调用是否失败的 `error` 标志。在聊天日志方面，`ToolResultContent.tool_result` 被替换为 `ToolResultContent.result`，后者用于保存 `ToolResult`。
 
-Returning a plain JSON object from a tool, reading `ToolResultContent.tool_result`, and setting `tool_result` on a tool result delta are deprecated. They keep working for custom integrations with a warning in the log until Home Assistant Core 2027.11, and stop working after that.
+从工具返回纯 JSON 对象、读取 `ToolResultContent.tool_result` 以及在工具结果增量上设置 `tool_result` 的做法已被弃用。对于自定义集成（integration），这些做法在 Home Assistant Core 2027.11 之前仍可继续使用，但会在日志中显示警告，在此之后将停止工作。
 
-The release also adds metadata to `llm.Tool`. A tool now has a `title` for people to read, `annotations` that describe how it behaves, and an `integration` that records which integration provides it. The MCP Server integration serves the title and the annotations to MCP clients.
+此版本还为 `llm.Tool` 添加了元数据。现在，工具具有供用户阅读的 `title`、描述其行为方式的 `annotations`，以及记录由哪个集成提供它的 `integration`。MCP Server 集成会将标题和注解提供给 MCP 客户端。
 
-The annotations are an `llm.ToolAnnotations` with four flags: `read_only`, `destructive`, `idempotent` and `open_world`. The defaults describe the least safe case, so a tool that declares nothing is taken to write, to be destructive, and to reach outside Home Assistant.
+注解是一个包含四个标志的 `llm.ToolAnnotations`：`read_only`、`destructive`、`idempotent` 和 `open_world`。默认值描述的是最不安全的场景，因此未声明任何内容的工具将被视为可写入、具有破坏性，并且会访问 Home Assistant 之外的资源。
 
-Creating a tool without an `integration` is deprecated. A core integration raises an error. A custom integration gets a warning in the log until Home Assistant Core 2027.10, and stops working after that.
+创建没有 `integration` 的工具已被弃用。核心集成会抛出错误。自定义集成在 Home Assistant Core 2027.10 之前会在日志中收到警告，在此之后将停止工作。
 
-Both changes together look like this:
+这两项更改结合在一起如下所示：
 
 ```python
 from homeassistant.core import HomeAssistant

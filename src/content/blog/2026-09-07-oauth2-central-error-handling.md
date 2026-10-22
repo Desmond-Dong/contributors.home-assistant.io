@@ -1,6 +1,6 @@
 ---
-title: OAuth2 error handling moved into the helper
-description: As of Home Assistant Core 2026.10, the OAuth2 helper raises exceptions that config entry setup already understands, so integrations no longer translate OAuth2 failures themselves.
+title: OAuth2 错误处理移至辅助元素中
+description: 自 Home Assistant Core 2026.10 起，OAuth2 辅助元素（helper）会抛出配置条目（config entry）设置已能理解的异常，因此集成不再需要自行处理 OAuth2 失败情况。
 date: 2026-09-07
 authors:
   - Josef Zweck
@@ -8,24 +8,24 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2026.10, the OAuth2 helper raises exceptions that config entry setup already understands, so integrations no longer translate OAuth2 failures themselves.
+自 Home Assistant Core 2026.10 起，OAuth2 辅助元素（helper）会抛出配置条目（config entry）设置已能理解的异常，因此集成不再需要自行处理 OAuth2 失败情况。
 
-## What changed
+## 变更内容
 
-The OAuth2 exceptions now inherit from the config entry exception that describes what should happen, and carry a translated message from the `homeassistant` integration.
+OAuth2 异常现在继承自描述后续操作的配置条目异常，并携带来自 `homeassistant` 集成的已翻译消息。
 
-| Exception | Also a | Result when uncaught |
+| 异常 | 同时也是 | 未捕获时的结果 |
 | --- | --- | --- |
-| `ImplementationUnavailableError` | `ConfigEntryNotReady` | Setup is retried |
-| `UnknownImplementationError` | `ConfigEntryAuthFailed` | Reauth flow starts |
-| `OAuth2TokenRequestError` | `ConfigEntryNotReady` | Setup is retried |
-| `OAuth2TokenRequestTransientError` | `ConfigEntryNotReady` | Setup is retried |
-| `OAuth2TokenRequestConnectionError` | `ConfigEntryNotReady` | Setup is retried |
-| `OAuth2TokenRequestReauthError` | `ConfigEntryAuthFailed` | Reauth flow starts |
+| `ImplementationUnavailableError` | `ConfigEntryNotReady` | 重试设置 |
+| `UnknownImplementationError` | `ConfigEntryAuthFailed` | 启动重新认证流程 |
+| `OAuth2TokenRequestError` | `ConfigEntryNotReady` | 重试设置 |
+| `OAuth2TokenRequestTransientError` | `ConfigEntryNotReady` | 重试设置 |
+| `OAuth2TokenRequestConnectionError` | `ConfigEntryNotReady` | 重试设置 |
+| `OAuth2TokenRequestReauthError` | `ConfigEntryAuthFailed` | 启动重新认证流程 |
 
-All of them are importable from `homeassistant.exceptions` and carry a translated user-facing message, so the integration does not need a `strings.json` entry for them.
+所有这些异常均可从 `homeassistant.exceptions` 导入，并携带面向用户的已翻译消息，因此集成无需为它们添加 `strings.json` 条目。
 
-## Migration
+## 迁移
 
 ```diff
 -    try:
@@ -38,11 +38,11 @@ All of them are importable from `homeassistant.exceptions` and carry a translate
 +    implementation = await async_get_config_entry_implementation(hass, entry)
 ```
 
-Also remove the now-unused `oauth2_implementation_unavailable` entry from the `exceptions` section of `strings.json`.
+同时从 `strings.json` 的 `exceptions` 部分移除现已不再使用的 `oauth2_implementation_unavailable` 条目。
 
-Catching `ValueError` around this call can go as well. `UnknownImplementationError` subclasses `ValueError` for backwards compatibility, so a `ValueError` handler silently downgrades it and discards the translated message.
+在此调用周围捕获 `ValueError` 的代码也可以移除。为了向后兼容，`UnknownImplementationError` 是 `ValueError` 的子类，因此 `ValueError` 处理程序会将其静默降级并丢弃已翻译的消息。
 
-### Token requests
+### 令牌请求
 
 ```diff
 -    try:
@@ -54,19 +54,19 @@ Catching `ValueError` around this call can go as well. `UnknownImplementationErr
 +    await auth.async_get_access_token()
 ```
 
-The same applies to `await session.async_ensure_token_valid()`.
+这同样适用于 `await session.async_ensure_token_valid()`。
 
 
-## Quality scale
+## 质量等级
 
-The [`test-before-setup`](/core/quality-scale/test-before-setup/) rule accepts `await session.async_ensure_token_valid()` in `async_setup_entry` as satisfying the rule, alongside `await coordinator.async_config_entry_first_refresh()`. Both raise the appropriate config entry exception on the integration's behalf.
+[`test-before-setup`](/core/quality-scale/test-before-setup/) 规则接受在 `async_setup_entry` 中使用 `await session.async_ensure_token_valid()` 以及 `await coordinator.async_config_entry_first_refresh()` 来满足该规则。两者都会代表集成抛出相应的配置条目异常。
 
-## When to keep catching
+## 何时保留捕获
 
-Central handling is a default, not a restriction. Keep an explicit handler when the integration genuinely needs different behavior, for example:
+集中处理是默认行为，而非限制。当集成确实需要不同的行为时，请保留显式处理程序，例如：
 
-- Treating a specific status as permanent with `ConfigEntryError` instead of retrying.
-- Adding context to the message that only the integration knows.
-- Cleaning up integration state before the exception propagates.
+- 使用 ConfigEntryError 将特定状态视为永久状态，而不是重试。
+- 为只有集成才知道的消息添加上下文。
+- 在异常传播之前清理集成状态。
 
-In those cases, catch the most specific exception that applies and let the rest propagate.
+在这些情况下，捕获适用的最具体的异常，并让其余异常继续传播。

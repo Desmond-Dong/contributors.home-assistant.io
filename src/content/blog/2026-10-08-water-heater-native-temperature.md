@@ -1,6 +1,6 @@
 ---
-title: "Water heater entities now expose their temperature unit"
-description: As of Home Assistant Core 2026.11, water heater entities have a new temperature_unit state attribute, and the temperature properties integrations implement have been renamed with a native_ prefix.
+title: "热水器实体现在公开其温度单位"
+description: 自 Home Assistant Core 2026.11 起，热水器实体新增了一个 temperature_unit 状态属性，并且集成实现的温度属性已使用 native_ 前缀进行了重命名。
 date: 2026-10-08
 authors:
   - Erik Montnémery
@@ -8,21 +8,21 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2026.11, water heater entities have a new `temperature_unit` state attribute, and the temperature properties integrations implement have been renamed with a `native_` prefix.
+自 Home Assistant Core 2026.11 起，热水器实体（entity）新增了一个 `temperature_unit` 状态（state）属性，并且集成（integration）实现的温度属性已使用 `native_` 前缀进行了重命名。
 
-### Background
+### 背景
 
-The water heater entity converts all temperatures it writes to the state machine to the unit system configured by the user. Until now, the unit was not part of the state, so anyone reading the state had to know that water heater temperatures follow the configured unit system. This is inconsistent with other entities, such as `sensor`, `number` and `weather`, which expose the unit next to the value.
+热水器实体将其写入状态机（state machine）的所有温度转换为用户配置的单位制。直到现在，单位还不是状态的一部分，因此任何读取状态的人都必须知道热水器温度遵循配置的单位制。这与其他实体（如 `sensor`、`number` 和 `weather`）不一致，后者在数值旁边公开单位。
 
-### The `temperature_unit` state attribute
+### `temperature_unit` 状态属性
 
-The `temperature_unit` state attribute holds the unit of the temperatures in the state, which is the temperature unit of the user's configured unit system. It's set by the `WaterHeaterEntity` base class and can't be overridden by integrations.
+`temperature_unit` 状态属性保存状态中温度的单位，即用户配置的单位制的温度单位。它由 `WaterHeaterEntity` 基类设置，集成无法覆盖它。
 
-### Renamed properties
+### 重命名的属性
 
-Integrations specify temperatures in the unit used by the device, and the base class converts them. To make that clear, and to match how `sensor`, `number` and `weather` entities name native values, the following properties and their `_attr_` shorthand attributes have been renamed:
+集成使用设备所用的单位来指定温度，并由基类进行转换。为了明确这一点，并与 `sensor`、`number` 和 `weather` 实体命名原生值的方式保持一致，以下属性及其 `_attr_` 简写属性已被重命名：
 
-| Old name | New name |
+| 旧名称 | 新名称 |
 | --- | --- |
 | `current_temperature` | `native_current_temperature` |
 | `target_temperature` | `native_target_temperature` |
@@ -30,15 +30,15 @@ Integrations specify temperatures in the unit used by the device, and the base c
 | `target_temperature_low` | `native_target_temperature_low` |
 | `temperature_unit` | `native_temperature_unit` |
 
-The old names keep working, but implementing them, setting the `_attr_` attributes or reading them logs a warning. Support for the old names will be removed in Home Assistant Core 2027.11.
+旧名称仍然有效，但实现它们、设置 `_attr_` 属性或读取它们会记录一条警告。对旧名称的支持将在 Home Assistant Core 2027.11 中移除。
 
-`min_temp`, `max_temp` and `target_temperature_step` are not renamed, and are still specified in the native unit.
+`min_temp`、`max_temp` 和 `target_temperature_step` 未被重命名，并且仍以原生单位指定。
 
-More details can be found in the [water heater entity documentation](/core/entities/water-heater/#properties).
+更多详细信息可以在[热水器实体文档](/core/entities/water-heater/#properties)中找到。
 
-### Example
+### 示例
 
-Old:
+旧版：
 
 ```python
 class MyWaterHeaterEntity(WaterHeaterEntity):
@@ -52,7 +52,7 @@ class MyWaterHeaterEntity(WaterHeaterEntity):
         self._attr_target_temperature = await self.device.get_setpoint()
 ```
 
-New:
+新版：
 
 ```python
 class MyWaterHeaterEntity(WaterHeaterEntity):

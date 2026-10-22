@@ -1,6 +1,6 @@
 ---
-title: Shared config flow abort reasons are translated centrally
-description: As of Home Assistant Core 2026.10, the homeassistant integration can translate abort reasons that every integration words the same way.
+title: 共享的配置流中止原因由集中翻译
+description: 自 Home Assistant Core 2026.10 起，homeassistant 集成可以翻译所有集成采用相同措辞的中止原因。
 date: 2026-09-28
 authors:
   - Josef Zweck
@@ -8,26 +8,26 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2026.10, the `homeassistant` integration can translate abort reasons that every integration words the same way. If you're today linking from a local translation key, for an abort reason, to a shared translation key under the `homeassistant` integration, you can instead just rely on the shared translation key under the `homeassistant` domain directly. This is done by default in some helpers and can also be done explicitly by setting the `translation_domain` parameter when aborting the flow.
+自 Home Assistant Core 2026.10 起，`homeassistant` 集成可以翻译所有集成采用相同措辞的中止原因。如果您目前将中止原因的本地翻译键链接到 `homeassistant` 集成下的共享翻译键，您现在可以直接依赖 `homeassistant` 域下的共享翻译键。这在一些辅助元素（helper）中是默认完成的，也可以通过在中止流程时设置 `translation_domain` 参数来显式完成。
 
-## What to do
+## 具体操作
 
-* Delete the keys below from the `abort` sections of `strings.json`, including those under `config_subentries`, only when the abort uses the `homeassistant` translation domain.
-* The helpers listed below use the central translation domain automatically.
-* If your code passes one of these reasons to `async_abort` or `AbortFlow`, pass the `homeassistant` translation domain before deleting the local key. Without that domain, retain the local key. See [Explicit translation domain](#explicit-translation-domain).
+* 仅当该中止使用 `homeassistant` 翻译域时，从 `strings.json` 的 `abort` 部分（包括 `config_subentries` 下的部分）中删除以下键。
+* 下面列出的辅助元素会自动使用中央翻译域。
+* 如果您的代码将这些原因之一传递给 `async_abort` 或 `AbortFlow`，请在删除本地键之前传递 `homeassistant` 翻译域。如果没有该域，请保留本地键。请参阅[显式翻译域](#explicit-translation-domain)。
 
-When an abort uses the central translation domain, the frontend resolves the reason from that domain and does not use a local key.
+当中止使用中央翻译域时，前端会从该域解析原因，而不使用本地键。
 
-## Default reasons
+## 默认原因
 
-| Reason                             | Raised by                                                                      |
+| 原因                               | 引发者                                                                         |
 |------------------------------------|--------------------------------------------------------------------------------|
-| `already_in_progress`              | `async_set_unique_id`, discovery without a unique ID                           |
-| `single_instance_allowed`          | `single_config_entry`, `DiscoveryFlowHandler`, `WebhookFlowHandler`            |
+| `already_in_progress`              | `async_set_unique_id`，无唯一 ID 的发现                                        |
+| `single_instance_allowed`          | `single_config_entry`、`DiscoveryFlowHandler`、`WebhookFlowHandler`            |
 | `no_devices_found`                 | `DiscoveryFlowHandler`                                                         |
 | `cloud_not_connected`              | `WebhookFlowHandler`                                                           |
-| `reauth_successful`                | `async_update_reload_and_abort`, `async_update_and_abort`                      |
-| `reconfigure_successful`           | `async_update_reload_and_abort`, `async_update_and_abort`, also for subentries |
+| `reauth_successful`                | `async_update_reload_and_abort`、`async_update_and_abort`                      |
+| `reconfigure_successful`           | `async_update_reload_and_abort`、`async_update_and_abort`，同样适用于子条目    |
 | `authorize_url_timeout`            | `AbstractOAuth2FlowHandler`                                                    |
 | `missing_credentials`              | `AbstractOAuth2FlowHandler`                                                    |
 | `no_url_available`                 | `AbstractOAuth2FlowHandler`                                                    |
@@ -38,9 +38,9 @@ When an abort uses the central translation domain, the frontend resolves the rea
 | `oauth_unauthorized`               | `AbstractOAuth2FlowHandler`                                                    |
 | `user_rejected_authorize`          | `AbstractOAuth2FlowHandler`                                                    |
 
-## Explicit translation domain
+## 显式翻译域
 
-Pass the domain that owns the string. Both `async_abort` and `AbortFlow` accept it.
+传递拥有该字符串的域。`async_abort` 和 `AbortFlow` 均接受此参数。
 
 ```python
 from homeassistant.core import DOMAIN as HOMEASSISTANT_DOMAIN
@@ -51,13 +51,13 @@ return self.async_abort(
 )
 ```
 
-This works in config flows and subentry flows. Options flows look in the `options` section, which the `homeassistant` integration does not have.
+这在配置流和子条目流中有效。选项流会在 `options` 部分中查找，而 `homeassistant` 集成没有该部分。
 
-## Keep your own wording
+## 保留您自己的措辞
 
-Only needed if you word a reason differently on purpose:
+仅在您故意对原因采用不同措辞时需要：
 
-* Pass `reason` to `async_update_reload_and_abort` or `async_update_and_abort`, even with the default name.
-* In an OAuth2 flow, pass `translation_domain=DOMAIN`.
+* 将 `reason` 传递给 `async_update_reload_and_abort` 或 `async_update_and_abort`，即使使用默认名称也是如此。
+* 在 OAuth2 流程中，传递 `translation_domain=DOMAIN`。
 
-Aborts that core raises by itself, like `already_in_progress`, always use the central string, to keep a customized string there, overwrite the steps that produce the strings upstream.
+核心自身引发的中止（如 `already_in_progress`）始终使用中央字符串。若要在那里保留自定义字符串，请覆盖上游生成这些字符串的步骤。

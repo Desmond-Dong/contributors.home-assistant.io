@@ -1,6 +1,6 @@
 ---
-title: Devices are restricted to a single config entry and at most one subentry
-description: A device is now owned by a single config entry, and by a single (or no) config subentry.
+title: 设备被限制为只能属于单个配置条目，且最多属于一个子条目
+description: 现在，一个设备仅由单个配置条目拥有，并由单个（或无）配置子条目拥有。
 date: 2026-07-21
 authors:
   - Erik Montnémery
@@ -8,59 +8,59 @@ areas:
   - core
 ---
 
-## Summary
+## 总结
 
-A device is now owned by a single config entry, and by a single (or no) config subentry. Devices are no longer merged across integrations: a physical device supported by several integrations is now represented by one device per config entry instead of a single shared device.
+现在，一个设备仅由单个配置条目（config entry）拥有，并由单个（或无）配置子条目（config subentry）拥有。设备不再跨集成（integration）合并：由多个集成支持的物理设备现在由每个配置条目对应一个设备来表示，而不是单个共享设备。
 
-Devices which were previously tied to multiple config entries are split into one device per config entry when the device registry is loaded. The entity registry is updated so entities point to the correct device.
+以前绑定到多个配置条目的设备在加载设备注册表（device registry）时，会被拆分为每个配置条目一个设备。实体（entity）注册表会进行更新，以便实体指向正确的设备。
 
-**Most integrations don't interact directly with the device registry and don't need any changes.** Integrations which interact with it directly need to handle the deprecations listed below.
+**大多数集成不直接与设备注册表交互，因此不需要进行任何更改。** 直接与其交互的集成需要处理下面列出的弃用项。
 
-This is implemented in core [PR #175785](https://github.com/home-assistant/core/pull/175785), the rationale is described in architecture proposal [home-assistant/architecture#1226](https://github.com/home-assistant/architecture/discussions/1226). The changes land in Home Assistant Core 2026.8.
+此功能在核心 [PR #175785](https://github.com/home-assistant/core/pull/175785) 中实现，其基本原理在架构提案 [home-assistant/architecture#1226](https://github.com/home-assistant/architecture/discussions/1226) 中进行了描述。这些更改将在 Home Assistant Core 2026.8 中落地。
 
-## Background
+## 背景
 
-Until now, a physical device supported by several integrations has been merged into a single, shared device. This was achieved by identifying devices by connections and identifiers which are globally unique, so that for example a device tracker and a native integration referring to the same MAC address end up on the same device.
+到目前为止，由多个集成支持的物理设备已被合并为单个共享设备。这是通过全局唯一的连接（connections）和标识符（identifiers）来识别设备来实现的，例如，设备跟踪器（device tracker）和引用相同 MAC 地址的原生集成最终会落在同一个设备上。
 
-This causes a few problems:
+这会导致一些问题：
 
-- There's no single source of truth for device information such as name or model; conflicting values are discarded instead of preserved.
-- Users get a confusing experience where a device page contains a hodgepodge of entities from multiple integrations.
-- There are long-standing bugs where modifying the connections and identifiers of a device causes multiple devices to end up with the same connections, violating the original design of the device registry.
+- 设备信息（如名称或型号）没有单一的事实来源；冲突的值会被丢弃而不是保留。
+- 用户会获得令人困惑的体验，设备页面包含来自多个集成的各种实体的大杂烩。
+- 存在一些长期存在的错误，修改设备的连接和标识符会导致多个设备最终具有相同的连接，这违反了设备注册表的原始设计。
 
-The new behavior is achieved by making identifiers and connections unique per config entry instead of globally unique.
+新行为是通过使标识符和连接在每个配置条目中唯一，而不是全局唯一来实现的。
 
-## Deprecations
+## 弃用项
 
-Using the deprecated functionality below logs a warning at runtime. Unless noted otherwise, deprecated functionality remains supported until Home Assistant Core 2027.8.
+使用以下弃用的功能会在运行时记录警告。除非另有说明，弃用的功能将一直受支持，直到 Home Assistant Core 2027.8。
 
 ### `DeviceEntry.config_entries`
 
-Deprecated, use `DeviceEntry.config_entry_id` instead. The property is kept as a compatibility shim which returns a set with the device's single config entry.
+已弃用，请改用 `DeviceEntry.config_entry_id`。该属性作为兼容性垫片（compatibility shim）保留，返回包含设备单个配置条目的集合。
 
 ### `DeviceEntry.config_entries_subentries`
 
-Deprecated, use `DeviceEntry.config_entry_id` and `DeviceEntry.config_subentry_id` instead. The property is kept as a compatibility shim.
+已弃用，请改用 `DeviceEntry.config_entry_id` 和 `DeviceEntry.config_subentry_id`。该属性作为兼容性垫片保留。
 
 ### `DeviceEntry.primary_config_entry`
 
-Deprecated, use `DeviceEntry.config_entry_id` instead. A device now belongs to a single config entry, which is its primary config entry.
+已弃用，请改用 `DeviceEntry.config_entry_id`。设备现在属于单个配置条目，即其主配置条目。
 
-### Reading config entries of a composite device
+### 读取复合设备的配置条目
 
-`DeviceEntry.config_entries`, `DeviceEntry.config_entries_subentries` and `DeviceEntry.primary_config_entry` are only deprecated for ordinary devices, which belong to a single config entry. They are not deprecated when interacting with a synthesized composite device, the read-only device the backwards compatibility resolution returns for a pre-migration composite device id (see [Backwards compatibility](#backwards-compatibility)). Such a device spans several config entries, which `config_entry_id` and `config_subentry_id` can't represent, so these three properties, which report the union across the split devices, remain the way to read that information.
+`DeviceEntry.config_entries`、`DeviceEntry.config_entries_subentries` 和 `DeviceEntry.primary_config_entry` 仅对属于单个配置条目的普通设备弃用。在与合成的复合设备（向后兼容性解析为迁移前复合设备 ID 返回的只读设备，请参阅[向后兼容性](#向后兼容性)）交互时，它们不会被弃用。此类设备跨越多个配置条目，而 `config_entry_id` 和 `config_subentry_id` 无法表示这一点，因此这三个报告拆分设备并集的属性仍然是读取该信息的方式。
 
-### `DeviceInfo["via_device"]` and `DeviceRegistry.async_get_or_create(via_device=...)`
+### `DeviceInfo["via_device"]` 和 `DeviceRegistry.async_get_or_create(via_device=...)`
 
-Deprecated, use `via_device_id` instead. Because identifiers are only unique per config entry, an identifier pair no longer unambiguously points at a single device, which is why `via_device` is deprecated.
+已弃用，请改用 `via_device_id`。由于标识符仅在每个配置条目中唯一，标识符对不再明确指向单个设备，这就是 `via_device` 被弃用的原因。
 
-Passing both `via_device` and `via_device_id` raises `HomeAssistantError`.
+同时传递 `via_device` 和 `via_device_id` 会引发 `HomeAssistantError`。
 
-### `DeviceRegistry.async_update_device()` config entry parameters
+### `DeviceRegistry.async_update_device()` 配置条目参数
 
-The `add_config_entry_id`, `add_config_subentry_id`, `remove_config_entry_id` and `remove_config_subentry_id` parameters are all deprecated. A device belongs to a single config entry and subentry, so adding and removing config entries is no longer meaningful; a device is instead moved or removed.
+`add_config_entry_id`、`add_config_subentry_id`、`remove_config_entry_id` 和 `remove_config_subentry_id` 参数均被弃用。设备属于单个配置条目和子条目，因此添加和删除配置条目不再有意义；设备改为被移动或删除。
 
-To move a device to another config entry or subentry, pass the new `new_config_entry_id` and `new_config_subentry_id` parameters:
+要将设备移动到另一个配置条目或子条目，请传递新的 `new_config_entry_id` 和 `new_config_subentry_id` 参数：
 
 ```py
 device_registry.async_update_device(
@@ -70,25 +70,25 @@ device_registry.async_update_device(
 )
 ```
 
-Moving a device with the old parameters took the integration several `async_update_device` calls, adding the device to the new config entry and subentry and then removing it from the old ones, with a separate case for a device that only changed subentry within the same config entry. The single call shown above replaces all of that. In addition, the device registry now clears a `CONFIG_ENTRY` disable when a device is moved to an enabled config entry, so the integration no longer has to carry the `disabled_by` flag across the move by hand.
+使用旧参数移动设备需要集成进行多次 `async_update_device` 调用，将设备添加到新的配置条目和子条目，然后从旧条目中删除它，并且对于仅在同一个配置条目内更改子条目的设备还有一个单独的处理情况。上面显示的单个调用取代了所有这些操作。此外，当设备移动到已启用的配置条目时，设备注册表现在会清除 `CONFIG_ENTRY` 禁用状态，因此集成不再需要手动在移动过程中传递 `disabled_by` 标志。
 
-Relatedly, `async_update_device` now validates the `disabled_by` flag against the owning config entry's disabled state. Setting `disabled_by=None` for a device on a disabled config entry, or `disabled_by=DeviceEntryDisabler.CONFIG_ENTRY` for a device on an enabled config entry, is inconsistent; such a value is ignored and logged now, and will raise from Home Assistant Core 2027.8.
+相关地，`async_update_device` 现在会根据所属配置条目的禁用状态验证 `disabled_by` 标志。为禁用配置条目上的设备设置 `disabled_by=None`，或为已启用配置条目上的设备设置 `disabled_by=DeviceEntryDisabler.CONFIG_ENTRY` 是不一致的；此类值现在会被忽略并记录日志，并将从 Home Assistant Core 2027.8 开始引发异常。
 
-Core integrations have been updated as examples: `openai_conversation` in [PR #176662](https://github.com/home-assistant/core/pull/176662), `scrape` in [PR #176663](https://github.com/home-assistant/core/pull/176663), `waqi` in [PR #176664](https://github.com/home-assistant/core/pull/176664) and `wolflink` in [PR #176665](https://github.com/home-assistant/core/pull/176665).
+核心集成已作为示例进行了更新：[PR #176662](https://github.com/home-assistant/core/pull/176662) 中的 `openai_conversation`、[PR #176663](https://github.com/home-assistant/core/pull/176663) 中的 `scrape`、[PR #176664](https://github.com/home-assistant/core/pull/176664) 中的 `waqi` 以及 [PR #176665](https://github.com/home-assistant/core/pull/176665) 中的 `wolflink`。
 
-To remove a device, call `DeviceRegistry.async_remove_device()`:
+要删除设备，请调用 `DeviceRegistry.async_remove_device()`：
 
 ```py
 device_registry.async_remove_device(device.id)
 ```
 
-Core integrations have been updated to remove devices this way in PRs [#176669](https://github.com/home-assistant/core/pull/176669), [#176671](https://github.com/home-assistant/core/pull/176671), [#176672](https://github.com/home-assistant/core/pull/176672) and [#176673](https://github.com/home-assistant/core/pull/176673).
+核心集成已更新为通过这种方式在 PR [#176669](https://github.com/home-assistant/core/pull/176669)、[#176671](https://github.com/home-assistant/core/pull/176671)、[#176672](https://github.com/home-assistant/core/pull/176672) 和 [#176673](https://github.com/home-assistant/core/pull/176673) 中删除设备。
 
 ### `DeviceRegistry.async_get_device()`
 
-Deprecated. Identifiers and connections are only unique per config entry, so a lookup by identifiers or connections can by design match more than one device, and what `async_get_device` returns is therefore ambiguous.
+已弃用。标识符和连接仅在每个配置条目中唯一，因此按标识符或连接进行查找在设计上可能会匹配多个设备，因此 `async_get_device` 返回的内容是不明确的。
 
-When the owning config entry is known, look the device up scoped to that config entry with the new methods `DeviceRegistry.async_get_device_by_identifier()` or `DeviceRegistry.async_get_device_by_connection()`. Each takes a single identifier or connection tuple plus the config entry id, so the lookup can no longer be ambiguous:
+当已知所属配置条目时，请使用新方法 `DeviceRegistry.async_get_device_by_identifier()` 或 `DeviceRegistry.async_get_device_by_connection()` 在该配置条目范围内查找设备。每个方法接受单个标识符或连接元组以及配置条目 ID，因此查找不再不明确：
 
 ```py
 # Before
@@ -99,43 +99,43 @@ device = device_registry.async_get_device_by_identifier(
 )
 ```
 
-Inside an entity, prefer `self.device_entry` over a registry lookup. If you genuinely need every device matching a key, possibly across config entries, use `DeviceRegistry.async_get_devices()`, which returns a list.
+在实体内部，优先使用 `self.device_entry` 而不是注册表查找。如果您确实需要匹配某个键的每个设备（可能跨配置条目），请使用返回 list 的 `DeviceRegistry.async_get_devices()`。
 
-Core integrations are migrated to the new methods, `heos` in core [PR #176932](https://github.com/home-assistant/core/pull/176932) is an example.
+核心集成已迁移到新方法，核心 [PR #176932](https://github.com/home-assistant/core/pull/176932) 中的 `heos` 就是一个示例。
 
-During the deprecation period, `async_get_device` resolves an ambiguous lookup as described in [Backwards compatibility](#backwards-compatibility) below. Note that this backwards-compatible resolution only happens through the `DeviceRegistry` lookup methods such as `async_get()` and `async_get_device()`; interacting with the `devices` container directly, for example `DeviceRegistry.devices.get(device_id)`, does not synthesize a composite device.
+在弃用期间，`async_get_device` 会按照下面[向后兼容性](#向后兼容性)中所述解析不明确的查找。请注意，这种向后兼容的解析仅通过 `DeviceRegistry` 查找方法（如 `async_get()` 和 `async_get_device()`）发生；直接与 `devices` 容器交互（例如 `DeviceRegistry.devices.get(device_id)`）不会合成复合设备。
 
-### Adding a helper config entry to another integration's device
+### 将辅助元素配置条目添加到其他集成的设备
 
-Helper integrations must not add their config entry to the source entity's device or to a user-selected device, they should link their entities to the device instead. This is a direct consequence of the change described here: a device now belongs to a single config entry, so a helper config entry can no longer be added to a device owned by another integration.
+辅助元素（helper）集成不得将其配置条目添加到源实体的设备或用户选择的设备中，而应将其实体链接到该设备。这是此处描述的更改的直接结果：设备现在属于单个配置条目，因此辅助元素配置条目不能再添加到由另一个集成拥有的设备中。
 
-This was announced last year in [Updated guidelines for helper integrations linking to other integration's device](/blog/2025/07/18/updated-pattern-for-helpers-linking-to-devices), and stops working in Home Assistant Core 2026.8.
+这在去年的[辅助元素集成链接到其他集成设备的更新指南](/blog/2025/07/18/updated-pattern-for-helpers-linking-to-devices)中已宣布，并将在 Home Assistant Core 2026.8 中停止工作。
 
-### `helpers.device.async_device_info_to_link_from_entity()` and `async_device_info_to_link_from_device_id()`
+### `helpers.device.async_device_info_to_link_from_entity()` 和 `async_device_info_to_link_from_device_id()`
 
-Both helpers now always return `None`.
+这两个辅助函数现在始终返回 `None`。
 
-They returned a `DeviceInfo` carrying another device's identifiers and connections, which implicitly added the caller's config entry to that device. A device with a single config entry can't represent that, it would silently fork a duplicate device instead.
+它们返回一个携带另一个设备的标识符和连接的 `DeviceInfo`，这会隐式地将调用者的配置条目添加到该设备。具有单个配置条目的设备无法表示这一点，它会默默地分叉出一个重复的设备。
 
-Link the helper entity to the device by setting `self.device_entry` in the entity's constructor instead:
+改为在实体的构造函数中设置 `self.device_entry` 来将辅助元素实体链接到设备：
 
 ```py
 self.device_entry = async_entity_id_to_device(hass, source_entity_id)
 ```
 
-The helpers are removed in Home Assistant Core 2027.8.
+这些辅助函数将在 Home Assistant Core 2027.8 中移除。
 
 ### `helpers.helper_integration.async_handle_source_entity_changes(add_helper_config_entry_to_device=...)`
 
-The parameter no longer has any effect and should be removed from the call.
+该参数不再有任何作用，应从调用中移除。
 
-When the source entity moves to another device, `async_handle_source_entity_changes` now only updates the helper entity to link to the new device, it no longer removes the helper config entry from the old device and adds it to the new one.
+当源实体移动到另一个设备时，`async_handle_source_entity_changes` 现在仅更新辅助元素实体以链接到新设备，它不再从旧设备中移除辅助元素配置条目并将其添加到新设备中。
 
-Passing the parameter is accepted until Home Assistant Core 2027.8, and logs a warning.
+传递该参数在 Home Assistant Core 2027.8 之前仍被接受，并会记录警告。
 
-### Cleaning up helper devices
+### 清理辅助元素设备
 
-The helper used to clean up a helper integration's devices from a config entry migration step has been renamed from `async_remove_helper_config_entry_from_source_device` to `homeassistant.helpers.helper_integration.async_remove_helper_devices` in core [PR #176714](https://github.com/home-assistant/core/pull/176714). The old name is kept as a deprecated alias which keeps working until Home Assistant Core 2027.8. The new signature is:
+用于从配置条目迁移步骤中清理辅助元素集成的设备的辅助函数，已在核心 [PR #176714](https://github.com/home-assistant/core/pull/176714) 中从 `async_remove_helper_config_entry_from_source_device` 重命名为 `homeassistant.helpers.helper_integration.async_remove_helper_devices`。旧名称作为弃用的别名保留，可继续工作直到 Home Assistant Core 2027.8。新的签名是：
 
 ```py
 def async_remove_helper_devices(
@@ -148,9 +148,9 @@ def async_remove_helper_devices(
 ) -> None:
 ```
 
-### `helpers.device.async_remove_stale_devices_links_keep_entity_device()` and `async_remove_stale_devices_links_keep_current_device()`
+### `helpers.device.async_remove_stale_devices_links_keep_entity_device()` 和 `async_remove_stale_devices_links_keep_current_device()`
 
-Both are now no-ops. Call `async_remove_helper_devices` with `remove_all_devices=True` from the helper's `async_setup_entry` instead:
+两者现在都是空操作。改为从辅助元素的 `async_setup_entry` 中调用带有 `remove_all_devices=True` 的 `async_remove_helper_devices`：
 
 ```py
 async_remove_helper_devices(
@@ -161,54 +161,54 @@ async_remove_helper_devices(
 )
 ```
 
-The `template` helper has been migrated as an example in core [PR #176900](https://github.com/home-assistant/core/pull/176900). The functions are removed in Home Assistant Core 2027.8.
+`template` 辅助元素已作为示例在核心 [PR #176900](https://github.com/home-assistant/core/pull/176900) 中迁移。这些函数将在 Home Assistant Core 2027.8 中移除。
 
-## Devices can only have a single config subentry
+## 设备只能有一个配置子条目
 
-A device can no longer be tied to more than one config subentry. This is a breaking change without a backwards compatibility shim; integrations which attach several subentries to the same device must create one device per subentry.
+设备不能再绑定到多个配置子条目。这是一个没有向后兼容性垫片的破坏性更改；将多个子条目附加到同一设备的集成必须为每个子条目创建一个设备。
 
-### Example: `telegram_bot`
+### 示例：`telegram_bot`
 
-The `telegram_bot` integration has been adjusted for this in core [PR #176606](https://github.com/home-assistant/core/pull/176606), which can be used as an example.
+`telegram_bot` 集成已在核心 [PR #176606](https://github.com/home-assistant/core/pull/176606) 中为此进行了调整，可用作示例。
 
-It previously had a single bot device shared by every chat, with each chat's subentry attached to that same device. It now creates an individual device per chat, linked to the bot device as a via device. A config entry migration moves each chat's notify entity onto its own device and strips the chat subentries from the bot device, leaving the bot device with no subentry.
+以前，它有一个由每个聊天共享的单个机器人设备，每个聊天的子条目都附加到该同一设备。现在，它为每个聊天创建一个单独的设备，并作为 via 设备链接到机器人设备。配置条目迁移将每个聊天的 notify 实体移动到其自己的设备上，并从机器人设备中剥离聊天子条目，使机器人设备没有子条目。
 
-Note that the PR was written before `via_device_id` was added, new code should use `via_device_id` instead of `via_device`.
+请注意，该 PR 是在添加 `via_device_id` 之前编写的，新代码应使用 `via_device_id` 而不是 `via_device`。
 
-When [child devices](https://github.com/home-assistant/architecture/discussions/1414) are introduced, integrations which model this with a via device should migrate to child devices instead.
+当引入[子设备](https://github.com/home-assistant/architecture/discussions/1414)时，使用 via 设备对此进行建模的集成应改为迁移到子设备。
 
-## Linking an entity to a split device
+## 将实体链接到拆分设备
 
-A pre-migration composite device id no longer refers to a real device. Attempting to link an entity to such an id, by passing it to `EntityRegistry.async_get_or_create(device_id=...)` or `EntityRegistry.async_update_entity(device_id=...)`, is ignored with a logged warning rather than applied. A new entity is then created with no device, and an existing entity keeps its current device. Passing a genuinely non-existent device id still raises `ValueError` as before.
+迁移前的复合设备 ID 不再指代真实设备。尝试通过将此类 ID 传递给 `EntityRegistry.async_get_or_create(device_id=...)` 或 `EntityRegistry.async_update_entity(device_id=...)` 来将实体链接到该 ID 将被忽略并记录警告，而不是应用。然后将创建一个没有设备的新实体，现有实体保留其当前设备。传递真正不存在的设备 ID 仍然会像以前一样引发 `ValueError`。
 
-Entities whose stored device is a composite device with no split owned by the entity's config entry are detached from the device when the registry is loaded; the owning integration is expected to re-link them.
+当加载注册表时，其存储设备是没有拆分的复合设备且由实体的配置条目拥有的实体将从设备中分离；所属集成应重新链接它们。
 
-Link entities to one of the split devices instead, looking it up with `async_get_device_by_identifier` or `async_get_device_by_connection`.
+改为将实体链接到拆分设备之一，使用 `async_get_device_by_identifier` 或 `async_get_device_by_connection` 进行查找。
 
-## Device registry events
+## 设备注册表事件
 
-Splitting a pre-migration composite device happens when the registry is loaded from storage, before any listeners run, so it emits no `EVENT_DEVICE_REGISTRY_UPDATED` events; devices are already split at startup.
+拆分迁移前的复合设备发生在从存储加载注册表时，在任何侦听器运行之前，因此它不会发出 `EVENT_DEVICE_REGISTRY_UPDATED` 事件；设备在启动时就已经拆分。
 
-Two things change for integrations which subscribe to `EVENT_DEVICE_REGISTRY_UPDATED`, or use `async_track_device_registry_updated_event`, and inspect the payload:
+对于订阅 `EVENT_DEVICE_REGISTRY_UPDATED` 或使用 `async_track_device_registry_updated_event` 并检查有效载荷的集成，有两件事发生了变化：
 
-- The `changes` dict of an `update` event reports a device move with the keys `config_entry_id` and `config_subentry_id`, replacing the previous `config_entries` and `config_entries_subentries`.
-- Updating or removing a pre-migration composite device id forwards the operation to each split device, so one event is fired per split device rather than a single event for the composite id.
+- `update` 事件的 `changes` 字典使用键 `config_entry_id` 和 `config_subentry_id` 报告设备移动，取代了之前的 `config_entries` 和 `config_entries_subentries`。
+- 更新或删除迁移前的复合设备 ID 会将操作转发到每个拆分设备，因此每个拆分设备会触发一个事件，而不是为复合 ID 触发单个事件。
 
-A device now belongs to a single config entry, so it can no longer lose one config entry while staying around for another. Integrations which previously watched `update` events for a change to the `config_entries` or `config_entries_subentries` keys, typically to detect their config entry being removed from a device shared with another integration, probably only need to handle `remove` events now: a device losing its config entry means the device is removed.
+设备现在属于单个配置条目，因此它不能再在保留另一个配置条目的同时丢失一个配置条目。以前监视 `update` 事件以检测 `config_entries` 或 `config_entries_subentries` 键更改的集成（通常是为了检测其配置条目从与另一个集成共享的设备中移除），现在可能只需要处理 `remove` 事件：设备丢失其配置条目意味着设备被移除。
 
-## Backwards compatibility
+## 向后兼容性
 
-Splitting devices changes assumptions which custom integrations may rely on, and device ids which are stored in automations and scripts no longer exist as devices. To soften that, the device registry makes a best-effort attempt to keep unmodified custom integrations working, by resolving a pre-migration composite device id to the devices it was split into.
+拆分设备改变了自定义集成可能依赖的假设，并且存储在自动化（automation）和脚本中的设备 ID 不再作为设备存在。为了缓解这一问题，设备注册表会尽最大努力保持未修改的自定义集成正常工作，通过将迁移前的复合设备 ID 解析为其拆分到的设备。
 
-This is best-effort, not a guarantee. The shims can't cover every way a custom integration interacts with the device registry, and an operation which is ambiguous across the split devices can't be applied at all. An AI-assisted analysis of 462 custom integrations interacting directly with the device registry suggests at least 90% are expected to work unaffected, which also means some will not. Please migrate your integration to the new API rather than relying on these shims; they are removed in Home Assistant Core 2027.8.
+这是尽最大努力，而不是保证。垫片无法涵盖自定义集成与设备注册表交互的每种方式，并且跨拆分设备不明确的操作根本无法应用。对直接与设备注册表交互的 462 个自定义集成进行的 AI 辅助分析表明，预计至少 90% 的集成将不受影响地工作，这也意味着有些将不会。请将您的集成迁移到新 API，而不是依赖这些垫片；它们将在 Home Assistant Core 2027.8 中移除。
 
-During the deprecation period:
+在弃用期间：
 
-- `DeviceRegistry.async_get()` synthesizes a read-only restored composite device when passed the id of a pre-migration composite device. Its identifiers, connections and config entries are the union of the split devices'. The synthesis only happens in `async_get()`; interacting with the `devices` container directly, for example `DeviceRegistry.devices.get(device_id)`, does not synthesize a composite and returns `None` for a pre-migration composite device id.
-- `DeviceRegistry.async_get_device()` resolves a lookup by identifiers or connections matching several config entries to a single device when possible, preferring the device whose config entry domain matches the looked-up identifier. If the remaining matches are the splits of one pre-migration composite device, a read-only composite spanning them is returned. For independent devices sharing an identifier or connection, a device owned by the calling integration is preferred, falling back to the first match.
-- `DeviceRegistry.async_update_device()` and `DeviceRegistry.async_remove_device()` forward the call to each of the split devices. Arguments which rewrite a device's identity or move it are ambiguous across the split devices; they are ignored and reported to the offending integration.
-- Entity registry `get_entries_for_device_id()` and `async_entries_for_device()` expand a pre-migration composite device id to the entities of the devices it was split into.
-- Actions targeting a pre-migration composite device id trickle down to the split devices.
-- User customizations (area, floor, labels, name) are kept when a device is split.
+- 当传递迁移前复合设备的 ID 时，`DeviceRegistry.async_get()` 会合成一个只读的已恢复复合设备。其标识符、连接和配置条目是拆分设备的并集。合成仅发生在 `async_get()` 中；直接与 `devices` 容器交互（例如 `DeviceRegistry.devices.get(device_id)`）不会合成复合设备，并为迁移前的复合设备 ID 返回 `None`。
+- `DeviceRegistry.async_get_device()` 在可能的情况下，将按标识符或连接匹配多个配置条目的查找解析为单个设备，优先选择其配置条目域与查找的标识符匹配的设备。如果剩余的匹配项是一个迁移前复合设备的拆分，则返回跨越它们的只读复合设备。对于共享标识符或连接的独立设备，优先选择由调用集成拥有的设备，退而求其次选择第一个匹配项。
+- `DeviceRegistry.async_update_device()` 和 `DeviceRegistry.async_remove_device()` 将调用转发到每个拆分设备。重写设备身份或移动设备的参数在拆分设备之间是不明确的；它们将被忽略并报告给违规集成。
+- 实体注册表的 `get_entries_for_device_id()` 和 `async_entries_for_device()` 将迁移前的复合设备 ID 扩展为其拆分到的设备的实体。
+- 针对迁移前复合设备 ID 的操作会向下传递到拆分设备。
+- 拆分设备时，用户自定义（区域（area）、楼层、标签、名称）会被保留。
 
-A new method `DeviceRegistry.async_get_devices_for_composite_device_id()` returns the devices a pre-migration composite device was split into. `DeviceRegistry.async_is_composite_device_id()` returns whether a device id is a pre-migration composite device id, that is, an id which was split into one device per config entry and no longer refers to a registered device.
+新方法 `DeviceRegistry.async_get_devices_for_composite_device_id()` 返回迁移前复合设备拆分到的设备。`DeviceRegistry.async_is_composite_device_id()` 返回设备 ID 是否为迁移前的复合设备 ID，即被拆分为每个配置条目一个设备且不再指代已注册设备的 ID。

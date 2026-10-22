@@ -1,6 +1,6 @@
 ---
-title: "DeviceInfo is now a dataclass"
-description: DeviceInfo and ChildDeviceInfo are no longer TypedDicts. They are dataclasses with typed fields, which are read and written as attributes.
+title: "DeviceInfo 现已成为数据类"
+description: DeviceInfo 和 ChildDeviceInfo 不再是 TypedDict。它们是带有类型字段的数据类，作为属性进行读写。
 date: 2026-10-13
 authors:
   - epenet
@@ -8,9 +8,9 @@ areas:
   - core
 ---
 
-## Summary of changes
+## 变更摘要
 
-`DeviceInfo` and `ChildDeviceInfo` are no longer `TypedDict`s. They are dataclasses with typed fields, which are read and written as attributes:
+`DeviceInfo` 和 `ChildDeviceInfo` 不再是 `TypedDict`。它们是带有类型字段的数据类，作为属性进行读写：
 
 ```python
 device_info = DeviceInfo(identifiers={(DOMAIN, unique_id)}, name="My device")
@@ -18,11 +18,11 @@ device_info.sw_version = "1.2.3"
 name = device_info.name
 ```
 
-This change is included in Home Assistant Core 2026.11.
+此变更包含在 Home Assistant Core 2026.11 中。
 
-Reading and writing fields with `[]`, `.get()`, and `.update()` still works for now, but it is a compatibility layer which will be deprecated and removed in a later version. Integrations should move to attributes. Some other dict behavior is already gone, as described in [what no longer works](#what-no-longer-works).
+目前，使用 `[]`、`.get()` 和 `.update()` 读写字段仍然有效，但这只是一个兼容层，将在后续版本中被弃用并移除。集成（integration）应改用属性。其他一些字典行为已经失效，如[不再支持的功能](#what-no-longer-works)中所述。
 
-## Migrating your integration
+## 迁移您的集成
 
 ```python
 # Old
@@ -35,7 +35,7 @@ device_info.model = "My model"
 device_info.manufacturer = "My manufacturer"
 ```
 
-Reading a field which has not been set returns `UNDEFINED`, where `.get()` returned `None`. See [unset fields](#unset-fields).
+读取未设置的字段会返回 `UNDEFINED`，而以前 `.get()` 会返回 `None`。请参阅[未设置的字段](#unset-fields)。
 
 ```python
 # Old
@@ -83,9 +83,9 @@ device_registry.async_get_or_create(
 )
 ```
 
-## Unset fields
+## 未设置的字段
 
-A field which has not been set reads as `UNDEFINED`, not as `None`, and `None` is a value like any other. Note that `UNDEFINED` is truthy, so test it explicitly:
+未设置的字段读取为 `UNDEFINED`，而不是 `None`，并且 `None` 和其他任何值一样。请注意，`UNDEFINED` 是真值（truthy），因此需要显式进行测试：
 
 ```python
 from homeassistant.helpers.typing import UNDEFINED
@@ -99,7 +99,7 @@ if device_info.name is UNDEFINED:
     device_info.name = "My device"
 ```
 
-A field is unset again by assigning `UNDEFINED` to it:
+通过将 `UNDEFINED` 赋值给字段，可以再次取消设置该字段：
 
 ```python
 # Old
@@ -109,11 +109,11 @@ del device_info["name"]
 device_info.name = UNDEFINED
 ```
 
-Only the fields which are set are passed on to the device registry, so an unset field leaves the corresponding value on the device unchanged.
+只有已设置的字段才会传递给设备注册表，因此未设置的字段会使设备上对应的值保持不变。
 
-## Serializing a device info
+## 序列化设备信息
 
-A dataclass is serialized field by field, unset fields included. orjson, which the Home Assistant JSON helpers use, writes every unset field as `0`. `dataclasses.asdict` keeps them as `UNDEFINED`. Whenever a device info is stored, sent in event data or a WebSocket message, or held by a dataclass which is serialized, use `device_info.as_dict()`, which returns the fields which are set:
+数据类会逐字段进行序列化，包括未设置的字段。Home Assistant JSON 辅助元素（helper）使用的 orjson 会将每个未设置的字段写为 `0`。`dataclasses.asdict` 会将它们保留为 `UNDEFINED`。每当设备信息被存储、在事件数据或 WebSocket 消息中发送，或者由被序列化的数据类持有时，请使用 `device_info.as_dict()`，它会返回已设置的字段：
 
 ```python
 # Old
@@ -123,11 +123,11 @@ await store.async_save({"device_info": device_info})
 await store.async_save({"device_info": device_info.as_dict()})
 ```
 
-## What no longer works
+## 不再支持的功能
 
-### Keys which are not device info fields
+### 非设备信息字段的键
 
-Keys which are not device info fields are rejected. Previously they were silently kept, and either ignored or raised a `TypeError` later, when the device registry was called:
+非设备信息字段的键会被拒绝。以前它们会被静默保留，并在稍后调用设备注册表时被忽略或引发 `TypeError`：
 
 ```python
 # Raises TypeError: unexpected keyword argument 'id'
@@ -137,31 +137,31 @@ device_info = DeviceInfo(**device_payload)
 device_info["config_entry_id"] = entry.entry_id
 ```
 
-Arguments of `async_get_or_create` which are not device info fields, such as `config_entry_id`, are passed to the method directly.
+不是设备信息字段的 `async_get_or_create` 参数（如 `config_entry_id`）将直接传递给该方法。
 
-### Building from a mapping
+### 从映射构建
 
-`DeviceInfo({...})` raises a `TypeError`: pass the fields as keyword arguments.
+`DeviceInfo({...})` 会引发 `TypeError`：请将字段作为关键字参数传递。
 
-### Dict behavior
+### 字典行为
 
-Some rarely used dict behavior is gone: `copy`, `setdefault`, `values`, `clear`, `popitem`, `pop`, `del device_info[key]`, merging with `|` or `|=`, iterating over a device info, and `len()`. Testing a field with `in` keeps working.
+一些很少使用的字典行为已移除：`copy`、`setdefault`、`values`、`clear`、`popitem`、`pop`、`del device_info[key]`、使用 `|` 或 `|=` 合并、遍历设备信息以及 `len()`。使用 `in` 测试字段仍然有效。
 
-A device info is no longer a `dict`: `isinstance(device_info, dict)` returns `False`. Use `isinstance(device_info, DeviceInfo)`, or `device_info.as_dict()` where a plain dictionary is needed. An empty `DeviceInfo()` is no longer falsy either.
+设备信息不再是 `dict`：`isinstance(device_info, dict)` 返回 `False`。请使用 `isinstance(device_info, DeviceInfo)`，或者在需要纯字典的地方使用 `device_info.as_dict()`。空的 `DeviceInfo()` 也不再是假值（falsy）。
 
-To check whether a field exists, for example to support older Home Assistant versions, use `"via_device_id" in DeviceInfo.__annotations__`. `__optional_keys__` and `__required_keys__` still work, but are part of the compatibility layer.
+要检查字段是否存在（例如为了支持较旧版本的 Home Assistant），请使用 `"via_device_id" in DeviceInfo.__annotations__`。`__optional_keys__` 和 `__required_keys__` 仍然有效，但它们属于兼容层。
 
-### Modifying a converted sensor device info
+### 修改转换后的传感器设备信息
 
-`sensor_device_info_to_hass_device_info()` now returns a cached device info, which can be shared with other devices. It cannot be modified, and raises a `TypeError` if you try. Copy it first, with `copy.copy(device_info)`. If you add the same fields for every advertisement, build and cache your own `DeviceInfo` instead, so that it is not copied every time.
+`sensor_device_info_to_hass_device_info()` 现在返回一个缓存的设备信息，该信息可以与其他设备共享。它不能被修改，如果尝试修改会引发 `TypeError`。请先使用 `copy.copy(device_info)` 进行复制。如果为每个广播（advertisement）添加相同的字段，请改为构建并缓存您自己的 `DeviceInfo`，这样就不必每次都进行复制。
 
-## Deprecated fields
+## 已弃用的字段
 
-`created_at`, `default_manufacturer`, `default_model`, `default_name`, `modified_at`, and `via_device` are still accepted, and still log a deprecation warning when the device is created. They are not part of the typed fields, and will be removed in Home Assistant Core 2027.8 (`via_device`) and 2027.9 (the others). Use `manufacturer`, `model`, `name`, and `via_device_id` instead.
+`created_at`、`default_manufacturer`、`default_model`、`default_name`、`modified_at` 和 `via_device` 仍然被接受，并且在创建设备时仍会记录弃用警告。它们不属于类型字段，并将在 Home Assistant Core 2027.8（`via_device`）和 2027.9（其他字段）中移除。请改用 `manufacturer`、`model`、`name` 和 `via_device_id`。
 
-## Child devices
+## 子设备
 
-`ChildDeviceInfo` is a dataclass in the same way. An entity registers a child device by returning a `ChildDeviceInfo`, rather than by adding a `parent_device_id` key to a `DeviceInfo`:
+`ChildDeviceInfo` 同样是一个数据类。实体（entity）通过返回 `ChildDeviceInfo` 来注册子设备，而不是向 `DeviceInfo` 添加 `parent_device_id` 键：
 
 ```python
 self._attr_device_info = ChildDeviceInfo(

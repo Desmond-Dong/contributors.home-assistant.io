@@ -1,6 +1,6 @@
 ---
-title: "`DeviceEntry.config_entries` deprecation is now enforced"
-description: The device registry's multi-config-entry compatibility properties — DeviceEntry.config_entries, DeviceEntry.config_entries_subentries and DeviceEntry.primary_config_entry — were announced as deprecated in Devices are restricted to a single config entry and at most one subentry, but reading them was still silent.
+title: "`DeviceEntry.config_entries` 弃用现已强制执行"
+description: 设备注册表的多配置条目兼容性属性——DeviceEntry.config_entries、DeviceEntry.config_entries_subentries 和 DeviceEntry.primary_config_entry——在《设备被限制为单个配置条目和最多一个子条目》一文中已宣布弃用，但读取它们时仍不会报错。
 date: 2026-09-15
 authors:
   - Erik Montnémery
@@ -8,33 +8,33 @@ areas:
   - core
 ---
 
-## Summary
+## 总结
 
-The device registry's multi-config-entry compatibility properties — `DeviceEntry.config_entries`, `DeviceEntry.config_entries_subentries` and `DeviceEntry.primary_config_entry` — were announced as deprecated in [Devices are restricted to a single config entry and at most one subentry](/blog/2026/07/21/device-registry-single-config-entry), but reading them was still silent. They now report at runtime: core and core integrations raise `RuntimeError`, custom integrations log a warning.
+设备注册表的多配置条目兼容性属性——`DeviceEntry.config_entries`、`DeviceEntry.config_entries_subentries` 和 `DeviceEntry.primary_config_entry`——在[设备被限制为单个配置条目和最多一个子条目](/blog/2026/07/21/device-registry-single-config-entry)一文中已宣布弃用，但读取它们时仍不会报错。现在它们会在运行时发出提示：核心和核心集成会抛出 `RuntimeError`，自定义集成会记录警告。
 
-Use `DeviceEntry.config_entry_id` and `DeviceEntry.config_subentry_id` instead. The properties remain available to custom integrations until Home Assistant Core 2027.10, two releases later than the 2027.8 given in the earlier post.
+请改用 `DeviceEntry.config_entry_id` 和 `DeviceEntry.config_subentry_id`。这些属性对自定义集成保留可用至 Home Assistant Core 2027.10，比前文中提到的 2027.8 晚了两个版本。
 
-Reading the properties on a synthesized composite device is not deprecated and does not report, because such a device really does span several config entries.
+在合成的复合设备上读取这些属性并未弃用，也不会发出提示，因为此类设备确实跨越多个配置条目。
 
-**Most integrations don't read these properties and don't need any changes.** Read on if your integration inspects a device's config entries, or accesses them on a deleted or child device.
+**大多数集成不会读取这些属性，也无需进行任何更改。** 如果你的集成需要检查设备的配置条目，或者在已删除的设备或子设备上访问它们，请继续阅读。
 
-This is implemented in core [PR #181949](https://github.com/home-assistant/core/pull/181949) and lands in Home Assistant Core 2026.10.
+此更改在核心 [PR #181949](https://github.com/home-assistant/core/pull/181949) 中实现，并随 Home Assistant Core 2026.10 发布。
 
 <!--truncate-->
 
-## What reports, and what to use instead
+## 哪些会发出提示以及替代方案
 
-| Deprecated | Replacement |
+| 已弃用 | 替代方案 |
 | --- | --- |
 | `DeviceEntry.config_entries` | `DeviceEntry.config_entry_id` |
-| `DeviceEntry.config_entries_subentries` | `DeviceEntry.config_entry_id` and `DeviceEntry.config_subentry_id` |
+| `DeviceEntry.config_entries_subentries` | `DeviceEntry.config_entry_id` 和 `DeviceEntry.config_subentry_id` |
 | `DeviceEntry.primary_config_entry` | `DeviceEntry.config_entry_id` |
 
-As with the other device registry deprecations, the enforcement is stricter inside core: a core or core integration caller raises `RuntimeError` immediately, while a custom integration keeps working with a logged warning until Home Assistant Core 2027.10.
+与其他设备注册表弃用一样，核心内部的执行更为严格：核心或核心集成调用方会立即抛出 `RuntimeError`，而自定义集成在记录警告的同时仍可继续工作，直到 Home Assistant Core 2027.10。
 
-## Migrating
+## 迁移
 
-A device belongs to exactly one config entry and at most one config subentry, so each of the shims collapses to a plain attribute read:
+一个设备确切地属于一个配置条目和最多一个配置子条目，因此每个兼容层都会简化为普通的属性读取：
 
 ```py
 # Before
@@ -62,7 +62,7 @@ entry_id = device.config_entry_id
 subentry_id = device.config_subentry_id
 ```
 
-If you loop over a device's config entries to find the one belonging to your integration, use the `async_get_device_and_config_entry_for_domain()` helper introduced in [More device registry deprecations, new helpers and validation](/blog/2026/08/24/device-registry-follow-up-changes) instead:
+如果你遍历设备的配置条目以查找属于你集成的那个，请改用[更多设备注册表弃用、新辅助元素和验证](/blog/2026/08/24/device-registry-follow-up-changes)中引入的 `async_get_device_and_config_entry_for_domain()` 辅助元素：
 
 ```py
 device, config_entry = dr.async_get_device_and_config_entry_for_domain(
@@ -70,13 +70,13 @@ device, config_entry = dr.async_get_device_and_config_entry_for_domain(
 )
 ```
 
-Core's own test suite was migrated off the properties in core [PR #181945](https://github.com/home-assistant/core/pull/181945), which can serve as a set of examples.
+核心自身的测试套件已在核心 [PR #181945](https://github.com/home-assistant/core/pull/181945) 中迁移，不再使用这些属性，这可以作为一组示例。
 
-## Composite devices are exempt
+## 复合设备豁免
 
-The properties are not deprecated for a synthesized composite device — the read-only device `DeviceRegistry.async_get()` returns for a pre-migration composite device id, as described in [Backwards compatibility](/blog/2026/07/21/device-registry-single-config-entry#backwards-compatibility). Such a device spans several config entries, which `config_entry_id` and `config_subentry_id` can't represent, so the three properties are the correct API for it and reading them does not report, for any caller.
+对于合成的复合设备，这些属性并未弃用——即 `DeviceRegistry.async_get()` 为迁移前的复合设备 ID 返回的只读设备，如[向后兼容性](/blog/2026/07/21/device-registry-single-config-entry#backwards-compatibility)中所述。此类设备跨越多个配置条目，而 `config_entry_id` 和 `config_subentry_id` 无法表示这种情况，因此这三个属性是其正确的 API，且任何调用方读取它们时都不会发出提示。
 
-The exemption is keyed on `DeviceEntry.is_composite_device`, which code handling both kinds of device can branch on. Core's `device_automation` integration is a genuine example: the device ids passed to `async_get_device_automations()` come from automations, scripts and the frontend, so they can still be pre-migration composite ids, and listing a device's automations needs the domain of every config entry owning it:
+豁免基于 `DeviceEntry.is_composite_device`，处理这两种设备的代码可以据此进行分支判断。核心的 `device_automation` 集成是一个真实的例子：传递给 `async_get_device_automations()` 的设备 ID 来自自动化、脚本和前端，因此它们仍可能是迁移前的复合 ID，并且列出设备的自动化需要拥有它的每个配置条目的域：
 
 ```py
 # homeassistant/components/device_automation/__init__.py
@@ -91,20 +91,20 @@ for entry_id in entry_ids:
         domain_devices.setdefault(config_entry.domain, set()).add(device_id)
 ```
 
-Note that this is only needed for code which deliberately accepts a stored device id that may predate the migration. Code that only ever handles devices it registered itself should read `config_entry_id` unconditionally.
+请注意，这仅适用于故意接受可能早于迁移的已存储设备 ID 的代码。仅处理其自身注册的设备的代码应无条件读取 `config_entry_id`。
 
-## Deleted devices
+## 已删除的设备
 
-`DeletedDeviceEntry.config_entries` and `DeletedDeviceEntry.config_entries_subentries` are deprecated and report on the same terms. A deleted device is never a composite, so there is no exemption — every read reports.
+`DeletedDeviceEntry.config_entries` 和 `DeletedDeviceEntry.config_entries_subentries` 已弃用，并在相同条件下发出提示。已删除的设备永远不是复合设备，因此没有豁免——每次读取都会发出提示。
 
-Use `DeletedDeviceEntry.config_entry_id` and `DeletedDeviceEntry.config_subentry_id`. Both are `None` for an orphaned deleted device, that is, one whose owning config entry has been removed; the deprecated properties represented that case as an empty set and an empty dict.
+请使用 `DeletedDeviceEntry.config_entry_id` 和 `DeletedDeviceEntry.config_subentry_id`。对于孤立的已删除设备（即其所属配置条目已被移除的设备），两者均为 `None`；已弃用的属性将这种情况表示为空集合和空字典。
 
-## Child devices
+## 子设备
 
-`ChildDeviceEntry` inherits the three properties, and a child device is never a composite either, so reading them on a child device always reports. A child device belongs to the same config entry and subentry as its parent, both available as `config_entry_id` and `config_subentry_id`.
+`ChildDeviceEntry` 继承了这三个属性，且子设备也永远不是复合设备，因此在子设备上读取它们总是会发出提示。子设备与其父设备属于相同的配置条目和子条目，两者均可通过 `config_entry_id` 和 `config_subentry_id` 获取。
 
-## The WebSocket API and stored data are unaffected
+## WebSocket API 和存储数据不受影响
 
-This change only concerns the Python properties. A regular device is serialized as before — `config/device_registry/list`, the `EVENT_DEVICE_REGISTRY_UPDATED` payload and the device registry storage still carry the `config_entries`, `config_entries_subentries` and `primary_config_entry` fields, computed internally without reporting — so WebSocket clients are not affected and see no new warnings. Child devices never carried these fields in the first place.
+此更改仅涉及 Python 属性。常规设备的序列化方式与以前相同——`config/device_registry/list`、`EVENT_DEVICE_REGISTRY_UPDATED` 负载以及设备注册表存储仍然包含 `config_entries`、`config_entries_subentries` 和 `primary_config_entry` 字段，这些字段在内部计算且不会发出提示——因此 WebSocket 客户端不受影响，也不会看到新的警告。子设备从一开始就不包含这些字段。
 
-Those fields are deprecated on their own schedule, described in [Device registry WebSocket API changes](/blog/2026/08/19/device-registry-websocket-api-changes#new-device-fields-config_entry_id-and-config_subentry_id).
+这些字段按照其自己的时间表弃用，详见[设备注册表 WebSocket API 更改](/blog/2026/08/19/device-registry-websocket-api-changes#new-device-fields-config_entry_id-and-config_subentry_id)。
