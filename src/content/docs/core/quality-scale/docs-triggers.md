@@ -1,22 +1,22 @@
 ---
-title: Document the triggers
-description: "Bronze rule docs-triggers: the documentation describes the triggers of the integration."
+title: 记录触发器
+description: "青铜规则 docs-triggers：文档描述集成的触发器。"
 sidebarLabel: docs-triggers
 sidebarGroup: Bronze
 order: 13
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `docs-triggers`.
+这是一条青铜（Bronze）规则。在 `quality_scale.yaml` 中，它被称为 `docs-triggers`。
 
-When the integration provides its own [triggers](/glossary/trigger/), every trigger must be documented. Each trigger gets a page of its own on [home-assistant.io](https://www.home-assistant.io/), and the integration page links to them. A trigger page explains what the trigger does, lists its options, and shows how to use it from the UI and in YAML.
+当集成（integration）提供了自己的[触发器（trigger）](/glossary/trigger/)时，每个触发器都必须有相应的文档。每个触发器在 [home-assistant.io](https://www.home-assistant.io/) 上都有一个独立的页面，集成页面会链接到这些页面。触发器页面会说明该触发器的用途，列出其选项，并展示如何在 UI 中以及在 YAML 中使用它。
 
-## Why it matters
+## 为什么这很重要
 
-Integration triggers are less familiar than the standard ones, like a state change. Without documentation, users do not know they exist, what the options mean, or when the trigger fires. A page per trigger keeps the integration page readable, and gives every trigger room for examples.
+集成触发器不像状态改变这类标准触发器那样为人所熟悉。如果没有文档，用户就不知道这些触发器的存在、选项的含义，也不知道触发器何时触发。每个触发器拥有独立页面可以让集成页面保持可读，并为每个触发器提供展示示例的空间。
 
-## Example
+## 示例
 
-Each trigger is a file in `source/_triggers/` of home-assistant.io, named after the trigger, like `my_integration.co2_changed.markdown`. A shortened example:
+每个触发器都是 home-assistant.io 的 `source/_triggers/` 目录中的一个文件，以该触发器命名，例如 `my_integration.co2_changed.markdown`。以下是一个精简的示例：
 
 ```markdown
 ---
@@ -48,17 +48,17 @@ trigger: |
 {% endexample %}
 ```
 
-On the integration page, `{% include integrations/triggers.md %}` lists the triggers of the integration. The [integration page structure](/writing/reference/integration-page/#triggers-conditions-and-actions) describes the full layout of a trigger page, with all its includes. See also [Write integration documentation](/writing/guides/integration/).
+在集成页面上，`{% include integrations/triggers.md %}` 会列出该集成的触发器。[集成页面结构](/writing/reference/integration-page/#triggers-conditions-and-actions)一文描述了触发器页面的完整布局，以及其所使用的所有 include。另请参阅[编写集成文档](/writing/guides/integration/)。
 
-## How it is checked
+## 如何检查
 
-Checked in review. Hassfest validates the trigger descriptions in `triggers.yaml` of the integration, but not the documentation.
+在审查中进行检查。Hassfest 会校验集成 `triggers.yaml` 中的触发器描述，但不会校验文档。
 
-## Exceptions
+## 例外情况
 
-If the integration does not provide any triggers, this rule does not apply.
+如果集成不提供任何触发器，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [docs-actions](/core/quality-scale/docs-actions/): document the actions.
-- [docs-conditions](/core/quality-scale/docs-conditions/): document the conditions.
+- [docs-actions](/core/quality-scale/docs-actions/)：记录动作（action）。
+- [docs-conditions](/core/quality-scale/docs-conditions/)：记录条件（condition）。

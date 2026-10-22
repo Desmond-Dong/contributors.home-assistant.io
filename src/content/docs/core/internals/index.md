@@ -1,6 +1,6 @@
 ---
-title: How core works
-description: The inside of Home Assistant Core. The hass object, events, states, asyncio, authentication, the APIs, and the voice and AI building blocks.
+title: 核心的工作原理
+description: Home Assistant Core 的内部构造。包括 hass 对象、事件、状态、asyncio、身份认证、各类 API，以及语音和 AI 构建模块。
 order: 40
 sidebarGroups:
   - The core
@@ -10,57 +10,57 @@ sidebarGroups:
   - Voice and AI
 ---
 
-Every integration talks to the same small set of building blocks: an event bus, a state machine, an action registry, and the configuration. They all hang off one object, `hass`, and they all run on one asyncio event loop. Once you know how those pieces behave, most of core stops being magic.
+每个集成（integration）都与同一小组构建模块交互：事件总线、状态机、动作（action）注册表以及配置。它们都挂载在同一个对象 `hass` 上，并且都运行在同一个 asyncio 事件循环上。一旦你了解了这些模块的行为方式，核心的大部分就不再是魔法了。
 
-This part of the area is for developers who want to understand what happens under an integration, who work on core itself, or who build a client that talks to Home Assistant from the outside. For the big picture of how core, the frontend, the Supervisor, and the operating system fit together, see the [Architecture](/architecture/) area.
+本区域的这一部分面向以下开发者：想要了解集成内部发生了什么、参与核心本身的开发，或者构建从外部与 Home Assistant 通信的客户端。有关核心、前端、Supervisor 和操作系统如何协同配合的整体概览，请参阅[架构（Architecture）](/architecture/)区域。
 
-## Where to start
+## 从哪里开始
 
-If you are new to core, read these three first. They explain things you run into in every integration:
+如果你刚接触核心，请先阅读以下三篇。它们解释了你在每个集成中都会遇到的内容：
 
-1. [The hass object](/core/internals/hass/): what `hass` is, and what hangs off it.
-2. [Async in Home Assistant](/core/internals/asyncio/): why almost everything is `async`, and which functions you may call from where.
-3. [Events](/core/internals/events/) and [states](/core/internals/states/): how things happen, and how Home Assistant remembers them.
+1. [hass 对象](/core/internals/hass/)：`hass` 是什么，以及挂载在它上面的内容。
+2. [Home Assistant 中的异步](/core/internals/asyncio/)：为什么几乎一切都是 `async`，以及在何处可以调用哪些函数。
+3. [事件](/core/internals/events/)与[状态](/core/internals/states/)：事情如何发生，以及 Home Assistant 如何记住它们。
 
-## The core
+## 核心
 
-- [The hass object](/core/internals/hass/): the central object, and the core configuration on `hass.config`.
-- [Events](/core/internals/events/): firing and listening on the event bus.
-- [States](/core/internals/states/): the state machine and the state object.
-- [Actions](/core/internals/actions/): the action registry, calling actions, and response data.
+- [hass 对象](/core/internals/hass/)：中心对象，以及 `hass.config` 上的核心配置。
+- [事件](/core/internals/events/)：在事件总线上触发和监听事件。
+- [状态](/core/internals/states/)：状态机和状态对象。
+- [动作](/core/internals/actions/)：动作注册表、调用动作以及响应数据。
 
-## Async
+## 异步
 
-- [Async in Home Assistant](/core/internals/asyncio/): the event loop, coroutines, callbacks, and the executor.
-- [Thread safety](/core/internals/thread-safety/): which API to use when your code runs outside the event loop.
-- [Blocking operations](/core/internals/blocking-operations/): keeping I/O out of the event loop, imports included.
+- [Home Assistant 中的异步](/core/internals/asyncio/)：事件循环、协程、回调以及执行器。
+- [线程安全](/core/internals/thread-safety/)：当你的代码在事件循环之外运行时应使用哪个 API。
+- [阻塞操作](/core/internals/blocking-operations/)：将 I/O 排除在事件循环之外，包括导入操作。
 
-## Authentication
+## 身份认证
 
-- [How authentication works](/core/internals/auth/): users, credentials, tokens, auth providers, and multi-factor modules.
-- [Permissions](/core/internals/permissions/): policies, and checking them in your code.
-- [Authentication API](/core/internals/auth-api/): letting an app log in to a Home Assistant instance with OAuth 2.
+- [身份认证的工作原理](/core/internals/auth/)：用户、凭据、令牌、认证提供程序以及多因素模块。
+- [权限](/core/internals/permissions/)：策略，以及在你的代码中检查它们。
+- [身份认证 API](/core/internals/auth-api/)：让应用使用 OAuth 2 登录 Home Assistant 实例。
 
-## APIs
+## API
 
-- [REST API](/core/internals/rest-api/): the HTTP endpoints under `/api/`.
-- [WebSocket API](/core/internals/websocket-api/): the API the frontend uses, and how to add your own commands.
-- [Instance discovery](/core/internals/instance-discovery/): how apps find Home Assistant on the network.
-- [Modbus devices](/core/internals/modbus/): libraries for Modbus devices, and sharing one connection.
-- [LoRaWAN devices](/core/internals/lorawan/): registering a network server, and exposing the devices on it.
+- [REST API](/core/internals/rest-api/)：`/api/` 下的 HTTP 端点。
+- [WebSocket API](/core/internals/websocket-api/)：前端使用的 API，以及如何添加你自己的命令。
+- [实例发现](/core/internals/instance-discovery/)：应用如何在网络上找到 Home Assistant。
+- [Modbus 设备](/core/internals/modbus/)：用于 Modbus 设备的库，以及共享一个连接。
+- [LoRaWAN 设备](/core/internals/lorawan/)：注册网络服务器，以及公开其上的设备。
 
-## Voice and AI
+## 语音与 AI
 
-- [Intents](/core/internals/intents/): handling and firing intents.
-- [Built-in intents](/core/internals/built-in-intents/): the intents Home Assistant handles out of the box.
-- [Conversation API](/core/internals/conversation-api/): sending text to a conversation agent and reading the response.
-- [Assist pipelines](/core/internals/assist-pipelines/): running speech to text, intent recognition, and text to speech over the WebSocket API.
-- [LLM API](/core/internals/llm-api/): exposing tools to large language models, and building your own API.
+- [意图（intent）](/core/internals/intents/)：处理和触发意图。
+- [内置意图](/core/internals/built-in-intents/)：Home Assistant 开箱即用即可处理的意图。
+- [对话 API](/core/internals/conversation-api/)：向对话代理发送文本并读取响应。
+- [Assist 流水线](/core/internals/assist-pipelines/)：通过 WebSocket API 运行语音转文本、意图识别和文本转语音。
+- [LLM API](/core/internals/llm-api/)：向大型语言模型公开工具，以及构建你自己的 API。
 
-Building a conversation agent, a speech-to-text provider, or a text-to-speech provider? Those are entities, see [conversation](/core/entities/conversation/), [speech-to-text](/core/entities/stt/), and [text-to-speech](/core/entities/tts/). Writing sentences so Assist understands your language is translation work: see [translate voice commands](/translate/voice/).
+想要构建对话代理、语音转文本提供程序或文本转语音提供程序？它们都是实体（entity），请参阅[对话](/core/entities/conversation/)、[语音转文本](/core/entities/stt/)和[文本转语音](/core/entities/tts/)。编写句子让 Assist 理解你的语言属于翻译工作：请参阅[翻译语音命令](/translate/voice/)。
 
-## Who to talk to
+## 与谁交流
 
-- The **#core** channel on the [Home Assistant Discord](https://www.home-assistant.io/join-chat/) is the place for questions about core internals.
-- Much of the voice work, like the sentences and the wake word engines, happens in the [OHF-Voice](https://github.com/OHF-Voice) organization on GitHub. The integrations themselves, like `conversation` and `assist_pipeline`, live in core.
-- Proposals to change how core works start as a discussion in the [architecture repository](https://github.com/home-assistant/architecture/discussions).
+- [Home Assistant Discord](https://www.home-assistant.io/join-chat/) 上的 **#core** 频道是讨论核心内部机制问题的地方。
+- 大部分语音工作，例如句子和唤醒词引擎，都是在 GitHub 上的 [OHF-Voice](https://github.com/OHF-Voice) 组织中进行的。集成本身，例如 `conversation` 和 `assist_pipeline`，则位于核心中。
+- 更改核心工作方式的提案始于[架构仓库](https://github.com/home-assistant/architecture/discussions)中的讨论。

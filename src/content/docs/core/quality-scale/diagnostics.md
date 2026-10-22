@@ -1,24 +1,24 @@
 ---
-title: Implement diagnostics
-description: "Gold rule diagnostics: users can download diagnostics, with sensitive data redacted."
+title: 实现诊断
+description: "Gold 规则 diagnostics：用户可以下载诊断信息，其中敏感数据已被脱敏。"
 sidebarLabel: diagnostics
 sidebarGroup: Gold
 order: 2
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `diagnostics`.
+这是一条 Gold 规则。在 `quality_scale.yaml` 中，它被称为 `diagnostics`。
 
-The integration implements [diagnostics](/glossary/diagnostics/): a `diagnostics.py` with `async_get_config_entry_diagnostics`, `async_get_device_diagnostics`, or both. The diagnostics contain the information that helps to debug a problem, like the configuration and the data the integration received. They must never contain sensitive information, like passwords, tokens, or coordinates.
+该集成实现了[诊断（diagnostics）](/glossary/diagnostics/)：一个包含 `async_get_config_entry_diagnostics`、`async_get_device_diagnostics` 或两者兼备的 `diagnostics.py`。诊断信息中包含有助于调试问题的数据，例如配置以及集成接收到的数据。它们绝不能包含敏感信息，例如密码、令牌（token）或坐标。
 
-## Why it matters
+## 为什么重要
 
-When something does not work, diagnostics let a user download a snapshot of the integration with one selection, and attach it to an issue. Without it, you end up asking for logs, versions, and payloads in several rounds. With it, the first report often contains everything you need.
+当出现问题时，诊断功能让用户只需一次选择即可下载集成的快照（snapshot），并将其附加到问题（issue）中。没有它，你最终需要经过多轮沟通才能拿到日志、版本和有效负载（payload）。有了它，第一份报告通常就包含了你需要的一切。
 
-Users share these files in public issues, so redaction is part of the rule, not an extra.
+用户会在公开的 issue 中分享这些文件，因此脱敏是规则的一部分，而不是额外的要求。
 
-## Example
+## 示例
 
-Redact sensitive keys with `async_redact_data` before you return the data:
+在返回数据之前，使用 `async_redact_data` 对敏感键进行脱敏：
 
 ```python
 TO_REDACT = {CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE}
@@ -36,14 +36,14 @@ async def async_get_config_entry_diagnostics(
     }
 ```
 
-`async_redact_data` comes from `homeassistant.components.diagnostics`. It replaces the values of matching keys, also in nested dictionaries and lists.
+`async_redact_data` 来自 `homeassistant.components.diagnostics`。它会替换匹配键的值，包括嵌套字典和列表中的值。
 
-## How it is checked
+## 如何检查
 
-- Pylint, when the rule is `done`: `diagnostics.py` must implement `async_get_config_entry_diagnostics` or `async_get_device_diagnostics` (`home-assistant-missing-diagnostics`).
-- Codecov requires 100% test coverage of the changed lines in `diagnostics.py` of every integration. Most integrations test their diagnostics with a snapshot.
-- Whether the right data is in, and the sensitive data is out, is checked in review.
+- Pylint，当规则为 `done` 时：`diagnostics.py` 必须实现 `async_get_config_entry_diagnostics` 或 `async_get_device_diagnostics`（`home-assistant-missing-diagnostics`）。
+- Codecov 要求每个集成的 `diagnostics.py` 中已变更的行达到 100% 的测试覆盖率。大多数集成使用快照来测试其诊断功能。
+- 是否包含正确的数据、以及是否排除了敏感数据，将在代码审查中检查。
 
-## Exceptions
+## 例外情况
 
-If the integration has no data that helps with debugging, for example because it has no runtime data and its configuration contains only sensitive information, this rule does not apply.
+如果集成没有任何有助于调试的数据，例如因为它没有运行时数据，且其配置中仅包含敏感信息，则此规则不适用。

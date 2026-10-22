@@ -1,62 +1,62 @@
 ---
-title: Calendar entity
-description: Expose a calendar with events that have a start and an end, and optionally let users create, update, and delete them.
+title: 日历实体
+description: 暴露一个包含具有开始和结束时间的事件的日历，并可选地允许用户创建、更新和删除这些事件。
 sidebarLabel: Calendar
 sidebarGroup: Sensors and status
 ---
 
-A calendar entity represents a set of events, each with a start and an end date or time. Its state shows whether an event is going on right now, which makes it useful in automations. Inherit from `CalendarEntity`, imported from `homeassistant.components.calendar`.
+日历实体（calendar entity）表示一组事件，每个事件都有一个开始和结束的日期或时间。其状态会显示当前是否有事件正在进行，这使其在自动化（automation）中非常有用。继承自 `CalendarEntity`，从 `homeassistant.components.calendar` 导入。
 
-Calendar integrations follow the iCalendar standard, [RFC 5545](https://www.rfc-editor.org/rfc/rfc5545). If your integration supports recurring events, it expands them itself: return every occurrence in a series as its own event.
+日历集成（integration）遵循 iCalendar 标准，即 [RFC 5545](https://www.rfc-editor.org/rfc/rfc5545)。如果您的集成支持重复事件，则需要自行展开它们：将一个系列中的每次出现作为独立的事件返回。
 
-## Properties
+## 属性
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `event` | `CalendarEvent \| None` | Required | The event going on now, or the next upcoming one. `None` when there is none. |
-| `initial_color` | `str \| None` | `None` | A hex color, like `"#16a765"`, for the calendar in the frontend. |
+| `event` | `CalendarEvent \| None` | 必需 | 当前正在进行的事件，或下一个即将开始的事件。没有时为 `None`。 |
+| `initial_color` | `str \| None` | `None` | 前端中日历使用的十六进制颜色，例如 `"#16a765"`。 |
 
-You are responsible for picking the right `event`: order events correctly, and treat all day events as starting at midnight in the Home Assistant time zone. Use `homeassistant.util.dt.now()` to get the current time in that time zone.
+您需要负责选择正确的 `event`：正确地对事件进行排序，并将全天事件视为从 Home Assistant 时区的午夜开始。使用 `homeassistant.util.dt.now()` 获取该时区的当前时间。
 
-`initial_color` is stored in the entity options of the [entity registry](/core/entities/registry/) when the entity is first added. After that, the user owns the color and can change it in the entity settings. Invalid colors are ignored.
+当实体首次添加时，`initial_color` 会存储在[实体注册表](/core/entities/registry/)（entity registry）的实体选项中。此后，该颜色由用户掌控，用户可以在实体设置中更改它。无效的颜色会被忽略。
 
-The generic properties every entity has, like `name` or `available`, are on [the entity class](/core/entities/entity-class/).
+每个实体都具有的通用属性（如 `name` 或 `available`）位于[实体类](/core/entities/entity-class/)中。
 
-## Supported features
+## 支持的功能
 
-Combine the `CalendarEntityFeature` flags with `|`, and implement the method that goes with each one.
+使用 `|` 组合 `CalendarEntityFeature` 标志，并实现每个标志所对应的方法。
 
-| Feature | Method to implement |
+| 功能 | 需实现的方法 |
 | --- | --- |
 | `CREATE_EVENT` | `async_create_event` |
 | `DELETE_EVENT` | `async_delete_event` |
 | `UPDATE_EVENT` | `async_update_event` |
 
-Integrations that change events must handle RFC 5545 fields with care: keep fields they do not know about, and support recurring events.
+会更改事件的集成必须谨慎处理 RFC 5545 字段：保留其不认识的字段，并支持重复事件。
 
-## The `CalendarEvent` class
+## `CalendarEvent` 类
 
-A `CalendarEvent` is one event on the calendar. It validates itself when you create it.
+`CalendarEvent` 是日历上的一个事件。在创建时它会自行进行验证。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `start` | `datetime \| date` | Required | The start of the event, inclusive. |
-| `end` | `datetime \| date` | Required | The end of the event, exclusive. |
-| `summary` | `str` | Required | The title of the event. |
-| `description` | `str \| None` | `None` | A longer description. |
-| `location` | `str \| None` | `None` | Where the event takes place. |
-| `uid` | `str \| None` | `None` | A unique ID for the event. Required to update or delete it. |
-| `recurrence_id` | `str \| None` | `None` | Identifies one occurrence of a recurring event. Required to change a single occurrence. |
-| `rrule` | `str \| None` | `None` | The recurrence rule, like `FREQ=DAILY`. |
-| `status` | `CalendarEventStatus \| None` | `None` | `CONFIRMED` or `TENTATIVE`. |
+| `start` | `datetime \| date` | 必需 | 事件的开始时间（含）。 |
+| `end` | `datetime \| date` | 必需 | 事件的结束时间（不含）。 |
+| `summary` | `str` | 必需 | 事件的标题。 |
+| `description` | `str \| None` | `None` | 更详细的描述。 |
+| `location` | `str \| None` | `None` | 事件发生的地点。 |
+| `uid` | `str \| None` | `None` | 事件的唯一 ID。更新或删除事件时必需。 |
+| `recurrence_id` | `str \| None` | `None` | 标识重复事件中的一次出现。更改单次出现时必需。 |
+| `rrule` | `str \| None` | `None` | 重复规则，例如 `FREQ=DAILY`。 |
+| `status` | `CalendarEventStatus \| None` | `None` | `CONFIRMED` 或 `TENTATIVE`。 |
 
-`start` and `end` are both dates, for an all day event, or both datetimes with the same time zone. An all day event uses a `date`, never a datetime at midnight. If an all day event has the same start and end, the end is moved one day later.
+对于全天事件，`start` 和 `end` 都是日期；否则，两者都是具有相同时区的日期时间。全天事件使用 `date`，绝不使用午夜的日期时间。如果全天事件的开始和结束相同，则结束日期会向后顺延一天。
 
-Only set `status` when the calendar reports one. An event without a status is not the same as a confirmed event. Calendar entities do not return cancelled events at all: filter them out instead of reporting a status for them.
+仅当日历报告了状态时才设置 `status`。没有状态的事件不等同于已确认的事件。日历实体完全不返回已取消的事件：应将其过滤掉，而不是为其报告状态。
 
-## Methods
+## 方法
 
-### Get events
+### 获取事件
 
 ```python
 async def async_get_events(
@@ -67,19 +67,19 @@ async def async_get_events(
 ) -> list[CalendarEvent]:
 ```
 
-Required. Return the events in a time range, in order, with recurring events expanded. `start_date` is compared to the end of an event, and `end_date` to the start, both exclusive. Both are in the local Home Assistant time zone.
+必需。按顺序返回某个时间范围内的事件，并将重复事件展开。`start_date` 与事件的结束时间进行比较，`end_date` 与事件的开始时间进行比较，两者均为不含边界。两者都使用 Home Assistant 本地时区。
 
-This method powers the calendar panel, the `calendar.get_events` action, and live updates. The frontend subscribes to the events in a range with the `calendar/event/subscribe` WebSocket command. Every time the entity writes its state, the base class calls this method and pushes the result to the subscribers, debounced so a burst of updates leads to one fetch. You do not implement anything for that. Creating, updating, or deleting an event does not write the state. When events change outside a state write like that, call `self.async_update_event_listeners()` to push the new events.
+此方法为日历面板、`calendar.get_events` 动作（action）以及实时更新提供支持。前端通过 `calendar/event/subscribe` WebSocket 命令订阅某个范围内的事件。每当实体写入其状态时，基类都会调用此方法并将结果推送给订阅者，并经过了防抖处理，因此一连串更新只会导致一次获取。您无需为此实现任何内容。创建、更新或删除事件不会写入状态。当事件在这类状态写入之外发生更改时，请调用 `self.async_update_event_listeners()` 来推送新的事件。
 
-### Create events
+### 创建事件
 
 ```python
 async def async_create_event(self, **kwargs: Any) -> None:
 ```
 
-Add an event. The keyword arguments are the RFC 5545 fields, like `summary`, `dtstart`, and `dtend`. Needs `CREATE_EVENT`.
+添加一个事件。关键字参数是 RFC 5545 字段，例如 `summary`、`dtstart` 和 `dtend`。需要 `CREATE_EVENT`。
 
-### Delete events
+### 删除事件
 
 ```python
 async def async_delete_event(
@@ -90,13 +90,13 @@ async def async_delete_event(
 ) -> None:
 ```
 
-Needs `DELETE_EVENT`. For recurring events:
+需要 `DELETE_EVENT`。对于重复事件：
 
-- Only `uid`: delete the whole series.
-- `uid` and `recurrence_id`: delete one occurrence.
-- `uid`, `recurrence_id`, and `recurrence_range`: delete a range of occurrences, starting at `recurrence_id`. RFC 5545 only allows the [range](https://www.rfc-editor.org/rfc/rfc5545#section-3.2.13) `THISANDFUTURE`.
+- 仅 `uid`：删除整个系列。
+- `uid` 和 `recurrence_id`：删除单次出现。
+- `uid`、`recurrence_id` 和 `recurrence_range`：删除从 `recurrence_id` 开始的一系列出现。RFC 5545 仅允许 [范围](https://www.rfc-editor.org/rfc/rfc5545#section-3.2.13) 为 `THISANDFUTURE`。
 
-### Update events
+### 更新事件
 
 ```python
 async def async_update_event(
@@ -108,22 +108,22 @@ async def async_update_event(
 ) -> None:
 ```
 
-Needs `UPDATE_EVENT`. `uid`, `recurrence_id`, and `recurrence_range` work the same as for deleting.
+需要 `UPDATE_EVENT`。`uid`、`recurrence_id` 和 `recurrence_range` 的工作方式与删除时相同。
 
-## States
+## 状态
 
-The base class sets the state from `event`. Do not set `state` yourself.
+基类根据 `event` 设置状态。不要自行设置 `state`。
 
-| State | Meaning |
+| 状态 | 含义 |
 | --- | --- |
-| `on` | An event is going on now. |
-| `off` | No event is going on now. |
+| `on` | 当前有事件正在进行。 |
+| `off` | 当前没有事件正在进行。 |
 
-The `message`, `all_day`, `start_time`, `end_time`, `location`, and `description` attributes describe the current or next event. The base class also schedules a state update for the moment that event starts or ends.
+`message`、`all_day`、`start_time`、`end_time`、`location` 和 `description` 属性描述当前或下一个事件。基类还会在该事件开始或结束的时刻安排一次状态更新。
 
-## Example
+## 示例
 
-A read-only calendar:
+一个只读日历：
 
 ```python
 import datetime

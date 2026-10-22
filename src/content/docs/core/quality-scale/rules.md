@@ -1,96 +1,96 @@
 ---
-title: All rules
-description: Every rule of the integration quality scale per tier, with a checklist to copy into your pull request.
+title: 所有规则
+description: 集成质量标准（integration quality scale）各等级的每一条规则，并附有可复制到你的拉取请求（pull request）中的清单。
 order: -4
 ---
 
-The quality scale has 54 rules: 20 for Bronze, 10 for Silver, 21 for Gold, and 3 for Platinum. A tier needs every rule of that tier and of the tiers below it. This list follows the rules as hassfest knows them, in `script/hassfest/quality_scale.py` of core.
+质量标准共有 54 条规则：青铜（Bronze）20 条、白银（Silver）10 条、黄金（Gold）21 条、铂金（Platinum）3 条。一个等级需要满足该等级及其以下所有等级的每一条规则。此列表遵循 hassfest 所认定的规则，位于 core 的 `script/hassfest/quality_scale.py` 中。
 
-## Bronze
+## 青铜（Bronze）
 
-The baseline for every integration in core. 20 rules.
+core 中每个集成的基准要求。共 20 条规则。
 
-| Rule | What it asks |
+| 规则 | 要求 |
 | ---- | ------------ |
-| [action-setup](/core/quality-scale/action-setup/) | Actions are registered when the integration loads, not per config entry. |
-| [appropriate-polling](/core/quality-scale/appropriate-polling/) | A polling integration uses an interval that fits its data. |
-| [brands](/core/quality-scale/brands/) | The integration has a logo and icon in the [brands repository](https://github.com/home-assistant/brands). |
-| [common-modules](/core/quality-scale/common-modules/) | The coordinator lives in coordinator.py and the base entity in entity.py. |
-| [config-flow](/core/quality-scale/config-flow/) | The integration is set up from the UI, with a clear config flow. |
-| [config-flow-test-coverage](/core/quality-scale/config-flow-test-coverage/) | The config flow has full test coverage, including recovery from errors. |
-| [dependency-transparency](/core/quality-scale/dependency-transparency/) | Dependencies are open source, on PyPI, and built and published in public CI. |
-| [docs-actions](/core/quality-scale/docs-actions/) | The documentation describes the actions of the integration. |
-| [docs-conditions](/core/quality-scale/docs-conditions/) | The documentation describes the conditions of the integration. |
-| [docs-high-level-description](/core/quality-scale/docs-high-level-description/) | The documentation describes what the integration connects to. |
-| [docs-installation-instructions](/core/quality-scale/docs-installation-instructions/) | The documentation has step-by-step setup instructions, with prerequisites. |
-| [docs-removal-instructions](/core/quality-scale/docs-removal-instructions/) | The documentation explains how to remove the integration. |
-| [docs-triggers](/core/quality-scale/docs-triggers/) | The documentation describes the triggers of the integration. |
-| [entity-event-setup](/core/quality-scale/entity-event-setup/) | Entities subscribe in async_added_to_hass and unsubscribe when removed. |
-| [entity-unique-id](/core/quality-scale/entity-unique-id/) | Every entity has a unique ID, so users can customize it. |
-| [has-entity-name](/core/quality-scale/has-entity-name/) | Entities set has_entity_name to True, and are named in context of their device. |
-| [runtime-data](/core/quality-scale/runtime-data/) | Runtime data is stored in ConfigEntry.runtime_data. |
-| [test-before-configure](/core/quality-scale/test-before-configure/) | The config flow tests the connection before it creates the entry. |
-| [test-before-setup](/core/quality-scale/test-before-setup/) | Setup checks that it works, and raises the right exception when it does not. |
-| [unique-config-entry](/core/quality-scale/unique-config-entry/) | The same device or service cannot be set up twice. |
+| [action-setup](/core/quality-scale/action-setup/) | 动作（action）在集成加载时注册，而不是按配置条目（config entry）注册。 |
+| [appropriate-polling](/core/quality-scale/appropriate-polling/) | 轮询型集成使用适合其数据的轮询间隔。 |
+| [brands](/core/quality-scale/brands/) | 该集成在[品牌仓库](https://github.com/home-assistant/brands)中有标志和图标。 |
+| [common-modules](/core/quality-scale/common-modules/) | 协调器（coordinator）位于 coordinator.py 中，基础实体位于 entity.py 中。 |
+| [config-flow](/core/quality-scale/config-flow/) | 集成通过 UI 设置，并具有清晰明了的配置流程（config flow）。 |
+| [config-flow-test-coverage](/core/quality-scale/config-flow-test-coverage/) | 配置流程具有完整的测试覆盖，包括从错误中恢复。 |
+| [dependency-transparency](/core/quality-scale/dependency-transparency/) | 依赖项开源、发布在 PyPI 上，并在公共 CI 中构建和发布。 |
+| [docs-actions](/core/quality-scale/docs-actions/) | 文档描述了集成的动作。 |
+| [docs-conditions](/core/quality-scale/docs-conditions/) | 文档描述了集成的条件（condition）。 |
+| [docs-high-level-description](/core/quality-scale/docs-high-level-description/) | 文档描述了该集成连接到什么。 |
+| [docs-installation-instructions](/core/quality-scale/docs-installation-instructions/) | 文档包含分步设置说明，并列出了前提条件。 |
+| [docs-removal-instructions](/core/quality-scale/docs-removal-instructions/) | 文档说明了如何移除该集成。 |
+| [docs-triggers](/core/quality-scale/docs-triggers/) | 文档描述了集成的触发器（trigger）。 |
+| [entity-event-setup](/core/quality-scale/entity-event-setup/) | 实体在 async_added_to_hass 中订阅，并在被移除时取消订阅。 |
+| [entity-unique-id](/core/quality-scale/entity-unique-id/) | 每个实体都有唯一 ID，以便用户对其进行自定义。 |
+| [has-entity-name](/core/quality-scale/has-entity-name/) | 实体将 has_entity_name 设置为 True，并根据其所属设备进行命名。 |
+| [runtime-data](/core/quality-scale/runtime-data/) | 运行时数据存储在 ConfigEntry.runtime_data 中。 |
+| [test-before-configure](/core/quality-scale/test-before-configure/) | 配置流程在创建条目之前先测试连接。 |
+| [test-before-setup](/core/quality-scale/test-before-setup/) | 设置时会检查其是否正常工作，如果不正常则抛出正确的异常。 |
+| [unique-config-entry](/core/quality-scale/unique-config-entry/) | 同一设备或服务不能被设置两次。 |
 
-## Silver
+## 白银（Silver）
 
-Reliability: errors, offline devices, reauthentication, and ownership. 10 rules.
+可靠性：错误、离线设备、重新认证（reauthentication）和归属（ownership）。共 10 条规则。
 
-| Rule | What it asks |
+| 规则 | 要求 |
 | ---- | ------------ |
-| [action-exceptions](/core/quality-scale/action-exceptions/) | Actions raise ServiceValidationError or HomeAssistantError when they fail. |
-| [config-entry-unloading](/core/quality-scale/config-entry-unloading/) | The integration can be unloaded and reloaded without a restart. |
-| [docs-configuration-parameters](/core/quality-scale/docs-configuration-parameters/) | The documentation describes every option of the options flow. |
-| [docs-installation-parameters](/core/quality-scale/docs-installation-parameters/) | The documentation describes every field asked for during setup. |
-| [entity-unavailable](/core/quality-scale/entity-unavailable/) | Entities become unavailable when the device or service cannot be reached. |
-| [integration-owner](/core/quality-scale/integration-owner/) | The integration has at least one integration owner. |
-| [log-when-unavailable](/core/quality-scale/log-when-unavailable/) | The integration logs a lost connection once, and once when it comes back. |
-| [parallel-updates](/core/quality-scale/parallel-updates/) | Every entity platform sets PARALLEL_UPDATES. |
-| [reauthentication-flow](/core/quality-scale/reauthentication-flow/) | Users can enter new credentials without removing the integration. |
-| [test-coverage](/core/quality-scale/test-coverage/) | The tests cover more than 95% of every module of the integration. |
+| [action-exceptions](/core/quality-scale/action-exceptions/) | 动作失败时会抛出 ServiceValidationError 或 HomeAssistantError。 |
+| [config-entry-unloading](/core/quality-scale/config-entry-unloading/) | 集成可以在不重启的情况下卸载和重新加载。 |
+| [docs-configuration-parameters](/core/quality-scale/docs-configuration-parameters/) | 文档描述了选项流程（options flow）的每个选项。 |
+| [docs-installation-parameters](/core/quality-scale/docs-installation-parameters/) | 文档描述了设置过程中要求填写的每个字段。 |
+| [entity-unavailable](/core/quality-scale/entity-unavailable/) | 当无法连接到设备或服务时，实体变为不可用（unavailable）状态。 |
+| [integration-owner](/core/quality-scale/integration-owner/) | 该集成至少有一名集成负责人（integration owner）。 |
+| [log-when-unavailable](/core/quality-scale/log-when-unavailable/) | 集成在连接丢失时记录一次日志，在连接恢复时再记录一次。 |
+| [parallel-updates](/core/quality-scale/parallel-updates/) | 每个实体平台都设置了 PARALLEL_UPDATES。 |
+| [reauthentication-flow](/core/quality-scale/reauthentication-flow/) | 用户可以在不移除集成的情况下输入新的凭据。 |
+| [test-coverage](/core/quality-scale/test-coverage/) | 测试覆盖了集成每个模块 95% 以上的代码。 |
 
-## Gold
+## 黄金（Gold）
 
-The best user experience: discovery, devices, translations, and documentation for users. 21 rules.
+最佳的用户体验：发现（discovery）、设备、翻译以及面向用户的文档。共 21 条规则。
 
-| Rule | What it asks |
+| 规则 | 要求 |
 | ---- | ------------ |
-| [devices](/core/quality-scale/devices/) | Entities are grouped in devices, with complete device information. |
-| [diagnostics](/core/quality-scale/diagnostics/) | Users can download diagnostics, with sensitive data redacted. |
-| [discovery](/core/quality-scale/discovery/) | Devices are discovered, so users do not have to look them up. |
-| [discovery-update-info](/core/quality-scale/discovery-update-info/) | Discovery updates the address of a known device when it changes. |
-| [docs-data-update](/core/quality-scale/docs-data-update/) | The documentation explains how and how often data is updated. |
-| [docs-examples](/core/quality-scale/docs-examples/) | The documentation gives automation examples or blueprints. |
-| [docs-known-limitations](/core/quality-scale/docs-known-limitations/) | The documentation lists the known limitations. |
-| [docs-supported-devices](/core/quality-scale/docs-supported-devices/) | The documentation lists known supported and unsupported devices. |
-| [docs-supported-functions](/core/quality-scale/docs-supported-functions/) | The documentation describes the entities and functionality it provides. |
-| [docs-troubleshooting](/core/quality-scale/docs-troubleshooting/) | The documentation helps users solve common problems themselves. |
-| [docs-use-cases](/core/quality-scale/docs-use-cases/) | The documentation shows what you can do with the integration. |
-| [dynamic-devices](/core/quality-scale/dynamic-devices/) | Devices that appear after setup are added without a reload. |
-| [entity-category](/core/quality-scale/entity-category/) | Configuration and diagnostic entities have an entity category. |
-| [entity-device-class](/core/quality-scale/entity-device-class/) | Entities use a device class wherever one fits. |
-| [entity-disabled-by-default](/core/quality-scale/entity-disabled-by-default/) | Entities that few users need are disabled by default. |
-| [entity-translations](/core/quality-scale/entity-translations/) | Entity names come from strings.json, so they can be translated. |
-| [exception-translations](/core/quality-scale/exception-translations/) | Errors shown to users come from strings.json, so they can be translated. |
-| [icon-translations](/core/quality-scale/icon-translations/) | Entity icons are defined in icons.json. |
-| [reconfiguration-flow](/core/quality-scale/reconfiguration-flow/) | Users can change the setup of an entry without removing it. |
-| [repair-issues](/core/quality-scale/repair-issues/) | The integration raises repair issues for problems users can fix. |
-| [stale-devices](/core/quality-scale/stale-devices/) | Devices that are gone are removed, or can be removed by the user. |
+| [devices](/core/quality-scale/devices/) | 实体按设备分组，并具有完整的设备信息。 |
+| [diagnostics](/core/quality-scale/diagnostics/) | 用户可以下载诊断信息，其中敏感数据已被隐去。 |
+| [discovery](/core/quality-scale/discovery/) | 设备可被自动发现，用户无需手动查找。 |
+| [discovery-update-info](/core/quality-scale/discovery-update-info/) | 当已知设备的地址发生变化时，发现功能会更新其地址。 |
+| [docs-data-update](/core/quality-scale/docs-data-update/) | 文档说明了数据如何更新以及更新频率。 |
+| [docs-examples](/core/quality-scale/docs-examples/) | 文档提供了自动化（automation）示例或蓝图（blueprint）。 |
+| [docs-known-limitations](/core/quality-scale/docs-known-limitations/) | 文档列出了已知的限制。 |
+| [docs-supported-devices](/core/quality-scale/docs-supported-devices/) | 文档列出了已知支持和不受支持的设备。 |
+| [docs-supported-functions](/core/quality-scale/docs-supported-functions/) | 文档描述了其提供的实体和功能。 |
+| [docs-troubleshooting](/core/quality-scale/docs-troubleshooting/) | 文档帮助用户自行解决常见问题。 |
+| [docs-use-cases](/core/quality-scale/docs-use-cases/) | 文档展示了使用该集成可以做什么。 |
+| [dynamic-devices](/core/quality-scale/dynamic-devices/) | 设置后出现的新设备无需重新加载即可添加。 |
+| [entity-category](/core/quality-scale/entity-category/) | 配置类和诊断类实体具有实体类别（entity category）。 |
+| [entity-device-class](/core/quality-scale/entity-device-class/) | 在适用的地方，实体都使用设备类别（device class）。 |
+| [entity-disabled-by-default](/core/quality-scale/entity-disabled-by-default/) | 只有少数用户才需要的实体默认被禁用。 |
+| [entity-translations](/core/quality-scale/entity-translations/) | 实体名称来自 strings.json，因此可以被翻译。 |
+| [exception-translations](/core/quality-scale/exception-translations/) | 向用户显示的错误信息来自 strings.json，因此可以被翻译。 |
+| [icon-translations](/core/quality-scale/icon-translations/) | 实体图标定义在 icons.json 中。 |
+| [reconfiguration-flow](/core/quality-scale/reconfiguration-flow/) | 用户可以在不移除条目的情况下更改其设置。 |
+| [repair-issues](/core/quality-scale/repair-issues/) | 集成会针对用户可以修复的问题提出修复（repair）问题。 |
+| [stale-devices](/core/quality-scale/stale-devices/) | 已消失的设备会被移除，或者可以由用户手动移除。 |
 
-## Platinum
+## 铂金（Platinum）
 
-Technical excellence: async, efficient, and strictly typed. 3 rules.
+技术卓越：异步、高效且严格类型化。共 3 条规则。
 
-| Rule | What it asks |
+| 规则 | 要求 |
 | ---- | ------------ |
-| [async-dependency](/core/quality-scale/async-dependency/) | The library of the integration uses asyncio. |
-| [inject-websession](/core/quality-scale/inject-websession/) | The library accepts the web session of Home Assistant. |
-| [strict-typing](/core/quality-scale/strict-typing/) | The integration is fully typed and checked with strict mypy settings. |
+| [async-dependency](/core/quality-scale/async-dependency/) | 集成所使用的库使用 asyncio。 |
+| [inject-websession](/core/quality-scale/inject-websession/) | 该库接受 Home Assistant 的 Web 会话（web session）。 |
+| [strict-typing](/core/quality-scale/strict-typing/) | 集成完全类型化，并使用严格的 mypy 设置进行检查。 |
 
-## Checklist
+## 清单
 
-When you ask for a new tier, copy the checklist of that tier and of every tier below it into the description of your pull request. Check every rule that is done, write "exempt" behind the rules that are exempt, and link to the code for each rule. See [Raise the tier of an integration](/core/quality-scale/raise-tier/).
+当你申请提升到新等级时，请将该等级及其以下所有等级的清单复制到你的拉取请求描述中。勾选每一条已完成的规则，在被豁免的规则后面写上 "exempt"，并为每条规则附上相应代码的链接。参见[提升集成的等级](/core/quality-scale/raise-tier/)。
 
 ```markdown
 ## Bronze

@@ -1,72 +1,72 @@
 ---
-title: Water heater entity
-description: Build a water heater entity for boilers and tanks that heat water to a target temperature.
+title: 热水器实体（Water heater entity）
+description: 为将水加热至目标温度的锅炉和水箱构建热水器实体。
 sidebarLabel: Water heater
 sidebarGroup: Lights and climate
 ---
 
-A water heater entity controls a device that heats water: a boiler, a hot water tank, or a heat pump water heater. It has a target temperature, operation modes, and optionally an away mode. Inherit from `WaterHeaterEntity` in `homeassistant.components.water_heater`.
+热水器实体控制加热水的设备：锅炉、热水箱或热泵热水器。它具有目标温度、运行模式（operation mode），以及可选的离家模式（away mode）。请继承 `homeassistant.components.water_heater` 中的 `WaterHeaterEntity`。
 
-If the device heats or cools a room, use a [climate entity](/core/entities/climate/) instead.
+如果设备为房间供暖或制冷，请改用[气候实体（climate entity）](/core/entities/climate/)。
 
-For how the frontend shows a water heater, see the [water heater more-info view](/design/more-info/water-heater/).
+有关前端如何显示热水器，请参阅[热水器更多信息视图（more-info view）](/design/more-info/water-heater/)。
 
-## Properties
+## 属性
 
-Water heater entities have these properties on top of the [generic entity properties](/core/entities/entity-class/). Every property can be set with its `_attr_` attribute, like `_attr_current_operation`.
+除了[通用实体属性（generic entity properties）](/core/entities/entity-class/)之外，热水器实体还具有以下属性。每个属性都可以通过其对应的 `_attr_` 属性来设置，例如 `_attr_current_operation`。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `native_temperature_unit` | `str` | Required | The unit the device reports temperatures in: `UnitOfTemperature.CELSIUS` or `UnitOfTemperature.FAHRENHEIT`. |
-| `current_operation` | `str \| None` | `None` | The current operation mode. It is the state of the entity. |
-| `operation_list` | `list[str] \| None` | `None` | The operation modes the device supports. |
-| `native_current_temperature` | `float \| None` | `None` | The measured water temperature, in `native_temperature_unit`. |
-| `native_target_temperature` | `float \| None` | `None` | The temperature to reach, in `native_temperature_unit`. |
-| `native_target_temperature_high` | `float \| None` | `None` | The upper bound of the target range, in `native_temperature_unit`. |
-| `native_target_temperature_low` | `float \| None` | `None` | The lower bound of the target range, in `native_temperature_unit`. |
-| `target_temperature_step` | `float \| None` | `None` | The step size for the target temperature, in `native_temperature_unit`. |
-| `min_temp` | `float` | 110 °F | The lowest target temperature, in `native_temperature_unit`. The default is converted to your unit. |
-| `max_temp` | `float` | 140 °F | The highest target temperature, in `native_temperature_unit`. The default is converted to your unit. |
-| `precision` | `float` | Tenths for Celsius, whole numbers otherwise | The precision temperatures are shown with. Without a value, it follows the unit system of the installation. |
-| `is_away_mode_on` | `bool \| None` | `None` | Whether away mode is on. Requires `AWAY_MODE`. |
+| `native_temperature_unit` | `str` | 必填 | 设备报告温度所用的单位：`UnitOfTemperature.CELSIUS` 或 `UnitOfTemperature.FAHRENHEIT`。 |
+| `current_operation` | `str \| None` | `None` | 当前的运行模式。它是实体的状态。 |
+| `operation_list` | `list[str] \| None` | `None` | 设备支持的运行模式。 |
+| `native_current_temperature` | `float \| None` | `None` | 测得的水温，以 `native_temperature_unit` 为单位。 |
+| `native_target_temperature` | `float \| None` | `None` | 要达到的温度，以 `native_temperature_unit` 为单位。 |
+| `native_target_temperature_high` | `float \| None` | `None` | 目标范围的上限，以 `native_temperature_unit` 为单位。 |
+| `native_target_temperature_low` | `float \| None` | `None` | 目标范围的下限，以 `native_temperature_unit` 为单位。 |
+| `target_temperature_step` | `float \| None` | `None` | 目标温度的步长，以 `native_temperature_unit` 为单位。 |
+| `min_temp` | `float` | 110 °F | 最低目标温度，以 `native_temperature_unit` 为单位。默认值会转换为您所用的单位。 |
+| `max_temp` | `float` | 140 °F | 最高目标温度，以 `native_temperature_unit` 为单位。默认值会转换为您所用的单位。 |
+| `precision` | `float` | 摄氏度时为十分位，其他情况为整数 | 温度显示的精度。若未提供值，则遵循安装时的单位制（unit system）。 |
+| `is_away_mode_on` | `bool \| None` | `None` | 离家模式是否开启。需要 `AWAY_MODE`。 |
 
-Like the climate entity, a water heater reports temperatures in the unit of the device, and Home Assistant converts them to the unit system of the installation. It adds a `temperature_unit` state attribute with the unit of the converted values. Temperatures passed to `set_temperature` are converted to `native_temperature_unit` before your method is called.
+与气候实体一样，热水器以设备本身的单位报告温度，Home Assistant 会将其转换为安装时的单位制。它会添加一个带有转换后数值单位的 `temperature_unit` 状态属性。传递给 `set_temperature` 的温度会在调用您的方法之前被转换为 `native_temperature_unit`。
 
 > [!WARNING]
-> The old names without `native_`, like `current_temperature`, `target_temperature`, and `temperature_unit` (and their `_attr_` attributes), are deprecated and stop working in Home Assistant 2027.11. Use the `native_` names in new code.
+> 不带 `native_` 的旧名称，例如 `current_temperature`、`target_temperature` 和 `temperature_unit`（及其对应的 `_attr_` 属性），已被弃用，并将在 Home Assistant 2027.11 中停止工作。请在新代码中使用 `native_` 名称。
 
-## Operation modes
+## 运行模式
 
-Operation modes are strings. Home Assistant has constants with built-in translations for common modes:
+运行模式是字符串。Home Assistant 为常见模式提供了带有内置翻译的常量：
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `STATE_ECO` | Energy efficient mode, balancing performance and cost. |
-| `STATE_ELECTRIC` | Heats with electric elements only. |
-| `STATE_PERFORMANCE` | Highest performance, at a higher energy cost. |
-| `STATE_HIGH_DEMAND` | Built for a high demand for hot water. |
-| `STATE_HEAT_PUMP` | Heats with the heat pump only. |
-| `STATE_GAS` | Heats with gas only. |
-| `STATE_OFF` | The device is off. This one comes from `homeassistant.const`. |
+| `STATE_ECO` | 节能模式，在性能和成本之间取得平衡。 |
+| `STATE_ELECTRIC` | 仅使用电加热元件加热。 |
+| `STATE_PERFORMANCE` | 最高性能，但能耗成本更高。 |
+| `STATE_HIGH_DEMAND` | 为热水需求量大的场景而设计。 |
+| `STATE_HEAT_PUMP` | 仅使用热泵加热。 |
+| `STATE_GAS` | 仅使用燃气加热。 |
+| `STATE_OFF` | 设备已关闭。此常量来自 `homeassistant.const`。 |
 
-You can add your own modes, and give them a translation and an icon with the [translation key](/core/entities/naming/) of the entity (see [icons](/core/entities/icons/)). Home Assistant checks the mode in an action against `operation_list` before it calls `set_operation_mode`, and raises a validation error when it is not in the list.
+您可以添加自己的模式，并使用实体的[翻译键（translation key）](/core/entities/naming/)为它们提供翻译和图标（参见[图标](/core/entities/icons/)）。在调用 `set_operation_mode` 之前，Home Assistant 会根据 `operation_list` 检查动作（action）中的模式，如果不在列表中，则会引发验证错误。
 
-## Supported features
+## 支持的功能
 
-Combine the `WaterHeaterEntityFeature` flags with `|` and set them as `supported_features`. See [supported features](/glossary/supported-features/).
+将 `WaterHeaterEntityFeature` 标志用 `|` 组合，并将结果设置为 `supported_features`。参见[支持的功能（supported features）](/glossary/supported-features/)。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `TARGET_TEMPERATURE` | The target temperature can be set. Implement `set_temperature`. |
-| `OPERATION_MODE` | The operation mode can be set. Set `operation_list` and implement `set_operation_mode`. |
-| `AWAY_MODE` | The device has an away mode. Implement `turn_away_mode_on` and `turn_away_mode_off`. |
-| `ON_OFF` | The device can be turned on and off. Implement `turn_on` and `turn_off`. |
+| `TARGET_TEMPERATURE` | 可以设置目标温度。需实现 `set_temperature`。 |
+| `OPERATION_MODE` | 可以设置运行模式。需设置 `operation_list` 并实现 `set_operation_mode`。 |
+| `AWAY_MODE` | 设备具有离家模式。需实现 `turn_away_mode_on` 和 `turn_away_mode_off`。 |
+| `ON_OFF` | 可以打开和关闭设备。需实现 `turn_on` 和 `turn_off`。 |
 
-## Methods
+## 方法
 
-Implement the sync or the async variant of each method, not both.
+每个方法只需实现同步或异步变体之一，不要两者都实现。
 
-| Method | Async variant | Feature |
+| 方法 | 异步变体 | 功能 |
 | ------ | ------------- | ------- |
 | `set_temperature(**kwargs: Any)` | `async_set_temperature` | `TARGET_TEMPERATURE` |
 | `set_operation_mode(operation_mode: str)` | `async_set_operation_mode` | `OPERATION_MODE` |
@@ -75,13 +75,13 @@ Implement the sync or the async variant of each method, not both.
 | `turn_on(**kwargs: Any)` | `async_turn_on` | `ON_OFF` |
 | `turn_off(**kwargs: Any)` | `async_turn_off` | `ON_OFF` |
 
-`set_temperature` receives `ATTR_TEMPERATURE` in `native_temperature_unit`, and `ATTR_OPERATION_MODE` when the action sets the mode at the same time.
+`set_temperature` 会接收以 `native_temperature_unit` 为单位的 `ATTR_TEMPERATURE`，当动作同时设置模式时，还会接收 `ATTR_OPERATION_MODE`。
 
-## States
+## 状态
 
-The state is the value of `current_operation`, like `eco`, `performance`, or `off`, or one of your own modes. When `current_operation` is `None`, the state is `unknown`.
+状态是 `current_operation` 的值，例如 `eco`、`performance` 或 `off`，也可以是您自己的模式之一。当 `current_operation` 为 `None` 时，状态为 `unknown`。
 
-## Example
+## 示例
 
 ```python
 from typing import Any

@@ -1,6 +1,6 @@
 ---
-title: Building integrations
-description: Everything an integration is made of, from the manifest and the config flow to fetching data, discovery, and diagnostics.
+title: 构建集成
+description: 关于集成组成的全部内容，从清单文件（manifest）和配置流程到数据获取、发现和诊断。
 order: 10
 sidebarGroups:
   - Getting started
@@ -12,83 +12,83 @@ sidebarGroups:
   - Reference
 ---
 
-An [integration](/glossary/integration/) connects Home Assistant to a device, a service, or an idea. It lives in its own folder, describes itself in a manifest, sets itself up from a config entry, and hands its data to Home Assistant as entities.
+一个[集成（integration）](/glossary/integration/)将 Home Assistant 连接到设备（device）、服务（service）或某种想法。它位于自己的文件夹中，通过清单文件（manifest）描述自身，根据配置条目（config entry）完成设置，并将其数据以实体（entity）的形式交给 Home Assistant。
 
-This part of the site walks through all of it, task by task. It is written for people who write Python. You do not need to read it front to back: start with the tutorial, and come back for the rest when your integration needs it.
+本部分的文档按任务逐一带你了解所有这些内容。它是为编写 Python 的人准备的。你不必从头读到尾：先从教程开始，当你的集成需要时，再回来查阅其余部分。
 
 > [!TIP]
-> Want to add support for a new device or service? Read [how an integration fits in](/core/integrations/concepts/), then build one in the [tutorial](/core/integrations/tutorial/). Check first whether it [belongs in core](/core/integrations/create/#does-it-belong-in-core): the project recommends publishing a new integration in the [Marketplace](/marketplace/) first, and new integrations in core need to reach at least the Bronze tier of the [quality scale](/core/quality-scale/).
+> 想为新的设备或服务添加支持？请阅读[集成如何融入整体](/core/integrations/concepts/)，然后在[教程](/core/integrations/tutorial/)中构建一个。先确认它是否[属于核心](/core/integrations/create/#does-it-belong-in-core)：项目建议先在 [Marketplace](/marketplace/) 上发布新集成，而且核心中的新集成需要至少达到[质量标准（quality scale）](/core/quality-scale/)的 Bronze 级别。
 
-## Getting started
+## 入门
 
-- [How an integration fits in](/core/integrations/concepts/): integrations, config entries, platforms, entities, devices, coordinators, and the event loop, in plain language.
-- [Build your first integration](/core/integrations/tutorial/): a complete integration, step by step, from the scaffold to the pull request.
-- [Build a Python library](/core/integrations/api-library/): the library every integration uses to talk to its device or service.
-- [Create an integration](/core/integrations/create/): what is accepted in core, the scaffold script, and the smallest possible integration.
-- [File structure](/core/integrations/file-structure/): which file does what, and where Home Assistant looks for integrations.
-- [Writing tests](/core/development/tests/), in the development workflow: how to test an integration, with fixtures, mocks, and snapshots.
+- [集成如何融入整体](/core/integrations/concepts/)：用通俗的语言介绍集成、配置条目、平台、实体、设备、协调器（coordinator）和事件循环。
+- [构建你的第一个集成](/core/integrations/tutorial/)：一个完整的集成，从脚手架到拉取请求（pull request），一步一步完成。
+- [构建 Python 库](/core/integrations/api-library/)：每个集成与设备或服务通信所用的库。
+- [创建集成](/core/integrations/create/)：核心接受哪些内容、脚手架脚本，以及最小可行的集成。
+- [文件结构](/core/integrations/file-structure/)：哪个文件做什么，以及 Home Assistant 在哪里查找集成。
+- [编写测试](/core/development/tests/)（属于开发工作流程）：如何测试集成，包括夹具（fixture）、模拟（mock）和快照（snapshot）。
 
-## Setup and configuration
+## 设置与配置
 
-- [Config entries](/core/integrations/config-entries/): set up, unload, and migrate an integration, and keep its runtime data.
-- [Config flow](/core/integrations/config-flow/): let users add your integration from the UI.
-- [Forms, menus, and progress](/core/integrations/flow-steps/): the building blocks of every flow.
-- [Options flow](/core/integrations/options-flow/): let users change how the integration behaves.
-- [Subentries](/core/integrations/subentries/): store repeatable parts of a config entry, like locations.
-- [Reauthentication and reconfiguration](/core/integrations/reauth-reconfigure/): fix credentials and connection details without removing the integration.
-- [OAuth 2.0 and application credentials](/core/integrations/oauth2/): link a user's account at a cloud service.
-- [YAML configuration](/core/integrations/yaml/): when it is still allowed, and how it works.
-- [Setup failures and exceptions](/core/integrations/setup-failures/): retry when a device is offline, and raise the right errors.
+- [配置条目](/core/integrations/config-entries/)：对集成进行设置、卸载和迁移，并保留其运行时数据。
+- [配置流程（config flow）](/core/integrations/config-flow/)：让用户从 UI 中添加你的集成。
+- [表单、菜单和进度](/core/integrations/flow-steps/)：构成每个流程的基本模块。
+- [选项流程（options flow）](/core/integrations/options-flow/)：让用户更改集成的行为方式。
+- [子条目（subentry）](/core/integrations/subentries/)：存储配置条目中可重复的部分，例如位置。
+- [重新认证与重新配置](/core/integrations/reauth-reconfigure/)：在不移除集成的情况下修复凭据和连接详情。
+- [OAuth 2.0 和应用程序凭据](/core/integrations/oauth2/)：关联用户在云服务上的账户。
+- [YAML 配置](/core/integrations/yaml/)：何时仍然允许使用，以及它如何工作。
+- [设置失败与异常](/core/integrations/setup-failures/)：在设备离线时进行重试，并抛出正确的错误。
 
-## Data and updates
+## 数据与更新
 
-- [Fetching data](/core/integrations/fetching-data/): polling, push, and the data update coordinator.
-- [Events](/core/integrations/events/): fire events, and listen to what happens in Home Assistant.
-- [Instance URL](/core/integrations/instance-url/): find the URL a device or service can reach Home Assistant on.
+- [获取数据](/core/integrations/fetching-data/)：轮询、推送和数据更新协调器（data update coordinator）。
+- [事件（event）](/core/integrations/events/)：触发事件，并监听 Home Assistant 中发生的事情。
+- [实例 URL](/core/integrations/instance-url/)：找到设备或服务可用于访问 Home Assistant 的 URL。
 
-## Discovery
+## 发现
 
-- [Discovery](/core/integrations/discovery/): how Home Assistant finds devices and starts your config flow.
-- [Network discovery](/core/integrations/network-discovery/): the zeroconf, SSDP, DHCP, USB, and network APIs.
-- [Bluetooth integrations](/core/integrations/bluetooth/): best practices and the Bluetooth API.
-- [Fetching Bluetooth data](/core/integrations/bluetooth-data/): coordinators driven by advertisements.
+- [发现（discovery）](/core/integrations/discovery/)：Home Assistant 如何发现设备并启动你的配置流程。
+- [网络发现](/core/integrations/network-discovery/)：zeroconf、SSDP、DHCP、USB 和网络 API。
+- [蓝牙集成](/core/integrations/bluetooth/)：最佳实践和蓝牙 API。
+- [获取蓝牙数据](/core/integrations/bluetooth-data/)：由广播驱动的协调器。
 
-## Devices and registries
+## 设备与注册表
 
-- [Device registry](/core/integrations/device-registry/): register devices, and link and split them.
-- [Entity registry](/core/integrations/entity-registry/): look up and migrate the entities of your integration.
-- [Area registry](/core/integrations/area-registry/): what Home Assistant knows about areas.
+- [设备注册表（device registry）](/core/integrations/device-registry/)：注册设备，并对它们进行链接和拆分。
+- [实体注册表（entity registry）](/core/integrations/entity-registry/)：查找并迁移你的集成的实体。
+- [区域注册表（area registry）](/core/integrations/area-registry/)：Home Assistant 对区域（area）的了解。
 
-## Integration features
+## 集成功能
 
-- [Actions](/core/integrations/actions/): register actions that users can call from automations and scripts.
-- [Device automations](/core/integrations/device-automations/): device triggers, conditions, and actions.
-- [Triggers and conditions](/core/integrations/triggers-and-conditions/): provide automation triggers and conditions.
-- [Diagnostics](/core/integrations/diagnostics/): let users download data to troubleshoot.
-- [System health](/core/integrations/system-health/): show the state of your integration on the system information page.
-- [Repairs](/core/integrations/repairs/): tell users about problems, and help them fix them.
-- [Asking for a restart](/core/integrations/restart-required/): tell Home Assistant it needs a restart to apply a change.
-- [Reproduce state](/core/integrations/reproduce-state/): make scenes work with your entities.
-- [Significant change](/core/integrations/significant-change/): tell exporters which state changes matter.
-- [Backup](/core/integrations/backup/): store backups somewhere, or prepare for one.
-- [Media source](/core/integrations/media-source/): expose browsable and playable media.
+- [动作（action）](/core/integrations/actions/)：注册用户可以从自动化和脚本中调用的动作。
+- [设备自动化](/core/integrations/device-automations/)：设备触发器、条件和动作。
+- [触发器与条件](/core/integrations/triggers-and-conditions/)：提供自动化触发器和条件。
+- [诊断（diagnostics）](/core/integrations/diagnostics/)：让用户下载数据来排查问题。
+- [系统健康（system health）](/core/integrations/system-health/)：在系统信息页面上显示你的集成的状态。
+- [修复（repairs）](/core/integrations/repairs/)：告知用户存在的问题，并帮助他们修复。
+- [请求重启](/core/integrations/restart-required/)：告知 Home Assistant 需要重启才能应用更改。
+- [重现状态](/core/integrations/reproduce-state/)：让场景与你的实体协同工作。
+- [重大变更（significant change）](/core/integrations/significant-change/)：告知导出器（exporter）哪些状态变更重要。
+- [备份](/core/integrations/backup/)：将备份存储在某处，或为备份做准备。
+- [媒体源（media source）](/core/integrations/media-source/)：公开可浏览和可播放的媒体。
 
-## Reference
+## 参考
 
-- [The manifest](/core/integrations/manifest/): every key of `manifest.json`.
-- [Integration brands and images](/core/integrations/brands/): icons, logos, and grouping integrations under one brand.
-- [Translations](/core/integrations/translations/): every section of `strings.json`, references, and placeholders.
+- [清单文件](/core/integrations/manifest/)：`manifest.json` 的每一个键。
+- [集成品牌与图片](/core/integrations/brands/)：图标、徽标，以及将集成归入同一个品牌之下。
+- [翻译](/core/integrations/translations/)：`strings.json` 的每个部分、引用和占位符。
 
-## Related topics
+## 相关主题
 
-- [Entities and platforms](/core/entities/): the entity types your integration provides, like sensors and lights.
-- [Development workflow](/core/development/): the environment, tests, code style, and submitting your work.
-- [How core works](/core/internals/): the `hass` object, the event loop, and the APIs beneath your integration.
-- [Make your strings translatable](/translate/guides/developers/): how to write strings that translators can work with.
-- [Document your integration](/writing/guides/integration/): every integration has a page on [home-assistant.io](https://www.home-assistant.io/).
+- [实体与平台](/core/entities/)：你的集成所提供的实体类型，例如传感器和灯。
+- [开发工作流程](/core/development/)：环境、测试、代码风格，以及如何提交你的工作。
+- [核心的工作原理](/core/internals/)：`hass` 对象、事件循环，以及集成底层的 API。
+- [让你的字符串可翻译](/translate/guides/developers/)：如何编写便于翻译人员处理的字符串。
+- [为你的集成编写文档](/writing/guides/integration/)：每个集成在 [home-assistant.io](https://www.home-assistant.io/) 上都有一个页面。
 
-## Who to talk to
+## 与谁交流
 
-- Ask in the **#core** channel on the [Home Assistant Discord](https://www.home-assistant.io/join-chat/). Share a link to your branch, so people can see the code you are asking about.
-- Look at a well maintained integration that does something similar. Many integrations at the Platinum tier of the quality scale, like `airgradient`, are good examples of current patterns.
-- Not sure if your idea fits Home Assistant? Open a discussion in the [architecture repository](https://github.com/home-assistant/architecture/discussions) before you write a lot of code.
+- 在 [Home Assistant Discord](https://www.home-assistant.io/join-chat/) 的 **#core** 频道中提问。分享你的分支链接，让别人能看到你所询问的代码。
+- 参考一个功能类似且维护良好的集成。许多处于质量标准 Platinum 级别的集成，例如 `airgradient`，都是当前模式的优秀范例。
+- 不确定你的想法是否适合 Home Assistant？在编写大量代码之前，先在[架构仓库](https://github.com/home-assistant/architecture/discussions)中发起讨论。

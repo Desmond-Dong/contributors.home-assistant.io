@@ -1,15 +1,15 @@
 ---
-title: Media source
-description: Expose browsable, searchable, and playable media from your integration in the media browser of Home Assistant.
+title: 媒体来源
+description: 在 Home Assistant 的媒体浏览器中公开您的集成提供的可浏览、可搜索和可播放的媒体。
 sidebarGroup: Integration features
 order: 10
 ---
 
-A media source makes media of your integration available in the media browser of Home Assistant: recordings of a camera, a music library, radio stations, or generated speech. Users browse it like folders, and play items on any media player that supports them.
+媒体来源（media source）使您集成（integration）的媒体可在 Home Assistant 的媒体浏览器中使用：摄像头的录像、音乐库、电台或生成的语音。用户像浏览文件夹一样浏览它，并在任何支持它们的媒体播放器（media player）上播放项目。
 
-## Add a media source
+## 添加媒体来源
 
-Create `media_source.py`. Nothing changes in the manifest: Home Assistant finds the file by itself. It must have an `async_get_media_source` function that returns your media source:
+创建 `media_source.py`。清单（manifest）无需任何更改：Home Assistant 会自行找到该文件。它必须包含一个返回您的媒体来源的 `async_get_media_source` 函数：
 
 ```python
 from homeassistant.components.media_player import BrowseError, MediaClass
@@ -47,23 +47,23 @@ class ExampleMediaSource(MediaSource):
         """Return a playable URL for an item."""
 ```
 
-| Method | What it does |
+| 方法 | 作用 |
 | --- | --- |
-| `async_browse_media(item)` | Returns the `BrowseMediaSource` at a location. Raise `BrowseError` when that fails. |
-| `async_resolve_media(item)` | Turns an item into a `PlayMedia` with a URL that can be played. Raise `Unresolvable` when that fails. |
-| `async_search_media(item, query)` | Optional. Searches your media. See [search](#search). |
+| `async_browse_media(item)` | 返回某个位置的 `BrowseMediaSource`。失败时抛出 `BrowseError`。 |
+| `async_resolve_media(item)` | 将项目转换为包含可播放 URL 的 `PlayMedia`。失败时抛出 `Unresolvable`。 |
+| `async_search_media(item, query)` | 可选。搜索您的媒体。参见[搜索](#search)。 |
 
-`name` is what users see. Without it, the domain is used.
+`name` 是用户看到的名称。若未设置，则使用域名。
 
-## Identifiers
+## 标识符
 
-Every item has a URI like `media-source://<domain>/<identifier>`. You decide what the identifier looks like. For a hierarchy, a path with `/` works well, like `albums/1234`. Your methods get it as `item.identifier`. It is empty for the root of your media source.
+每个项目都有一个类似 `media-source://<domain>/<identifier>` 的 URI。标识符的形式由您决定。对于层级结构，使用包含 `/` 的路径效果很好，例如 `albums/1234`。您的方法通过 `item.identifier` 获取它。对于媒体来源的根项目，它为空。
 
-Build and check these URIs with `generate_media_source_id(DOMAIN, "albums/1234")` and `is_media_source_id(value)` from `homeassistant.components.media_source`.
+使用 `homeassistant.components.media_source` 中的 `generate_media_source_id(DOMAIN, "albums/1234")` 和 `is_media_source_id(value)` 来构建和检查这些 URI。
 
-## Browse
+## 浏览
 
-Return the item at the location, with its children:
+返回该位置的项目及其子项目：
 
 ```python
 async def async_browse_media(
@@ -97,25 +97,25 @@ async def async_browse_media(
     )
 ```
 
-| Field | What it is |
+| 字段 | 说明 |
 | --- | --- |
-| `domain` | Your domain |
-| `identifier` | The identifier of the item. `None` for the root. |
-| `media_class` | What the item is, like `MediaClass.DIRECTORY`, `MediaClass.MUSIC`, `MediaClass.VIDEO`, or `MediaClass.IMAGE` |
-| `media_content_type` | The MIME type or media type of the content, like `"audio/mpeg"` |
-| `title` | The name users see |
-| `can_play` | Whether the item can be played |
-| `can_expand` | Whether the item has children to browse |
-| `can_search` | Whether users can search from this item. Defaults to `False`. |
-| `search_media_classes` | The media classes users can filter on when they search here |
-| `children` | The children. Only on the item that is browsed. |
-| `children_media_class` | The media class of the children. Calculated if you leave it out. |
-| `thumbnail` | The URL of a thumbnail |
-| `not_shown` | The number of children that are left out. Defaults to `0`. |
+| `domain` | 您的域名 |
+| `identifier` | 项目的标识符。根项目为 `None`。 |
+| `media_class` | 项目的类型，例如 `MediaClass.DIRECTORY`、`MediaClass.MUSIC`、`MediaClass.VIDEO` 或 `MediaClass.IMAGE` |
+| `media_content_type` | 内容的 MIME 类型或媒体类型，例如 `"audio/mpeg"` |
+| `title` | 用户看到的名称 |
+| `can_play` | 项目是否可播放 |
+| `can_expand` | 项目是否有可浏览的子项目 |
+| `can_search` | 用户是否可以从该项目进行搜索。默认为 `False`。 |
+| `search_media_classes` | 用户在此处搜索时可用于筛选的媒体类别 |
+| `children` | 子项目。仅在正被浏览的项目上存在。 |
+| `children_media_class` | 子项目的媒体类别。如果您省略它，则会自动计算。 |
+| `thumbnail` | 缩略图的 URL |
+| `not_shown` | 被省略的子项目数量。默认为 `0`。 |
 
-## Resolve
+## 解析
 
-When a user plays an item, return a URL and MIME type:
+当用户播放项目时，返回一个 URL 和 MIME 类型：
 
 ```python
 async def async_resolve_media(self, item: MediaSourceItem) -> PlayMedia:
@@ -130,11 +130,11 @@ async def async_resolve_media(self, item: MediaSourceItem) -> PlayMedia:
     return PlayMedia(recording.url, "video/mp4")
 ```
 
-The URL can be absolute, or a relative path that Home Assistant serves. `item.target_media_player` holds the entity ID of the media player that will play it, if you need to adapt the URL to it. Both `Unresolvable` and `BrowseError` support translated messages.
+URL 可以是绝对路径，也可以是由 Home Assistant 提供服务的相对路径。如果您需要根据该播放器调整 URL，`item.target_media_player` 中保存了将要播放它的媒体播放器的实体 ID（entity ID）。`Unresolvable` 和 `BrowseError` 均支持已翻译的消息。
 
-## Search
+## 搜索
 
-Searching is optional. Set `can_search=True` on the items users can search from, like the root or certain folders, and implement `async_search_media`:
+搜索是可选的。在用户可以从中进行搜索的项目（如根项目或某些文件夹）上设置 `can_search=True`，并实现 `async_search_media`：
 
 ```python
 from homeassistant.components.media_player import (
@@ -167,13 +167,13 @@ async def async_search_media(
     )
 ```
 
-`item` tells you where the search started, so you can limit the results to that part of your media. The query has `search_query` (what the user typed), and optionally `media_content_type`, `media_content_id`, and `media_filter_classes`.
+`item` 告诉您搜索是从哪里开始的，这样您可以将结果限制在媒体的该部分。查询包含 `search_query`（用户输入的内容），以及可选的 `media_content_type`、`media_content_id` 和 `media_filter_classes`。
 
-To let users filter, set `search_media_classes` on the searchable item, like `[MediaClass.ALBUM, MediaClass.ARTIST, MediaClass.TRACK]`. The classes the user picks arrive in `media_filter_classes`. Only return items of those classes.
+要让用户能够筛选，可在可搜索的项目上设置 `search_media_classes`，例如 `[MediaClass.ALBUM, MediaClass.ARTIST, MediaClass.TRACK]`。用户选择的类别将通过 `media_filter_classes` 传入。只返回这些类别的项目。
 
-## Use media sources from another integration
+## 从另一个集成中使用媒体来源
 
-A media player integration can browse, search, and resolve media sources too:
+媒体播放器集成也可以浏览、搜索和解析媒体来源：
 
 ```python
 from homeassistant.components.media_source import (
@@ -189,4 +189,4 @@ play_media = await async_resolve_media(
 )
 ```
 
-`async_search_media(hass, media_content_id, query)` searches the same way.
+`async_search_media(hass, media_content_id, query)` 以相同的方式进行搜索。

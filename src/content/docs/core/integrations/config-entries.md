@@ -1,40 +1,40 @@
 ---
-title: Config entries
-description: How a config entry is set up, unloaded, removed, and migrated, and where your integration keeps its runtime data.
+title: 配置项
+description: 配置项（config entry）如何被设置、卸载、删除和迁移，以及你的集成将运行时数据存储在哪里。
 sidebarGroup: Setup and configuration
 order: 1
 ---
 
-A [config entry](/glossary/config-entry/) is one set-up instance of an integration, like one Hue bridge or one account. Home Assistant stores it, and sets it up again on every start. Users create config entries through the [config flow](/core/integrations/config-flow/) of your integration, and can change them later through [reconfiguration](/core/integrations/reauth-reconfigure/) or an [options flow](/core/integrations/options-flow/).
+[配置项](/glossary/config-entry/)（config entry）是一个集成的一个已设置实例，例如一个 Hue 网桥或一个账户。Home Assistant 会存储它，并在每次启动时重新进行设置。用户通过你的集成的[配置流程](/core/integrations/config-flow/)（config flow）创建配置项，之后可以通过[重新配置](/core/integrations/reauth-reconfigure/)或[选项流程](/core/integrations/options-flow/)（options flow）进行更改。
 
-A config entry holds:
+一个配置项包含以下内容：
 
-- `data`: the configuration needed to connect, like a host or an API token. It does not change during normal use.
-- `options`: settings users can change, through the options flow.
-- `subentries`: repeatable parts, like locations of a weather service. See [subentries](/core/integrations/subentries/).
-- `unique_id`: what identifies the device or account, so it is not set up twice.
-- `runtime_data`: whatever your integration needs while it runs. It is not stored.
+- `data`：连接所需的配置，例如主机地址或 API 令牌。在正常使用过程中不会改变。
+- `options`：用户可以通过选项流程更改的设置。
+- `subentries`：可重复的部分，例如天气服务的各个位置。参见[子配置项](/core/integrations/subentries/)。
+- `unique_id`：用于标识设备或账户，以避免重复设置。
+- `runtime_data`：你的集成在运行期间所需的任何内容。它不会被存储。
 
-## Lifecycle
+## 生命周期
 
-A config entry is always in one of these states, from `homeassistant.config_entries.ConfigEntryState`:
+配置项始终处于以下状态之一，这些状态定义在 `homeassistant.config_entries.ConfigEntryState` 中：
 
-| State | Meaning |
+| 状态 | 含义 |
 | --- | --- |
-| `NOT_LOADED` | Not loaded. The state when a config entry is created, and when Home Assistant starts. |
-| `SETUP_IN_PROGRESS` | Being set up |
-| `LOADED` | Set up and running |
-| `SETUP_ERROR` | Setup failed, and Home Assistant does not retry |
-| `SETUP_RETRY` | Setup failed because something was not ready. Home Assistant retries with a growing delay, up to 10 minutes, or longer when the integration asks for it with `retry_after`. |
-| `MIGRATION_ERROR` | The config entry needed a migration to a newer version, and it failed |
-| `UNLOAD_IN_PROGRESS` | Being unloaded |
-| `FAILED_UNLOAD` | Unloading failed or is not supported |
+| `NOT_LOADED` | 未加载。配置项被创建时以及 Home Assistant 启动时所处的状态。 |
+| `SETUP_IN_PROGRESS` | 正在设置 |
+| `LOADED` | 已设置并正在运行 |
+| `SETUP_ERROR` | 设置失败，Home Assistant 不会重试 |
+| `SETUP_RETRY` | 设置因某些条件尚未就绪而失败。Home Assistant 会以逐渐增加的延迟进行重试，最长 10 分钟；当集成通过 `retry_after` 要求更长延迟时则可以更长。 |
+| `MIGRATION_ERROR` | 配置项需要迁移到更新的版本，但迁移失败了 |
+| `UNLOAD_IN_PROGRESS` | 正在卸载 |
+| `FAILED_UNLOAD` | 卸载失败或不支持卸载 |
 
-How your code ends up in `SETUP_ERROR` or `SETUP_RETRY` is described in [setup failures and exceptions](/core/integrations/setup-failures/).
+你的代码如何进入 `SETUP_ERROR` 或 `SETUP_RETRY` 状态，请参见[设置失败与异常](/core/integrations/setup-failures/)。
 
-## Set up a config entry
+## 设置配置项
 
-When Home Assistant starts, it first runs the normal setup of your integration (`async_setup`, if you have one). Then it calls `async_setup_entry` in your `__init__.py` for every config entry, except the ones the user disabled or ignored. When a user adds a new config entry, Home Assistant calls `async_setup_entry` for that one right away.
+当 Home Assistant 启动时，它首先运行你的集成的常规设置（如果有 `async_setup` 的话）。然后它会为每个配置项调用你的 `__init__.py` 中的 `async_setup_entry`，但用户已禁用或忽略的配置项除外。当用户添加新的配置项时，Home Assistant 会立即为该配置项调用 `async_setup_entry`。
 
 ```python
 from homeassistant.config_entries import ConfigEntry
@@ -67,15 +67,15 @@ async def async_setup_entry(
     return True
 ```
 
-### Keep runtime data in runtime_data
+### 将运行时数据保存在 runtime_data 中
 
-Store what your integration needs while it runs, like the API client or the [coordinator](/glossary/coordinator/), in `entry.runtime_data`. Type it with a type alias, like `ExampleConfigEntry` above, and use that alias everywhere you receive the entry. Your platforms then get a typed `runtime_data` for free.
+将你的集成在运行期间所需的内容（例如 API 客户端或[协调器](/glossary/coordinator/)（coordinator））存储在 `entry.runtime_data` 中。使用类型别名为其指定类型，例如上面的 `ExampleConfigEntry`，并在所有接收该配置项的地方使用该别名。这样你的平台就可以免费获得一个带有类型的 `runtime_data`。
 
-Do not use `hass.data` for data that belongs to a config entry. `runtime_data` is cleaned up with the entry, and type checkers understand it.
+不要将属于配置项的数据存放在 `hass.data` 中。`runtime_data` 会随配置项一起被清理，并且类型检查器能够理解它。
 
-### Set up the platforms
+### 设置平台
 
-Forward the config entry to your [platforms](/glossary/platform/) with `async_forward_entry_setups`, after `runtime_data` is set. Each platform then gets its own `async_setup_entry`, which adds the entities:
+在 `runtime_data` 设置完成后，使用 `async_forward_entry_setups` 将配置项转发到你的[平台](/glossary/platform/)（platform）。然后每个平台都会获得自己的 `async_setup_entry`，用于添加实体（entity）：
 
 ```python
 from homeassistant.helpers.entity_platform import (
@@ -97,9 +97,9 @@ async def async_setup_entry(
     )
 ```
 
-## Unload a config entry
+## 卸载配置项
 
-Support unloading, so users can reload or disable an entry without restarting Home Assistant. Implement `async_unload_entry`, unload the platforms you forwarded to, and clean up anything else, like connections and listeners. Home Assistant sets the state to `UNLOAD_IN_PROGRESS` before it calls this function.
+支持卸载功能，这样用户就可以在不重启 Home Assistant 的情况下重新加载或禁用配置项。实现 `async_unload_entry`，卸载你转发到的平台，并清理其他内容，例如连接和监听器。Home Assistant 在调用此函数之前会将状态设置为 `UNLOAD_IN_PROGRESS`。
 
 ```python
 async def async_unload_entry(
@@ -109,7 +109,7 @@ async def async_unload_entry(
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 ```
 
-Most cleanup does not need its own code. Register it while setting up, and Home Assistant runs it when the entry unloads:
+大多数清理工作不需要单独编写代码。在设置过程中注册清理逻辑，Home Assistant 会在配置项卸载时运行它：
 
 ```python
 entry.async_on_unload(client.disconnect)
@@ -118,11 +118,11 @@ entry.async_on_unload(
 )
 ```
 
-To clean up after an entity, implement `async_will_remove_from_hass` on the [entity](/core/entities/).
+要清理实体，请在[实体](/core/entities/)上实现 `async_will_remove_from_hass`。
 
-## Remove a config entry
+## 删除配置项
 
-If something needs to happen when a user deletes the config entry, like removing a webhook at the service, implement `async_remove_entry`. The entry is already gone from `hass.config_entries` when it runs.
+如果用户删除配置项时需要执行某些操作，例如在服务端移除 webhook，请实现 `async_remove_entry`。该函数运行时，配置项已从 `hass.config_entries` 中移除。
 
 ```python
 async def async_remove_entry(
@@ -131,9 +131,9 @@ async def async_remove_entry(
     """Handle removal of an entry."""
 ```
 
-## Change a config entry
+## 更改配置项
 
-Never change the attributes of a `ConfigEntry` directly. Call `async_update_entry` instead. It saves the change, and tells everything that listens:
+切勿直接更改 `ConfigEntry` 的属性。应改为调用 `async_update_entry`。它会保存更改，并通知所有监听者：
 
 ```python
 hass.config_entries.async_update_entry(
@@ -141,16 +141,16 @@ hass.config_entries.async_update_entry(
 )
 ```
 
-To reload an entry, for example after a change, call `hass.config_entries.async_schedule_reload(entry.entry_id)`.
+要重新加载配置项（例如在更改之后），请调用 `hass.config_entries.async_schedule_reload(entry.entry_id)`。
 
-## Migrate a config entry
+## 迁移配置项
 
-When the data you store in a config entry changes shape, bump the version of your config flow and migrate old entries. Each config entry has a major `VERSION` and a `MINOR_VERSION`, which both default to `1`.
+当你存储在配置项中的数据结构发生变化时，应提升配置流程的版本并迁移旧配置项。每个配置项都有一个主版本 `VERSION` 和一个 `MINOR_VERSION`，两者默认均为 `1`。
 
-- A **minor** version bump is backwards compatible. Only add things that older code can ignore, like a new key with a default. If only the minor version differs, Home Assistant sets up the entry even without a migration. Users who go back to an older Home Assistant version can keep using it.
-- A **major** version bump is not. Use it when older code can no longer read the entry, like a renamed or removed key. An older Home Assistant version cannot set up the migrated entry, unless the user restores a backup.
+- **小版本**（minor）升级是向后兼容的。只添加旧代码可以忽略的内容，例如带有默认值的新键。如果只有小版本不同，Home Assistant 即使没有迁移也会设置该配置项。回退到较旧 Home Assistant 版本的用户仍可继续使用它。
+- **主版本**（major）升级则不是向后兼容的。当旧代码无法再读取该配置项时使用它，例如键被重命名或移除。较旧的 Home Assistant 版本无法设置已迁移的配置项，除非用户恢复备份。
 
-Set the new versions on your config flow:
+在你的配置流程上设置新版本：
 
 ```python
 class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -160,9 +160,9 @@ class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
     MINOR_VERSION = 2
 ```
 
-Then implement `async_migrate_entry` in `__init__.py`. Home Assistant calls it before setup when the stored major version is older than your config flow's, or when the major version is the same and the minor version differs. That includes a _newer_ minor version, left behind when a user downgrades Home Assistant. So check the version before each step, and leave entries you don't know alone. An entry with a newer major version than your config flow fails to set up without calling your code.
+然后在 `__init__.py` 中实现 `async_migrate_entry`。当存储的主版本比你的配置流程的版本旧，或者主版本相同而小版本不同（包括用户降级 Home Assistant 后留下的_更新_的小版本）时，Home Assistant 会在设置之前调用它。因此，请在每个步骤之前检查版本，对于你不了解的配置项保持原样不做处理。如果配置项的主版本比你的配置流程的新，它将无法设置，并且不会调用你的代码。
 
-In this example, version 2 renamed `ip_address` to `host`, which older code can't read, so it is a major bump. Version 2.2 added a port, which older code ignores, so it is a minor bump:
+在此示例中，版本 2 将 `ip_address` 重命名为 `host`，旧代码无法读取它，因此这是一次主版本升级。版本 2.2 添加了一个端口，旧代码会忽略它，因此这是一次小版本升级：
 
 ```python
 async def async_migrate_entry(
@@ -186,29 +186,29 @@ async def async_migrate_entry(
     return True
 ```
 
-An entry stored as 2.3 by a newer Home Assistant version passes through both checks untouched, and sets up as it is.
+由较新版本的 Home Assistant 存储为 2.3 的配置项会原样通过这两项检查，并按原样完成设置。
 
-What your migration returns or raises decides what happens next:
+你的迁移函数返回或抛出的结果决定了接下来会发生什么：
 
-| Result | What happens |
+| 结果 | 发生的情况 |
 | --- | --- |
-| Returns `True` | Migration succeeded, setup continues |
-| Returns `False` | Setup stops, the entry goes to `MIGRATION_ERROR` |
-| Raises `ConfigEntryNotReady` | Setup stops, Home Assistant retries later |
-| Raises `ConfigEntryError` or any other exception | Setup stops, the entry goes to `MIGRATION_ERROR` |
+| 返回 `True` | 迁移成功，设置继续 |
+| 返回 `False` | 设置停止，配置项进入 `MIGRATION_ERROR` |
+| 抛出 `ConfigEntryNotReady` | 设置停止，Home Assistant 稍后重试 |
+| 抛出 `ConfigEntryError` 或任何其他异常 | 设置停止，配置项进入 `MIGRATION_ERROR` |
 
-Prefer raising `ConfigEntryNotReady` or `ConfigEntryError` over returning `False`. Both support translations, so you can tell the user what went wrong.
+比起返回 `False`，更推荐抛出 `ConfigEntryNotReady` 或 `ConfigEntryError`。两者都支持翻译，因此你可以告知用户出了什么问题。
 
-`MIGRATION_ERROR` does not recover by itself. If the user can fix the cause, create a [repair](/core/integrations/repairs/), and call `hass.config_entries.async_retry_migration(entry_id)` from the repair flow once it is fixed.
+`MIGRATION_ERROR` 状态不会自行恢复。如果用户可以修复原因，请创建一个[修复](/core/integrations/repairs/)（repair），并在修复完成后从修复流程中调用 `hass.config_entries.async_retry_migration(entry_id)`。
 
-## Follow state changes
+## 跟踪状态变化
 
-To get notified when an entry changes state, for example from `LOADED` to `UNLOAD_IN_PROGRESS`, register a callback with `async_on_state_change`. It returns a function that removes the listener, so you can listen until the entry unloads:
+要在配置项更改状态时（例如从 `LOADED` 变为 `UNLOAD_IN_PROGRESS`）收到通知，请使用 `async_on_state_change` 注册回调。它返回一个用于移除监听器的函数，因此你可以一直监听直到配置项卸载：
 
 ```python
 entry.async_on_unload(entry.async_on_state_change(notify_me))
 ```
 
-## Background tasks
+## 后台任务
 
-Start long running tasks that belong to a config entry with `entry.async_create_background_task(hass, coroutine, name)`. Home Assistant cancels them when the entry unloads, so they never outlive the entry.
+使用 `entry.async_create_background_task(hass, coroutine, name)` 启动属于配置项的长时间运行任务。当配置项卸载时，Home Assistant 会取消它们，因此它们的生命周期绝不会超过配置项。

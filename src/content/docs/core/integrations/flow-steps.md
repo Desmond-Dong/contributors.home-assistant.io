@@ -1,25 +1,25 @@
 ---
-title: Forms, menus, and progress
-description: The building blocks of config flows, options flows, and repair flows, from forms and sections to menus, external steps, and progress.
+title: 表单、菜单与进度
+description: 配置流程、选项流程和修复流程的构建基石，涵盖从表单和分区到菜单、外部步骤和进度。
 sidebarLabel: Forms, menus, and progress
 sidebarGroup: Setup and configuration
 order: 3
 ---
 
-Config flows, [options flows](/core/integrations/options-flow/), [subentry flows](/core/integrations/subentries/), and [repair flows](/core/integrations/repairs/) are all built on the same framework: the data entry flow, in `homeassistant.data_entry_flow`. A flow is a series of steps. Each step returns one of the results on this page, and that result decides what the user sees next.
+配置流程（config flow）、[选项流程（options flow）](/core/integrations/options-flow/)、[子条目流程（subentry flow）](/core/integrations/subentries/)和[修复流程（repair flow）](/core/integrations/repairs/)都建立在同一个框架之上：数据输入流程（data entry flow），位于 `homeassistant.data_entry_flow` 中。流程由一系列步骤组成。每个步骤都会返回本页所述结果中的一种，该结果决定了用户接下来看到的内容。
 
-| Result | Method | What the user sees |
+| 结果 | 方法 | 用户看到的内容 |
 | --- | --- | --- |
-| Form | `async_show_form` | A form to fill in |
-| Menu | `async_show_menu` | A list of next steps to pick from |
-| Create entry | `async_create_entry` | Success. The flow is done. |
-| Abort | `async_abort` | A message why the flow stopped |
-| External step | `async_external_step` | A link to finish something on another website |
-| Progress | `async_show_progress` | A spinner while a long task runs |
+| 表单 | `async_show_form` | 一个待填写的表单 |
+| 菜单 | `async_show_menu` | 可供选择的后续步骤列表 |
+| 创建条目 | `async_create_entry` | 成功。流程已完成。 |
+| 中止 | `async_abort` | 说明流程为何停止的消息 |
+| 外部步骤 | `async_external_step` | 在另一个网站上完成操作的链接 |
+| 进度 | `async_show_progress` | 长任务运行时显示的加载动画 |
 
-## Show a form
+## 显示表单
 
-A form has a step ID, a schema, and optionally errors. Fields appear in the order of the schema. The step method is called again with the input once the user submits valid data.
+表单包含一个步骤 ID、一个 schema，以及可选的错误信息。字段按照 schema 中的顺序显示。用户提交有效数据后，步骤方法会带着输入内容被再次调用。
 
 ```python
 async def async_step_user(
@@ -50,13 +50,13 @@ async def async_step_user(
     )
 ```
 
-### Validation and errors
+### 校验与错误
 
-Your step only gets input that passes the schema. Anything else, like checking that a password works, is up to you. Return the form again with an `errors` dictionary: the key is the field with the problem, or `base` for an error that is not about one field. The value is a key in the `error` section of your translations.
+您的步骤只会收到通过 schema 校验的输入。其他任何事情，比如检查密码是否有效，都由您自行处理。再次返回表单并附带一个 `errors` 字典：其键为出问题的字段，如果错误与单个字段无关，则使用 `base`。其值是您翻译文件中 `error` 部分的一个键。
 
-### Multiple steps
+### 多个步骤
 
-To go to the next step, return the result of that step. Keep what you need from earlier steps on the flow object:
+要进入下一步，请返回该步骤的结果。将之前步骤中需要保留的数据保存在流程对象上：
 
 ```python
 if user_input is not None:
@@ -64,11 +64,11 @@ if user_input is not None:
     return await self.async_step_credentials()
 ```
 
-Pass `last_step=False` to `async_show_form` to show **Next** instead of **Submit**.
+向 `async_show_form` 传递 `last_step=False`，即可显示**下一步**而不是**提交**。
 
-### Sections
+### 分区
 
-Group fields in collapsible sections with `section`. A section changes how the form looks and how the input is structured: the fields of a section arrive in a nested dictionary. Sections cannot be nested.
+使用 `section` 将字段分组到可折叠的分区（section）中。分区会改变表单的外观以及输入的结构：一个分区中的字段会以嵌套字典的形式传入。分区不能嵌套。
 
 ```python
 from homeassistant.data_entry_flow import section
@@ -90,7 +90,7 @@ DATA_SCHEMA = probatio.Schema(
 )
 ```
 
-The input of that form looks like `{"host": "...", "ssl_options": {"ssl": True, "verify_ssl": False}}`. A section can have an icon, in `icons.json`:
+该表单的输入类似于 `{"host": "...", "ssl_options": {"ssl": True, "verify_ssl": False}}`。分区可以拥有图标，定义在 `icons.json` 中：
 
 ```json
 {
@@ -106,17 +106,17 @@ The input of that form looks like `{"host": "...", "ssl_options": {"ssl": True, 
 }
 ```
 
-### Labels and descriptions
+### 标签与描述
 
-The text of a form lives in `strings.json`, under the step ID:
+表单的文本位于 `strings.json` 中，放在对应步骤 ID 之下：
 
-| Key | What it is |
+| 键 | 含义 |
 | --- | --- |
-| `title` | The heading of the form. Do not include the brand name: Home Assistant adds it from the manifest. |
-| `description` | Instructions. Optional. Do not link to the documentation, which is linked automatically, and do not state the obvious, like "Here you can set up X". |
-| `data` | The labels of the fields. Keep them short, and consistent with other integrations. |
-| `data_description` | An explanation shown below each field |
-| `sections` | Per section: a `name`, a `description`, and the `data` and `data_description` of its fields |
+| `title` | 表单的标题。不要包含品牌名称：Home Assistant 会从 manifest 中自动添加。 |
+| `description` | 操作说明。可选。不要链接到文档（会自动添加链接），也不要说显而易见的话，比如“在这里您可以设置 X”。 |
+| `data` | 字段的标签。保持简短，并与其他集成保持一致。 |
+| `data_description` | 显示在每个字段下方的说明 |
+| `sections` | 每个分区：一个 `name`、一个 `description`，以及其字段的 `data` 和 `data_description` |
 
 ```json
 {
@@ -144,14 +144,14 @@ The text of a form lives in `strings.json`, under the step ID:
 }
 ```
 
-See [make your strings translatable](/translate/guides/developers/) for the rules of good strings.
+有关良好字符串的规则，请参阅[让您的字符串可翻译](/translate/guides/developers/)。
 
-### Defaults and suggested values
+### 默认值与建议值
 
-There are two ways to pre-fill a field:
+预填充字段有两种方式：
 
-- `default` fills the field, and is also used when the user leaves it empty.
-- A suggested value fills the field, but the user can still clear it.
+- `default` 会填充该字段，并且当用户将其留空时也会使用该值。
+- 建议值（suggested value）会填充该字段，但用户仍然可以将其清除。
 
 ```python
 probatio.Optional(CONF_PORT, default=80): int
@@ -160,7 +160,7 @@ probatio.Optional(
 ): str
 ```
 
-`add_suggested_values_to_schema` fills a static schema with values you already have, which is ideal for options flows:
+`add_suggested_values_to_schema` 会用您已有的值填充静态 schema，这非常适合选项流程：
 
 ```python
 return self.async_show_form(
@@ -171,11 +171,11 @@ return self.async_show_form(
 )
 ```
 
-A select field built with `probatio.In(...)` and no `default` has its first option selected.
+使用 `probatio.In(...)` 构建且未指定 `default` 的选择字段会默认选中其第一个选项。
 
-### Read-only fields
+### 只读字段
 
-Some settings cannot change after setup. You can still show them in an options flow, so users remember what they picked: add the field with a selector that has `read_only=True`.
+有些设置在完成设置后无法更改。您仍然可以在选项流程中显示它们，让用户记得自己选择了什么：添加该字段时使用带有 `read_only=True` 的选择器。
 
 ```python
 probatio.Optional(CONF_ENTITY_ID): EntitySelector(
@@ -183,9 +183,9 @@ probatio.Optional(CONF_ENTITY_ID): EntitySelector(
 )
 ```
 
-### Browser autofill
+### 浏览器自动填充
 
-Help browsers and password managers fill in your form. The frontend adds the right `autocomplete` attribute to fields named `username` and `password` by itself. For anything else, use a text selector with `autocomplete`:
+帮助浏览器和密码管理器填充您的表单。前端会自行为名为 `username` 和 `password` 的字段添加正确的 `autocomplete` 属性。对于其他字段，请使用带有 `autocomplete` 的文本选择器：
 
 ```python
 probatio.Required(CONF_USERNAME): TextSelector(
@@ -198,9 +198,9 @@ probatio.Required(CONF_PASSWORD): TextSelector(
 ),
 ```
 
-### Options that depend on another field
+### 依赖于其他字段的选项
 
-Some selectors narrow their options based on the value of another field in the same form. They take a `context` in their config, which maps a context key to the name of the field that provides its value. The unit of measurement selector, for example, supports `filter_device_class` and `filter_state_class`. They point at a field that uses a device class or a state class selector. The selector config rejects a context key it does not know, and you cannot combine `filter_device_class` with `device_classes`, or `filter_state_class` with `state_classes`:
+有些选择器会根据同一表单中另一个字段的值来缩小其选项范围。它们在配置中接受一个 `context`，该配置将上下文键映射到提供其值的字段名称。例如，计量单位选择器支持 `filter_device_class` 和 `filter_state_class`。它们指向使用设备类别（device class）或状态类别（state class）选择器的字段。选择器配置会拒绝它不认识的上下文键，并且您不能将 `filter_device_class` 与 `device_classes` 组合使用，也不能将 `filter_state_class` 与 `state_classes` 组合使用：
 
 ```python
 probatio.Optional(CONF_UNIT_OF_MEASUREMENT): UnitOfMeasurementSelector(
@@ -213,15 +213,15 @@ probatio.Optional(CONF_UNIT_OF_MEASUREMENT): UnitOfMeasurementSelector(
 )
 ```
 
-The context only changes what the frontend offers. The selector does not check the submitted value against the other fields, so your step still has to check that the combination makes sense.
+上下文只会改变前端提供的选项。选择器不会对照其他字段检查提交的值，因此您的步骤仍然需要检查该组合是否合理。
 
-### Advanced options
+### 高级选项
 
-The `show_advanced_options` property is deprecated and will be removed in Home Assistant 2027.6. Until then it always returns `True`. Put options most users do not need in a collapsed [section](#sections) instead.
+`show_advanced_options` 属性已被弃用，并将在 Home Assistant 2027.6 中移除。在此之前它始终返回 `True`。请改为将大多数用户不需要的选项放入一个折叠的[分区](#sections)中。
 
-## Create an entry
+## 创建条目
 
-`async_create_entry` finishes the flow. In a config flow, it creates the config entry from a title and `data`, and optionally `options`:
+`async_create_entry` 会结束流程。在配置流程中，它会根据标题和 `data`（以及可选的 `options`）创建配置条目（config entry）：
 
 ```python
 return self.async_create_entry(
@@ -231,19 +231,19 @@ return self.async_create_entry(
 )
 ```
 
-Both must be JSON serializable. Put what is needed to connect in `data`, and what users can tweak in `options`. Changing credentials is [reauthentication](/core/integrations/reauth-reconfigure/), which updates `data`.
+两者都必须可被 JSON 序列化。将连接所需的信息放在 `data` 中，将用户可以调整的设置放在 `options` 中。更改凭据属于[重新认证（reauthentication）](/core/integrations/reauth-reconfigure/)，它会更新 `data`。
 
-## Abort
+## 中止
 
-When a flow cannot finish, abort it with a reason. Users see the matching text from the `abort` section of your translations:
+当流程无法完成时，请附带原因中止它。用户会看到您翻译文件中 `abort` 部分里与之匹配的文本：
 
 ```python
 return self.async_abort(reason="not_supported")
 ```
 
-## Show a menu
+## 显示菜单
 
-A menu lets the user pick the next step. Each option is a step ID:
+菜单让用户选择下一步。每个选项都是一个步骤 ID：
 
 ```python
 return self.async_show_menu(
@@ -253,7 +253,7 @@ return self.async_show_menu(
 )
 ```
 
-The labels come from `menu_options` in your translations, and optional descriptions from `menu_option_descriptions`. You can also pass a dictionary of step IDs and labels instead of a list. Pass `sort=True` to sort the options by their label in the language of the user.
+标签来自您翻译文件中的 `menu_options`，可选的描述来自 `menu_option_descriptions`。您也可以传递一个由步骤 ID 和标签组成的字典来代替列表。传递 `sort=True` 可以按用户的语言根据标签对选项排序。
 
 ```json
 {
@@ -273,14 +273,14 @@ The labels come from `menu_options` in your translations, and optional descripti
 }
 ```
 
-## External steps
+## 外部步骤
 
-Sometimes the user has to finish something on another website, like logging in. For OAuth 2.0, use the [OAuth 2.0 helper](/core/integrations/oauth2/), which does all of this for you. For anything else:
+有时用户必须在另一个网站上完成某些操作，比如登录。对于 OAuth 2.0，请使用 [OAuth 2.0 辅助工具（helper）](/core/integrations/oauth2/)，它会为您完成所有这些工作。对于其他情况：
 
-1. The step returns `async_external_step` with the URL to open. Include the flow ID in it, so the result can find its way back.
-2. The user finishes on the other website, which redirects their browser to an endpoint of your integration in Home Assistant.
-3. That endpoint calls `hass.config_entries.flow.async_configure(flow_id, data)` and returns `<script>window.close()</script>` to close the window.
-4. The step is called again with the data, and returns `async_external_step_done` with the next step.
+1. 该步骤返回 `async_external_step` 以及要打开的 URL。请在其中包含流程 ID，以便结果能够传回。
+2. 用户在另一个网站上完成操作，该网站会将用户的浏览器重定向到您的集成在 Home Assistant 中的一个端点。
+3. 该端点调用 `hass.config_entries.flow.async_configure(flow_id, data)` 并返回 `<script>window.close()</script>` 来关闭窗口。
+4. 该步骤会带着数据被再次调用，并返回 `async_external_step_done` 以及下一步。
 
 ```python
 async def async_step_user(
@@ -298,11 +298,11 @@ async def async_step_user(
     return self.async_external_step_done(next_step_id="finish")
 ```
 
-Do the work with the returned data in the next step, not in the endpoint and not before you mark the step done. The user then sees a spinner while it runs, instead of a blank window or a stale form.
+请在下一步中使用返回的数据进行处理，不要在端点中处理，也不要在将步骤标记为完成之前处理。这样用户会在任务运行时看到加载动画，而不是空白窗口或过时的表单。
 
-## Show progress
+## 显示进度
 
-For a step that takes a while, like a firmware check, run the work in a task and show progress until it is done:
+对于需要一段时间的步骤（比如固件检查），请在一个任务中运行该工作并显示进度，直到完成：
 
 ```python
 async def async_step_user(
@@ -321,11 +321,11 @@ async def async_step_user(
     return self.async_show_progress_done(next_step_id="finish")
 ```
 
-Home Assistant calls the step again when the task finishes, but it can also call it earlier, for example when the frontend reloads. So never start a second task: check if one exists. The `progress_action` is the key of the text in the `progress` section of your translations. To show how far along the task is, call `self.async_update_progress(0.5)` with a value between 0 and 1.
+当任务完成时，Home Assistant 会再次调用该步骤，但它也可能更早调用，例如在前端重新加载时。因此，绝不要启动第二个任务：请先检查是否已存在任务。`progress_action` 是您翻译文件中 `progress` 部分文本的键。要显示任务的进行程度，请调用 `self.async_update_progress(0.5)`，传入一个介于 0 和 1 之间的值。
 
-## Start a flow from code
+## 从代码启动流程
 
-Integrations and discovery start flows with a source in the context. The flow then starts at the step with the name of that source, not at `user`:
+集成和发现（discovery）会通过在上下文中携带来源（source）来启动流程。之后流程将从以该来源命名的步骤开始，而不是从 `user` 开始：
 
 ```python
 await hass.config_entries.flow.async_init(
@@ -333,4 +333,4 @@ await hass.config_entries.flow.async_init(
 )
 ```
 
-The flow can check where it came from with `self.source`. To start a flow for a discovered device, use the [discovery flow helper](/core/integrations/discovery/#discovery-by-another-integration) instead.
+流程可以通过 `self.source` 检查它的来源。要为发现的设备启动流程，请改用[发现流程辅助工具](/core/integrations/discovery/#discovery-by-another-integration)。

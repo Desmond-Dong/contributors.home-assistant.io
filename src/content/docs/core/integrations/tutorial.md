@@ -1,40 +1,40 @@
 ---
-title: Build your first integration
-description: Build a small, complete integration step by step, from the scaffold to a config flow, a coordinator, sensors, tests, and a pull request that meets the Bronze tier.
+title: 构建你的第一个集成
+description: 逐步构建一个小而完整的集成，从脚手架（scaffold）到配置流程（config flow）、协调器（coordinator）、传感器、测试，以及一个达到 Bronze 级别的拉取请求（pull request）。
 sidebarLabel: Tutorial
 sidebarGroup: Getting started
 order: 2
 ---
 
-In this tutorial, you build a complete integration for an air quality monitor on your local network. It is set up from the UI, polls the monitor every minute, and shows its temperature, humidity, and fine dust as sensors. On the way, you touch every part that a new integration in core needs: a library, a config flow, a coordinator, entities, tests, documentation, a brand, and a pull request.
+在本教程中，你将为本地网络上的一台空气质量监测仪构建一个完整的集成。它通过 UI 进行设置，每分钟轮询一次监测仪，并将其温度、湿度和细尘显示为传感器。在这个过程中，你会接触到 core 中新集成所需的每一个部分：一个库、一个配置流程（config flow）、一个协调器（coordinator）、实体、测试、文档、一个品牌标识，以及一个拉取请求。
 
-By the end, your integration meets every rule of the Bronze tier of the [quality scale](/core/quality-scale/), the minimum for a new integration in core. Each step says which rules it takes care of, and the last steps check them all off.
+到最后，你的集成将满足[质量分级](/core/quality-scale/)（quality scale）中 Bronze 级别的每一条规则，这是 core 中新集成的最低要求。每一步都会说明它照顾到了哪些规则，最后几步则把它们全部核对一遍。
 
-The monitor and its library, `exampleair`, are made up for this tutorial. Follow along with your own device and its library: the shape of the code is the same, only the names and the data change. The code is modeled on `theben_conexa`, a small Bronze integration for a local device that was recently added to core, with a sensor platform, a coordinator, and the same set of tests. Where it helps, open its code next to this page.
+监测仪及其库 `exampleair` 是为本教程虚构的。你可以用自己的设备和它的库跟着做：代码的形状是一样的，只是名称和数据不同。这些代码以 `theben_conexa` 为蓝本，它是一个最近加入 core 的小型 Bronze 集成，面向本地设备，包含一个传感器平台、一个协调器以及同样的一组测试。如果有帮助，你可以在阅读本页时同时打开它的代码。
 
-New to the words config entry, platform, or coordinator? Read [how an integration fits in](/core/integrations/concepts/) first. It takes five minutes.
+对配置条目（config entry）、平台（platform）或协调器这些词感到陌生？请先阅读[集成是如何融入的](/core/integrations/concepts/)。这只需要五分钟。
 
-## Before you start
+## 开始之前
 
-- **A development environment.** Set one up with [your first contribution](/core/first-contribution/#2-set-up-your-environment) or the [development environment](/core/development/environment/) guide. Run every command on this page from the root of your core checkout, inside that environment.
-- **A device or service that fits in core.** It must be available for people to buy and use today, and have an actual user base. See [create an integration](/core/integrations/create/#does-it-belong-in-core). For a new integration, the project recommends that you publish it in the [Marketplace](/marketplace/) first. A custom integration is built the same way, so everything you learn here carries over.
-- **Some Python.** You should be comfortable with classes, `async` and `await`, and type hints. You do not need to know Home Assistant's code yet.
-- **Time.** Plan a few evenings. The review afterwards takes longer than writing the code, often weeks. That is normal.
+- **一个开发环境。**按照[你的第一次贡献](/core/first-contribution/#2-set-up-your-environment)或[开发环境](/core/development/environment/)指南搭建一个。请在该环境中、从你 core 检出（checkout）的根目录运行本页上的每一条命令。
+- **一个适合进入 core 的设备或服务。**它必须是人们今天就能购买和使用的，并且有真实的用户群。参见[创建集成](/core/integrations/create/#does-it-belong-in-core)。对于新集成，项目建议你先在 [Marketplace](/marketplace/) 中发布。自定义集成（custom integration）的构建方式相同，因此你在这里学到的所有内容都可以迁移过去。
+- **一些 Python 基础。**你应该熟悉类、`async` 和 `await` 以及类型提示（type hints）。你还不需要了解 Home Assistant 的代码。
+- **时间。**规划几个晚上。之后的审查比编写代码花的时间更长，通常需要数周。这是正常的。
 
-Then create a branch for your integration, starting from the latest `dev` branch of Home Assistant. Do this first: core's pre-commit hooks include `no-commit-to-branch`, which refuses every commit on `dev`, `rc`, and `master`.
+然后为你的集成创建一个分支，从 Home Assistant 最新的 `dev` 分支开始。请先做这件事：core 的 pre-commit 钩子包含 `no-commit-to-branch`，它会拒绝在 `dev`、`rc` 和 `master` 上的每一次提交。
 
 ```shell
 git fetch upstream
 git checkout -b add-example-air upstream/dev
 ```
 
-`upstream` is the remote of `home-assistant/core` that you added in [your first contribution](/core/first-contribution/#2-set-up-your-environment).
+`upstream` 是你在[你的第一次贡献](/core/first-contribution/#2-set-up-your-environment)中添加的 `home-assistant/core` 远程仓库。
 
-## 1. Start with the library
+## 1. 从库开始
 
-Your integration never talks to the device itself. A Python library on PyPI does that, and your integration only translates between the library and Home Assistant. If your device has no library yet, write one first: [build a Python library](/core/integrations/api-library/) explains how, and what it must meet before core accepts it.
+你的集成从不直接与设备通信。这项工作由 PyPI 上的一个 Python 库完成，你的集成只在库和 Home Assistant 之间进行转换。如果你的设备还没有库，请先编写一个：[构建 Python 库](/core/integrations/api-library/)解释了怎么做，以及在 core 接受它之前它必须满足什么条件。
 
-This tutorial uses a small async library with this interface:
+本教程使用一个具有以下接口的小型异步库：
 
 ```python
 from dataclasses import dataclass
@@ -72,62 +72,62 @@ class ExampleAirClient:
         """Return the current status of the monitor."""
 ```
 
-Three things about it matter to Home Assistant:
+它有三点对 Home Assistant 很重要：
 
-- It is async, so it never blocks the [event loop](/glossary/event-loop/).
-- It accepts an `aiohttp` session from the caller, so it can use the shared session of Home Assistant.
-- It raises its own exceptions, so the integration can tell an unreachable device from other problems.
+- 它是异步的，因此永远不会阻塞[事件循环](/glossary/event-loop/)（event loop）。
+- 它接受调用者传入的 `aiohttp` 会话，因此可以使用 Home Assistant 的共享会话。
+- 它抛出自己的异常，因此集成能够区分设备无法访问和其他问题。
 
-Core also asks something of how the library is published. That is the [dependency-transparency](/core/quality-scale/dependency-transparency/) rule:
+Core 对库的发布方式也有要求。这就是[依赖透明](/core/quality-scale/dependency-transparency/)（dependency-transparency）规则：
 
-- The source is in a public repository, under an OSI-approved license like MIT or Apache 2.0.
-- Every release is on PyPI, built and published by a public CI pipeline, not uploaded by hand.
-- Every version on PyPI matches a tagged release in that repository.
+- 源代码位于公开的仓库中，采用 OSI 认可的许可证，如 MIT 或 Apache 2.0。
+- 每个版本都发布在 PyPI 上，由公开的 CI 流水线构建和发布，而不是手动上传。
+- PyPI 上的每个版本都对应该仓库中的一个带标签的版本（tagged release）。
 
-Set this up before you start on the integration. You link the release workflow and the tag in your pull request, and reviewers check them.
+在开始集成之前先设置好这些。你需要在拉取请求中链接发布工作流（release workflow）和标签，审查者会检查它们。
 
-While you develop, install your library in editable mode, so you can change the library and the integration at once. Where the library lives depends on your setup.
+在开发过程中，以可编辑模式（editable mode）安装你的库，这样你就可以同时修改库和集成。库放在哪里取决于你的设置方式。
 
-With a manual setup, everything runs directly on your computer. Keep the library in a folder next to your core checkout, activate the virtual environment, and install it from the core checkout:
+手动设置时，一切都直接在你的电脑上运行。把库保存在 core 检出目录旁边的文件夹中，激活虚拟环境，然后从 core 检出目录安装它：
 
 ```shell
 uv pip install -e ../exampleair
 ```
 
-The development container only has your core checkout mounted, so `../exampleair` does not exist inside it. Clone the library inside the container instead, for example in your home folder, and install it from there:
+开发容器只挂载了你的 core 检出目录，因此 `../exampleair` 在容器内不存在。改为在容器内克隆库，例如克隆到你的主文件夹中，然后从那里安装：
 
 ```shell
 git clone https://github.com/YOUR_GITHUB_USERNAME/exampleair ~/exampleair
 uv pip install -e ~/exampleair
 ```
 
-Push your library changes often: when the container is rebuilt, everything outside your core checkout is gone. Once your library is released on PyPI, you can also skip the editable install, and install the released version with `uv pip install exampleair==0.1.0`.
+经常推送你的库更改：当容器重建时，core 检出目录之外的所有内容都会丢失。一旦你的库发布到 PyPI，你也可以跳过可编辑安装，改用 `uv pip install exampleair==0.1.0` 安装已发布的版本。
 
-## 2. Generate the integration
+## 2. 生成集成
 
-Run the scaffold script:
+运行脚手架（scaffold）脚本：
 
 ```shell
 python3 -m script.scaffold integration
 ```
 
-It asks a few questions. For this tutorial, the answers are:
+它会问几个问题。对于本教程，答案如下：
 
-| Question | Answer |
+| 问题 | 答案 |
 | --- | --- |
-| What is the domain? | `example_air` |
-| What is the name of your integration? | `Example Air` |
-| What is your GitHub handle? | Your GitHub username |
-| What PyPI package and version do you depend on? | `exampleair==0.1.0` |
-| How will your integration gather data? | `local_polling` |
-| Does Home Assistant need the user to authenticate? | `no` |
-| Is the device/service discoverable on the local network? | `no` |
-| What is the integration type? | `device` |
-| Can the user authenticate the device using OAuth2? | `no` |
+| 域（domain）是什么？ | `example_air` |
+| 你的集成名称是什么？ | `Example Air` |
+| 你的 GitHub 用户名是什么？ | 你的 GitHub 用户名 |
+| 你依赖哪个 PyPI 包和版本？ | `exampleair==0.1.0` |
+| 你的集成将如何获取数据？ | `local_polling` |
+| Home Assistant 是否需要用户进行身份验证？ | `no` |
+| 设备/服务在本地网络上是否可发现？ | `no` |
+| 集成类型是什么？ | `device` |
+| 用户能否使用 OAuth2 对设备进行身份验证？ | `no` |
 
-The domain is permanent: it becomes the folder name, and it can never change. See [the manifest](/core/integrations/manifest/#domain).
+域是永久性的：它会成为文件夹的名称，并且永远无法更改。参见[清单文件](/core/integrations/manifest/#domain)。
 
-Because the monitor is not discoverable, the script generates a config flow with a form. It then runs hassfest to validate the result, updates the requirement files, and generates the English translations. You now have:
+由于监测仪不可发现，脚本会生成一个带表单的配置流程。然后它会运行 hassfest 验证结果，更新依赖文件（requirement files），并生成英文翻译。你现在拥有：
 
 ```text
 homeassistant/components/example_air/
@@ -143,11 +143,11 @@ tests/components/example_air/
 └── test_config_flow.py
 ```
 
-The generated code works, but it is a template: it has `TODO` comments and a `PlaceholderHub` class where your library goes. The next steps replace all of that.
+生成的代码可以运行，但它只是一个模板：其中有 `TODO` 注释和一个 `PlaceholderHub` 类，你的库将放在那里。接下来的步骤会替换所有这些内容。
 
-## 3. Check the manifest
+## 3. 检查清单文件
 
-Open `manifest.json`. The scaffold filled it from your answers, and added a few empty keys, for dependencies and discovery. Remove the empty keys: nearly every integration in core leaves them out. What is left:
+打开 `manifest.json`。脚手架根据你的回答填写了它，并添加了几个空键（用于依赖和发现）。删除这些空键：core 中几乎所有集成都会省略它们。剩下的是：
 
 ```json
 {
@@ -163,16 +163,16 @@ Open `manifest.json`. The scaffold filled it from your answers, and added a few 
 }
 ```
 
-- `quality_scale` is `bronze` from the start: new integrations must reach at least Bronze. Until every Bronze rule in `quality_scale.yaml` is `done` or `exempt`, hassfest reports an error for it. You get there in step 11.
-- `requirements` pins your library to an exact version with `==`. Hassfest requires that, and it is the other half of [dependency-transparency](/core/quality-scale/dependency-transparency/).
+- `quality_scale` 从一开始就是 `bronze`：新集成必须至少达到 Bronze。在 `quality_scale.yaml` 中的每条 Bronze 规则都变为 `done` 或 `exempt` 之前，hassfest 会为此报告错误。你会在第 11 步达到这一点。
+- `requirements` 使用 `==` 将你的库固定到确切版本。Hassfest 要求这样做，而且这也是[依赖透明](/core/quality-scale/dependency-transparency/)的另一半。
 
-[The manifest](/core/integrations/manifest/) explains every key.
+[清单文件](/core/integrations/manifest/)解释了每一个键。
 
-## 4. Build the config flow
+## 4. 构建配置流程
 
-The [config flow](/core/integrations/config-flow/) is the dialog users see when they add the integration. It asks for the host, connects to the monitor to check that it works, and makes sure the same monitor is not added twice.
+[配置流程](/core/integrations/config-flow/)是用户添加集成时看到的对话框。它会询问主机地址，连接到监测仪以检查其是否正常工作，并确保同一台监测仪不会被添加两次。
 
-Replace `config_flow.py` with:
+将 `config_flow.py` 替换为：
 
 ```python
 """Config flow for the Example Air integration."""
@@ -236,17 +236,17 @@ class ExampleAirConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 ```
 
-What happens here:
+这里发生了什么：
 
-- The first time, `user_input` is `None`, and the step shows the form.
-- When the user submits, the flow connects to the monitor. If that fails, it shows the form again with an error. That is the [test-before-configure](/core/quality-scale/test-before-configure/) rule.
-- The serial number becomes the unique ID of the config entry. `_abort_if_unique_id_configured` stops the flow when that monitor is already set up. That is the [unique-config-entry](/core/quality-scale/unique-config-entry/) rule. Never use the IP address as unique ID: it changes.
-- `async_get_clientsession` gives you the shared web session of Home Assistant.
-- `@override` tells the type checker that this method replaces one of the parent class. Core's mypy configuration asks for it.
+- 第一次时，`user_input` 为 `None`，该步骤显示表单。
+- 当用户提交时，流程会连接到监测仪。如果连接失败，它会再次显示表单并给出错误。这就是[先测试后配置](/core/quality-scale/test-before-configure/)（test-before-configure）规则。
+- 序列号成为配置条目的唯一 ID。`_abort_if_unique_id_configured` 会在该监测仪已被设置时停止流程。这就是[唯一配置条目](/core/quality-scale/unique-config-entry/)（unique-config-entry）规则。绝不要将 IP 地址用作唯一 ID：它会变化。
+- `async_get_clientsession` 为你提供 Home Assistant 的共享 Web 会话。
+- `@override` 告诉类型检查器这个方法重写了父类中的某个方法。Core 的 mypy 配置要求使用它。
 
-Schemas in core are written with Probatio, the validation library Home Assistant uses. Import it as `probatio`, without an alias.
+core 中的模式（schema）是用 Probatio 编写的，这是 Home Assistant 使用的验证库。以 `probatio` 导入它，不要使用别名。
 
-All text the user sees lives in `strings.json`, never in the code. Replace it with:
+用户看到的所有文本都存放在 `strings.json` 中，绝不出现在代码里。将其替换为：
 
 ```json
 {
@@ -277,19 +277,19 @@ All text the user sees lives in `strings.json`, never in the code. Replace it wi
 }
 ```
 
-The `[%key:...%]` references reuse strings that are already translated into every language. The `data_description` explains each field, which the [config-flow](/core/quality-scale/config-flow/) rule asks for. The `exceptions` section is for the coordinator in the next step. After every change to `strings.json`, regenerate the English translations, which Home Assistant and the tests read:
+`[%key:...%]` 引用复用了已经翻译成每种语言的字符串。`data_description` 解释每个字段，这是[配置流程](/core/quality-scale/config-flow/)规则所要求的。`exceptions` 部分用于下一步中的协调器。每次修改 `strings.json` 后，重新生成英文翻译，Home Assistant 和测试都会读取它们：
 
 ```shell
 python3 -m script.translations develop --integration example_air
 ```
 
-See [translations](/core/integrations/translations/) for every section of the file, and [make your strings translatable](/translate/guides/developers/) for how to write them.
+有关该文件的每个部分，参见[翻译](/core/integrations/translations/)；有关如何编写它们，参见[让你的字符串可翻译](/translate/guides/developers/)。
 
-## 5. Fetch the data with a coordinator
+## 5. 使用协调器获取数据
 
-The monitor returns all its values in one request. A [coordinator](/core/integrations/fetching-data/) makes that one request every minute, and hands the result to all entities. It also marks them unavailable when the monitor stops answering, and logs that only once.
+监测仪在一个请求中返回其所有数值。[协调器](/core/integrations/fetching-data/)每分钟发出一次该请求，并将结果交给所有实体。当监测仪停止响应时，它还会将实体标记为不可用，并且只记录一次日志。
 
-Create `coordinator.py`:
+创建 `coordinator.py`：
 
 ```python
 """Coordinator for the Example Air integration."""
@@ -347,14 +347,14 @@ class ExampleAirCoordinator(DataUpdateCoordinator[Status]):
             ) from err
 ```
 
-- `ExampleAirConfigEntry` is a typed config entry. Its `runtime_data` is the coordinator, so your platforms get a typed coordinator for free.
-- `update_interval` is fixed by the integration. Users cannot change it, and the config flow must not ask for it. Pick an interval that fits the data: see [appropriate-polling](/core/quality-scale/appropriate-polling/).
-- `UpdateFailed` tells the coordinator the update failed. Its message is translated, from the `exceptions` section of `strings.json`.
-- The coordinator lives in `coordinator.py`, and the base entity in `entity.py`. That is the [common-modules](/core/quality-scale/common-modules/) rule.
+- `ExampleAirConfigEntry` 是一个带类型的配置条目。它的 `runtime_data` 就是协调器，因此你的平台可以免费获得一个带类型的协调器。
+- `update_interval` 由集成固定。用户无法更改它，配置流程也绝不能询问它。选择一个适合数据的间隔：参见[适当轮询](/core/quality-scale/appropriate-polling/)（appropriate-polling）。
+- `UpdateFailed` 告诉协调器更新失败。它的消息是可翻译的，来自 `strings.json` 的 `exceptions` 部分。
+- 协调器位于 `coordinator.py` 中，基础实体位于 `entity.py` 中。这就是[通用模块](/core/quality-scale/common-modules/)（common-modules）规则。
 
-## 6. Set up the config entry
+## 6. 设置配置条目
 
-`__init__.py` connects it all. Home Assistant calls `async_setup_entry` for every config entry: at startup, and when a user adds a monitor. Replace the file with:
+`__init__.py` 将一切连接起来。Home Assistant 会为每个配置条目调用 `async_setup_entry`：在启动时，以及在用户添加监测仪时。将该文件替换为：
 
 ```python
 """The Example Air integration."""
@@ -397,15 +397,15 @@ async def async_unload_entry(
     )
 ```
 
-- `async_config_entry_first_refresh` fetches the first data before any entity exists. When the monitor is offline, it raises `ConfigEntryNotReady`, and Home Assistant retries the setup later. That is the [test-before-setup](/core/quality-scale/test-before-setup/) rule.
-- The coordinator goes in `entry.runtime_data`, not in `hass.data`. That is the [runtime-data](/core/quality-scale/runtime-data/) rule.
-- `_PLATFORMS` has one platform. A new integration starts with one: more platforms come in follow up pull requests.
-- `async_unload_entry` lets users remove or reload the integration without a restart.
-- There is no `async_setup`, because this integration adds no [actions](/glossary/action/) of its own. If yours does, register them in `async_setup`, not here. That is the [action-setup](/core/quality-scale/action-setup/) rule, and for this integration it is exempt.
+- `async_config_entry_first_refresh` 在任何实体存在之前获取第一批数据。当监测仪离线时，它会引发 `ConfigEntryNotReady`，Home Assistant 会在稍后重试设置。这就是[先测试后设置](/core/quality-scale/test-before-setup/)（test-before-setup）规则。
+- 协调器放在 `entry.runtime_data` 中，而不是 `hass.data`。这就是[运行时数据](/core/quality-scale/runtime-data/)（runtime-data）规则。
+- `_PLATFORMS` 只有一个平台。新集成从一个平台开始：更多平台会在后续的拉取请求中添加。
+- `async_unload_entry` 让用户无需重启即可移除或重新加载集成。
+- 没有 `async_setup`，因为这个集成没有添加自己的[动作](/glossary/action/)（action）。如果你的集成有，请在 `async_setup` 中注册它们，而不是在这里。这就是[动作设置](/core/quality-scale/action-setup/)（action-setup）规则，对于本集成它是豁免的。
 
-## 7. Add the entities
+## 7. 添加实体
 
-First, a base entity in `entity.py`. Every entity of the monitor shares the same device and the same coordinator:
+首先，在 `entity.py` 中创建一个基础实体。监测仪的每个实体共享相同的设备和相同的协调器：
 
 ```python
 """Base entity for the Example Air integration."""
@@ -437,12 +437,12 @@ class ExampleAirEntity(CoordinatorEntity[ExampleAirCoordinator]):
         )
 ```
 
-- `CoordinatorEntity` subscribes the entity to the coordinator, and makes it unavailable when an update fails.
-- `_attr_has_entity_name = True` names each entity in the context of its device, like "Living room Temperature". That is the [has-entity-name](/core/quality-scale/has-entity-name/) rule.
-- `DeviceInfo` puts the monitor in the [device registry](/core/integrations/device-registry/), so users see one device with all its sensors.
-- The entities do not subscribe to anything themselves. `CoordinatorEntity` subscribes to the coordinator in `async_added_to_hass`, and unsubscribes when the entity is removed. If you ever add a subscription of your own, like updates pushed by the library, follow the [entity-event-setup](/core/quality-scale/entity-event-setup/) rule. For this integration, that rule is exempt.
+- `CoordinatorEntity` 将实体订阅到协调器，并在更新失败时使其不可用。
+- `_attr_has_entity_name = True` 让每个实体在其设备的上下文中命名，比如“客厅温度”。这就是[实体名称](/core/quality-scale/has-entity-name/)（has-entity-name）规则。
+- `DeviceInfo` 将监测仪放入[设备注册表](/core/integrations/device-registry/)（device registry），这样用户看到一个包含其所有传感器的设备。
+- 这些实体自身不订阅任何内容。`CoordinatorEntity` 在 `async_added_to_hass` 中订阅协调器，并在实体被移除时取消订阅。如果你以后添加自己的订阅，比如库推送的更新，请遵循[实体事件设置](/core/quality-scale/entity-event-setup/)（entity-event-setup）规则。对于本集成，该规则是豁免的。
 
-Then the sensor platform, in `sensor.py`:
+然后是传感器平台，位于 `sensor.py` 中：
 
 ```python
 """Sensor platform for the Example Air integration."""
@@ -543,25 +543,25 @@ class ExampleAirSensor(ExampleAirEntity, SensorEntity):
         return self.entity_description.value_fn(self.coordinator.data)
 ```
 
-- An [entity description](/glossary/entity-description/) describes each sensor as data: its device class, unit, and how to get its value. Adding a sensor later is one more entry in `SENSORS`.
-- The device class gives each sensor its name, its icon, and the right unit conversions. Because these sensors have a device class, they need no name of their own.
-- The unique ID combines the serial number with the key. It never changes, and it is what lets users rename the entity. That is the [entity-unique-id](/core/quality-scale/entity-unique-id/) rule.
+- [实体描述](/glossary/entity-description/)（entity description）将每个传感器描述为数据：它的设备类别（device class）、单位，以及如何获取其数值。以后添加一个传感器只是在 `SENSORS` 中多一个条目。
+- 设备类别为每个传感器提供名称、图标和正确的单位换算。因为这些传感器有设备类别，所以它们不需要自己的名称。
+- 唯一 ID 由序列号和键组合而成。它永远不会改变，并且正是它让用户能够重命名实体。这就是[实体唯一 ID](/core/quality-scale/entity-unique-id/)（entity-unique-id）规则。
 
-[Entities and platforms](/core/entities/) has a page for every entity type, like the [sensor entity](/core/entities/sensor/).
+[实体与平台](/core/entities/)为每种实体类型都有一页，比如[传感器实体](/core/entities/sensor/)。
 
-## 8. Try it
+## 8. 试一试
 
-Before Home Assistant can show your integration in the list, regenerate the files that list all integrations:
+在 Home Assistant 能够在列表中显示你的集成之前，重新生成列出所有集成的文件：
 
 ```shell
 python3 -m script.hassfest --skip-plugins quality_scale
 ```
 
-Without `--integration-path`, hassfest validates every integration and updates generated files, like `CODEOWNERS` and `homeassistant/generated/config_flows.py`. Those changes belong in your pull request. It only writes them when it finds no errors, and your `quality_scale.yaml` is still all `todo`. That is why this run skips the quality scale check, the same way the scaffold script does. From step 11 on, you run it without `--skip-plugins`.
+如果不带 `--integration-path`，hassfest 会验证每一个集成并更新生成的文件，比如 `CODEOWNERS` 和 `homeassistant/generated/config_flows.py`。这些更改应包含在你的拉取请求中。它只有在没有发现错误时才会写入这些更改，而你的 `quality_scale.yaml` 目前还全是 `todo`。这就是为什么这次运行要跳过质量分级检查，与脚手架脚本的做法相同。从第 11 步开始，你在运行时不再使用 `--skip-plugins`。
 
-Now start your development instance. In the development container, open the Command Palette, select **Tasks: Run Task**, then **Run Home Assistant Core**. Go to `http://localhost:8123`, and under **Settings** > **Devices & services**, select **Add integration** and search for **Example Air**. Enter the address of your monitor, and you should see a new device with three sensors.
+现在启动你的开发实例。在开发容器中，打开命令面板（Command Palette），选择 **Tasks: Run Task**，然后选择 **Run Home Assistant Core**。访问 `http://localhost:8123`，在 **设置** > **设备与服务** 下，选择 **添加集成** 并搜索 **Example Air**。输入你监测仪的地址，你应该会看到一个带有三个传感器的新设备。
 
-Things not working? Turn on debug logging for your integration and your library in `config/configuration.yaml`, and restart:
+没有正常工作？在 `config/configuration.yaml` 中为你的集成和库开启调试日志，然后重启：
 
 ```yaml
 logger:
@@ -571,13 +571,13 @@ logger:
     exampleair: debug
 ```
 
-Integration not in the list? Check the log for errors first, then do a hard refresh of your browser: the frontend caches aggressively. [Your first contribution](/core/first-contribution/#4-make-the-change) has more on running and debugging your code, including how to reach devices on your network from the development container.
+集成不在列表中？先检查日志中是否有错误，然后对浏览器进行强制刷新：前端的缓存非常激进。[你的第一次贡献](/core/first-contribution/#4-make-the-change)中有更多关于运行和调试代码的内容，包括如何从开发容器访问你网络上的设备。
 
-## 9. Write the tests
+## 9. 编写测试
 
-Every new integration in core comes with tests, and the config flow needs full coverage. Tests run without the real device: you mock the library, and let Home Assistant run for real. [Writing tests](/core/development/tests/) explains the ideas behind this.
+core 中的每个新集成都带有测试，并且配置流程需要完全的覆盖率。测试在没有真实设备的情况下运行：你模拟（mock）库，让 Home Assistant 真实地运行。[编写测试](/core/development/tests/)解释了这背后的理念。
 
-Start with the shared fixtures, in `tests/components/example_air/conftest.py`:
+从共享的 fixture 开始，位于 `tests/components/example_air/conftest.py` 中：
 
 ```python
 """Common fixtures for the Example Air tests."""
@@ -641,11 +641,11 @@ def mock_config_entry() -> MockConfigEntry:
     )
 ```
 
-The client is patched where your integration imports it: once in `__init__.py`, once in `config_flow.py`.
+客户端在你集成导入它的位置被打补丁（patch）：一次在 `__init__.py` 中，一次在 `config_flow.py` 中。
 
-### Test the config flow
+### 测试配置流程
 
-Replace `test_config_flow.py`. Test the happy path, every error, and the duplicate check. Every error test ends with a created entry, to prove the flow recovers:
+替换 `test_config_flow.py`。测试正常路径（happy path）、每一个错误以及重复检查。每个错误测试都以一个已创建的条目结束，以证明流程能够恢复：
 
 ```python
 """Test the Example Air config flow."""
@@ -739,16 +739,16 @@ async def test_already_configured(
     assert result["reason"] == "already_configured"
 ```
 
-These tests together are the [config-flow-test-coverage](/core/quality-scale/config-flow-test-coverage/) rule:
+这些测试合在一起构成了[配置流程测试覆盖率](/core/quality-scale/config-flow-test-coverage/)（config-flow-test-coverage）规则：
 
-- The happy path checks the created entry, including its unique ID. When the way the unique ID is built ever changes by accident, this test catches it.
-- Every error the form can show has a test, and every one of those tests ends with a created entry. That proves a user can fix the problem and finish the setup. Pylint warns about an error test that never finishes the flow.
-- The duplicate test enters a different host for a monitor with the same serial number, and expects the flow to abort with `already_configured`. Every test ends in a final result: a created entry or an abort.
-- Together, they run every line of `config_flow.py`. You check that with the coverage report below.
+- 正常路径会检查已创建的条目，包括其唯一 ID。当唯一 ID 的构建方式意外发生变化时，这个测试会捕捉到它。
+- 表单能显示的每个错误都有一个测试，并且这些测试中的每一个都以一个已创建的条目结束。这证明用户可以解决问题并完成设置。Pylint 会对从未完成流程的错误测试发出警告。
+- 重复测试为序列号相同的监测仪输入不同的主机地址，并期望流程以 `already_configured` 中止。每个测试都以最终结果结束：已创建的条目或中止。
+- 它们合在一起执行了 `config_flow.py` 的每一行。你可以用下面的覆盖率报告来检查这一点。
 
-### Test the setup
+### 测试设置
 
-In `test_init.py`, test that the integration loads and unloads, and that setup is retried when the monitor is offline:
+在 `test_init.py` 中，测试集成能够加载和卸载，以及当监测仪离线时会重试设置：
 
 ```python
 """Test the setup of the Example Air integration."""
@@ -799,9 +799,9 @@ async def test_setup_retry_when_offline(
     assert mock_config_entry.state is ConfigEntryState.SETUP_RETRY
 ```
 
-### Test the sensors
+### 测试传感器
 
-In `test_sensor.py`, a snapshot test checks every sensor at once: its state, unit, device class, and registry entry:
+在 `test_sensor.py` 中，一个快照测试（snapshot test）一次性检查每个传感器：它的状态、单位、设备类别和注册表条目：
 
 ```python
 """Test the Example Air sensors."""
@@ -833,9 +833,9 @@ async def test_sensors(
     )
 ```
 
-### Run them
+### 运行测试
 
-The first run of a snapshot test creates the snapshot. Then run all tests with a coverage report:
+快照测试的第一次运行会创建快照。然后运行所有测试并生成覆盖率报告：
 
 ```shell
 pytest tests/components/example_air --snapshot-update
@@ -844,27 +844,27 @@ pytest tests/components/example_air \
   --cov-report term-missing
 ```
 
-Open `tests/components/example_air/snapshots/test_sensor.ambr` and read it: a snapshot only proves something when you checked that it is right. The coverage report shows the lines no test reaches. `config_flow.py` must be at 100%. [Running the tests](/core/development/testing/) has more ways to run them.
+打开 `tests/components/example_air/snapshots/test_sensor.ambr` 并阅读它：只有在你检查过快照正确无误之后，它才能证明什么。覆盖率报告会显示没有测试覆盖到的行。`config_flow.py` 必须达到 100%。[运行测试](/core/development/testing/)中有更多运行它们的方法。
 
-## 10. Add the brand and the documentation
+## 10. 添加品牌标识和文档
 
-Seven Bronze rules are not about the code in core at all. They are met in two other repositories, with pull requests that go with yours. Start them now: they get reviewed separately, and your core pull request is easier to review when they are already there.
+有七条 Bronze 规则与 core 中的代码完全无关。它们是在另外两个仓库中满足的，通过与你的拉取请求一同提交的其他拉取请求完成。现在就开始：它们会被单独审查，而且当它们已经就位时，你的 core 拉取请求也更容易审查。
 
-### The brand
+### 品牌标识
 
-The icon and logo of your integration go in the [brands repository](https://github.com/home-assistant/brands), in a folder named after your domain: `core_integrations/example_air/`. Add at least `icon.png` and `icon@2x.png`, and a logo if the brand has a wide one. [Brands and brand images](/core/integrations/brands/#brand-images-for-core-integrations) lists every file and the image requirements. That is the [brands](/core/quality-scale/brands/) rule.
+你集成的图标和标志（logo）放入 [brands 仓库](https://github.com/home-assistant/brands)中，放在以你的域命名的文件夹里：`core_integrations/example_air/`。至少添加 `icon.png` 和 `icon@2x.png`，如果品牌有宽版标志，还要添加 logo。[品牌与品牌图像](/core/integrations/brands/#brand-images-for-core-integrations)列出了每个文件和图像要求。这就是[品牌](/core/quality-scale/brands/)（brands）规则。
 
-### The documentation
+### 文档
 
-Every integration has a page on [home-assistant.io](https://www.home-assistant.io/). Write it in a pull request to the [home-assistant.io repository](https://github.com/home-assistant/home-assistant.io), against the `next` branch, starting from the integration page template. [Document an integration](/writing/guides/integration/) walks you through it, step by step.
+每个集成在 [home-assistant.io](https://www.home-assistant.io/) 上都有一个页面。在一个针对 [home-assistant.io 仓库](https://github.com/home-assistant/home-assistant.io)的拉取请求中编写它，目标分支为 `next`，从集成页面模板开始。[为集成编写文档](/writing/guides/integration/)会一步一步带你完成。
 
-For Bronze, the page needs three things, each a rule of its own:
+对于 Bronze，页面需要三样东西，每一项都是一条独立的规则：
 
-- **A description of the product**, in the first lines, with a link to the manufacturer. That is [docs-high-level-description](/core/quality-scale/docs-high-level-description/).
-- **Setup steps**, with anything users have to do before they start, as prerequisites. That is [docs-installation-instructions](/core/quality-scale/docs-installation-instructions/).
-- **How to remove the integration**, including anything left behind outside Home Assistant. That is [docs-removal-instructions](/core/quality-scale/docs-removal-instructions/).
+- **产品描述**，放在开头几行，并附上制造商的链接。这就是 [docs-high-level-description](/core/quality-scale/docs-high-level-description/) 规则。
+- **安装步骤**，把用户在开始之前必须做的任何事情作为前置条件列出。这就是 [docs-installation-instructions](/core/quality-scale/docs-installation-instructions/) 规则。
+- **如何移除集成**，包括在 Home Assistant 之外遗留的任何内容。这就是 [docs-removal-instructions](/core/quality-scale/docs-removal-instructions/) 规则。
 
-For Example Air, those parts of `source/_integrations/example_air.markdown` could look like this:
+对于 Example Air，`source/_integrations/example_air.markdown` 中的这些部分可能如下所示：
 
 ```markdown
 The **Example Air** {% term integration %} connects Home Assistant to
@@ -887,36 +887,36 @@ are required.
 {% include integrations/remove_device_service.md %}
 ```
 
-The other three docs rules of Bronze, [docs-actions](/core/quality-scale/docs-actions/), [docs-triggers](/core/quality-scale/docs-triggers/), and [docs-conditions](/core/quality-scale/docs-conditions/), are about documenting actions, triggers, and conditions of the integration. Example Air has none of them, so those rules are exempt.
+Bronze 的另外三条文档规则——[docs-actions](/core/quality-scale/docs-actions/)、[docs-triggers](/core/quality-scale/docs-triggers/) 和 [docs-conditions](/core/quality-scale/docs-conditions/)——是关于记录集成的动作、触发器和条件的。Example Air 没有这些，所以这些规则是豁免的。
 
-## 11. Fill in the quality scale
+## 11. 填写质量分级
 
-Open `quality_scale.yaml`. The scaffold listed every rule as `todo`. Hassfest requires every rule of the quality scale to be in the file, and every Bronze rule to be `done`, or `exempt` with a comment that says why. Your integration now meets all of them:
+打开 `quality_scale.yaml`。脚手架将每条规则都列为 `todo`。Hassfest 要求质量分级的每条规则都在文件中，并且每条 Bronze 规则为 `done`，或者为 `exempt` 并附有说明原因的注释。你的集成现在满足所有这些规则：
 
-| Rule | Status | Where |
+| 规则 | 状态 | 位置 |
 | --- | --- | --- |
-| [action-setup](/core/quality-scale/action-setup/) | Exempt | No actions, [step 6](#6-set-up-the-config-entry) |
-| [appropriate-polling](/core/quality-scale/appropriate-polling/) | Done | One minute, [step 5](#5-fetch-the-data-with-a-coordinator) |
-| [brands](/core/quality-scale/brands/) | Done | [Step 10](#the-brand) |
-| [common-modules](/core/quality-scale/common-modules/) | Done | `coordinator.py` and `entity.py`, steps 5 and 7 |
-| [config-flow](/core/quality-scale/config-flow/) | Done | [Step 4](#4-build-the-config-flow) |
-| [config-flow-test-coverage](/core/quality-scale/config-flow-test-coverage/) | Done | [Step 9](#test-the-config-flow) |
-| [dependency-transparency](/core/quality-scale/dependency-transparency/) | Done | Steps [1](#1-start-with-the-library) and [3](#3-check-the-manifest) |
-| [docs-actions](/core/quality-scale/docs-actions/) | Exempt | No actions |
-| [docs-conditions](/core/quality-scale/docs-conditions/) | Exempt | No conditions |
-| [docs-high-level-description](/core/quality-scale/docs-high-level-description/) | Done | [Step 10](#the-documentation) |
-| [docs-installation-instructions](/core/quality-scale/docs-installation-instructions/) | Done | [Step 10](#the-documentation) |
-| [docs-removal-instructions](/core/quality-scale/docs-removal-instructions/) | Done | [Step 10](#the-documentation) |
-| [docs-triggers](/core/quality-scale/docs-triggers/) | Exempt | No triggers |
-| [entity-event-setup](/core/quality-scale/entity-event-setup/) | Exempt | Only the coordinator, [step 7](#7-add-the-entities) |
-| [entity-unique-id](/core/quality-scale/entity-unique-id/) | Done | [Step 7](#7-add-the-entities) |
-| [has-entity-name](/core/quality-scale/has-entity-name/) | Done | [Step 7](#7-add-the-entities) |
-| [runtime-data](/core/quality-scale/runtime-data/) | Done | [Step 6](#6-set-up-the-config-entry) |
-| [test-before-configure](/core/quality-scale/test-before-configure/) | Done | [Step 4](#4-build-the-config-flow) |
-| [test-before-setup](/core/quality-scale/test-before-setup/) | Done | [Step 6](#6-set-up-the-config-entry) |
-| [unique-config-entry](/core/quality-scale/unique-config-entry/) | Done | [Step 4](#4-build-the-config-flow) |
+| [action-setup](/core/quality-scale/action-setup/) | 豁免 | 无动作，[第 6 步](#6-set-up-the-config-entry) |
+| [appropriate-polling](/core/quality-scale/appropriate-polling/) | 已完成 | 一分钟，[第 5 步](#5-fetch-the-data-with-a-coordinator) |
+| [brands](/core/quality-scale/brands/) | 已完成 | [第 10 步](#the-brand) |
+| [common-modules](/core/quality-scale/common-modules/) | 已完成 | `coordinator.py` 和 `entity.py`，第 5 和第 7 步 |
+| [config-flow](/core/quality-scale/config-flow/) | 已完成 | [第 4 步](#4-build-the-config-flow) |
+| [config-flow-test-coverage](/core/quality-scale/config-flow-test-coverage/) | 已完成 | [第 9 步](#test-the-config-flow) |
+| [dependency-transparency](/core/quality-scale/dependency-transparency/) | 已完成 | 第 [1](#1-start-with-the-library) 和 [3](#3-check-the-manifest) 步 |
+| [docs-actions](/core/quality-scale/docs-actions/) | 豁免 | 无动作 |
+| [docs-conditions](/core/quality-scale/docs-conditions/) | 豁免 | 无条件 |
+| [docs-high-level-description](/core/quality-scale/docs-high-level-description/) | 已完成 | [第 10 步](#the-documentation) |
+| [docs-installation-instructions](/core/quality-scale/docs-installation-instructions/) | 已完成 | [第 10 步](#the-documentation) |
+| [docs-removal-instructions](/core/quality-scale/docs-removal-instructions/) | 已完成 | [第 10 步](#the-documentation) |
+| [docs-triggers](/core/quality-scale/docs-triggers/) | 豁免 | 无触发器 |
+| [entity-event-setup](/core/quality-scale/entity-event-setup/) | 豁免 | 仅协调器，[第 7 步](#7-add-the-entities) |
+| [entity-unique-id](/core/quality-scale/entity-unique-id/) | 已完成 | [第 7 步](#7-add-the-entities) |
+| [has-entity-name](/core/quality-scale/has-entity-name/) | 已完成 | [第 7 步](#7-add-the-entities) |
+| [runtime-data](/core/quality-scale/runtime-data/) | 已完成 | [第 6 步](#6-set-up-the-config-entry) |
+| [test-before-configure](/core/quality-scale/test-before-configure/) | 已完成 | [第 4 步](#4-build-the-config-flow) |
+| [test-before-setup](/core/quality-scale/test-before-setup/) | 已完成 | [第 6 步](#6-set-up-the-config-entry) |
+| [unique-config-entry](/core/quality-scale/unique-config-entry/) | 已完成 | [第 4 步](#4-build-the-config-flow) |
 
-Replace the file with:
+将该文件替换为：
 
 ```yaml
 rules:
@@ -993,13 +993,13 @@ rules:
   strict-typing: todo
 ```
 
-The Silver, Gold, and Platinum rules stay `todo` for now. Some of them are already within reach, but leave them for later pull requests. Only mark a rule `done` when it really is: a rule that is `done` turns on extra checks in hassfest and pylint, and reviewers check the rest.
+Silver、Gold 和 Platinum 规则暂时保持 `todo`。其中一些已经触手可及，但把它们留给以后的拉取请求。只有当规则确实完成时才将其标记为 `done`：一条被标记为 `done` 的规则会在 hassfest 和 pylint 中开启额外的检查，其余部分由审查者检查。
 
-The docs and brand rules are `done` in this file, but they are met in the other pull requests. Reviewers check those pull requests, so link them in yours.
+文档和品牌规则在此文件中为 `done`，但它们是在其他拉取请求中满足的。审查者会检查那些拉取请求，所以在你的拉取请求中链接它们。
 
-### Check it yourself
+### 自行检查
 
-Do not take this page's word for it. Validate your integration the way CI does:
+不要只听信本页的说法。按照 CI 的方式验证你的集成：
 
 ```shell
 python3 -m script.hassfest \
@@ -1009,33 +1009,33 @@ pytest tests/components/example_air \
   --cov-report term-missing
 ```
 
-Hassfest now runs the validators of the rules you marked `done`, like `config-flow`, `runtime-data`, `test-before-setup`, and `unique-config-entry`. The coverage report must show 100% for `config_flow.py`. The [list of all rules](/core/quality-scale/rules/) explains each rule in a line, and [check it yourself](/core/quality-scale/raise-tier/#check-it-yourself) explains what each check proves, and what it does not.
+Hassfest 现在会运行你标记为 `done` 的规则的验证器，比如 `config-flow`、`runtime-data`、`test-before-setup` 和 `unique-config-entry`。覆盖率报告必须显示 `config_flow.py` 达到 100%。[所有规则的列表](/core/quality-scale/rules/)用一行文字解释每条规则，[自行检查](/core/quality-scale/raise-tier/#check-it-yourself)解释了每项检查能证明什么，以及它不能证明什么。
 
-## 12. Open the pull request
+## 12. 发起拉取请求
 
-Publishing in the Marketplace first? Follow [publish a custom integration](/marketplace/guides/integrations/) instead, and come back to this step once your integration has matured and has a user base.
+打算先在 Marketplace 发布？请改为按照[发布自定义集成](/marketplace/guides/integrations/)操作，等你的集成成熟并拥有用户群后再回到这一步。
 
-Before you push, run the linters on everything, and run hassfest one last time without skipping anything. Include every file they change, also outside your integration folder:
+在推送之前，对所有内容运行 linter，并最后一次运行 hassfest，不跳过任何内容。包含它们更改的每一个文件，也包括你的集成文件夹之外的文件：
 
 ```shell
 prek run --all-files
 python3 -m script.hassfest
 ```
 
-Your pull request now contains your integration, its tests, the generated files, and the updated requirement files. Commit it on the branch you created at the start, push it to your fork, and open a pull request against the `dev` branch of [home-assistant/core](https://github.com/home-assistant/core). [Submitting a pull request](/core/development/submitting/) walks through the template. For a new integration:
+现在你的拉取请求包含你的集成、它的测试、生成的文件以及更新后的依赖文件。在你开始时创建的分支上提交，推送到你的 fork，然后针对 [home-assistant/core](https://github.com/home-assistant/core) 的 `dev` 分支发起拉取请求。[提交拉取请求](/core/development/submitting/)会逐一讲解模板。对于一个新集成：
 
-- Select **New integration** as the type of change.
-- Explain what the device or service is, and link to the source repository of your library, its release workflow, and the tag of the release you depend on.
-- Link the pull requests for the documentation and the brand.
-- Keep it to what you built here: one platform, and nothing more. Diagnostics, actions, reauthentication, and options come later, one pull request at a time.
+- 选择 **New integration** 作为变更类型。
+- 解释这个设备或服务是什么，并链接到你库的源代码仓库、它的发布工作流，以及你所依赖版本的标签。
+- 链接文档和品牌的拉取请求。
+- 保持只包含你在这里构建的内容：一个平台，没有更多。诊断、动作、重新认证和选项以后再说，每次一个拉取请求。
 
-Then the wait starts. Reviews of new integrations take time, sometimes weeks. While you wait, review other pull requests: it is the best way to learn, and it makes the queue move for everyone. [After you open a pull request](/core/development/review-process/) explains what happens next.
+然后等待就开始了。新集成的审查需要时间，有时需要数周。在等待期间，审查其他人的拉取请求：这是学习的最佳方式，也能让整个队列为每个人更快地推进。[发起拉取请求之后](/core/development/review-process/)解释了接下来会发生什么。
 
-## What is next
+## 接下来做什么
 
-Your integration is in. Now make it better, one small pull request at a time:
+你的集成已经合入。现在让它变得更好，每次一个小的拉取请求：
 
-- [Raise the tier](/core/quality-scale/raise-tier/) to Silver: handle an offline device gracefully, add reauthentication if your device needs credentials, and reach more than 95% test coverage.
-- Add [diagnostics](/core/integrations/diagnostics/), so users can share what the integration sees when they report a bug.
-- Support [discovery](/core/integrations/discovery/), so Home Assistant finds the monitor by itself.
-- Add a second platform, like a [binary sensor](/core/entities/binary-sensor/) for an air quality alarm.
+- [提升级别](/core/quality-scale/raise-tier/)（raise tier）到 Silver：优雅地处理离线设备，如果你的设备需要凭据则添加重新认证，并达到超过 95% 的测试覆盖率。
+- 添加[诊断](/core/integrations/diagnostics/)（diagnostics），让用户在报告错误时可以分享集成所看到的内容。
+- 支持[发现](/core/integrations/discovery/)（discovery），让 Home Assistant 自动找到监测仪。
+- 添加第二个平台，比如用于空气质量报警的[二进制传感器](/core/entities/binary-sensor/)（binary sensor）。

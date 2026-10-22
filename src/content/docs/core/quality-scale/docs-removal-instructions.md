@@ -1,22 +1,22 @@
 ---
-title: Document how to remove the integration
-description: "Bronze rule docs-removal-instructions: the documentation explains how to remove the integration."
+title: 记录如何移除集成
+description: "铜牌（Bronze）规则 docs-removal-instructions：文档需说明如何移除集成。"
 sidebarLabel: docs-removal-instructions
 sidebarGroup: Bronze
 order: 12
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `docs-removal-instructions`.
+这是一条铜牌（Bronze）规则。在 `quality_scale.yaml` 中，它被称为 `docs-removal-instructions`。
 
-The integration page on [home-assistant.io](https://www.home-assistant.io/) must explain how to remove the integration. When removing it from Home Assistant is all there is to it, say so. When there is more to clean up, like a token in the app of the manufacturer or a setting on the device, describe those steps too.
+[home-assistant.io](https://www.home-assistant.io/) 上的集成页面必须说明如何移除集成。如果只需从 Home Assistant 中移除即可，请直接说明。如果还有其他需要清理的内容，比如厂商应用中的令牌（token）或设备上的某项设置，也请描述这些步骤。
 
-## Why it matters
+## 为什么重要
 
-Removing an integration is not always as simple as deleting it in Home Assistant. A cloud service may keep Home Assistant listed as a connected app, or a device may keep pushing data to an address that no longer listens. Users who want to start fresh, or stop using a device, need to know what is left behind.
+移除集成并不总是像在 Home Assistant 中删除它那么简单。云服务可能会将 Home Assistant 保留在已连接的应用列表中，或者设备可能会继续向一个不再监听的地址推送数据。想要重新开始或停止使用某个设备的用户，需要知道会留下哪些残留内容。
 
-## Example
+## 示例
 
-Use the standard include for the steps in Home Assistant, and add anything specific to your integration:
+对于 Home Assistant 中的步骤，请使用标准的 include，并添加任何与你的集成相关的特定内容：
 
 ```markdown
 ## Removing the integration
@@ -29,16 +29,16 @@ After you remove the integration, open the **MyProduct** app and remove
 Home Assistant from the list of connected apps.
 ```
 
-See [Write integration documentation](/writing/guides/integration/) and the [integration page structure](/writing/reference/integration-page/) for where this goes on the page.
+有关这部分内容在页面中的位置，请参阅[编写集成文档](/writing/guides/integration/)和[集成页面结构](/writing/reference/integration-page/)。
 
-## How it is checked
+## 检查方式
 
-Checked in review of the documentation pull request.
+在文档拉取请求（pull request）的审查过程中进行检查。
 
-## Exceptions
+## 例外情况
 
-There are no exceptions to this rule.
+此规则没有例外。
 
-## Related rules
+## 相关规则
 
-- [docs-installation-instructions](/core/quality-scale/docs-installation-instructions/): document the installation.
+- [docs-installation-instructions](/core/quality-scale/docs-installation-instructions/)：记录安装过程。

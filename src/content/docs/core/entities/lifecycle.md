@@ -1,29 +1,29 @@
 ---
-title: Entity lifecycle
-description: What happens when Home Assistant adds and removes an entity, and the hooks you use to subscribe, clean up, and react to registry changes.
+title: 实体生命周期
+description: Home Assistant 添加和移除实体时会发生什么，以及你用来订阅、清理和响应注册表（registry）变化的钩子（hook）。
 sidebarLabel: Lifecycle
 sidebarGroup: Basics
 order: 4
 ---
 
-You create entity objects in the platform setup of your integration and hand them to Home Assistant with `async_add_entities`. From then on, Home Assistant decides when the entity is added, updated, and removed. Lifecycle hooks let you run code at each of those moments. All of them are optional.
+你在集成（integration）的平台设置中创建实体（entity）对象，并通过 `async_add_entities` 把它们交给 Home Assistant。从那时起，由 Home Assistant 决定实体何时被添加、更新和移除。生命周期钩子（lifecycle hooks）让你能在这些时刻运行代码。所有这些钩子都是可选的。
 
-## Adding an entity
+## 添加实体
 
-When you pass an entity to `async_add_entities`, Home Assistant goes through these steps:
+当你把实体传给 `async_add_entities` 时，Home Assistant 会经过以下步骤：
 
-1. It gives the entity its `hass` and `platform` attributes.
-2. It calls `async_prepare_to_add_to_hass()`.
-3. If you passed `update_before_add=True`, it calls the update method. If the update raises, adding stops here.
-4. If the entity has a unique ID, it registers the device and the entity in the [registries](/core/entities/registry/), and picks the entity ID. If the entity is disabled, or its unique ID or entity ID is already taken, adding stops here.
-5. It calls `async_added_to_hass()`.
-6. It writes the first state.
+1. 它为实体设置其 `hass` 和 `platform` 属性。
+2. 它调用 `async_prepare_to_add_to_hass()`。
+3. 如果你传入了 `update_before_add=True`，它会调用更新方法。如果更新抛出异常，添加过程在此停止。
+4. 如果实体具有唯一 ID（unique ID），它会在[注册表](/core/entities/registry/)中注册设备和实体，并选定实体 ID（entity ID）。如果实体已被禁用，或者其唯一 ID 或实体 ID 已被占用，添加过程在此停止。
+5. 它调用 `async_added_to_hass()`。
+6. 它写入第一个状态。
 
-Your `__init__` runs before all of this, so `self.hass` and `self.entity_id` aren't set there yet. Keep `__init__` about storing what the entity needs, and do the rest in the hooks.
+你的 `__init__` 在这一切之前运行，因此 `self.hass` 和 `self.entity_id` 在那里还没有被设置。让 `__init__` 只负责存储实体所需的内容，其余工作放在钩子中完成。
 
 ### `async_added_to_hass()`
 
-The main hook. It runs only when adding succeeds, right before the first state is written. The entity has its entity ID and registry entry by then. Use it to subscribe to updates, register listeners, or restore an earlier state.
+最主要的钩子。它只在添加成功时运行，就在第一个状态被写入之前。到那时实体已经有了自己的实体 ID 和注册表条目。用它来订阅更新、注册监听器，或恢复先前的状态。
 
 ```python
 async def async_added_to_hass(self) -> None:
@@ -34,49 +34,49 @@ async def async_added_to_hass(self) -> None:
     )
 ```
 
-Call `super()` when you inherit from a class that might implement the hook too, like `CoordinatorEntity` or `RestoreEntity`.
+当你继承的类也可能实现该钩子时，例如 `CoordinatorEntity` 或 `RestoreEntity`，要调用 `super()`。
 
-Because disabled entities are never added, this hook is also the right place to keep a reference to an entity, if your integration needs one. Anything you register here is only registered for entities that are actually running.
+由于被禁用的实体永远不会被添加，如果你的集成需要保留对某个实体的引用，这个钩子也是合适的位置。你在这里注册的任何内容，只会为实际正在运行的实体注册。
 
 ### `async_prepare_to_add_to_hass()`
 
-Runs on every attempt to add the entity, before Home Assistant looks at the registry. It also runs for entities that won't be added in the end, for example because they are disabled. You rarely need it. If you set anything up here, register its cleanup with `async_on_remove`, because `async_will_remove_from_hass` doesn't run when adding is aborted.
+在 Home Assistant 查看注册表之前，每次尝试添加实体时都会运行。对于最终不会被添加的实体它也会运行，例如因为它们被禁用了。你很少需要用到它。如果你在这里设置了任何内容，请用 `async_on_remove` 注册其清理逻辑，因为当添加被中止时 `async_will_remove_from_hass` 不会运行。
 
-## Removing an entity
+## 移除实体
 
-An entity is removed when its config entry unloads, when the user disables it, or when it is deleted from the entity registry. Stopping Home Assistant does not remove entities, so these hooks don't run on shutdown. If something must happen on shutdown, listen for `EVENT_HOMEASSISTANT_STOP`. When an entity is removed, Home Assistant:
+实体会在这几种情况下被移除：其配置条目（config entry）卸载时、用户将其禁用时，或者它被从实体注册表中删除时。停止 Home Assistant 并不会移除实体，因此这些钩子不会在关机时运行。如果必须在关机时执行某些操作，请监听 `EVENT_HOMEASSISTANT_STOP`。当实体被移除时，Home Assistant 会：
 
-1. Calls every callback registered with `async_on_remove`.
-2. Calls `async_will_remove_from_hass()`.
-3. Removes the state. Or, when the entity is still in the registry and enabled, like when the config entry is just unloaded, it sets the state to `unavailable` with a `restored` attribute.
+1. 调用所有通过 `async_on_remove` 注册的回调。
+2. 调用 `async_will_remove_from_hass()`。
+3. 移除状态。或者，当实体仍在注册表中且处于启用状态时（例如配置条目只是被卸载的情况），它会将状态设置为 `unavailable` 并带有 `restored` 属性。
 
 ### `async_on_remove(func)`
 
-Registers a function to call when the entity is removed, or when adding it is aborted. Most subscription helpers return an unsubscribe function, so you can pass that straight in. This is the cleanest way to make sure you never leak a listener.
+注册一个在实体被移除或添加被中止时要调用的函数。大多数订阅辅助函数（subscription helpers）会返回一个取消订阅的函数，你可以直接把它传入。这是确保你不会泄漏监听器的最干净的方式。
 
 ### `async_will_remove_from_hass()`
 
-The counterpart of `async_added_to_hass`. Use it to undo work that `async_on_remove` can't, like closing a connection that belongs to this entity only.
+`async_added_to_hass` 的对应钩子。用它来撤销 `async_on_remove` 无法完成的工作，例如关闭仅属于该实体的连接。
 
 ### `async_removed_from_registry()`
 
-Runs when the entity is deleted from the entity registry, not just removed for now. Use it to clean up data stored outside the entity, like a file or a setting on the device that only made sense for this entity.
+在实体被从实体注册表中删除时运行，而不仅仅是暂时移除。用它来清理存储在实体之外的数据，例如一个文件或设备上一个只对该实体有意义的设置。
 
-## Registry changes
+## 注册表变化
 
-The user can change an entity in the registry while it runs: rename it, give it another entity ID, change its options.
+用户可以在实体运行时在注册表中更改它：重命名它、给它换一个实体 ID、更改它的选项。
 
 ### `async_registry_entry_updated()`
 
-Runs after the registry entry of the entity changed. `self.registry_entry` holds the new entry. Use it when your entity depends on registry options, like a unit or a precision the user picked.
+在实体的注册表条目发生更改之后运行。`self.registry_entry` 中保存着新的条目。当你的实体依赖于注册表选项时使用它，例如用户选择的单位或精度。
 
 ### `async_entity_id_changed(old_entity_id)`
 
-Runs when the user changed the entity ID. By then, `self.entity_id` is the new ID, and Home Assistant has moved its own bookkeeping to it. If you track something by entity ID, like a state change listener on your own entity, move it to the new ID here and call `super()`. The method must not await. Home Assistant writes the state under the new ID after it returns.
+在用户更改了实体 ID 时运行。到那时，`self.entity_id` 已经是新 ID，Home Assistant 也已将自身的内部记录转移到该 ID 上。如果你按实体 ID 跟踪某些内容，例如你自己实体上的状态变化监听器，请在这里把它移动到新 ID 并调用 `super()`。该方法不能使用 await。Home Assistant 会在它返回之后把状态写入新 ID。
 
-## Restoring state
+## 恢复状态
 
-Some entities have to remember their state across restarts, because the device can't tell them. Inherit from `RestoreEntity` in `homeassistant.helpers.restore_state` as well, and read the last state in `async_added_to_hass`:
+有些实体必须在重启后仍记住自己的状态，因为设备无法告诉它们。同时还要继承 `homeassistant.helpers.restore_state` 中的 `RestoreEntity`，并在 `async_added_to_hass` 中读取最后一个状态：
 
 ```python
 from homeassistant.helpers.restore_state import RestoreEntity
@@ -89,4 +89,4 @@ class ExampleSwitch(SwitchEntity, RestoreEntity):
             self._attr_is_on = last_state.state == "on"
 ```
 
-Sensors use `RestoreSensor` instead, and read the last state with `RestoreSensor.async_get_last_sensor_data()`, which also restores the native value and unit. See [the sensor entity](/core/entities/sensor/).
+传感器（sensor）实体则使用 `RestoreSensor`，并通过 `RestoreSensor.async_get_last_sensor_data()` 读取最后一个状态，它还会恢复原生值（native value）和单位。参见[传感器实体](/core/entities/sensor/)。

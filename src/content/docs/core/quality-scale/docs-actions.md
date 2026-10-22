@@ -1,22 +1,22 @@
 ---
-title: Document the actions
-description: "Bronze rule docs-actions: the documentation describes the actions of the integration."
+title: 为动作编写文档
+description: "铜牌规则 docs-actions：文档描述集成的动作。"
 sidebarLabel: docs-actions
 sidebarGroup: Bronze
 order: 8
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `docs-actions`.
+这是一条铜牌（Bronze）规则。在 `quality_scale.yaml` 中，它被称为 `docs-actions`。
 
-The user documentation on [home-assistant.io](https://www.home-assistant.io/) describes every [action](/glossary/action/) the integration adds: what it does, and what each of its fields means.
+[home-assistant.io](https://www.home-assistant.io/) 上的用户文档描述了该集成添加的每一个[动作](/glossary/action/)（action）：它的作用是什么，以及它的每个字段分别代表什么含义。
 
-## Why it matters
+## 为什么重要
 
-Actions do things that the standard entities cannot, like fetching a schedule or sending a command with options. That makes them powerful, but also harder to use than turning on a light. Without documentation, users have to guess which fields there are, which ones are required, and what the response looks like.
+动作可以完成标准实体（entity）无法完成的事情，例如获取日程安排，或发送带有选项的命令。这使得动作十分强大，但也比打开一盏灯更难使用。如果没有文档，用户只能靠猜测：有哪些字段、哪些是必填的，以及响应是什么样子。
 
-## Example
+## 示例
 
-Each action gets its own file in the home-assistant.io repository, in `source/_actions/`, named after the full action, like `my_integration.get_schedule.markdown`. The file becomes a page of its own:
+每个动作在 home-assistant.io 仓库中都有自己的文件，位于 `source/_actions/` 目录中，以完整的动作名称命名，例如 `my_integration.get_schedule.markdown`。该文件会成为一个独立的页面：
 
 ```markdown
 ---
@@ -32,23 +32,23 @@ on your thermostat.
 {% include actions/ui_header.md %}
 ```
 
-The integration page then lists all its actions with one include, which builds the list from those files:
+集成页面随后通过一个 include 列出其所有动作，该 include 会从这些文件构建列表：
 
 ```markdown
 {% include integrations/actions.md %}
 ```
 
-The full layout of an action page, with the UI and YAML sections and the options blocks, is in [Integration page structure](/writing/reference/integration-page/#triggers-conditions-and-actions). For writing the page itself, see [Document an integration](/writing/guides/integration/).
+动作页面的完整布局（包括 UI 和 YAML 部分，以及 options 块）见[集成页面结构](/writing/reference/integration-page/#triggers-conditions-and-actions)。关于如何编写页面本身，请参见[为集成编写文档](/writing/guides/integration/)。
 
-## How it is checked
+## 如何检查
 
-Checked in review, on the documentation pull request that goes with the integration.
+在审查时进行检查，即在随集成一起提交的文档 pull request 上进行。
 
-## Exceptions
+## 例外情况
 
-If the integration does not add any actions of its own, this rule does not apply.
+如果集成没有添加任何自己的动作，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [docs-triggers](/core/quality-scale/docs-triggers/): document the triggers.
-- [docs-conditions](/core/quality-scale/docs-conditions/): document the conditions.
+- [docs-triggers](/core/quality-scale/docs-triggers/)：记录触发器（trigger）。
+- [docs-conditions](/core/quality-scale/docs-conditions/)：记录条件（condition）。

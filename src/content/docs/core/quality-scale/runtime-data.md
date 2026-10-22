@@ -1,22 +1,22 @@
 ---
-title: Store runtime data in runtime_data
-description: "Bronze rule runtime-data: runtime data is stored in ConfigEntry.runtime_data, with a typed config entry."
+title: 在 runtime_data 中存储运行时数据
+description: "Bronze 规则 runtime-data：运行时数据存储在 ConfigEntry.runtime_data 中，并使用带类型的配置条目。"
 sidebarLabel: runtime-data
 sidebarGroup: Bronze
 order: 17
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `runtime-data`.
+这是一条 Bronze 规则。在 `quality_scale.yaml` 中，它被称为 `runtime-data`。
 
-Data that the integration needs while a [config entry](/glossary/config-entry/) is loaded, like the API client or the [coordinator](/glossary/coordinator/), must be stored in `entry.runtime_data`. Not in `hass.data`. Give the config entry a type that says what is in `runtime_data`. When the integration also follows [strict-typing](/core/quality-scale/strict-typing/), that typed config entry is required, and you use it everywhere you handle the entry.
+集成在[配置条目（config entry）](/glossary/config-entry/)加载期间所需的数据，例如 API 客户端或[协调器（coordinator）](/glossary/coordinator/)，必须存储在 `entry.runtime_data` 中，而不是 `hass.data` 中。为配置条目指定一个类型，以说明 `runtime_data` 中包含什么。当集成同时遵循 [strict-typing](/core/quality-scale/strict-typing/) 规则时，该带类型的配置条目是必需的，并且在处理条目的所有地方都要使用它。
 
-## Why it matters
+## 为什么这很重要
 
-`runtime_data` belongs to one config entry, and it is gone when the entry is unloaded. There is no shared dictionary to keep clean, and no keys that collide with other integrations. Because the config entry is typed, your editor and mypy know exactly what `entry.runtime_data` is, and catch mistakes before your users do. And every integration stores its data the same way, which makes the code easier to read for the next person.
+`runtime_data` 属于单个配置条目，当该条目被卸载时它就会消失。无需维护需要保持干净的共享字典，也不会出现与其他集成冲突的键。由于配置条目是带类型的，你的编辑器和 mypy 能准确知道 `entry.runtime_data` 是什么，并在你的用户之前发现错误。而且每个集成都以相同的方式存储数据，这让后来的人更容易阅读代码。
 
-## Example
+## 示例
 
-Define the typed config entry, and assign `runtime_data` in `async_setup_entry`:
+定义带类型的配置条目，并在 `async_setup_entry` 中赋值 `runtime_data`：
 
 ```python
 type MyConfigEntry = ConfigEntry[MyClient]
@@ -31,7 +31,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: MyConfigEntry) -> bool:
     return True
 ```
 
-A platform reads it back, fully typed:
+平台在读取它时类型完整：
 
 ```python
 async def async_setup_entry(
@@ -43,7 +43,7 @@ async def async_setup_entry(
     client = entry.runtime_data
 ```
 
-A coordinator that gets the config entry should use the typed entry too:
+获取配置条目的协调器也应使用带类型的条目：
 
 ```python
 class MyCoordinator(DataUpdateCoordinator[MyData]):
@@ -52,20 +52,20 @@ class MyCoordinator(DataUpdateCoordinator[MyData]):
     config_entry: MyConfigEntry
 ```
 
-When more than one object needs to live in `runtime_data`, put them in a dataclass and use that as the type.
+当需要多个对象同时存放在 `runtime_data` 中时，将它们放入一个 dataclass，并将其用作类型。
 
-## How it is checked
+## 如何检查
 
-- Hassfest, when the rule is `done`: `async_setup_entry` in `__init__.py` must assign `entry.runtime_data`.
-- Hassfest, when [strict-typing](/core/quality-scale/strict-typing/) is also `done`: the config entry must be typed, with a type alias whose name ends in `ConfigEntry`. This is checked for `async_setup_entry`, `async_unload_entry`, `async_migrate_entry`, `async_remove_entry`, and `async_remove_config_entry_device` in `__init__.py`, for `async_setup_entry` of every platform, for the diagnostics functions, and for `async_get_options_flow`.
-- Pylint, for every integration with a config flow: `home-assistant-use-runtime-data` warns when the integration stores data in `hass.data[DOMAIN]`.
-- Pylint: `home-assistant-coordinator-untyped-config-entry` warns when a coordinator does not use the typed config entry of its integration.
+- Hassfest，当该规则为 `done` 时：`__init__.py` 中的 `async_setup_entry` 必须赋值 `entry.runtime_data`。
+- Hassfest，当 [strict-typing](/core/quality-scale/strict-typing/) 也为 `done` 时：配置条目必须是带类型的，并使用名称以 `ConfigEntry` 结尾的类型别名。这一检查适用于 `__init__.py` 中的 `async_setup_entry`、`async_unload_entry`、`async_migrate_entry`、`async_remove_entry` 和 `async_remove_config_entry_device`，适用于每个平台的 `async_setup_entry`，适用于诊断函数，以及 `async_get_options_flow`。
+- Pylint，适用于每个带有配置流程的集成：当集成将数据存储在 `hass.data[DOMAIN]` 中时，`home-assistant-use-runtime-data` 会发出警告。
+- Pylint：当协调器未使用其集成的带类型配置条目时，`home-assistant-coordinator-untyped-config-entry` 会发出警告。
 
-## Exceptions
+## 例外
 
-If the integration does not have any runtime data to store, this rule does not apply.
+如果集成没有任何需要存储的运行时数据，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [strict-typing](/core/quality-scale/strict-typing/): use strict typing.
-- [test-before-setup](/core/quality-scale/test-before-setup/): check the connection during setup.
+- [strict-typing](/core/quality-scale/strict-typing/)：使用严格类型。
+- [test-before-setup](/core/quality-scale/test-before-setup/)：在设置期间检查连接。

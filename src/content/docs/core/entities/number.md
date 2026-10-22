@@ -1,68 +1,68 @@
 ---
-title: Number entity
-description: Build a number entity that lets people set a numeric value on a device, like a target level or a timeout.
+title: 数字实体
+description: 构建一个数字实体（number entity），让人们可以在设备上设置一个数值，例如目标档位或超时时间。
 sidebarLabel: Number
 sidebarGroup: Inputs and helpers
 ---
 
-A number entity lets people set a numeric value: a volume level, a timeout in seconds, a temperature offset, or the maximum charge current of a car charger. Inherit from `NumberEntity` in `homeassistant.components.number`.
+数字实体（number entity）让人们可以设置一个数值：音量大小、以秒为单位的超时时间、温度偏移量，或者汽车充电器的最大充电电流。请继承 `homeassistant.components.number` 中的 `NumberEntity`。
 
-Use it for values people _set_. A value that the device only reports is a [sensor](/core/entities/sensor/). And when a richer platform exists, use that one: the target temperature of a thermostat belongs on a [climate](/core/entities/climate/) entity, the brightness of a bulb on a [light](/core/entities/light/).
+请将它用于人们_设置_的值。设备只报告的值应该是一个[传感器（sensor）](/core/entities/sensor/)。当存在更丰富的平台时，请使用那个平台：恒温器的目标温度应使用[气候（climate）](/core/entities/climate/)实体，灯泡的亮度应使用[灯（light）](/core/entities/light/)实体。
 
-For how the frontend shows a number, see the [number more-info view](/design/more-info/number/).
+关于前端如何显示数字，请参见[数字更多信息视图（number more-info view）](/design/more-info/number/)。
 
-## Properties
+## 属性
 
-Every property that carries a value starts with `native_`. You return values in the unit the device uses, and the base class converts them to the unit the user wants. See [units and conversion](#units-and-conversion).
+每个承载值的属性都以 `native_` 开头。你以设备使用的单位返回值，基类会将它们转换为用户想要的单位。参见[单位与转换](#units-and-conversion)。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `native_value` | `float \| None` | `None` | The current value, in `native_unit_of_measurement`. |
-| `native_min_value` | `float` | `0.0` | The lowest value that is accepted, inclusive. |
-| `native_max_value` | `float` | `100.0` | The highest value that is accepted, inclusive. |
-| `native_step` | `float \| None` | `None` | The smallest change between two values. When `None`, the base class picks one from the range, see below. |
-| `native_unit_of_measurement` | `str \| None` | `None` | The unit the values are in. Leave it out when you translate the unit instead. |
-| `mode` | `NumberMode` | `NumberMode.AUTO` | How the frontend shows the control. |
-| `device_class` | `NumberDeviceClass \| None` | `None` | What the number measures. See [device classes](#device-classes). |
+| `native_value` | `float \| None` | `None` | 当前值，以 `native_unit_of_measurement` 为单位。 |
+| `native_min_value` | `float` | `0.0` | 可接受的最小值（含该值）。 |
+| `native_max_value` | `float` | `100.0` | 可接受的最大值（含该值）。 |
+| `native_step` | `float \| None` | `None` | 两个值之间的最小变化量。为 `None` 时，基类会根据范围自行选择一个步长，见下文。 |
+| `native_unit_of_measurement` | `str \| None` | `None` | 值所使用的单位。如果你改为对单位进行翻译，则请省略它。 |
+| `mode` | `NumberMode` | `NumberMode.AUTO` | 前端显示该控件的方式。 |
+| `device_class` | `NumberDeviceClass \| None` | `None` | 该数字测量的是什么。参见[设备类型](#device-classes)。 |
 
-Without `native_step`, the step starts at `1.0`. When the range between minimum and maximum is `1.0` or smaller, the base class divides the step by 10 until it fits.
+在没有 `native_step` 的情况下，步长初始为 `1.0`。当最小值与最大值之间的范围小于等于 `1.0` 时，基类会将步长除以 10，直到它适合为止。
 
-The generic properties every entity has, like `name`, `available`, and `unique_id`, are on [the entity class](/core/entities/entity-class/). Don't set `unit_of_measurement`, `min_value`, `max_value`, `step`, or `value`: those are final and calculated by the base class from the `native_` properties.
+每个实体都具有的通用属性，例如 `name`、`available` 和 `unique_id`，位于[实体类（entity class）](/core/entities/entity-class/)上。不要设置 `unit_of_measurement`、`min_value`、`max_value`、`step` 或 `value`：它们是最终属性，由基类根据 `native_` 属性计算得出。
 
-## Supported features
+## 支持的特性
 
-This entity has no supported features.
+此实体没有支持的特性。
 
-## Modes
+## 模式
 
-| Constant | Description |
+| 常量 | 描述 |
 | --- | --- |
-| `NumberMode.AUTO` | Let the frontend pick between a slider and an input box. Use this unless you have a reason not to. |
-| `NumberMode.BOX` | Always show an input box. |
-| `NumberMode.SLIDER` | Always show a slider. |
+| `NumberMode.AUTO` | 让前端在滑块和输入框之间自行选择。除非有特殊理由，否则请使用此项。 |
+| `NumberMode.BOX` | 始终显示输入框。 |
+| `NumberMode.SLIDER` | 始终显示滑块。 |
 
-## Device classes
+## 设备类型
 
-The number device classes are the same as the [sensor device classes](/core/entities/sensor/), except `date`, `enum`, `timestamp`, and `uptime`. They are the `NumberDeviceClass` enum in `homeassistant/components/number/const.py`, for example `NumberDeviceClass.TEMPERATURE`, `NumberDeviceClass.POWER`, or `NumberDeviceClass.DURATION`.
+数字设备类型与[传感器设备类型](/core/entities/sensor/)相同，但不包括 `date`、`enum`、`timestamp` 和 `uptime`。它们是 `homeassistant/components/number/const.py` 中的 `NumberDeviceClass` 枚举，例如 `NumberDeviceClass.TEMPERATURE`、`NumberDeviceClass.POWER` 或 `NumberDeviceClass.DURATION`。
 
-When you set a device class, return a unit that the device class accepts. The accepted units are in `DEVICE_CLASS_UNITS`, in the same file. A number with a device class and no name of its own gets the translated name of its device class, like "Temperature". See [naming entities](/core/entities/naming/).
+设置设备类型时，请返回该设备类型所接受的单位。可接受的单位位于同一文件中的 `DEVICE_CLASS_UNITS` 里。设置了设备类型且没有自己名称的数字实体，会使用其设备类型的翻译名称，例如 “Temperature”。参见[实体命名](/core/entities/naming/)。
 
-## Units and conversion
+## 单位与转换
 
-For a lot of device classes, the base class converts between units: you work in the native unit, the user sees their own. The device classes with conversion are the keys of `UNIT_CONVERTERS` in `homeassistant/components/number/const.py`.
+对于许多设备类型，基类会在单位之间进行转换：你以原始单位（native unit）工作，而用户看到的是他们自己的单位。支持转换的设备类型是 `homeassistant/components/number/const.py` 中 `UNIT_CONVERTERS` 的键。
 
-- A `temperature` number with a native unit of °C or °F shows in the temperature unit of the Home Assistant configuration.
-- Users can pick another unit for a number in its entity settings, as long as the device class supports conversion and both units are valid for it.
-- The minimum and maximum are converted too. The minimum rounds down and the maximum rounds up, so the range never gets narrower. The step is not converted: a `native_step` you set is used as is in the user's unit. Without one, the step is derived from the converted range.
-- When someone sets a value, you get it back in your native unit.
+- 原始单位为 °C 或 °F 的 `temperature` 数字实体，会以 Home Assistant 配置中的温度单位显示。
+- 用户可以在实体的设置中为数字实体选择其他单位，只要该设备类型支持转换，且两种单位对其都有效。
+- 最小值和最大值也会被转换。最小值向下取整，最大值向上取整，因此范围绝不会变窄。步长不会被转换：你设置的 `native_step` 会在用户的单位中原样使用。如果没有设置步长，则会根据转换后的范围推导出步长。
+- 当有人设置一个值时，你会以原始单位收到该值。
 
-If the unit is text that should be translated, like "presses", leave `native_unit_of_measurement` out and give the unit in `strings.json` under the translation key of the entity. Setting both raises an error. See [making your strings translatable](/translate/guides/developers/).
+如果单位是需要翻译的文本，例如 “presses”，请省略 `native_unit_of_measurement`，并在 `strings.json` 中该实体的翻译键下提供单位。同时设置两者会引发错误。参见[让你的字符串可翻译](/translate/guides/developers/)。
 
-## Methods
+## 方法
 
-### Set value
+### 设置值
 
-Called when someone changes the value in the UI, or an automation or script calls the `number.set_value` action. The value is in your native unit. Implement one of the two.
+当有人在 UI 中更改该值，或自动化或脚本调用 `number.set_value` 动作时被调用。该值以你的原始单位表示。请实现两者之一。
 
 ```python
 class MyNumber(NumberEntity):
@@ -75,17 +75,17 @@ class MyNumber(NumberEntity):
         """Set a new value."""
 ```
 
-Don't implement `set_value` or `async_set_value`. They are final and from an old API; a subclass that overrides them gets a warning in the log.
+不要实现 `set_value` 或 `async_set_value`。它们是最终方法，来自旧版 API；重写它们的子类会在日志中得到警告。
 
-## States
+## 状态
 
-The state is `native_value`, converted to the unit of the user when that differs from the native unit. A converted value keeps the number of decimals of the native value. It is `unknown` when `native_value` is `None`.
+状态为 `native_value`，当用户的单位与原始单位不同时，会转换到用户的单位。转换后的值保留原始值的小数位数。当 `native_value` 为 `None` 时，状态为 `unknown`。
 
-The minimum, maximum, step, and mode are capability attributes: they are written to the [entity registry](/core/entities/registry/), and left out of the recorder history.
+最小值、最大值、步长和模式是能力属性（capability attributes）：它们会被写入[实体注册表](/core/entities/registry/)，但不会包含在 recorder 历史记录中。
 
-## Restoring the value
+## 恢复值
 
-If your number keeps its value in Home Assistant, not on a device, it needs to come back after a restart. Inherit from `RestoreNumber` instead of `NumberEntity` and `RestoreEntity`. `RestoreEntity` stores the converted state; `RestoreNumber` stores the `native_` values, so you restore what you set.
+如果你的数字实体将值保存在 Home Assistant 中而不是设备上，那么它需要在重启后恢复。请继承 `RestoreNumber`，而不是 `NumberEntity` 和 `RestoreEntity`。`RestoreEntity` 存储转换后的状态；`RestoreNumber` 存储 `native_` 值，因此你恢复的就是你设置的值。
 
 ```python
 from homeassistant.components.number import RestoreNumber
@@ -99,9 +99,9 @@ class MyNumber(RestoreNumber):
             self._attr_native_value = data.native_value
 ```
 
-`async_get_last_number_data()` returns the last `native_value`, `native_min_value`, `native_max_value`, `native_step`, and `native_unit_of_measurement`, or `None` when there is nothing to restore. See [the entity lifecycle](/core/entities/lifecycle/) for when `async_added_to_hass` runs.
+`async_get_last_number_data()` 返回最近的 `native_value`、`native_min_value`、`native_max_value`、`native_step` 和 `native_unit_of_measurement`，如果没有可恢复的内容则返回 `None`。关于 `async_added_to_hass` 何时运行，参见[实体生命周期](/core/entities/lifecycle/)。
 
-## Example
+## 示例
 
 ```python
 from homeassistant.components.number import (

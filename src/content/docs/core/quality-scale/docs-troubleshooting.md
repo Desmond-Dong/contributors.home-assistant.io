@@ -1,24 +1,24 @@
 ---
-title: Document troubleshooting
-description: "Gold rule docs-troubleshooting: the documentation helps users solve common problems themselves."
+title: 故障排查文档
+description: "金牌规则 docs-troubleshooting：文档帮助用户自行解决常见问题。"
 sidebarLabel: docs-troubleshooting
 sidebarGroup: Gold
 order: 10
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `docs-troubleshooting`.
+这是一条金牌（Gold）规则。在 `quality_scale.yaml` 中，它被称为 `docs-troubleshooting`。
 
-The integration page on [home-assistant.io](https://www.home-assistant.io/) has a troubleshooting section for the problems that users run into and can fix themselves. Each topic describes the symptom the user sees, what causes it, and the steps to solve it.
+[home-assistant.io](https://www.home-assistant.io/) 上的集成（integration）页面有一个故障排查部分，用于介绍用户会遇到的、且能够自行修复的问题。每个条目都描述了用户看到的症状、产生的原因以及解决步骤。
 
-## Why it matters
+## 为什么这很重要
 
-Users who can solve a problem themselves are back up and running in minutes, instead of days of waiting on an issue or a forum thread. Every common problem you document is a support question that does not have to be asked, and answered, again.
+能够自行解决问题的用户只需几分钟即可恢复正常运行，而不必在 issue 或论坛帖子中等待数天。你记录下的每一个常见问题，都是一个无需再次被提出、也无需再次被解答的支持问题。
 
-Start with the symptom, in the words the user sees on screen. That is what they search for.
+从症状开始写起，使用用户在屏幕上看到的措辞。那正是他们会搜索的内容。
 
-## Example
+## 示例
 
-Put each problem in its own collapsible block, with the symptom, a description, and the resolution. Leave out a part when it adds nothing for a short topic.
+将每个问题放在各自独立的折叠块中，包含症状、描述和解决方法。对于简短的条目，如果某部分没有额外价值，可以将其省略。
 
 ```markdown
 ## Troubleshooting
@@ -43,12 +43,12 @@ on in its settings.
 {% enddetails %}
 ```
 
-See [Write integration documentation](/writing/guides/integration/) and the [integration page structure](/writing/reference/integration-page/) for where this section goes.
+关于该部分应放在何处，请参阅[编写集成文档](/writing/guides/integration/)和[集成页面结构](/writing/reference/integration-page/)。
 
-## How it is checked
+## 如何检查
 
-Checked in review, usually on the documentation pull request.
+在审查（review）时检查，通常是在文档的 pull request 上进行。
 
-## Exceptions
+## 例外情况
 
-If the integration has no known problems that users can solve themselves, this rule does not apply.
+如果该集成没有已知的、用户可以自行解决的问题，则此规则不适用。

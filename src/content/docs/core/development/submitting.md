@@ -1,30 +1,30 @@
 ---
-title: Submitting a pull request
-description: What is specific to pull requests for Home Assistant Core, from branches and commit messages to the template, new integrations, and dependency updates.
+title: 提交拉取请求
+description: Home Assistant Core 拉取请求的特有事项，从分支和提交信息到模板、新集成以及依赖更新。
 sidebarGroup: Pull requests
 order: 2
 ---
 
-Changes go into Home Assistant Core through [pull requests](/glossary/pull-request/) on GitHub, against the `dev` branch. How pull requests work in every Home Assistant repository, from keeping them small to waiting for a review, is on [pull requests and reviews](/start/pull-requests/). Read that first. This page adds what is specific to core.
+对 Home Assistant Core 的更改通过 GitHub 上针对 `dev` 分支的[拉取请求](/glossary/pull-request/)（pull request）进入代码库。拉取请求在每个 Home Assistant 仓库中的工作方式，从保持其精简到等待审查，都在[拉取请求与审查](/start/pull-requests/)中介绍。请先阅读该页面。本页补充的是 core 特有的内容。
 
-## Before you open it
+## 在打开拉取请求之前
 
-- Base your branch on the latest `dev`. See [keeping your branch up to date](/core/development/catching-up/).
-- Go through the [development checklist](/core/development/checklist/).
-- Run the tests and the [linters](/core/development/checks/).
-- Actually run Home Assistant with your change, and try it. Code that could never have worked is a waste of everyone's time, including yours.
-- For a change in how core works, check the [architecture decisions](https://github.com/home-assistant/architecture/tree/master/adr). If it needs a new decision, start a [discussion](https://github.com/home-assistant/architecture/discussions) before you write the code.
+- 将你的分支基于最新的 `dev`。参见[保持分支最新](/core/development/catching-up/)。
+- 通读[开发检查清单](/core/development/checklist/)。
+- 运行测试和[代码检查工具](/core/development/checks/)（linters）。
+- 实际运行带有你更改的 Home Assistant，并试用它。从未能正常运行的代码只会浪费所有人的时间，包括你自己的。
+- 对于改变 core 工作方式的更改，请查看[架构决策](https://github.com/home-assistant/architecture/tree/master/adr)。如果需要新的决策，请在编写代码之前先发起[讨论](https://github.com/home-assistant/architecture/discussions)。
 
-## Commit and push
+## 提交并推送
 
-Work on a branch of its own for every pull request, never on `dev`:
+为每个拉取请求使用一个独立的分支进行开发，绝不要在 `dev` 上直接开发：
 
 ```shell
 git fetch upstream
 git checkout -b add-battery-sensor upstream/dev
 ```
 
-When your change is ready, commit and push it to your fork:
+当你的更改完成后，提交并推送到你的 fork：
 
 ```shell
 git add .
@@ -32,59 +32,59 @@ git commit -m "Add battery sensor to Example"
 git push -u origin HEAD
 ```
 
-The `-u` makes the branch on your fork the default for this branch. Without it, your branch keeps following `upstream/dev`, and a later plain `git push` or `git pull` goes to the wrong place.
+`-u` 会将你 fork 上的分支设为该分支的默认跟踪目标。没有它，你的分支会继续跟踪 `upstream/dev`，之后直接执行 `git push` 或 `git pull` 就会推送到错误的位置。
 
-A good commit message:
+一条好的提交信息：
 
-- Says what the change does, not "Update" or "Fix"
-- Uses the imperative: "Add battery sensor", not "Adds battery sensor"
-- Starts with a capital letter, and does not end with a period
-- Has no prefix like `[example]` or `sensor:`
+- 说明更改做了什么，而不是"Update"或"Fix"
+- 使用祈使语气："Add battery sensor"，而不是"Adds battery sensor"
+- 以大写字母开头，且不以句号结尾
+- 不带 `[example]` 或 `sensor:` 之类的前缀
 
-The Git hooks run when you commit, and can change files outside the folder of your integration. Those changes belong in your pull request too.
+Git 钩子（hooks）会在你提交时运行，并且可能更改你的集成文件夹之外的文件。这些更改也应包含在你的拉取请求中。
 
-## Open the pull request
+## 打开拉取请求
 
-On GitHub, open a pull request from your branch against the `dev` branch of [home-assistant/core](https://github.com/home-assistant/core). Then fill in the template. Do not remove anything from it, including the boxes you do not check.
+在 GitHub 上，从你的分支向 [home-assistant/core](https://github.com/home-assistant/core) 的 `dev` 分支打开一个拉取请求。然后填写模板。不要从中删除任何内容，包括你没有勾选的复选框。
 
-- **Breaking change**: if your change breaks something for existing users, explain what breaks, how to fix it, and why. This text goes into the release notes, so write it for users, not for developers. Remove the section if nothing breaks.
-- **Proposed change**: explain *why*, not only what. Reviewers need the reason to judge the solution.
-- **Type of change**: check exactly one box. If more than one fits, your pull request does too much: split it. A bot uses this box to label your pull request.
-- **Additional information**: link the issue you fix with `fixes #12345`, and the pull requests for the documentation or frontend.
-- **Checklist**: go through it honestly.
+- **Breaking change（破坏性更改）**：如果你的更改会给现有用户带来破坏，请说明破坏了什么、如何修复以及原因。这段文字会进入发布说明，所以要为用户而写，而不是为开发者。如果没有破坏任何内容，则删除该部分。
+- **Proposed change（提议的更改）**：解释*为什么*，而不仅仅是什么。审查者需要理由来判断解决方案。
+- **Type of change（更改类型）**：只勾选一个复选框。如果多个都符合，说明你的拉取请求做得太多了：请拆分它。机器人会使用此复选框为你的拉取请求打标签。
+- **Additional information（附加信息）**：用 `fixes #12345` 链接你修复的 issue，以及文档或前端的拉取请求。
+- **Checklist（检查清单）**：诚实地逐项检查。
 
-On your first pull request, a bot asks you to sign the Contributor License Agreement. Your pull request cannot be merged before that is done. If your GitHub account is new, CI also waits until a maintainer approves the run.
+在你的第一个拉取请求上，机器人会要求你签署贡献者许可协议（Contributor License Agreement）。在此之前，你的拉取请求无法被合并。如果你的 GitHub 账户是新建的，CI 也会等到维护者批准运行后才开始。
 
-## Once the pull request is open
+## 拉取请求打开之后
 
-Do not amend, squash, or rebase commits that you already pushed, once the pull request is open. Reviewers need to follow the history, and see what changed since they last looked. Add new commits instead, and bring in changes from `dev` with a merge. See [keeping your branch up to date](/core/development/catching-up/).
+拉取请求一旦打开，就不要修改（amend）、压缩（squash）或变基（rebase）你已推送的提交。审查者需要跟踪历史，并查看自他们上次查看以来发生了什么变化。请改为添加新的提交，并通过合并引入来自 `dev` 的更改。参见[保持分支最新](/core/development/catching-up/)。
 
-CI must pass before your pull request can be reviewed and merged. Some tests are flaky: when you are sure a failure has nothing to do with your change, wait for a maintainer, instead of pushing again to run CI once more.
+CI 必须通过，你的拉取请求才能被审查和合并。有些测试是不稳定的（flaky）：当你确定某个失败与你的更改无关时，请等待维护者处理，而不是再次推送以重新运行 CI。
 
-[After you open a pull request](/core/development/review-process/) explains what happens next in core.
+[打开拉取请求之后](/core/development/review-process/)介绍了在 core 中接下来会发生什么。
 
-## New integrations
+## 新集成
 
-Before you build a new integration, read [does it belong in core](/core/integrations/create/#does-it-belong-in-core). The project recommends that you publish it in the [Marketplace](/marketplace/) first. Once it has matured and has a user base, reach out to the maintainers, for example in the **#core** channel on [Discord](https://www.home-assistant.io/join-chat/), to see whether it should ship built in.
+在构建新集成（integration）之前，请阅读[它是否属于 core](/core/integrations/create/#does-it-belong-in-core)。项目建议你先将其发布到[Marketplace](/marketplace/)。当它成熟并拥有用户群后，联系维护者，例如在 [Discord](https://www.home-assistant.io/join-chat/) 上的 **#core** 频道，询问它是否应该内置发布。
 
-When it does, [keep the first pull request small](/core/integrations/create/#keep-the-first-pull-request-small): Bronze tier, one platform, nothing extra.
+如果应该内置，请[保持第一个拉取请求精简](/core/integrations/create/#keep-the-first-pull-request-small)：Bronze 等级、一个平台，没有额外内容。
 
-In the description of the pull request:
+在拉取请求的描述中：
 
-- Explain what the product or service is.
-- Link to the source repository of the library you use.
-- Link the pull requests for the documentation on [home-assistant.io](https://www.home-assistant.io/) and for the brand images.
+- 说明该产品或服务是什么。
+- 链接到你所使用库的源代码仓库。
+- 链接 [home-assistant.io](https://www.home-assistant.io/) 文档的拉取请求以及品牌图片的拉取请求。
 
-The [tutorial](/core/integrations/tutorial/) walks through a complete new integration, up to this pull request.
+[教程](/core/integrations/tutorial/)会完整讲解一个新集成的构建过程，直到这个拉取请求。
 
-## Dependency updates
+## 依赖更新
 
-Update a dependency in a pull request of its own. Only include the code changes the new version needs. New features that use the new version come in a follow up.
+在独立的拉取请求中更新依赖。只包含新版本所需的代码更改。使用新版本的新功能应在后续的拉取请求中提交。
 
-In the description, link to what changed upstream: the release notes or changelog, or a diff between the old and the new version. Reviewers read the upstream changes before they merge, both to see if the update is safe for a patch release, and to spot anything suspicious. Run `python3 -m script.gen_requirements_all` to update the requirement files, and include them.
+在描述中，链接到上游的变更内容：发布说明或更新日志（changelog），或者新旧版本之间的 diff。审查者在合并之前会阅读上游的更改，既是为了确认该更新对于补丁版本是否安全，也是为了发现任何可疑之处。运行 `python3 -m script.gen_requirements_all` 来更新依赖要求文件，并将其包含在拉取请求中。
 
-## Using AI
+## 使用 AI
 
-You can use AI tools to help you write code, as long as you stay the human in the loop. Core follows the [AI policy](/start/ai-policy/): you review and understand everything you submit, you can explain every change, and you answer questions from reviewers yourself. Autonomous agents may not contribute. The pull request template asks you to confirm that you understand the code you submit.
+你可以使用 AI 工具来帮助你编写代码，只要你保持自己是流程中的人（human in the loop）。Core 遵循 [AI 政策](/start/ai-policy/)：你要审查并理解你提交的所有内容，你能解释每一处更改，并且你自己回答审查者的问题。自主代理不得贡献代码。拉取请求模板会要求你确认你理解所提交的代码。
 
-Core has an `AGENTS.md` file and skills for AI tools in its repository. See [AI tools in the repository](/core/development/environment/#ai-tools-in-the-repository).
+Core 的仓库中有一个 `AGENTS.md` 文件以及供 AI 工具使用的技能（skills）。参见[仓库中的 AI 工具](/core/development/environment/#ai-tools-in-the-repository)。

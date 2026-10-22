@@ -1,86 +1,86 @@
 ---
-title: Linters, hassfest, and CI
-description: The checks that run on every commit and every pull request to Home Assistant Core, and how to run them yourself.
+title: Linter、hassfest 与 CI
+description: 每次 commit 和每个针对 Home Assistant Core 的 pull request 都会运行的检查，以及如何自己运行它们。
 sidebarGroup: Write code
 order: 5
 ---
 
-Before your code is reviewed, machines look at it. Linters check the style, mypy checks the types, hassfest checks the metadata of integrations, and CI runs it all again, plus the tests. Run them yourself first: a pull request with failing checks is not reviewed.
+在你的代码被审查之前，机器会先检查它。Linter 检查代码风格，mypy 检查类型，hassfest 检查集成的元数据，而 CI 会把这一切再运行一遍，外加测试。请先自己运行它们：检查未通过的 pull request 不会被审查。
 
-## The Git hooks
+## Git 钩子
 
-`script/setup` installs Git hooks with [prek](https://prek.j178.dev/), a fast drop in for pre-commit. They run on the files you change, every time you commit. When a hook fixes something, like the formatting, the commit stops: add the changed files and commit again.
+`script/setup` 会通过 [prek](https://prek.j178.dev/)（pre-commit 的快速替代品）安装 Git 钩子。每次 commit 时，它们都会对你修改的文件运行。当某个钩子修复了问题（比如格式化）时，commit 会中止：把修改后的文件加入暂存区，然后重新 commit。
 
-The hooks are configured in `.pre-commit-config.yaml`. They include:
+这些钩子配置在 `.pre-commit-config.yaml` 中，包括：
 
-- **Ruff**: lints the code and formats it.
-- **codespell**: catches common spelling mistakes.
-- **yamllint** and **Prettier**: check and format YAML and JSON files.
-- **mypy**: checks the [type hints](/core/development/typing/).
-- **pylint**: runs the extra checks written for Home Assistant.
-- **gen_requirements_all**: updates the requirement files when a `manifest.json` changes.
-- **hassfest**: validates integrations and updates generated files.
-- **no-commit-to-branch**: stops you from committing to `dev` directly. Work on a branch.
+- **Ruff**：对代码进行 lint 检查并格式化。
+- **codespell**：捕捉常见的拼写错误。
+- **yamllint** 和 **Prettier**：检查并格式化 YAML 和 JSON 文件。
+- **mypy**：检查[类型注解](/core/development/typing/)。
+- **pylint**：运行为 Home Assistant 编写的额外检查。
+- **gen_requirements_all**：当 `manifest.json` 变化时更新依赖文件。
+- **hassfest**：校验集成并更新生成的文件。
+- **no-commit-to-branch**：阻止你直接向 `dev` 提交 commit。请在分支上工作。
 
-To run all hooks on all files:
+要对所有文件运行所有钩子：
 
 ```shell
 prek run --all-files
 ```
 
-To run them on your changes only, and see what they changed:
+要只对你修改的文件运行，并查看它们修改了什么：
 
 ```shell
 prek run --show-diff-on-failure
 ```
 
-In Visual Studio Code, that is the **Prek** task. You can also run a linter on a single file, like `ruff check homeassistant/components/example/sensor.py` or `pylint homeassistant/components/example`.
+在 Visual Studio Code 中，这就是 **Prek** 任务。你也可以对单个文件运行某个 linter，比如 `ruff check homeassistant/components/example/sensor.py` 或 `pylint homeassistant/components/example`。
 
 > [!IMPORTANT]
-> The hooks can change files outside your integration, like `CODEOWNERS`, `requirements_all.txt`, or files in `homeassistant/generated/`. These changes belong in your pull request.
+> 这些钩子可能会修改你集成之外的文件，比如 `CODEOWNERS`、`requirements_all.txt` 或 `homeassistant/generated/` 中的文件。这些修改应包含在你的 pull request 中。
 
 ## Hassfest
 
-Hassfest is the validator for integrations. It reads the files around your code, like `manifest.json`, `strings.json`, `services.yaml`, `icons.json`, and `quality_scale.yaml`, and checks that they are complete and consistent. It also generates files from them, like `CODEOWNERS` and the lists in `homeassistant/generated/` of config flows, discovery information, and more.
+Hassfest 是集成的校验器。它会读取你代码周围的文件，比如 `manifest.json`、`strings.json`、`services.yaml`、`icons.json` 和 `quality_scale.yaml`，并检查它们是否完整且一致。它还会根据这些文件生成其他文件，比如 `CODEOWNERS` 以及 `homeassistant/generated/` 中关于配置流程（config flow）、发现信息等的列表。
 
-Run it after you change any of those files:
+在你修改了其中任何文件之后运行它：
 
 ```shell
 python3 -m script.hassfest
 ```
 
-To check one integration only, which is faster:
+只检查一个集成，这样更快：
 
 ```shell
 python3 -m script.hassfest --integration-path homeassistant/components/example
 ```
 
-Use `-p` to run only some of its plugins, like `-p mypy_config` after you change `.strict-typing`.
+使用 `-p` 可以只运行其中部分插件，比如在修改 `.strict-typing` 之后运行 `-p mypy_config`。
 
-Use `--skip-plugins` to leave some out. A new integration starts with every rule in `quality_scale.yaml` set to `todo`, and the `quality_scale` plugin reports that as an error until every Bronze rule is `done` or `exempt`. Hassfest only writes the generated files when it finds no errors, so while you are still working on those rules, run it like this:
+使用 `--skip-plugins` 可以跳过某些插件。新集成的 `quality_scale.yaml` 中每条规则初始都是 `todo`，在每条 Bronze 规则变为 `done` 或 `exempt` 之前，`quality_scale` 插件会将其报告为错误。Hassfest 只有在没有发现错误时才会写入生成的文件，所以在你还在处理这些规则时，可以这样运行：
 
 ```shell
 python3 -m script.hassfest --skip-plugins quality_scale
 ```
 
-The scaffold script does the same for a new integration. Before you open your pull request, run hassfest once more without skipping anything.
+脚手架脚本对新集成也会做同样的事情。在打开你的 pull request 之前，请再完整运行一次 hassfest，不要跳过任何插件。
 
 ## Pylint
 
-Next to the standard checks, core has its own pylint plugin, in `pylint/plugins/`. Its checks cover patterns Ruff cannot see, because they need type inference or read other files, like `manifest.json` and `quality_scale.yaml`. Many of them check the rules reviewers used to point out by hand. The [README of the plugin](https://github.com/home-assistant/core/blob/dev/pylint/plugins/README.md) explains every check.
+除了标准检查之外，core 还有自己的 pylint 插件，位于 `pylint/plugins/`。它的检查覆盖了 Ruff 无法发现的模式，因为这些检查需要类型推断或读取其他文件，比如 `manifest.json` 和 `quality_scale.yaml`。其中许多检查对应的是审查者过去手动指出的问题。[该插件的 README](https://github.com/home-assistant/core/blob/dev/pylint/plugins/README.md) 解释了每一项检查。
 
-If pylint is wrong about your code, and only then, disable the check for that one line, with the name of the check rather than its code:
+如果 pylint 对你的代码判断有误（且仅在这种情况下），请使用检查的名称（而不是其代码）为那一行禁用该检查：
 
 ```python
 hass.data[DOMAIN] = data  # pylint: disable=home-assistant-use-runtime-data
 ```
 
-Reviewers will ask why, so be ready to explain it.
+审查者会询问原因，所以请准备好解释。
 
 ## CI
 
-When you open a pull request, GitHub Actions runs the CI workflow. It runs the hooks, hassfest, pylint, and mypy, checks the requirements and the licenses of new dependencies, and runs the tests on every supported Python version. For a change to one integration, it only runs the tests of that integration. A change to core itself runs the full suite.
+当你打开 pull request 时，GitHub Actions 会运行 CI 工作流。它会运行钩子、hassfest、pylint 和 mypy，检查依赖项的要求和许可证，并在每个受支持的 Python 版本上运行测试。对于只涉及一个集成的修改，它只运行该集成的测试。涉及 core 本身的修改则会运行完整的测试套件。
 
-If your GitHub account is new, CI on your first pull request does not start until a maintainer approves it. That is a security measure, not a judgment of your code.
+如果你的 GitHub 账号是新的，在你第一个 pull request 上的 CI 不会启动，直到有维护者批准它。这是一项安全措施，并不是对你代码的评价。
 
-If CI fails because of your change, convert your pull request to a draft, fix it, and mark it ready again. Some tests are flaky. If you are sure a failure has nothing to do with your change, say so in the pull request and wait for a maintainer. Do not keep restarting the run.
+如果 CI 因为你的修改而失败，请将 pull request 转为草稿，修复问题，然后再标记为就绪。有些测试是不稳定的（flaky）。如果你确信某次失败与你的修改无关，请在 pull request 中说明，并等待维护者处理。不要反复重启运行。

@@ -1,64 +1,64 @@
 ---
-title: Vacuum entity
-description: Build a vacuum entity for a robot vacuum that cleans, docks, and can clean specific areas of the home.
+title: 吸尘器实体
+description: 为能够清扫、回充并清扫家中特定区域的扫地机器人构建吸尘器实体。
 sidebarLabel: Vacuum
 sidebarGroup: Appliances
 ---
 
-A vacuum entity controls a robot vacuum cleaner: start and pause cleaning, send it back to its dock, and, where the robot supports it, set the suction power, find it, or clean specific rooms. Inherit from `StateVacuumEntity` in `homeassistant.components.vacuum`. Robot mops and combined vacuum and mop robots use the same entity.
+吸尘器实体（vacuum entity）控制一台扫地机器人：开始和暂停清扫、让它返回充电座，并在机器人支持的情况下设置吸力、找到它，或清扫特定房间。请继承 `homeassistant.components.vacuum` 中的 `StateVacuumEntity`。拖地机器人和吸拖一体机器人也使用相同的实体。
 
-For how the frontend shows a vacuum, see the [vacuum more-info view](/design/more-info/vacuum/).
+关于前端如何展示吸尘器，请参阅[吸尘器更多信息视图](/design/more-info/vacuum/)。
 
-## Properties
+## 属性
 
-Vacuum entities have these properties on top of the [generic entity properties](/core/entities/entity-class/). Every property can be set with its `_attr_` attribute, like `_attr_activity`.
+吸尘器实体在[通用实体属性](/core/entities/entity-class/)的基础上还具有以下属性。每个属性都可以通过其 `_attr_` 属性来设置，例如 `_attr_activity`。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `activity` | `VacuumActivity \| None` | `None` | What the vacuum is doing right now. See [States](#states). |
-| `fan_speed` | `str \| None` | `None` | The current fan speed. Requires `VacuumEntityFeature.FAN_SPEED`. |
-| `fan_speed_list` | `list[str]` | Required with `FAN_SPEED` | The fan speeds the vacuum supports. |
+| `activity` | `VacuumActivity \| None` | `None` | 吸尘器当前正在做什么。参见[状态](#states)。 |
+| `fan_speed` | `str \| None` | `None` | 当前的风速。需要 `VacuumEntityFeature.FAN_SPEED`。 |
+| `fan_speed_list` | `list[str]` | 使用 `FAN_SPEED` 时必填 | 吸尘器支持的各个风速。 |
 
-Older vacuum entities reported the battery level and a status text. Those properties are gone: expose the battery as a [sensor](/core/entities/sensor/) with the `battery` device class, and errors or detailed status as separate sensors or an [event](/core/entities/event/).
+旧版吸尘器实体会报告电池电量和一段状态文本。这些属性已被移除：请将电池作为带有 `battery` 设备类别的[传感器](/core/entities/sensor/)暴露，并将错误或详细状态作为单独的传感器或[事件](/core/entities/event/)暴露。
 
-## Supported features
+## 支持的功能
 
-Combine the values of `VacuumEntityFeature` with the bitwise or (`|`) operator. Home Assistant only offers the actions of the features you set.
+使用按位或（`|`）运算符组合 `VacuumEntityFeature` 的各个值。Home Assistant 只会提供你所设置功能对应的操作。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `STATE` | The vacuum reports its activity. Set it on every vacuum entity. |
-| `START` | The vacuum can start or resume cleaning. Implement `start`. |
-| `PAUSE` | The vacuum can pause cleaning. Implement `pause`. |
-| `STOP` | The vacuum can stop where it is. Implement `stop`. |
-| `RETURN_HOME` | The vacuum can return to its dock. Implement `return_to_base`. |
-| `FAN_SPEED` | The vacuum has fan speeds. Implement `set_fan_speed` and provide `fan_speed` and `fan_speed_list`. |
-| `LOCATE` | The vacuum can make itself known, usually with a sound. Implement `locate`. |
-| `CLEAN_SPOT` | The vacuum can clean the spot it is on. Implement `clean_spot`. |
-| `CLEAN_AREA` | The vacuum can clean specific areas. Implement `async_get_segments` and `clean_segments`. See [Cleaning areas](#cleaning-areas). |
-| `SEND_COMMAND` | The vacuum accepts raw commands. Implement `send_command`. |
-| `MAP` | The vacuum has a map. Home Assistant has no method for it, so this flag is information only. |
+| `STATE` | 吸尘器报告其活动。请在每个吸尘器实体上设置它。 |
+| `START` | 吸尘器可以开始或恢复清扫。请实现 `start`。 |
+| `PAUSE` | 吸尘器可以暂停清扫。请实现 `pause`。 |
+| `STOP` | 吸尘器可以在原地停止。请实现 `stop`。 |
+| `RETURN_HOME` | 吸尘器可以返回充电座。请实现 `return_to_base`。 |
+| `FAN_SPEED` | 吸尘器具有风速功能。请实现 `set_fan_speed`，并提供 `fan_speed` 和 `fan_speed_list`。 |
+| `LOCATE` | 吸尘器可以让用户找到它，通常通过发出声音。请实现 `locate`。 |
+| `CLEAN_SPOT` | 吸尘器可以清扫其所在的位置。请实现 `clean_spot`。 |
+| `CLEAN_AREA` | 吸尘器可以清扫特定区域。请实现 `async_get_segments` 和 `clean_segments`。参见[清扫区域](#cleaning-areas)。 |
+| `SEND_COMMAND` | 吸尘器接受原始命令。请实现 `send_command`。 |
+| `MAP` | 吸尘器具有地图。Home Assistant 没有对应的方法，因此此标志仅用于提供信息。 |
 
-`TURN_ON`, `TURN_OFF`, and `STATUS` are deprecated and do nothing for a `StateVacuumEntity`.
+`TURN_ON`、`TURN_OFF` 和 `STATUS` 已被弃用，对于 `StateVacuumEntity` 它们不起任何作用。
 
-Prefer a dedicated action of your integration over `SEND_COMMAND`. The `vacuum.send_command` action takes free form input, which is hard to use and impossible to document well.
+相比 `SEND_COMMAND`，请优先使用你的集成提供的专用操作（action）。`vacuum.send_command` 操作接受自由格式的输入，难以使用，也无法很好地编写文档。
 
-## Cleaning areas
+## 清扫区域
 
-With `CLEAN_AREA`, users can tell the vacuum to clean Home Assistant [areas](/glossary/area/), like the kitchen, instead of rooms in the app of the manufacturer. The robot knows its own rooms, called segments here. The user maps areas to segments once, in the entity settings, and Home Assistant stores that mapping in the entity registry options of the entity.
+使用 `CLEAN_AREA`，用户可以让吸尘器清扫 Home Assistant 的[区域](/glossary/area/)（例如厨房），而不是制造商应用中的房间。机器人了解自己的房间，在这里称为分区（segment）。用户只需在实体设置中将区域映射到分区一次，Home Assistant 就会将该映射存储在此实体的实体注册表选项中。
 
-Your part:
+你需要实现的部分：
 
-- `async_get_segments()` returns the segments the robot knows, as a list of `Segment(id, name, group)`. The `id` must be unique within the entity. `group` only groups segments in the mapping dialog, like per floor or per map. Home Assistant calls it when the user opens the mapping, so return fresh data.
-- `clean_segments(segment_ids)` or `async_clean_segments(segment_ids)` cleans the given segments. Home Assistant calls it from the `vacuum.clean_area` action, after it translated the areas to segments.
+- `async_get_segments()` 以 `Segment(id, name, group)` 列表的形式返回机器人已知的分区。`id` 在实体内必须唯一。`group` 仅用于在映射对话框中对分区进行分组，例如按楼层或按地图分组。Home Assistant 会在用户打开映射时调用它，因此请返回最新的数据。
+- `clean_segments(segment_ids)` 或 `async_clean_segments(segment_ids)` 清扫给定的分区。Home Assistant 在将区域转换为分区之后，会从 `vacuum.clean_area` 操作中调用它。
 
-Robots change their maps: a new room shows up, two rooms are merged. To catch that, compare what the robot reports now with `last_seen_segments`, the segments that existed when the user last saved the mapping. When they differ, call `async_create_segments_issue()`. That creates a [repair](/glossary/repair/) that asks the user to update the mapping. `last_seen_segments` is `None` until a mapping is saved; don't raise the issue then.
+机器人会更改其地图：出现新房间，或者两个房间被合并。为了捕获这种变化，请将机器人当前报告的内容与 `last_seen_segments`（用户上次保存映射时存在的分区）进行比较。当两者不同时，调用 `async_create_segments_issue()`。这会创建一个[修复项（repair）](/glossary/repair/)，要求用户更新映射。在保存映射之前，`last_seen_segments` 为 `None`；此时不要触发该修复项。
 
-## Methods
+## 方法
 
-Each method has a sync variant and an `async_` variant. Implement one of them, depending on whether your library is blocking or async.
+每个方法都有一个同步变体和一个 `async_` 变体。根据你的库是阻塞式还是异步式，实现其中之一即可。
 
-| Method | Async variant | Feature |
+| 方法 | 异步变体 | 功能 |
 | ------ | ------------- | ------- |
 | `start()` | `async_start()` | `START` |
 | `pause()` | `async_pause()` | `PAUSE` |
@@ -71,20 +71,20 @@ Each method has a sync variant and an `async_` variant. Implement one of them, d
 | | `async_get_segments()` | `CLEAN_AREA` |
 | `send_command(command, params, **kwargs)` | `async_send_command(command, params, **kwargs)` | `SEND_COMMAND` |
 
-## States
+## 状态
 
-The state is the `activity` of the vacuum, a value of `VacuumActivity`. The `state` property is final: set `activity` instead.
+状态（state）就是吸尘器的 `activity`，即 `VacuumActivity` 的一个值。`state` 属性是最终确定的：请改为设置 `activity`。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `CLEANING` | The vacuum is cleaning. |
-| `DOCKED` | The vacuum is in its dock. Docked usually also means charging. |
-| `IDLE` | The vacuum is not cleaning, not paused, not docked, and has no error. |
-| `PAUSED` | The vacuum was cleaning and was paused, without going back to its dock. |
-| `RETURNING` | The vacuum is on its way back to the dock. |
-| `ERROR` | The vacuum ran into a problem and needs help. |
+| `CLEANING` | 吸尘器正在清扫。 |
+| `DOCKED` | 吸尘器在充电座中。停在充电座通常也意味着正在充电。 |
+| `IDLE` | 吸尘器没有在清扫、没有暂停、不在充电座中，也没有错误。 |
+| `PAUSED` | 吸尘器之前正在清扫并被暂停，且没有返回充电座。 |
+| `RETURNING` | 吸尘器正在返回充电座的途中。 |
+| `ERROR` | 吸尘器遇到了问题，需要帮助。 |
 
-## Example
+## 示例
 
 ```python
 from typing import Any
@@ -156,4 +156,4 @@ class MyVacuum(MyEntity, StateVacuumEntity):
         await self.coordinator.async_request_refresh()
 ```
 
-`MyEntity` is the shared base entity of the integration, a `CoordinatorEntity` that sets `_attr_has_entity_name = True` and the device info.
+`MyEntity` 是该集成共享的基础实体，它是一个设置了 `_attr_has_entity_name = True` 和设备信息的 `CoordinatorEntity`。

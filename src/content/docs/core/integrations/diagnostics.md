@@ -1,19 +1,19 @@
 ---
-title: Diagnostics
-description: Let users download the data of a config entry or device, so they can share it when they report a problem, without leaking secrets.
+title: 诊断
+description: 让用户下载配置条目或设备的数据，以便他们在报告问题时进行分享，且不会泄露机密信息。
 sidebarGroup: Integration features
 order: 4
 ---
 
-[Diagnostics](/glossary/diagnostics/) let users download a JSON file with the data of your integration, and attach it to an issue. For you as a maintainer, that is often the fastest way to see what is going on at the home of a user.
+[诊断（diagnostics）](/glossary/diagnostics/)功能让用户下载一个包含您的集成（integration）数据的 JSON 文件，并将其附加到 issue 中。对于作为维护者的您来说，这通常是了解用户家中情况的最快方式。
 
-Users download diagnostics for a config entry from the menu of the entry on the integration page, and for a device from the device page. If your integration has no device diagnostics, the device page offers the config entry diagnostics instead.
+用户可以在集成页面上通过配置条目（config entry）的菜单下载该条目的诊断数据，也可以在设备页面上下载设备的诊断数据。如果您的集成没有设备诊断功能，设备页面将改为提供配置条目的诊断数据。
 
-Diagnostics are a rule of the Gold tier of the [quality scale](/core/quality-scale/).
+诊断是[质量标准（quality scale）](/core/quality-scale/)金牌（Gold）级别的一项规则。
 
-## Add diagnostics
+## 添加诊断
 
-Create `diagnostics.py`, and implement one or both of these functions:
+创建 `diagnostics.py`，并实现以下一个或两个函数：
 
 ```python
 from typing import Any
@@ -47,18 +47,18 @@ async def async_get_device_diagnostics(
     return {"details": async_redact_data(appliance.raw_data, TO_REDACT)}
 ```
 
-## Leave out sensitive data
+## 排除敏感数据
 
-Users post diagnostics in public issues. Make sure nothing sensitive ends up in them, like:
+用户会在公开的 issue 中发布诊断数据。请确保其中不包含任何敏感信息，例如：
 
-- Passwords, API keys, and tokens
-- Location data, like coordinates and addresses
-- Personal information, like names and email addresses
+- 密码、API 密钥和令牌
+- 位置数据，例如坐标和地址
+- 个人信息，例如姓名和电子邮件地址
 
-`async_redact_data` replaces the values of the keys you list with `**REDACTED**`, also in nested dictionaries and lists. Values that are `None` or an empty string stay as they are, so you can still see that a value is not set. Check the output of your diagnostics by hand: data from an API often holds more than you expect.
+`async_redact_data` 会将您所列键的值替换为 `**REDACTED**`，包括嵌套字典和列表中的值。值为 `None` 或空字符串的值将保持原样，因此您仍然可以看出某个值未被设置。请手动检查诊断输出：来自 API 的数据所包含的内容往往超出您的预期。
 
-To include a device or entity registry entry, convert it with `device_entry_as_dict` or `entity_entry_as_dict` from `homeassistant.components.diagnostics`. They leave out the internal fields of the entry.
+要包含设备或实体（entity）注册表条目，请使用 `homeassistant.components.diagnostics` 中的 `device_entry_as_dict` 或 `entity_entry_as_dict` 对其进行转换。它们会省略条目的内部字段。
 
-## Test diagnostics
+## 测试诊断
 
-Test the output with a snapshot, so changes to it show up in review. The test helpers `get_diagnostics_for_config_entry` and `get_diagnostics_for_device` in `tests/components/diagnostics` return what users would download. See [snapshot tests](/core/development/tests/#snapshot-tests).
+使用快照（snapshot）来测试输出，这样对输出的更改就会在代码审查中显现出来。`tests/components/diagnostics` 中的测试辅助函数 `get_diagnostics_for_config_entry` 和 `get_diagnostics_for_device` 会返回用户将要下载的内容。请参阅[快照测试](/core/development/tests/#snapshot-tests)。

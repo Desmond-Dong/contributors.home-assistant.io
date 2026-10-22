@@ -1,31 +1,31 @@
 ---
-title: Notify entity
-description: Build a notify entity that sends messages to a device or service, like a chat, an email address, or a display.
+title: 通知实体
+description: 构建一个向设备或服务发送消息的通知（notify）实体，例如聊天、电子邮件地址或显示器。
 sidebarLabel: Notify
 sidebarGroup: Inputs and helpers
 ---
 
-A notify entity sends a message to a device or service: an SMS, an email, a chat message, or text on the display of a device. Once the message is sent, it is gone. Inherit from `NotifyEntity` in `homeassistant.components.notify`.
+通知实体（notify entity）向设备或服务发送消息：短信、电子邮件、聊天消息，或设备显示屏上的文本。消息一旦发送，便一去不返。请继承 `homeassistant.components.notify` 中的 `NotifyEntity`。
 
-If the device has a text value that stays and that people can change, use a [text](/core/entities/text/) entity instead.
+如果设备具有一个保持存在且用户可以更改的文本值，请改用[文本（text）实体](/core/entities/text/)。
 
-## Properties
+## 属性
 
-A notify entity has no platform specific properties. The generic properties every entity has, like `name`, `available`, and `unique_id`, are on [the entity class](/core/entities/entity-class/). A notify entity doesn't poll: `should_poll` is `False` by default.
+通知实体没有平台特定的属性。每个实体都具有的通用属性（如 `name`、`available` 和 `unique_id`）在[实体类](/core/entities/entity-class/)页面中有说明。通知实体不进行轮询：`should_poll` 默认为 `False`。
 
-## Supported features
+## 支持的功能
 
-| Constant | Description |
+| 常量 | 描述 |
 | --- | --- |
-| `NotifyEntityFeature.TITLE` | The entity supports a title next to the message. |
+| `NotifyEntityFeature.TITLE` | 实体支持在消息旁边附带一个标题。 |
 
-Set the features with `_attr_supported_features`. The default is no features. When you implement the sync `send_message`, the base class only passes `title` to it when you set `TITLE`. See [supported features](/glossary/supported-features/).
+使用 `_attr_supported_features` 设置功能。默认情况下没有任何功能。当你实现同步版的 `send_message` 时，只有在设置了 `TITLE` 的情况下，基类才会将 `title` 传递给它。参见[支持的功能](/glossary/supported-features/)。
 
-## Methods
+## 方法
 
-### Send message
+### 发送消息
 
-Called when an automation or script calls the `notify.send_message` action. Implement one of the two.
+当自动化（automation）或脚本调用 `notify.send_message` 动作（action）时被调用。请实现以下两种方法之一。
 
 ```python
 class MyNotifier(NotifyEntity):
@@ -40,17 +40,17 @@ class MyNotifier(NotifyEntity):
         """Send a message."""
 ```
 
-### Record a notification
+### 记录通知
 
-The base class records every message sent through `notify.send_message`. When your integration sends messages in other ways too, like through an action of its own with extra options, record those yourself: call `self._async_record_notification()`, or `self._record_notification()` from a thread outside the event loop. It updates the state and writes it.
+基类会记录通过 `notify.send_message` 发送的每一条消息。当你的集成（integration）也通过其他方式发送消息时，例如通过其自身的、带有额外选项的动作，你需要自行记录这些消息：调用 `self._async_record_notification()`，或者从事件循环之外的线程调用 `self._record_notification()`。它会更新状态（state）并将其写入。
 
-Only record messages that Home Assistant sent. Messages that come in from outside, or that another system sent, don't belong on a notify entity: use an [event](/core/entities/event/) entity for those.
+只记录由 Home Assistant 发送的消息。从外部传入的消息，或由其他系统发送的消息，不属于通知实体：请对这些消息使用[事件（event）实体](/core/entities/event/)。
 
-## States
+## 状态
 
-The state of a notify entity is the timestamp of the last message sent from Home Assistant, as an ISO 8601 string in UTC. It is `unknown` until the first message. The base class records it after your send method returns, and restores it after a restart. You can't set it yourself: `state` is final.
+通知实体的状态是从 Home Assistant 发送的最后一条消息的时间戳，以 UTC 的 ISO 8601 字符串表示。在第一条消息发送之前，它为 `unknown`。基类会在你的发送方法返回后记录它，并在重启后恢复它。你不能自行设置它：`state` 是 final 的。
 
-## Example
+## 示例
 
 ```python
 from homeassistant.components.notify import (
@@ -79,4 +79,4 @@ class ExampleChatNotifier(NotifyEntity):
         await self._client.post(self._channel, message, title=title)
 ```
 
-The channel name comes from the chat service, so the example uses it as the name of the entity instead of a translation key. See [naming entities](/core/entities/naming/).
+频道名称来自聊天服务，因此示例直接将它用作实体的名称，而不是使用翻译键。参见[实体命名](/core/entities/naming/)。

@@ -1,23 +1,23 @@
 ---
-title: Reproduce state
-description: Make scenes work with the entities of your entity integration, by turning a stored state back into action calls.
+title: 重现状态
+description: 通过将存储的状态转换回动作调用，让场景与您的实体集成中的实体协同工作。
 sidebarGroup: Integration features
 order: 7
 ---
 
-A [scene](/glossary/scene/) stores the states of a set of entities, like "the living room lights at 30% and warm white". When a scene is activated, Home Assistant has to turn those states back into reality, by calling the right actions. It asks the integration of each entity domain to do that.
+[场景](/glossary/scene/)（scene）存储一组实体（entity）的状态，例如“客厅灯光为 30% 且暖白色”。当场景被激活时，Home Assistant 必须通过调用正确的动作（action），将这些状态重新变为现实。它会请求每个实体域（entity domain）的集成（integration）来完成这项工作。
 
-This is for entity integrations, like `light` or `climate`: the integrations that define an entity type and its actions. An integration that only provides entities of an existing type, like a light platform, does not need it.
+这适用于实体集成，例如 `light` 或 `climate`：即定义实体类型及其动作的集成。而仅提供现有类型实体的集成（例如灯光平台）则不需要它。
 
-## Add support
+## 添加支持
 
-The quickest way is the scaffold script:
+最快的方法是使用脚手架（scaffold）脚本：
 
 ```shell
 python3 -m script.scaffold reproduce_state
 ```
 
-Or create `reproduce_state.py` with `async_reproduce_states`:
+或者创建带有 `async_reproduce_states` 的 `reproduce_state.py`：
 
 ```python
 from collections.abc import Iterable
@@ -36,6 +36,6 @@ async def async_reproduce_states(
     """Reproduce the given states."""
 ```
 
-For each state, compare it to the current state of the entity, skip it if they already match, and call the actions that get the entity to the stored state and attributes. Pass `context` on to the action calls, so the changes are linked to the scene. Log a warning for states you cannot reproduce, like an invalid state value, and skip them. Run the states in parallel, for example with `asyncio.gather`, so a scene with many entities is applied quickly.
+对于每个状态，将其与实体的当前状态进行比较，如果已经匹配则跳过，并调用相应的动作使实体达到所存储的状态和属性（attribute）。将 `context` 传递给动作调用，以便这些更改与场景相关联。对于无法重现的状态（例如无效的状态值），记录警告并跳过它们。并行执行这些状态，例如使用 `asyncio.gather`，这样包含许多实体的场景就能快速应用。
 
-The `reproduce_state.py` of the [switch integration](https://github.com/home-assistant/core/blob/dev/homeassistant/components/switch/reproduce_state.py) is a short, complete example.
+[switch 集成](https://github.com/home-assistant/core/blob/dev/homeassistant/components/switch/reproduce_state.py) 的 `reproduce_state.py` 是一个简短而完整的示例。

@@ -1,6 +1,6 @@
 ---
-title: Integration quality scale
-description: The tiers and rules that describe how good an integration is, how an integration earns a tier, and how to move it up.
+title: 集成质量等级
+description: 描述集成好坏程度的等级与规则：集成如何获得某个等级，以及如何提升等级。
 order: 30
 sidebarGroups:
   - Bronze
@@ -9,67 +9,67 @@ sidebarGroups:
   - Platinum
 ---
 
-Home Assistant has thousands of integrations, written by thousands of people. The integration quality scale is how the project describes, in one word, how good each of them is: Bronze, Silver, Gold, or Platinum. Every tier is a list of concrete rules, and an integration earns a tier by following every rule of that tier and of the tiers below it.
+Home Assistant 拥有由数千人编写的数千个集成（integration）。集成质量等级（quality scale）是本项目用一个词描述每个集成好坏程度的方式：铜牌（Bronze）、银牌（Silver）、金牌（Gold）或铂金（Platinum）。每个等级（tier）都是一组具体的规则，集成只有遵循该等级及其以下所有等级的每一条规则，才能获得该等级。
 
 > [!TIP]
-> Working on an integration? Start with [all rules](/core/quality-scale/rules/): every rule per tier on one page, with what it asks in one line, and a checklist to copy into your pull request.
+> 正在开发集成？请从[所有规则](/core/quality-scale/rules/)开始：每个等级的所有规则都在一页上，每条规则用一行文字说明其要求，并附有可复制到拉取请求（pull request）中的清单。
 
-## Why there is a scale
+## 为什么要有质量等级
 
-For users, the tier is a promise. They see it on the integration page in the documentation and in **Settings** > **Devices & services**. A Bronze integration sets up from the UI and has tests. A Gold integration is discovered on the network, can be reconfigured, has translated names and errors, and comes with documentation that tells you which devices work. Users pick devices based on this, so the tier has to be honest.
+对用户来说，等级是一种承诺。他们会在文档中的集成页面以及 **设置** > **设备与服务** 中看到它。铜牌集成可通过 UI 设置，并且有测试。金牌集成可通过网络发现、可重新配置，拥有经过翻译的名称和错误信息，并附带说明哪些设备可正常使用的文档。用户会据此选择设备，因此等级必须真实可信。
 
-For you as a contributor, the scale is a shared definition of "done". Instead of a reviewer's personal taste, there is a written rule with a reason behind it. You know what is expected before you open a pull request, and you know what to work on next when you want to improve an integration.
+对于作为贡献者的你来说，这套等级标准是“完成”的统一定义。这里有的是成文的规则及其背后的理由，而不是审查者的个人偏好。在打开拉取请求之前，你就知道别人期望什么；当你想改进某个集成时，也知道接下来该做什么。
 
-For maintainers and reviewers, it keeps thousands of integrations consistent. An integration that claims a rule is checked against it, partly by tools, and those claims can be relied on when the codebase moves forward.
+对于维护者和审查者来说，它让数千个集成保持一致。声称满足某条规则的集成会被对照该规则进行检查（部分由工具完成），这样当代码库向前发展时，这些声明才是可信的。
 
-## How it works
+## 工作原理
 
-- The tier of an integration is the `quality_scale` key in its `manifest.json`. Many older integrations were never graded and have no tier yet. A new integration must have one.
-- An integration with a tier also has a `quality_scale.yaml` file. It lists every rule and its status: `done`, `todo`, or `exempt` with a reason.
-- Hassfest, the validation script of core, checks that file. It fails when a rule that the tier needs is not `done` or `exempt`, and it runs extra checks on some rules that are marked `done`.
-- A reviewer checks the rest, and a member of the core team approves the new tier.
+- 集成的等级是其 `manifest.json` 中的 `quality_scale` 键。许多较旧的集成从未被评级，因此还没有等级。新集成则必须有一个等级。
+- 有等级的集成还会有一个 `quality_scale.yaml` 文件。它列出每条规则及其状态：`done`、`todo`，或附带原因的 `exempt`。
+- Hassfest（core 的验证脚本）会检查该文件。当该等级所需的某条规则既不是 `done` 也不是 `exempt` 时，检查会失败；此外，它还会对某些标记为 `done` 的规则运行额外检查。
+- 审查者检查其余部分，然后由核心团队成员批准新等级。
 
-New integrations must reach Bronze. There is no way into core below it.
+新集成必须达到铜牌。低于铜牌的集成无法进入 core。
 
-## Start here
+## 从这里开始
 
-1. [Tiers](/core/quality-scale/tiers/): what Bronze, Silver, Gold, and Platinum mean, and the tiers outside the scale, like internal and legacy.
-2. [All rules](/core/quality-scale/rules/): every rule on one page, per tier, with a checklist to copy into your pull request. This is where you find what to do.
-3. [Raise the tier of an integration](/core/quality-scale/raise-tier/): how to work your way up, how to check your work, and how to get the new tier reviewed.
-4. [The quality scale file](/core/quality-scale/quality-scale-file/): the format of `quality_scale.yaml`, and everything that checks it.
+1. [等级](/core/quality-scale/tiers/)：铜牌、银牌、金牌和铂金的含义，以及等级标准之外的等级，例如 internal（内部）和 legacy（遗留）。
+2. [所有规则](/core/quality-scale/rules/)：按等级将所有规则列在一页上，并附有可复制到拉取请求中的清单。在这里你可以找到该做什么。
+3. [提升集成的等级](/core/quality-scale/raise-tier/)：如何逐步提升等级、如何检查你的工作，以及如何让新等级接受审查。
+4. [质量等级文件](/core/quality-scale/quality-scale-file/)：`quality_scale.yaml` 的格式，以及检查该文件的所有机制。
 
-Building a new integration? It needs every [Bronze rule](/core/quality-scale/rules/#bronze). The [tutorial](/core/integrations/tutorial/) builds one that meets them.
+正在构建新集成？它需要满足每一条[铜牌规则](/core/quality-scale/rules/#bronze)。[教程](/core/integrations/tutorial/)构建的集成就满足这些规则。
 
-## The rules
+## 规则
 
-Every rule has its own page. [All rules](/core/quality-scale/rules/) lists them per tier, with a link to each. Each page explains what the rule asks, why, how to implement it, how it is checked, and when it does not apply. The rule pages use the same names as `quality_scale.yaml`, so `/core/quality-scale/entity-unique-id/` is the page of the `entity-unique-id` rule.
+每条规则都有自己的页面。[所有规则](/core/quality-scale/rules/)按等级列出它们，并附上各自的链接。每个页面都会解释该规则要求什么、为什么、如何实现、如何检查，以及何时不适用。规则页面使用与 `quality_scale.yaml` 中相同的名称，因此 `/core/quality-scale/entity-unique-id/` 就是 `entity-unique-id` 规则的页面。
 
-### Bronze
+### 铜牌（Bronze）
 
-The baseline: set up from the UI, a tested config flow, unique IDs, and basic documentation. Start with [config-flow](/core/quality-scale/config-flow/), or see [all 20 Bronze rules](/core/quality-scale/rules/#bronze).
+基础要求：可通过 UI 设置、经过测试的配置流程（config flow）、唯一 ID 以及基本文档。从 [config-flow](/core/quality-scale/config-flow/) 开始，或查看[全部 20 条铜牌规则](/core/quality-scale/rules/#bronze)。
 
-### Silver
+### 银牌（Silver）
 
-Reliability: handle errors and offline devices, reauthenticate, have an integration owner, and more than 95% test coverage. Start with [integration-owner](/core/quality-scale/integration-owner/), or see [all 10 Silver rules](/core/quality-scale/rules/#silver).
+可靠性：处理错误和离线设备、支持重新认证、拥有集成负责人（integration owner），以及超过 95% 的测试覆盖率。从 [integration-owner](/core/quality-scale/integration-owner/) 开始，或查看[全部 10 条银牌规则](/core/quality-scale/rules/#silver)。
 
-### Gold
+### 金牌（Gold）
 
-The best user experience: discovery, devices, translations, diagnostics, repairs, and full documentation for users. Start with [devices](/core/quality-scale/devices/), or see [all 21 Gold rules](/core/quality-scale/rules/#gold).
+最佳用户体验：发现（discovery）、设备、翻译、诊断、修复，以及面向用户的完整文档。从 [devices](/core/quality-scale/devices/) 开始，或查看[全部 21 条金牌规则](/core/quality-scale/rules/#gold)。
 
-### Platinum
+### 铂金（Platinum）
 
-Technical excellence: async dependencies, a shared web session, and strict typing. Start with [strict-typing](/core/quality-scale/strict-typing/), or see [all 3 Platinum rules](/core/quality-scale/rules/#platinum).
+技术卓越：异步依赖、共享的 Web 会话以及严格类型检查（strict typing）。从 [strict-typing](/core/quality-scale/strict-typing/) 开始，或查看[全部 3 条铂金规则](/core/quality-scale/rules/#platinum)。
 
 
-## Related pages
+## 相关页面
 
-- [Building integrations](/core/integrations/): how integrations work, and the files they are made of.
-- [Writing tests](/core/development/tests/): the tests that several rules ask for.
-- [Write integration documentation](/writing/guides/integration/): the documentation rules are about the integration page on [home-assistant.io](https://www.home-assistant.io/).
-- [Make your strings translatable](/translate/guides/developers/): for the translation rules.
+- [构建集成](/core/integrations/)：集成如何工作，以及它们由哪些文件组成。
+- [编写测试](/core/development/tests/)：多条规则所要求的测试。
+- [编写集成文档](/writing/guides/integration/)：文档类规则针对的是 [home-assistant.io](https://www.home-assistant.io/) 上的集成页面。
+- [让你的字符串可翻译](/translate/guides/developers/)：对应翻译相关的规则。
 
-## Who to talk to
+## 与谁交流
 
-- Ask about a rule, or whether an exemption is reasonable, in the **#core** channel on the [Home Assistant Discord](https://www.home-assistant.io/join-chat/).
-- The integration owners of an integration, listed as `codeowners` in its `manifest.json`, know best where it stands. Mention them in your pull request.
-- Ideas to change a rule, or to add one, belong in the [architecture discussions](https://github.com/home-assistant/architecture/discussions).
+- 关于某条规则的问题，或者某个豁免（exemption）是否合理，可以在 [Home Assistant Discord](https://www.home-assistant.io/join-chat/) 的 **#core** 频道中提问。
+- 集成的负责人（在 `manifest.json` 中列为 `codeowners`）最清楚该集成目前的状态。请在你的拉取请求中提及他们。
+- 修改或新增规则的想法应提交到[架构讨论](https://github.com/home-assistant/architecture/discussions)。

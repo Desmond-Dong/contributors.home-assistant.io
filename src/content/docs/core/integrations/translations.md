@@ -1,63 +1,63 @@
 ---
-title: Integration translations
-description: Every section of an integration's strings.json, how references and placeholders work, and how custom integrations ship their own translations.
+title: 集成翻译
+description: 集成的 strings.json 的各个章节、引用与占位符的工作方式，以及自定义集成如何提供自己的翻译。
 sidebarGroup: Reference
 order: 3
 sidebarLabel: Translations
 ---
 
-Every piece of text your integration shows to users lives in `strings.json`, in the folder of your integration. Code never contains user facing text: it refers to a key, and Home Assistant looks up the text in the language of the user. That covers the config flow, entity names and states, errors, repair issues, actions, and more.
+集成展示给用户的每一段文本都存放在你集成文件夹中的 `strings.json` 里。代码中从不包含面向用户的文本：代码只引用一个键，由 Home Assistant 以用户的语言查找相应的文本。这涵盖了配置流程（config flow）、实体（entity）名称与状态（state）、错误、修复（repair）问题、动作（action）等等。
 
-`strings.json` holds the English source text. After your pull request is merged, the English strings are uploaded to [Lokalise](/glossary/lokalise/), translators translate them, and the translations are pulled back into core. You do not need to do anything for that. See [how translation works](/translate/how-it-works/) for the whole journey, and [make your strings translatable](/translate/guides/developers/) for how to write strings that translators can work with.
+`strings.json` 存放英文源文本。在你的 pull request 合并后，英文字符串会被上传到 [Lokalise](/glossary/lokalise/)，由翻译人员进行翻译，翻译结果再被拉回到 core 中。你无需为此做任何事情。整个流程请参阅[翻译是如何工作的](/translate/how-it-works/)，如何编写便于翻译人员处理的字符串请参阅[让你的字符串可翻译](/translate/guides/developers/)。
 
-This page is the reference for the file itself: which sections exist and what goes in them. The structure is checked by hassfest (`script/hassfest/translations.py` in core), so when this page and hassfest disagree, hassfest wins.
+本页面是该文件本身的参考：有哪些章节，以及每个章节中应放入什么内容。文件结构由 hassfest（core 中的 `script/hassfest/translations.py`）检查，因此当本页面与 hassfest 不一致时，以 hassfest 为准。
 
-## See your changes
+## 查看你的更改
 
-Home Assistant does not read `strings.json` directly. It reads the compiled files in the `translations` folder of the integration, which are generated and not committed. Compile your strings to see them in the UI:
+Home Assistant 不会直接读取 `strings.json`。它读取的是集成 `translations` 文件夹中编译后的文件，这些文件是生成的，不会被提交。编译你的字符串即可在 UI 中看到它们：
 
 ```shell
 python3 -m script.translations develop --integration example
 ```
 
-Leave out `--integration` to be asked for one, or use `--all` for all integrations. If a change does not show, restart Home Assistant and clear the cache of your browser.
+省略 `--integration` 则会提示你选择一个集成，或者使用 `--all` 处理所有集成。如果更改没有显示，请重启 Home Assistant 并清除浏览器的缓存。
 
-## The sections
+## 各章节
 
-All sections are optional. Add the ones your integration needs.
+所有章节都是可选的。添加你的集成所需要的章节即可。
 
-| Section | What it translates |
+| 章节 | 翻译的内容 |
 | --- | --- |
-| `title` | The name of the integration, only when it is not a brand name |
-| `common` | Strings your integration reuses in several places |
-| `config` | The [config flow](/core/integrations/config-flow/) |
-| `options` | The [options flow](/core/integrations/options-flow/) |
-| `config_subentries` | The flows of [subentries](/core/integrations/subentries/) |
-| `selector` | Options and labels of selectors in flows, actions, triggers, and conditions |
-| `entity` | Names, states, state attributes, and units of your entities |
-| `entity_component` | States and attributes of an entity domain, for integrations that are one, like `sensor` |
-| `device` | Names of your devices |
-| `exceptions` | Messages of exceptions you raise |
-| `issues` | [Repair](/core/integrations/repairs/) issues and their repair flows |
-| `services` | Names and descriptions of your [actions](/core/integrations/actions/) and their fields |
-| `triggers` | Names and descriptions of your [triggers](/core/integrations/triggers-and-conditions/) |
-| `conditions` | Names and descriptions of your [conditions](/core/integrations/triggers-and-conditions/) |
-| `device_automation` | [Device triggers, conditions, and actions](/core/integrations/device-automations/) |
-| `system_health` | Labels on the [system health](/core/integrations/system-health/) page |
-| `application_credentials` | The explanation in the [application credentials](/core/integrations/oauth2/#help-users-create-credentials) dialog |
-| `preview_features` | [Labs](/core/development/labs/) preview features |
+| `title` | 集成的名称，仅当它不是品牌名称时使用 |
+| `common` | 你的集成在多处复用的字符串 |
+| `config` | [配置流程](/core/integrations/config-flow/) |
+| `options` | [选项流程](/core/integrations/options-flow/) |
+| `config_subentries` | [子条目（subentry）](/core/integrations/subentries/)的流程 |
+| `selector` | 流程、动作、触发器和条件中选择器（selector）的选项和标签 |
+| `entity` | 你的实体的名称、状态、状态属性和单位 |
+| `entity_component` | 实体域（entity domain）的状态和属性，适用于本身就是实体域的集成，例如 `sensor` |
+| `device` | 你的设备的名称 |
+| `exceptions` | 你抛出的异常的消息 |
+| `issues` | [修复](/core/integrations/repairs/)问题及其修复流程 |
+| `services` | 你的[动作](/core/integrations/actions/)及其字段的名称和描述 |
+| `triggers` | 你的[触发器（trigger）](/core/integrations/triggers-and-conditions/)的名称和描述 |
+| `conditions` | 你的[条件（condition）](/core/integrations/triggers-and-conditions/)的名称和描述 |
+| `device_automation` | [设备触发器、条件和动作](/core/integrations/device-automations/) |
+| `system_health` | [系统健康（system health）](/core/integrations/system-health/)页面上的标签 |
+| `application_credentials` | [应用凭证（application credentials）](/core/integrations/oauth2/#help-users-create-credentials)对话框中的说明 |
+| `preview_features` | [Labs](/core/development/labs/) 预览功能 |
 
-A few more sections exist for specific integrations: `config_panel` for integrations that bring their own configuration panel, like ZHA and KNX, and `conversation` for the conversation integration. The `auth`, `onboarding`, and `homeassistant_hardware` integrations each have their own schema.
+还有一些针对特定集成的章节：`config_panel` 用于自带配置面板的集成，例如 ZHA 和 KNX；`conversation` 用于 conversation 集成。`auth`、`onboarding` 和 `homeassistant_hardware` 集成各自拥有自己的模式（schema）。
 
-## Title
+## 标题
 
-The name of your integration comes from the [manifest](/core/integrations/manifest/), and is a brand name in almost every case. Brand names are not translated, so leave `title` out.
+你的集成的名称来自[清单（manifest）](/core/integrations/manifest/)，在绝大多数情况下它是一个品牌名称。品牌名称不会被翻译，因此请省略 `title`。
 
-Only add `title` when the name is a description rather than a brand, like "Local calendar". For core integrations, hassfest refuses a `title` that equals the name in the manifest, unless the integration is on its allow list.
+仅当名称是描述性文字而不是品牌时才添加 `title`，例如“Local calendar”。对于 core 集成，hassfest 会拒绝与 manifest 中名称相同的 `title`，除非该集成在其允许列表中。
 
-## Flows
+## 流程
 
-`config`, `options`, and each type under `config_subentries` share one format:
+`config`、`options` 以及 `config_subentries` 下的每种类型都共用一种格式：
 
 ```json
 {
@@ -85,23 +85,23 @@ Only add `title` when the name is a description rather than a brand, like "Local
 }
 ```
 
-| Key | What it is |
+| 键 | 含义 |
 | --- | --- |
-| `flow_title` | The title of a flow in the list of discovered devices. See [the flow title](/core/integrations/config-flow/#the-flow-title). |
-| `step` | Per step ID: `title`, `description`, `data`, `data_description`, `sections`, `menu_options`, `menu_option_descriptions`, and `submit` (the label of the submit button) |
-| `error` | Errors shown on a form, keyed by the error you return |
-| `abort` | Reasons a flow aborts. Supports Markdown. |
-| `progress` | Messages for a progress step, keyed by `progress_action` |
-| `create_entry` | Messages shown when the entry is created. `default` is used when you pass no description. |
-| `initiate_flow` | Labels of the buttons that start a flow. `user` is required when you add it. |
+| `flow_title` | 发现的设备列表中显示的流程标题。请参阅[流程标题](/core/integrations/config-flow/#the-flow-title)。 |
+| `step` | 每个步骤 ID：`title`、`description`、`data`、`data_description`、`sections`、`menu_options`、`menu_option_descriptions`，以及 `submit`（提交按钮的标签） |
+| `error` | 表单上显示的错误，以你返回的错误为键 |
+| `abort` | 流程中止的原因。支持 Markdown。 |
+| `progress` | 进度步骤的消息，以 `progress_action` 为键 |
+| `create_entry` | 创建条目时显示的消息。未传入描述时使用 `default`。 |
+| `initiate_flow` | 启动流程的按钮的标签。添加它时 `user` 为必填。 |
 
-Every key in `data_description` needs a matching key in `data`. The keys of a step are explained in [forms, menus, and progress](/core/integrations/flow-steps/#labels-and-descriptions).
+`data_description` 中的每个键都需要在 `data` 中有对应的键。步骤的各个键在[表单、菜单和进度](/core/integrations/flow-steps/#labels-and-descriptions)中说明。
 
-Subentry types also need `entry_type` and `initiate_flow`. See [subentries](/core/integrations/subentries/#texts-and-translations). Helper integrations must give their `user` step a `description`.
+子条目类型还需要 `entry_type` 和 `initiate_flow`。请参阅[子条目](/core/integrations/subentries/#texts-and-translations)。辅助元素（helper）集成必须为其 `user` 步骤提供 `description`。
 
-## Selectors
+## 选择器
 
-Selectors in a flow, an action, a trigger, or a condition get their own text through a `translation_key` in their config. The text goes under `selector`, keyed by that translation key:
+流程、动作、触发器或条件中的选择器通过其配置中的 `translation_key` 获得自己的文本。这些文本放在 `selector` 下面，以该翻译键（translation key）为键：
 
 ```json
 {
@@ -126,14 +126,14 @@ SelectSelector(
 )
 ```
 
-Which keys apply depends on the selector:
+哪些键适用取决于选择器的类型：
 
-- `options`: the options of a select selector
-- `unit_of_measurement`: the units of a number selector
-- `choices`: the choices of a choose selector
-- `fields`: the fields of an object selector, each with a `name`, an optional `description`, and an optional `overview_label`
+- `options`：select 选择器的选项
+- `unit_of_measurement`：number 选择器的单位
+- `choices`：choose 选择器的选项
+- `fields`：object 选择器的字段，每个字段都有一个 `name`、一个可选的 `description` 和一个可选的 `overview_label`
 
-An object selector shows the items you added as a list, with the values of their fields. The `overview_label` of a field sets the text for its value in that list. It must contain the `{value}` placeholder and no other placeholders. The frontend fills in the formatted value of the field, so your code passes nothing. Without an `overview_label`, the list shows only the value.
+object 选择器会把你添加的条目以列表形式展示，并列出其各字段的值。字段的 `overview_label` 用于设置其值在该列表中显示的文本。它必须包含 `{value}` 占位符（placeholder），且不能包含其他占位符。前端会填入该字段格式化后的值，因此你的代码无需传递任何内容。如果没有 `overview_label`，列表则只显示该值。
 
 ```json
 {
@@ -151,9 +151,9 @@ An object selector shows the items you added as a list, with the values of their
 }
 ```
 
-## Entities
+## 实体
 
-The `entity` section translates your entities, keyed by entity domain and then by the [translation key](/glossary/translation-key/) of the entity:
+`entity` 章节翻译你的实体，先以实体域为键，再以实体的[翻译键](/glossary/translation-key/)为键：
 
 ```json
 {
@@ -183,18 +183,18 @@ The `entity` section translates your entities, keyed by entity domain and then b
 }
 ```
 
-- `name`: the name of the entity. See [translated names](/core/entities/naming/#translated-names), including placeholders in names.
-- `state`: the text for each state. States are lowercase keys, like `eco`, never text. See the [select](/core/entities/select/) entity for an example.
-- `state_attributes`: the name and the states of attributes.
-- `unit_of_measurement`: a unit that is a word, like "steps". An entity with a translated unit does not set `native_unit_of_measurement`. See [sensor](/core/entities/sensor/).
+- `name`：实体的名称。请参阅[翻译后的名称](/core/entities/naming/#translated-names)，包括名称中的占位符。
+- `state`：每个状态的文本。状态是小写的键，例如 `eco`，绝不是文本。示例请参阅 [select](/core/entities/select/) 实体。
+- `state_attributes`：属性的名称及其状态。
+- `unit_of_measurement`：以单词表示的单位，例如“steps”。带有翻译单位的实体不会设置 `native_unit_of_measurement`。请参阅 [sensor](/core/entities/sensor/)。
 
-States, state attributes, and units cannot contain placeholders. Icons use the same translation key, in `icons.json`. See [icons](/core/entities/icons/).
+状态、状态属性和单位不能包含占位符。图标使用相同的翻译键，位于 `icons.json` 中。请参阅[图标](/core/entities/icons/)。
 
-Entity translations are a rule of the Gold tier of the quality scale: see [entity translations](/core/quality-scale/entity-translations/).
+实体翻译是质量等级（quality scale）金牌（Gold）级的一项规则：请参阅[实体翻译](/core/quality-scale/entity-translations/)。
 
-## Entity components
+## 实体组件
 
-Integrations that are an entity domain, like `sensor` or `binary_sensor`, translate their states and attributes under `entity_component`, keyed by device class. The key `_` is for entities without a device class:
+本身就是实体域的集成（例如 `sensor` 或 `binary_sensor`）在 `entity_component` 下翻译其状态和属性，以设备类别（device class）为键。键 `_` 用于没有设备类别的实体：
 
 ```json
 {
@@ -217,11 +217,11 @@ Integrations that are an entity domain, like `sensor` or `binary_sensor`, transl
 }
 ```
 
-Each device class can have a `name`, `state`, and `state_attributes`, in the same shape as under `entity`. Other integrations reuse these strings with references, like `[%key:component::sensor::entity_component::temperature::name%]`.
+每个设备类别都可以有 `name`、`state` 和 `state_attributes`，其结构与 `entity` 下相同。其他集成通过引用（reference）来复用这些字符串，例如 `[%key:component::sensor::entity_component::temperature::name%]`。
 
-## Devices
+## 设备
 
-The `device` section translates device names, keyed by the translation key you pass in the device info:
+`device` 章节翻译设备名称，以你在设备信息（device info）中传入的翻译键为键：
 
 ```json
 {
@@ -233,11 +233,11 @@ The `device` section translates device names, keyed by the translation key you p
 }
 ```
 
-With a translation key, the `name` of the device info is ignored. If the key has no translation, the translation key itself becomes the name. Fill placeholders with `translation_placeholders`. See the [device registry](/core/integrations/device-registry/).
+有了翻译键后，设备信息中的 `name` 会被忽略。如果该键没有翻译，翻译键本身就会成为名称。使用 `translation_placeholders` 填充占位符。请参阅[设备注册表（device registry）](/core/integrations/device-registry/)。
 
-## Exceptions
+## 异常
 
-Exceptions that extend `HomeAssistantError` take a `translation_domain`, `translation_key`, and `translation_placeholders`. Their messages go under `exceptions`:
+继承自 `HomeAssistantError` 的异常接受 `translation_domain`、`translation_key` 和 `translation_placeholders`。它们的消息放在 `exceptions` 下面：
 
 ```json
 {
@@ -249,15 +249,15 @@ Exceptions that extend `HomeAssistantError` take a `translation_domain`, `transl
 }
 ```
 
-See [setup failures and exceptions](/core/integrations/setup-failures/) for where to raise them, and the [exception translations](/core/quality-scale/exception-translations/) rule of the quality scale.
+请参阅[设置失败与异常](/core/integrations/setup-failures/)了解在哪里抛出异常，以及质量等级中的[异常翻译](/core/quality-scale/exception-translations/)规则。
 
-## Issues
+## 问题
 
-Repair issues go under `issues`, keyed by the translation key of the issue. Each issue has a `title`, an optional `short_title`, and either a `description` or a `fix_flow`, never both. A `fix_flow` has the same format as a [flow](#flows). See [repairs](/core/integrations/repairs/).
+修复问题放在 `issues` 下面，以该问题的翻译键为键。每个问题都有一个 `title`、一个可选的 `short_title`，以及 `description` 或 `fix_flow` 之一，绝不能两者兼有。`fix_flow` 的格式与[流程](#flows)相同。请参阅[修复](/core/integrations/repairs/)。
 
-## Actions
+## 动作
 
-The names and descriptions of your actions go under `services`:
+你的动作的名称和描述放在 `services` 下面：
 
 ```json
 {
@@ -281,60 +281,60 @@ The names and descriptions of your actions go under `services`:
 }
 ```
 
-Every action needs a `name` and a `description`, and every field needs a `name`. Fields can also have an `example`. Fields inside a collapsible section still go under `fields`; `sections` only names the sections. See [actions](/core/integrations/actions/#names-and-descriptions).
+每个动作都需要一个 `name` 和一个 `description`，每个字段都需要一个 `name`。字段还可以有一个 `example`。可折叠章节内的字段仍然放在 `fields` 下面；`sections` 只为章节命名。请参阅[动作](/core/integrations/actions/#names-and-descriptions)。
 
-## Triggers and conditions
+## 触发器和条件
 
-`triggers` and `conditions` work like `services`: per trigger or condition, a `name`, a `description`, and `fields` with a `name`, an optional `description`, and an optional `example`. They have no `sections`. See [triggers and conditions](/core/integrations/triggers-and-conditions/) for how to name them.
+`triggers` 和 `conditions` 的工作方式与 `services` 类似：每个触发器或条件有一个 `name`、一个 `description`，以及包含 `name`、可选 `description` 和可选 `example` 的 `fields`。它们没有 `sections`。关于如何命名，请参阅[触发器和条件](/core/integrations/triggers-and-conditions/)。
 
-## Device automations
+## 设备自动化
 
-Device triggers, conditions, and actions go under `device_automation`, in `trigger_type`, `trigger_subtype`, `condition_type`, and `action_type`. Extra fields of a device automation get labels in `extra_fields` and descriptions in `extra_fields_descriptions`. See [device automations](/core/integrations/device-automations/#texts).
+设备触发器、条件和动作放在 `device_automation` 下面，分为 `trigger_type`、`trigger_subtype`、`condition_type` 和 `action_type`。设备自动化的额外字段在 `extra_fields` 中获得标签，在 `extra_fields_descriptions` 中获得描述。请参阅[设备自动化](/core/integrations/device-automations/#texts)。
 
-## Other sections
+## 其他章节
 
-- `system_health`: the labels of your system health information, under `info`. See [system health](/core/integrations/system-health/#texts).
-- `application_credentials`: a `description` for the dialog where users enter their credentials. See [OAuth 2.0](/core/integrations/oauth2/#help-users-create-credentials).
-- `preview_features`: a `name` and `description` per feature, plus optional `enable_confirmation` and `disable_confirmation`. The description can contain links, but no placeholders. See [Labs](/core/development/labs/).
+- `system_health`：你的系统健康信息的标签，放在 `info` 下面。请参阅[系统健康](/core/integrations/system-health/#texts)。
+- `application_credentials`：用户输入凭证的对话框的 `description`。请参阅 [OAuth 2.0](/core/integrations/oauth2/#help-users-create-credentials)。
+- `preview_features`：每个功能有一个 `name` 和 `description`，外加可选的 `enable_confirmation` 和 `disable_confirmation`。描述可以包含链接，但不能包含占位符。请参阅 [Labs](/core/development/labs/)。
 
-## References
+## 引用
 
-Many strings already exist, like "Failed to connect" or "Device is already configured". Do not write them again: point to them with a reference, written as `[%key:<path>%]`. Translators then translate the string once, for every integration that uses it.
+很多字符串已经存在，例如“Failed to connect”或“Device is already configured”。不要重复编写它们：使用引用指向它们，写法为 `[%key:<path>%]`。这样翻译人员只需翻译一次该字符串，即可覆盖所有使用它的集成。
 
-The path uses `::` between the parts:
+路径的各部分之间使用 `::` 分隔：
 
-- `common::...` points to the shared strings in `homeassistant/strings.json` in core, like `[%key:common::config_flow::data::host%]`.
-- `component::<domain>::...` points to any integration, including your own, like `[%key:component::example::config::step::user::title%]`.
+- `common::...` 指向 core 中 `homeassistant/strings.json` 里的共享字符串，例如 `[%key:common::config_flow::data::host%]`。
+- `component::<domain>::...` 指向任何集成，包括你自己的集成，例如 `[%key:component::example::config::step::user::title%]`。
 
-For strings you use several times, put them in your own `common` section and refer to them with `[%key:component::example::common::<key>%]`.
+对于多次使用的字符串，把它们放在你自己的 `common` 章节中，并用 `[%key:component::example::common::<key>%]` 引用它们。
 
-A reference must be the whole string: `"Error: [%key:common::...%]"` is refused. A reference also cannot point to a string that is itself a reference, because Lokalise only supports one level. Point to the original instead. The compile step replaces the references with the text, so the files Home Assistant reads contain only plain strings.
+引用必须是完整的字符串：`"Error: [%key:common::...%]"` 会被拒绝。引用也不能指向本身是引用的字符串，因为 Lokalise 只支持一层。请改为指向原始字符串。编译步骤会将引用替换为文本，因此 Home Assistant 读取的文件中只包含纯字符串。
 
-## Placeholders
+## 占位符
 
-Values that are only known at runtime, like a host name or a count, go in placeholders: `"Could not connect to {host}."`. Your code fills them in:
+只有在运行时才能确定的值，例如主机名或数量，要放在占位符中：`"Could not connect to {host}."`。你的代码负责填充它们：
 
-| Where | How you pass them |
+| 位置 | 如何传递 |
 | --- | --- |
-| Flow steps | `description_placeholders` on `async_show_form`, `async_show_menu`, `async_abort`, and `async_create_entry` |
-| Flow title | `title_placeholders` in `self.context` |
-| Entities and devices | `translation_placeholders` |
-| Exceptions and repair issues | `translation_placeholders` |
-| Actions | `description_placeholders` when you register the action |
+| 流程步骤 | `async_show_form`、`async_show_menu`、`async_abort` 和 `async_create_entry` 上的 `description_placeholders` |
+| 流程标题 | `self.context` 中的 `title_placeholders` |
+| 实体和设备 | `translation_placeholders` |
+| 异常和修复问题 | `translation_placeholders` |
+| 动作 | 注册动作时的 `description_placeholders` |
 
-Hassfest checks every string:
+Hassfest 会检查每个字符串：
 
-- Placeholder names are valid Python identifiers, like `{host_name}`.
-- Placeholders are not wrapped in single quotes, like `'{name}'`.
-- Strings contain no HTML, and no spaces at the start or end.
-- Strings contain no URLs. Put a URL in a placeholder instead, so a changed link does not need new translations.
-- Translation keys are lowercase letters, digits, `-`, and `_`. They do not start or end with `-` or `_`, and have no two of them in a row.
+- 占位符名称必须是有效的 Python 标识符，例如 `{host_name}`。
+- 占位符不能用单引号包裹，例如 `'{name}'`。
+- 字符串不能包含 HTML，开头和结尾也不能有空格。
+- 字符串不能包含 URL。应将 URL 放在占位符中，这样链接变更时无需新的翻译。
+- 翻译键由小写字母、数字、`-` 和 `_` 组成。不能以 `-` 或 `_` 开头或结尾，也不能连续出现两个。
 
-At runtime, a translation that misses a key falls back to English. A translation whose placeholders differ from the English string is dropped, and the English string is used instead.
+在运行时，缺少某个键的翻译会回退到英文。占位符与英文字符串不一致的翻译会被丢弃，改用英文字符串。
 
-## Custom integrations
+## 自定义集成
 
-Custom integrations do not use `strings.json`, and they are not translated on Lokalise. The compile step that turns `strings.json` into translations only runs in core. A custom integration ships the finished files itself, in its `translations` folder:
+自定义集成不使用 `strings.json`，也不会在 Lokalise 上被翻译。将 `strings.json` 转换为翻译文件的编译步骤只在 core 中运行。自定义集成需要自行提供编译完成的文件，放在其 `translations` 文件夹中：
 
 ```text
 custom_components/example/
@@ -345,12 +345,12 @@ custom_components/example/
     └── nl.json
 ```
 
-Each file is named after a [BCP 47](https://www.rfc-editor.org/info/bcp47) language code and has the same structure as `strings.json`. `en.json` is required and complete, because it is the fallback for every other language.
+每个文件都以 [BCP 47](https://www.rfc-editor.org/info/bcp47) 语言代码命名，其结构与 `strings.json` 相同。`en.json` 是必需的，并且必须完整，因为它是所有其他语言的回退。
 
-References do not work in these files: nothing replaces them, so users see the raw `[%key:...%]` text. Write out every string in full. Placeholders work as usual.
+引用在翻译文件中不起作用：没有任何东西会替换它们，用户会看到原始的 `[%key:...%]` 文本。请完整写出每一个字符串。占位符则照常工作。
 
-Hassfest validates `translations/en.json` of a custom integration too. You can run it in your own repository with the [hassfest GitHub Action](https://github.com/home-assistant/actions#hassfest).
+Hassfest 也会校验自定义集成的 `translations/en.json`。你可以在自己的仓库中使用 [hassfest GitHub Action](https://github.com/home-assistant/actions#hassfest) 来运行它。
 
-## Who to talk to
+## 与谁交流
 
-Questions about `strings.json` or a hassfest error? Ask in the **#core** channel on the [Home Assistant Discord](https://www.home-assistant.io/join-chat/). For questions about translating itself, see the [Translate](/translate/) area.
+对 `strings.json` 或 hassfest 错误有疑问？请在 [Home Assistant Discord](https://www.home-assistant.io/join-chat/) 的 **#core** 频道中提问。关于翻译本身的问题，请参阅[翻译](/translate/)板块。

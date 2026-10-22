@@ -1,22 +1,22 @@
 ---
-title: Document the setup parameters
-description: "Silver rule docs-installation-parameters: the documentation describes every field asked for during setup."
+title: 记录设置参数
+description: "白银级规则 docs-installation-parameters：文档描述设置过程中要求填写的每个字段。"
 sidebarLabel: docs-installation-parameters
 sidebarGroup: Silver
 order: 4
 ---
 
-This is a Silver rule. In `quality_scale.yaml`, it is called `docs-installation-parameters`.
+这是一条白银级（Silver）规则。在 `quality_scale.yaml` 中，它被称为 `docs-installation-parameters`。
 
-The integration page on [home-assistant.io](https://www.home-assistant.io/) must describe every field that users fill in when they set up the integration. For each field, explain what it is, and where users can find the value.
+[home-assistant.io](https://www.home-assistant.io/) 上的集成（integration）页面必须描述用户在设置集成时填写的每个字段。对于每个字段，请说明它是什么，以及用户可以在哪里找到该值。
 
-## Why it matters
+## 为什么重要
 
-Few things are more frustrating than a setup form that asks for something you do not have. "Local access token"? From where? When the documentation lists every field, and where to find it, users can gather everything before they start, and get through setup in one go.
+没有什么比设置表单要求填写你没有的东西更令人沮丧的了。“本地访问令牌”（local access token）？从哪里获取？当文档列出每个字段以及在哪里找到它时，用户就可以在开始之前准备好所有内容，并一次性完成设置。
 
-## Example
+## 示例
 
-For an integration that is set up from the UI, follow the standard configuration text with a `configuration_basic` block. Use the labels exactly as they appear in the setup form:
+对于通过 UI 设置的集成，请在标准配置文本之后添加一个 `configuration_basic` 块。标签应与设置表单中显示的完全一致：
 
 ```markdown
 {% include integrations/config_flow.md %}
@@ -31,17 +31,17 @@ Local access token:
 {% endconfiguration_basic %}
 ```
 
-For an integration that is set up in YAML, use a `configuration` block instead, which also lists whether a variable is required and its type. See [Integration page structure](/writing/reference/integration-page/#the-configuration-block) for both blocks, and [Write integration documentation](/writing/guides/integration/) for how to open a documentation pull request.
+对于在 YAML 中设置的集成，请改用 `configuration` 块，它还会列出变量是否为必填项及其类型。两种块的说明请参阅[集成页面结构](/writing/reference/integration-page/#the-configuration-block)，如何提交文档拉取请求（pull request）请参阅[编写集成文档](/writing/guides/integration/)。
 
-## How it is checked
+## 如何检查
 
-This rule is checked in review, of the code and of the documentation pull request.
+此规则在代码审查和文档拉取请求的审查中进行检查。
 
-## Exceptions
+## 例外情况
 
-If the integration asks for nothing during setup, this rule does not apply.
+如果集成在设置过程中不要求填写任何内容，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [docs-configuration-parameters](/core/quality-scale/docs-configuration-parameters/): document the options.
-- [docs-installation-instructions](/core/quality-scale/docs-installation-instructions/): document the installation.
+- [docs-configuration-parameters](/core/quality-scale/docs-configuration-parameters/)：记录配置选项。
+- [docs-installation-instructions](/core/quality-scale/docs-installation-instructions/)：记录安装步骤。

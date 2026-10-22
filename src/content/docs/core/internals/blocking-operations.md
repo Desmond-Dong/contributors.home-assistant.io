@@ -1,17 +1,17 @@
 ---
-title: Blocking operations
-description: How to keep blocking I/O and slow imports out of the event loop, and how to fix the blocking calls Home Assistant reports.
+title: 阻塞操作
+description: 如何避免阻塞 I/O 和缓慢的导入进入事件循环，以及如何修复 Home Assistant 报告的阻塞调用。
 sidebarGroup: Async
 order: 12
 ---
 
-A blocking call in the [event loop](/glossary/event-loop/) stalls all of Home Assistant until it returns. Network I/O, disk I/O, sleeping, and heavy computation all block. Do them in the executor, or use an async alternative.
+[事件循环](/glossary/event-loop/)（event loop）中的阻塞调用会让整个 Home Assistant 停滞，直到它返回为止。网络 I/O、磁盘 I/O、休眠以及繁重的计算都会造成阻塞。请在执行器（executor）中执行这些操作，或者使用异步替代方案。
 
-Home Assistant detects many blocking calls in the event loop and reports them in the log, with the integration and the line that made the call. Two of them, `sleep` and `putrequest`, are also stopped: the call raises a `RuntimeError` instead of running. If you got here from such a report, find your call in the list below.
+Home Assistant 会检测事件循环中的许多阻塞调用，并在日志中报告它们，同时给出发起调用的集成（integration）及其所在行。其中两个调用，`sleep` 和 `putrequest`，还会被直接阻止：该调用会抛出 `RuntimeError` 而不是执行。如果您是通过此类报告来到这里的，请在下面的列表中查找您的调用。
 
-## Run blocking code in the executor
+## 在执行器中运行阻塞代码
 
-In Home Assistant, use `hass.async_add_executor_job`. In a library, use the standard `loop.run_in_executor`:
+在 Home Assistant 中，请使用 `hass.async_add_executor_job`。在库中，请使用标准的 `loop.run_in_executor`：
 
 ```python
 import asyncio
@@ -28,54 +28,54 @@ loop = asyncio.get_running_loop()
 result = await loop.run_in_executor(None, blocking_code, "something")
 ```
 
-Read Python's notes on [running blocking code](https://docs.python.org/3/library/asyncio-dev.html#running-blocking-code) for the pitfalls.
+请阅读 Python 关于[运行阻塞代码](https://docs.python.org/3/library/asyncio-dev.html#running-blocking-code)的说明，了解其中的陷阱。
 
-## Calls Home Assistant detects
+## Home Assistant 检测的调用
 
-### File system: open, glob, walk, listdir, scandir, and pathlib reads and writes
+### 文件系统：open、glob、walk、listdir、scandir 以及 pathlib 的读取和写入
 
-`open`, `glob.glob`, `glob.iglob`, `os.walk`, `os.listdir`, `os.scandir`, and the `pathlib.Path` methods like `read_text`, `read_bytes`, `write_text`, and `write_bytes` all do disk I/O. Run them in the executor. The same goes for calls Home Assistant does not detect, like `os.stat` or `os.path.exists`.
+`open`、`glob.glob`、`glob.iglob`、`os.walk`、`os.listdir`、`os.scandir` 以及 `pathlib.Path` 的 `read_text`、`read_bytes`、`write_text`、`write_bytes` 等方法都会进行磁盘 I/O。请在执行器中运行它们。Home Assistant 未检测到的调用也是如此，例如 `os.stat` 或 `os.path.exists`。
 
 > [!WARNING]
-> Home Assistant only detects the `open` call, not the reads and writes on the file after it. When you move `open` into the executor, move the reads and writes along with it. A fix that only moves `open` leaves blocking I/O in place that nobody will notice for a long time.
+> Home Assistant 只检测 `open` 调用，而不检测其后对文件的读取和写入。当您把 `open` 移入执行器时，请把读取和写入一并移过去。只移动 `open` 的修复方式会让阻塞 I/O 留在原地，而很长时间内都没人会注意到它。
 
 ### sleep
 
-Replace `time.sleep` with `await asyncio.sleep`. A common source of a blocking sleep is `pyserial-asyncio`. Use [`serialx`](https://github.com/puddly/serialx) instead: it has native asyncio support, and is import-compatible with `serial`, `serial_asyncio`, and `serial_asyncio_fast`. See [migrating from pyserial to serialx](/blog/2026/04/27/pyserial-to-serialx/).
+请将 `time.sleep` 替换为 `await asyncio.sleep`。阻塞式休眠的一个常见来源是 `pyserial-asyncio`。请改用 [`serialx`](https://github.com/puddly/serialx)：它原生支持 asyncio，并且与 `serial`、`serial_asyncio` 和 `serial_asyncio_fast` 导入兼容。参见[从 pyserial 迁移到 serialx](/blog/2026/04/27/pyserial-to-serialx/)。
 
 ### putrequest
 
-`http.client` and anything built on it, like `urllib` and `requests`, does blocking network I/O. Run it in the executor, or better, switch to an async HTTP client like `aiohttp`.
+`http.client` 及在其之上构建的任何东西（例如 `urllib` 和 `requests`）都会执行阻塞的网络 I/O。请在执行器中运行它们，或者更好的做法是切换到 `aiohttp` 这样的异步 HTTP 客户端。
 
-### SSL: load_default_certs, load_verify_locations, load_cert_chain, and set_default_verify_paths
+### SSL：load_default_certs、load_verify_locations、load_cert_chain 和 set_default_verify_paths
 
-Creating an SSL context reads certificates from disk. Do not create your own: use the shared clients and contexts Home Assistant already prepared outside the event loop.
+创建 SSL 上下文会从磁盘读取证书。请不要自行创建：使用 Home Assistant 已经在事件循环之外准备好的共享客户端和上下文。
 
-- For `aiohttp`: `async_get_clientsession(hass)` from `homeassistant.helpers.aiohttp_client`.
-- For `httpx2`: `get_async_client(hass)` from `homeassistant.helpers.httpx_client`.
-- For anything else: the helpers in `homeassistant.util.ssl`, like `get_default_context()`.
+- 对于 `aiohttp`：使用来自 `homeassistant.helpers.aiohttp_client` 的 `async_get_clientsession(hass)`。
+- 对于 `httpx2`：使用来自 `homeassistant.helpers.httpx_client` 的 `get_async_client(hass)`。
+- 对于其他情况：使用 `homeassistant.util.ssl` 中的辅助函数，例如 `get_default_context()`。
 
 ### import_module
 
-Importing a module reads it from disk. See [imports](#imports) below.
+导入模块会从磁盘读取它。请参见下文的[导入](#imports)。
 
-## Imports
+## 导入
 
-Imports need care for two reasons: an import reads files from disk, which blocks, and imports in CPython are [not thread safe](https://github.com/python/cpython/issues/83065).
+导入需要小心处理，原因有二：导入会从磁盘读取文件，这会造成阻塞；而且 CPython 中的导入[不是线程安全的](https://github.com/python/cpython/issues/83065)。
 
-### Import at module level
+### 在模块级别导入
 
-If your integration imports what it needs at the top of its modules, and `__init__.py` imports the modules it needs, you have nothing to worry about. Home Assistant loads your integration before the event loop starts, or in the import executor: a separate thread just for imports.
+如果您的集成在模块顶部导入所需内容，并且 `__init__.py` 导入它所需的模块，那么您无需担心。Home Assistant 会在事件循环启动之前加载您的集成，或者在导入执行器（import executor）中加载：这是一个专门用于导入的独立线程。
 
-This is the right choice for almost every integration.
+对于几乎所有的集成来说，这都是正确的选择。
 
-### Import later, carefully
+### 稍后导入，需谨慎
 
-Sometimes a module is only needed in a rare case, or a top-level import creates a circular import. Then:
+有时某个模块只在少见的情况下才需要，或者顶层导入会造成循环导入。这时：
 
-- If the module is already loaded, a plain `import` statement is fine: Python does not load it again.
-- If the module is only imported in one place, put the import in a function and run that with `hass.async_add_executor_job`.
-- If the module may be imported from different places at the same time, use `async_import_module` from `homeassistant.helpers.importlib`. It caches the result and makes concurrent imports wait for one another.
+- 如果模块已经加载，普通的 `import` 语句没有问题：Python 不会再次加载它。
+- 如果模块只在一处被导入，请把导入放入一个函数中，并使用 `hass.async_add_executor_job` 运行该函数。
+- 如果模块可能同时从不同的地方被导入，请使用 `homeassistant.helpers.importlib` 中的 `async_import_module`。它会缓存结果，并让并发的导入相互等待。
 
 ```python
 from homeassistant.helpers.importlib import async_import_module
@@ -85,11 +85,11 @@ module = await async_import_module(
 )
 ```
 
-To check whether a module is loaded, look in `sys.modules`. A module appears there as soon as loading *starts*, so with imports from several paths, keep the race conditions in mind.
+要检查某个模块是否已加载，请查看 `sys.modules`。只要加载*开始*，模块就会出现在那里，因此当从多个路径导入时，请留意竞态条件。
 
-### Imports only for type checking
+### 仅用于类型检查的导入
 
-If you only need an import for type hints, guard it, so it is not imported at runtime at all:
+如果您只是出于类型注解的需要而导入，请为其加上保护，使它在运行时完全不被导入：
 
 ```python
 from typing import TYPE_CHECKING
@@ -102,10 +102,10 @@ def some_function() -> SomeClass:
     ...
 ```
 
-### Rarely used code
+### 很少使用的代码
 
-Importing costs CPU time and disk I/O, and memory once it is loaded. For code that is only needed now and then, a late import can be the better trade, as long as it follows the rules above.
+导入会消耗 CPU 时间和磁盘 I/O，加载之后还会占用内存。对于只是偶尔需要的代码，延迟导入可能是更好的权衡，前提是它遵循上述规则。
 
-## Find blocking calls early
+## 尽早发现阻塞调用
 
-Turn on debug mode while you develop, with `debug: true` under `homeassistant:` in `configuration.yaml`, and run with Python's [asyncio debug mode](https://docs.python.org/3/library/asyncio-dev.html#debug-mode). Both catch blocking calls that otherwise only show up as a slow system.
+在开发时开启调试模式，即在 `configuration.yaml` 的 `homeassistant:` 下设置 `debug: true`，并使用 Python 的 [asyncio 调试模式](https://docs.python.org/3/library/asyncio-dev.html#debug-mode)运行。这两种方式都能捕获那些否则只会表现为系统缓慢的阻塞调用。

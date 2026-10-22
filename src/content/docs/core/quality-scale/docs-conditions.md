@@ -1,22 +1,22 @@
 ---
-title: Document the conditions
-description: "Bronze rule docs-conditions: the documentation describes the conditions of the integration."
+title: 记录条件
+description: "青铜规则 docs-conditions：文档描述集成的条件。"
 sidebarLabel: docs-conditions
 sidebarGroup: Bronze
 order: 9
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `docs-conditions`.
+这是一条青铜（Bronze）规则。在 `quality_scale.yaml` 中，它被称为 `docs-conditions`。
 
-The user documentation on [home-assistant.io](https://www.home-assistant.io/) describes every [condition](/glossary/condition/) the integration provides. Each condition gets a page of its own, linked from the integration page. The page explains what the condition checks, lists its options, and shows how to use it from the UI and in YAML.
+[home-assistant.io](https://www.home-assistant.io/) 上的用户文档描述了集成（integration）提供的每一个条件（condition）。每个条件都有自己独立的页面，并从集成页面链接过去。该页面会解释这个条件检查什么内容，列出它的选项，并展示如何在界面（UI）和 YAML 中使用它。
 
-## Why it matters
+## 为什么这很重要
 
-Conditions of an integration are more specific than the standard conditions, and that makes them harder to use without help. A separate page per condition keeps the integration page readable, while still giving each condition room for its options, its behavior with multiple targets, and real examples.
+集成的条件比标准条件更加具体，这使得它们在没有帮助的情况下更难使用。为每个条件设置独立的页面可以保持集成页面的可读性，同时仍为每个条件留出足够的空间来展示其选项、其在多个目标下的行为以及实际的示例。
 
-## Example
+## 示例
 
-Each condition gets its own file in the home-assistant.io repository, in `source/_conditions/`, named after the full condition, like `my_integration.is_door_open.markdown`:
+每个条件在 home-assistant.io 仓库中都有自己独立的文件，位于 `source/_conditions/` 目录下，以完整的条件名称命名，例如 `my_integration.is_door_open.markdown`：
 
 ```markdown
 ---
@@ -33,23 +33,23 @@ actually open, like turning off the heating.
 {% include conditions/ui_header.md %}
 ```
 
-After the introduction, the page walks through using the condition in the UI, its options in the UI, using it in YAML, and its options in YAML. It ends with a "Good to know" section and real automation examples. The integration page lists all conditions with one include:
+在介绍部分之后，页面会依次介绍如何在界面中使用该条件、它在界面中的选项、如何在 YAML 中使用它，以及它在 YAML 中的选项。页面以"Good to know"（温馨提示）部分和真实的自动化（automation）示例结尾。集成页面通过一个 include 列出所有条件：
 
 ```markdown
 {% include integrations/conditions.md %}
 ```
 
-The full page layout, with all includes and the options blocks, is in [Integration page structure](/writing/reference/integration-page/#triggers-conditions-and-actions). For writing the page itself, see [Document an integration](/writing/guides/integration/).
+包含所有 include 和选项块的完整页面布局见[集成页面结构](/writing/reference/integration-page/#triggers-conditions-and-actions)。关于如何撰写页面本身，请参见[记录集成](/writing/guides/integration/)。
 
-## How it is checked
+## 如何检查
 
-Checked in review, on the documentation pull request that goes with the integration.
+在审查（review）阶段进行检查，检查对象是与该集成一同提交的文档拉取请求（pull request）。
 
-## Exceptions
+## 例外情况
 
-If the integration does not provide any conditions, this rule does not apply.
+如果集成不提供任何条件，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [docs-actions](/core/quality-scale/docs-actions/): document the actions.
-- [docs-triggers](/core/quality-scale/docs-triggers/): document the triggers.
+- [docs-actions](/core/quality-scale/docs-actions/)：记录动作（action）。
+- [docs-triggers](/core/quality-scale/docs-triggers/)：记录触发器（trigger）。

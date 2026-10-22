@@ -1,36 +1,36 @@
 ---
-title: Text-to-speech entity
-description: Build a text-to-speech entity that turns text into audio, in one go or streamed as a language model writes it.
+title: 文本转语音实体
+description: 构建一个文本转语音实体，将文本转换为音频，可一次性完成，也可在语言模型书写的同时流式生成。
 sidebarLabel: Text-to-speech
 sidebarGroup: Voice and AI
 ---
 
-A text-to-speech (TTS) entity turns text into spoken audio. Assist uses it to speak its responses, and the `tts.speak` action uses it to play a message on a media player. Inherit from `TextToSpeechEntity` in `homeassistant.components.tts`. Use it for any speech synthesis engine, local or in the cloud.
+文本转语音（text-to-speech，TTS）实体（entity）将文本转换为语音音频。Assist 使用它来朗读其回复，`tts.speak` 动作（action）使用它在媒体播放器上播放消息。请继承 `homeassistant.components.tts` 中的 `TextToSpeechEntity`。任何语音合成引擎（无论是本地的还是云端的）都可以使用它。
 
-## Properties
+## 属性
 
-Text-to-speech entities have these properties on top of the [generic entity properties](/core/entities/entity-class/). Every property can be set with its `_attr_` attribute, like `_attr_supported_languages`.
+文本转语音实体在[通用实体属性](/core/entities/entity-class/)的基础上还具有以下属性。每个属性都可以通过其 `_attr_` 属性来设置，例如 `_attr_supported_languages`。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `supported_languages` | `list[str]` | Required | The languages the engine can speak. |
-| `default_language` | `str` | Required | The language to use when the caller does not pick one. |
-| `supported_options` | `list[str] \| None` | `None` | The options a caller may pass, like `voice`. Calls with other options are rejected. |
-| `default_options` | `Mapping[str, Any] \| None` | `None` | The options to use when the caller does not set them. |
+| `supported_languages` | `list[str]` | 必填 | 引擎可以朗读的语言。 |
+| `default_language` | `str` | 必填 | 调用方未指定语言时使用的语言。 |
+| `supported_options` | `list[str] \| None` | `None` | 调用方可以传递的选项，例如 `voice`。包含其他选项的调用将被拒绝。 |
+| `default_options` | `Mapping[str, Any] \| None` | `None` | 调用方未设置选项时使用的选项。 |
 
-Home Assistant checks `supported_languages` and `default_language` when the entity is added, and raises an error when either is missing.
+Home Assistant 在添加实体时会检查 `supported_languages` 和 `default_language`，如果缺少其中任何一个则会引发错误。
 
-## Supported features
+## 支持的特性
 
-Text-to-speech entities have no supported features. Streaming input is detected from your code instead: when you override `async_stream_tts_audio`, Home Assistant knows the engine accepts text in chunks.
+文本转语音实体没有支持的特性（supported features）。流式输入改为通过你的代码来检测：当你重写 `async_stream_tts_audio` 时，Home Assistant 就会知道引擎可以按块接收文本。
 
-## Options and audio formats
+## 选项和音频格式
 
-Callers pass options as a dictionary, merged on top of `default_options`. An option that is not in `supported_options` is not dropped: the request fails with a `ServiceValidationError` before it reaches your engine. The same happens for a language that is not in `supported_languages`.
+调用方以字典的形式传递选项，这些选项会合并到 `default_options` 之上。不在 `supported_options` 中的选项不会被丢弃：请求在到达你的引擎之前就会因 `ServiceValidationError` 而失败。对于不在 `supported_languages` 中的语言也是如此。
 
-The preferred format options are the exception. They are always accepted, and Assist sets them so the audio fits the device that plays it.
+首选格式选项是个例外。它们总是被接受，Assist 会设置这些选项，使音频适合播放它的设备。
 
-| Option | Constant |
+| 选项 | 常量 |
 | ------ | -------- |
 | `preferred_format` | `ATTR_PREFERRED_FORMAT` |
 | `preferred_sample_rate` | `ATTR_PREFERRED_SAMPLE_RATE` |
@@ -38,13 +38,13 @@ The preferred format options are the exception. They are always accepted, and As
 | `preferred_sample_bytes` | `ATTR_PREFERRED_SAMPLE_BYTES` |
 | `preferred_bitrate` | `ATTR_PREFERRED_BITRATE` |
 
-If you list one of them in `supported_options`, it reaches your engine, and the engine should produce audio in that format. If you don't, Home Assistant removes it from the options and converts the audio with FFmpeg after your engine returns it. Producing the right format yourself saves that conversion step. Without a preferred format, the result is converted to MP3.
+如果你在 `supported_options` 中列出了其中一项，它就会传递给你的引擎，引擎应以该格式生成音频。如果没有列出，Home Assistant 会将其从选项中移除，并在你的引擎返回音频后使用 FFmpeg 进行转换。自行生成正确的格式可以省去这一转换步骤。在没有首选格式的情况下，结果会被转换为 MP3。
 
-## Methods
+## 方法
 
-### Generate audio
+### 生成音频
 
-Implement `async_get_tts_audio`, or `get_tts_audio` for blocking code. It receives the full message and returns a tuple of the file extension and the audio bytes, like `("mp3", data)`. Return `(None, None)` when the engine produced nothing. Home Assistant then raises an error for the caller.
+实现 `async_get_tts_audio`，对于阻塞式代码则实现 `get_tts_audio`。它接收完整的消息，并返回一个由文件扩展名和音频字节组成的元组，例如 `("mp3", data)`。当引擎没有生成任何内容时，返回 `(None, None)`。Home Assistant 随后会为调用方引发错误。
 
 ```python
 async def async_get_tts_audio(
@@ -53,9 +53,9 @@ async def async_get_tts_audio(
     """Load TTS audio from the engine."""
 ```
 
-### Stream audio
+### 流式传输音频
 
-A language model writes its answer in chunks. If your engine can start speaking before the text is complete, implement `async_stream_tts_audio` as well. It is optional: without it, Home Assistant collects the whole message and calls `async_get_tts_audio`.
+语言模型会分块生成其回答。如果你的引擎可以在文本尚未完整时就开始朗读，也请实现 `async_stream_tts_audio`。它是可选的：如果没有实现，Home Assistant 会收集完整的消息并调用 `async_get_tts_audio`。
 
 ```python
 async def async_stream_tts_audio(
@@ -64,17 +64,17 @@ async def async_stream_tts_audio(
     """Generate speech from an incoming message."""
 ```
 
-`TTSAudioRequest` has the `language`, the `options`, and `message_gen`, an async generator of text chunks. Return a `TTSAudioResponse` with the file `extension` and `data_gen`, an async generator of audio chunks.
+`TTSAudioRequest` 包含 `language`、`options` 以及 `message_gen`（文本块的异步生成器）。返回一个 `TTSAudioResponse`，其中包含文件的 `extension` 和 `data_gen`（音频块的异步生成器）。
 
-### Get supported voices
+### 获取支持的语音
 
-`async_get_supported_voices(language)` is optional. Return a list of `Voice(voice_id, name)` for a language, and the frontend offers them as a choice for the `voice` option. Return `None` when the engine has no voices to pick from. It is a callback, so it must not do I/O: fetch the voices when the entity is set up.
+`async_get_supported_voices(language)` 是可选的。针对某种语言返回一个 `Voice(voice_id, name)` 列表，前端就会将它们作为 `voice` 选项的候选提供选择。当引擎没有可供选择的语音时，返回 `None`。它是一个回调函数，因此不得执行 I/O 操作：请在实体设置时获取语音列表。
 
-## States
+## 状态
 
-The state is the timestamp of the last time the entity generated audio, or `unknown` before the first one. Home Assistant sets and restores it; the `state` property is final.
+状态是该实体上次生成音频的时间戳，在首次生成之前为 `unknown`。Home Assistant 会设置并恢复它；`state` 属性是最终值。
 
-## Example
+## 示例
 
 ```python
 from typing import Any

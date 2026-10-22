@@ -1,26 +1,26 @@
 ---
-title: Poll at an appropriate interval
-description: "Bronze rule appropriate-polling: a polling integration uses an interval that fits its data."
+title: 以适当的间隔轮询
+description: "铜牌规则 appropriate-polling：轮询型集成使用与其数据相匹配的间隔。"
 sidebarLabel: appropriate-polling
 sidebarGroup: Bronze
 order: 2
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `appropriate-polling`.
+这是一条铜牌（Bronze）规则。在 `quality_scale.yaml` 中，它被称为 `appropriate-polling`。
 
-If the integration [polls](/glossary/polling/) a device or service, it sets a polling interval that fits the data. The interval is a choice you make as the developer, for the majority of users. It is not a field in the config flow.
+如果集成会[轮询](/glossary/polling/)设备或服务，则应设置一个与数据相匹配的轮询间隔。该间隔是作为开发者的你为大多数用户做出的选择，而不是配置流程中的字段。
 
-## Why it matters
+## 为什么这很重要
 
-In an ideal world, every device would push its updates. Many devices and services cannot, so Home Assistant has to ask. Asking too often wastes resources on both ends, and can get users rate limited by a cloud service.
+在理想世界中，每台设备都会主动推送更新。但许多设备和服务无法做到这一点，因此 Home Assistant 必须主动询问。询问过于频繁会在两端浪费资源，还可能导致用户被云服务限流。
 
-What is appropriate depends on the data. An air quality sensor does not change every 5 seconds: polling once a minute is fine for nearly everyone. A cloud service that updates solar production once an hour gains nothing from being polled every minute.
+什么才是合适的取决于数据本身。空气质量传感器不会每 5 秒就发生变化：对于几乎所有人来说，每分钟轮询一次就已经足够。而对于每小时才更新一次太阳能发电量的云服务来说，每分钟被轮询一次毫无益处。
 
-Users who really need a different interval can [define their own polling interval](https://www.home-assistant.io/common-tasks/general/#defining-a-custom-polling-interval) with an automation.
+确实需要不同间隔的用户可以通过自动化（automation）[定义自己的轮询间隔](https://www.home-assistant.io/common-tasks/general/#defining-a-custom-polling-interval)。
 
-## Example
+## 示例
 
-With a [coordinator](/glossary/coordinator/), pass `update_interval` when you create it:
+使用[协调器](/glossary/coordinator/)（coordinator）时，在创建它时传入 `update_interval`：
 
 ```python
 class MyCoordinator(DataUpdateCoordinator[MyData]):
@@ -39,7 +39,7 @@ class MyCoordinator(DataUpdateCoordinator[MyData]):
         )
 ```
 
-Entities that poll by themselves, with `should_poll` set to `True`, use the `SCAN_INTERVAL` constant of their platform module:
+自行轮询的实体（entity）（即 `should_poll` 设置为 `True` 的实体）会使用其平台模块中的 `SCAN_INTERVAL` 常量：
 
 ```python
 SCAN_INTERVAL = timedelta(minutes=1)
@@ -51,15 +51,15 @@ class MySensor(SensorEntity):
     _attr_should_poll = True
 ```
 
-## How it is checked
+## 如何检查
 
-- Pylint warns when a config flow asks for a polling interval, like `CONF_SCAN_INTERVAL` or `update_interval` (`home-assistant-config-flow-polling-field`).
-- Whether the interval itself is appropriate is checked in review. Be ready to explain your choice.
+- 当配置流程要求填写轮询间隔（例如 `CONF_SCAN_INTERVAL` 或 `update_interval`）时，Pylint 会发出警告（`home-assistant-config-flow-polling-field`）。
+- 间隔本身是否合适会在审查中检查。请准备好解释你的选择。
 
-## Exceptions
+## 例外情况
 
-If the integration does not poll, for example because the device pushes its updates, this rule does not apply.
+如果集成不进行轮询，例如因为设备会主动推送更新，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [parallel-updates](/core/quality-scale/parallel-updates/): set the number of parallel updates.
+- [parallel-updates](/core/quality-scale/parallel-updates/)：设置并行更新的数量。

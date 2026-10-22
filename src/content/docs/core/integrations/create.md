@@ -1,99 +1,99 @@
 ---
-title: Create an integration
-description: Generate a new integration with the scaffold script, and learn what the smallest possible integration looks like.
+title: 创建集成
+description: 使用脚手架脚本生成一个新的集成，并了解最小规模的集成是什么样子。
 sidebarGroup: Getting started
 order: 4
 ---
 
-The fastest way to start a new integration is the scaffold script in the [core repository](https://github.com/home-assistant/core). It asks you a few questions and generates a working integration with a config flow, tests, and translations, so you can start with the part that is specific to your device or service.
+开始一个新集成（integration）的最快方式，是使用[核心仓库](https://github.com/home-assistant/core)中的脚手架（scaffold）脚本。它会问你几个问题，并生成一个可运行的集成，其中包含配置流程（config flow）、测试和翻译，让你可以直接从设备或服务特有的部分开始。
 
-This page is the reference for the scaffold and the parts of an integration. Want to be walked through it instead? Follow the [tutorial](/core/integrations/tutorial/).
+本页是脚手架以及集成各组成部分的参考。想跟着一步步操作？请参阅[教程](/core/integrations/tutorial/)。
 
-## Does it belong in core?
+## 它是否应该进入 core？
 
-Check this before you write any code.
+在编写任何代码之前，请先确认这一点。
 
-For a new integration, the project recommends that you publish it in the [Marketplace](/marketplace/) first, as a [custom integration](/glossary/custom-integration/). You gain experience, and you can iterate faster. Once it has matured and has a user base, reach out to the maintainers, for example in the **#core** channel on [Discord](https://www.home-assistant.io/join-chat/), to see whether it should ship built in. [Publish a custom integration](/marketplace/guides/integrations/) explains what is different outside core.
+对于新集成，项目建议你先以[自定义集成（custom integration）](/glossary/custom-integration/)的形式发布到 [Marketplace](/marketplace/)。这样可以积累经验，迭代速度也更快。等它成熟并拥有一定用户群之后，再联系维护者，例如在 [Discord](https://www.home-assistant.io/join-chat/) 上的 **#core** 频道中询问它是否应该作为内置功能随 Home Assistant 发布。[发布自定义集成](/marketplace/guides/integrations/)介绍了在 core 之外有哪些不同之处。
 
-To ship built in, an integration has to meet these requirements:
+要作为内置功能发布，集成必须满足以下要求：
 
-- The product or service must be available for people to buy and use today. Products that are not released yet, private betas, and crowdfunding projects do not qualify.
-- It must be established, with an actual user base. Home Assistant is not a marketing platform for new products.
-- All communication goes through a Python library on PyPI that meets the [dependency-transparency](/core/quality-scale/dependency-transparency/) rule. See [build a Python library](/core/integrations/api-library/).
+- 产品或服务必须现在就能供人们购买和使用。尚未发布的产品、私有测试版（private beta）以及众筹项目均不符合条件。
+- 它必须已经站稳脚跟，拥有真实的用户群。Home Assistant 不是新产品的营销平台。
+- 所有通信都必须通过 PyPI 上符合[依赖透明度](/core/quality-scale/dependency-transparency/)规则的 Python 库进行。请参阅[构建 Python 库](/core/integrations/api-library/)。
 
-Not sure where yours fits? Ask in **#core** before you start.
+不确定你的集成属于哪种情况？在开始之前，请在 **#core** 频道中询问。
 
-## Keep the first pull request small
+## 保持第一个拉取请求（pull request）足够小
 
-A new integration must reach the Bronze tier of the [integration quality scale](/core/quality-scale/), and nothing more. Reviewers ask for a minimal first pull request:
+新集成必须达到[集成质量分级（quality scale）](/core/quality-scale/)中的 Bronze 等级，且仅止于此。审查者要求第一个拉取请求保持精简：
 
-- One platform only, like just `sensor`.
-- No diagnostics, custom actions, reauthentication flow, or reconfigure flow.
-- No options flow, unless the integration really cannot work without one.
-- Leave the harder rules, like `dynamic-devices` and `stale-devices`, for later.
+- 仅包含一个平台，例如只有 `sensor`。
+- 不包含诊断、自定义操作、重新认证流程或重新配置流程。
+- 不包含选项流程，除非集成确实离不开它。
+- 把较难的规则（例如 `dynamic-devices` 和 `stale-devices`）留到以后再做。
 
-Everything else comes in follow up pull requests, one at a time. Big pull requests that dump a lot of code at once may be closed. [Submitting a pull request](/core/development/submitting/#new-integrations) explains what to put in the description.
+其余内容通过后续的拉取请求逐个提交。一次性倾倒大量代码的大型拉取请求可能会被关闭。[提交拉取请求](/core/development/submitting/#new-integrations)说明了描述中应写明哪些内容。
 
-You need a [development environment](/core/development/environment/) for the rest of this page. Run every command from the root of your core checkout.
+阅读本页其余内容需要[开发环境](/core/development/environment/)。请在你的 core 代码检出目录的根目录下运行每一条命令。
 
-## Run the scaffold script
+## 运行脚手架脚本
 
 ```shell
 python3 -m script.scaffold integration
 ```
 
-The script asks for:
+该脚本会要求提供：
 
-- **Domain**: the short, unique name of your integration, like `airgradient`. It becomes the folder name and can never change. See [the manifest](/core/integrations/manifest/#domain).
-- **Name**: the name users see, like "AirGradient".
-- **GitHub handle**: you become the first [integration owner](/glossary/integration-owner/).
-- **PyPI package**: the library that talks to your device or service, pinned with `==`. Leave it blank if you do not have one yet.
-- **IoT class**: how the integration gets its data, like `local_polling` or `cloud_push`.
-- **Authentication, discovery, OAuth 2.0, and integration type**: these decide which kind of config flow the script generates.
+- **域名（Domain）**：你的集成的简短且唯一的名称，例如 `airgradient`。它会成为文件夹名称，并且永远不能更改。请参阅[清单文件（manifest）](/core/integrations/manifest/#domain)。
+- **名称（Name）**：用户看到的名称，例如 “AirGradient”。
+- **GitHub 账号**：你将成为第一位[集成所有者（integration owner）](/glossary/integration-owner/)。
+- **PyPI 包**：与你的设备或服务通信的库，使用 `==` 固定版本。如果还没有，请留空。
+- **IoT 类别**：集成获取数据的方式，例如 `local_polling` 或 `cloud_push`。
+- **认证、发现、OAuth 2.0 以及集成类型**：这些决定了脚本生成哪种配置流程。
 
-Based on your answers, the script picks one of these config flow templates:
+根据你的回答，脚本会选用以下配置流程模板之一：
 
-| Your answers | Template |
+| 你的回答 | 模板 |
 | --- | --- |
-| The integration type is `helper` | `config_flow_helper` |
-| Users log in with OAuth 2.0 | `config_flow_oauth2` |
-| Users need to authenticate, or the device is not discoverable | `config_flow` |
-| Discoverable, no authentication | `config_flow_discovery` |
+| 集成类型为 `helper` | `config_flow_helper` |
+| 用户使用 OAuth 2.0 登录 | `config_flow_oauth2` |
+| 用户需要进行认证，或设备不可被发现 | `config_flow` |
+| 可被发现，无需认证 | `config_flow_discovery` |
 
-When it is done, the script runs hassfest, updates the requirement files, and generates the English translations from `strings.json`. You end up with a folder in `homeassistant/components/<domain>/` and a matching test folder in `tests/components/<domain>/`.
+完成后，脚本会运行 hassfest、更新依赖文件，并根据 `strings.json` 生成英文翻译。最终，你会在 `homeassistant/components/<domain>/` 中得到一个文件夹，并在 `tests/components/<domain>/` 中得到对应的测试文件夹。
 
 > [!NOTE]
-> The scaffold leaves `TODO` comments where your code goes, and a placeholder class that you replace with your library. Search for `TODO` before you open a pull request.
+> 脚手架会在你的代码应放置的位置留下 `TODO` 注释，以及一个占位类，你需要用自己的库来替换它。在提交拉取请求之前，请先搜索 `TODO`。
 
-## Other scaffold templates
+## 其他脚手架模板
 
-The same script adds pieces to an integration that already exists. Run it with the name of a template, and it asks which integration to change:
+同一个脚本还可以为已有的集成添加组件。运行脚本时传入模板名称，它会询问你要修改哪个集成：
 
-| Template | Adds |
+| 模板 | 添加内容 |
 | --- | --- |
-| `config_flow` | A config flow with a form |
-| `config_flow_discovery` | A config flow for discoverable devices without authentication |
-| `config_flow_oauth2` | A config flow that uses [OAuth 2.0](/core/integrations/oauth2/) |
-| `config_flow_helper` | A config flow for a helper |
-| `device_trigger` | [Device triggers](/core/integrations/device-automations/) |
-| `device_condition` | [Device conditions](/core/integrations/device-automations/) |
-| `device_action` | [Device actions](/core/integrations/device-automations/) |
-| `reproduce_state` | [Reproduce state](/core/integrations/reproduce-state/) support |
-| `significant_change` | [Significant change](/core/integrations/significant-change/) support |
-| `backup` | A [backup platform](/core/integrations/backup/) |
+| `config_flow` | 带表单的配置流程 |
+| `config_flow_discovery` | 适用于无需认证的可发现设备的配置流程 |
+| `config_flow_oauth2` | 使用 [OAuth 2.0](/core/integrations/oauth2/) 的配置流程 |
+| `config_flow_helper` | 适用于辅助元素（helper）的配置流程 |
+| `device_trigger` | [设备触发器](/core/integrations/device-automations/) |
+| `device_condition` | [设备条件](/core/integrations/device-automations/) |
+| `device_action` | [设备操作](/core/integrations/device-automations/) |
+| `reproduce_state` | [重现状态](/core/integrations/reproduce-state/)支持 |
+| `significant_change` | [显著变化](/core/integrations/significant-change/)支持 |
+| `backup` | 一个[备份平台](/core/integrations/backup/) |
 
-For example, to add device triggers:
+例如，要添加设备触发器：
 
 ```shell
 python3 -m script.scaffold device_trigger
 ```
 
-## The smallest possible integration
+## 最小规模的集成
 
-The scaffold generates more than the bare minimum. It helps to know what is required, so you know what is optional. An integration needs two things:
+脚手架生成的内容超出了最低所需。了解哪些内容是必需的会很有帮助，这样你就知道哪些是可选的。一个集成需要两样东西：
 
-- A `manifest.json` with at least a `domain` and a `name`.
-- An `__init__.py` with a setup function that returns whether setup succeeded.
+- 一个 `manifest.json`，其中至少包含 `domain` 和 `name`。
+- 一个 `__init__.py`，其中包含一个返回设置是否成功的 setup 函数。
 
 ```json
 {
@@ -116,11 +116,11 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     return True
 ```
 
-This integration loads when `hello_state:` is in `configuration.yaml`. That is fine to learn from, but integrations that talk to devices or services are set up from the UI with a [config flow](/core/integrations/config-flow/), not from YAML. See [YAML configuration](/core/integrations/yaml/) for the rules.
+当 `configuration.yaml` 中包含 `hello_state:` 时，这个集成就会加载。用它来学习没有问题，但与设备或服务通信的集成是通过 UI 中的[配置流程](/core/integrations/config-flow/)进行设置的，而不是通过 YAML。相关规则请参阅 [YAML 配置](/core/integrations/yaml/)。
 
-## Platforms: the entities of your integration
+## 平台：集成中的实体
 
-Your integration provides [entities](/glossary/entity/) by adding a [platform](/glossary/platform/) for each entity type it supports. To provide a light, add `light.py`. To provide a sensor, add `sensor.py`. Each platform file has an `async_setup_entry` function that creates the entities, and your integration forwards its config entry to them:
+你的集成通过为所支持的每种实体类型添加一个[平台（platform）](/glossary/platform/)来提供[实体（entity）](/glossary/entity/)。要提供灯，就添加 `light.py`。要提供传感器，就添加 `sensor.py`。每个平台文件都有一个用于创建实体的 `async_setup_entry` 函数，你的集成会将其配置条目（config entry）转发给这些平台：
 
 ```python
 from homeassistant.const import Platform
@@ -135,24 +135,24 @@ async def async_setup_entry(hass: HomeAssistant, entry: MyConfigEntry) -> bool:
     return True
 ```
 
-See [config entries](/core/integrations/config-entries/#set-up-the-platforms) for the full setup and unload flow, and [entities and platforms](/core/entities/) for what each entity type supports.
+完整的设置与卸载流程请参阅[配置条目](/core/integrations/config-entries/#set-up-the-platforms)；每种实体类型支持的功能请参阅[实体与平台](/core/entities/)。
 
-## Talk to devices through a library
+## 通过库与设备通信
 
-Your integration never talks to a device or service directly. All protocol and API code lives in a separate Python library, published on PyPI, which your integration lists as a [requirement](/core/integrations/manifest/#requirements). This keeps Home Assistant maintainable, and lets the rest of the Python community use that code too.
+你的集成从不直接与设备或服务通信。所有协议和 API 代码都位于一个独立的 Python 库中，该库发布在 PyPI 上，并由你的集成作为[依赖项（requirement）](/core/integrations/manifest/#requirements)列出。这样既保持了 Home Assistant 的可维护性，也让 Python 社区的其他人能够使用这些代码。
 
-The integration translates between that library and Home Assistant: it sets up the library, turns its data into entities, and turns user actions into library calls. [Build a Python library](/core/integrations/api-library/) explains how to write one.
+集成负责在该库与 Home Assistant 之间进行转换：它初始化该库，把库的数据转换为实体，并把用户操作转换为对库的调用。[构建 Python 库](/core/integrations/api-library/)介绍了如何编写这样的库。
 
-## Core and custom integrations
+## Core 集成与自定义集成
 
-Integrations in the core repository live in `homeassistant/components/`. A [custom integration](/glossary/custom-integration/) lives in the `custom_components/` folder of a user's configuration directory. They are built the same way, with two differences in the manifest: a custom integration needs a `version`, and its `documentation` points to its own documentation, not to home-assistant.io.
+核心仓库中的集成位于 `homeassistant/components/` 中。[自定义集成](/glossary/custom-integration/)则位于用户配置目录的 `custom_components/` 文件夹中。两者的构建方式相同，只有清单文件上的两点差异：自定义集成需要提供 `version`，并且其 `documentation` 指向它自己的文档，而不是 home-assistant.io。
 
-The [example-custom-config repository](https://github.com/home-assistant/example-custom-config/tree/master/custom_components/) has small example integrations, such as one that sets up platforms from a config entry. They are custom integrations, so they include a `version`.
+[example-custom-config 仓库](https://github.com/home-assistant/example-custom-config/tree/master/custom_components/)中有一些小型示例集成，例如一个从配置条目设置平台的集成。它们是自定义集成，因此包含 `version`。
 
-## Next steps
+## 后续步骤
 
-- Build a complete integration step by step in the [tutorial](/core/integrations/tutorial/).
-- Look at the [file structure](/core/integrations/file-structure/) of an integration.
-- Fill in the [manifest](/core/integrations/manifest/).
-- Build the [config flow](/core/integrations/config-flow/) and get the data with a [coordinator](/core/integrations/fetching-data/).
-- Check the [Bronze tier rules](/core/quality-scale/rules/#bronze) of the quality scale.
+- 在[教程](/core/integrations/tutorial/)中逐步构建一个完整的集成。
+- 查看集成的[文件结构](/core/integrations/file-structure/)。
+- 填写[清单文件](/core/integrations/manifest/)。
+- 构建[配置流程](/core/integrations/config-flow/)，并使用[协调器（coordinator）](/core/integrations/fetching-data/)获取数据。
+- 查看质量分级的 [Bronze 等级规则](/core/quality-scale/rules/#bronze)。

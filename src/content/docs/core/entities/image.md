@@ -1,53 +1,53 @@
 ---
-title: Image entity
-description: Show a still image that changes now and then, like a map, a snapshot, or a QR code.
+title: 图片实体
+description: 显示一张会不时变化的静态图片，例如地图、快照或二维码。
 sidebarLabel: Image
 sidebarGroup: Media
 ---
 
-An image entity serves a single still image. Think of a vacuum map, the last snapshot of a doorbell, or a QR code for a guest network. It is a much simpler sibling of the [camera entity](/core/entities/camera/): there is no stream, no recording, and no on or off. When the picture changes, the entity says so, and the frontend fetches the new one.
+图片实体（image entity）提供一张单一的静态图片。可以想见扫地机器人的地图、门铃的最新快照，或访客网络的二维码。它是[摄像头实体](/core/entities/camera/)简单得多的同类：没有视频流，没有录像，也没有开与关。当图片发生变化时，实体会告知这一变化，前端随后获取新图片。
 
-Inherit from `ImageEntity`, imported from `homeassistant.components.image`. Use it when your device or service has an image that updates every now and then. If it shows live video, or you need to grab frames on demand, use a camera entity instead.
+继承自 `ImageEntity`，从 `homeassistant.components.image` 导入。当你的设备或服务拥有会不时更新的图片时使用它。如果它显示实时视频，或者你需要按需抓取帧，请改用摄像头实体。
 
-You give the image in one of two ways:
+你可以通过以下两种方式之一提供图片：
 
-- **A URL**: set `image_url`, and Home Assistant downloads the image, detects its content type, and caches it.
-- **Bytes**: implement `async_image` (or `image`) and return the image data yourself.
+- **URL**：设置 `image_url`，Home Assistant 会下载图片、检测其内容类型并缓存它。
+- **字节**：实现 `async_image`（或 `image`）并自行返回图片数据。
 
-## Properties
+## 属性
 
-These properties are specific to image entities. The generic properties every entity has are on [the entity class](/core/entities/entity-class/).
+这些属性是图片实体特有的。每个实体都具有的通用属性见[实体类](/core/entities/entity-class/)。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `content_type` | `str` | `"image/jpeg"` | The MIME type of the image. Set automatically when the image comes from `image_url`. |
-| `image_last_updated` | `datetime \| None` | `None` | When the image last changed. This is the state of the entity, and the frontend refetches the image when it changes. |
-| `image_url` | `str \| None` | `UNDEFINED` | A URL to download the image from. Leave it unset if you return bytes from `async_image` instead. |
+| `content_type` | `str` | `"image/jpeg"` | 图片的 MIME 类型。当图片来自 `image_url` 时自动设置。 |
+| `image_last_updated` | `datetime \| None` | `None` | 图片上次变化的时间。这是实体的状态，前端会在其变化时重新获取图片。 |
+| `image_url` | `str \| None` | `UNDEFINED` | 用于下载图片的 URL。如果你改为从 `async_image` 返回字节数据，则将其保持为未设置。 |
 
-Image entities do not poll by default (`should_poll` is `False`), because you tell Home Assistant about a new image by changing `image_last_updated`.
+图片实体默认不进行轮询（`should_poll` 为 `False`），因为你通过更改 `image_last_updated` 来告知 Home Assistant 有新图片。
 
 > [!IMPORTANT]
-> The constructor of `ImageEntity` takes `hass` (and an optional `verify_ssl`, `False` by default). It sets up the HTTP client used for `image_url` and the access tokens. Call `super().__init__(hass)` in your own `__init__`.
+> `ImageEntity` 的构造函数接受 `hass`（以及可选的 `verify_ssl`，默认为 `False`）。它会设置用于 `image_url` 和访问令牌的 HTTP 客户端。请在你自己的 `__init__` 中调用 `super().__init__(hass)`。
 
-## Supported features
+## 支持的功能
 
-Image entities have no supported features.
+图片实体没有任何受支持的功能。
 
-## Fetching and caching
+## 获取与缓存
 
-Home Assistant calls `async_image` whenever someone asks for the image. The frontend asks when a page with the entity loads, and again each time the state changes. The `image.snapshot` action asks too. While a client watches the MJPEG stream at `/api/image_proxy_stream/<entity_id>`, Home Assistant sends a frame on every state change, including the token rotation every five minutes, and at least every 55 seconds. You don't control when `async_image` runs, so keep it cheap.
+每当有人请求图片时，Home Assistant 都会调用 `async_image`。前端在包含该实体的页面加载时请求，并在每次状态变化时再次请求。`image.snapshot` 动作也会发起请求。当客户端在 `/api/image_proxy_stream/<entity_id>` 观看 MJPEG 流时，Home Assistant 会在每次状态变化时发送一帧，包括每五分钟一次的令牌轮换，并且至少每 55 秒发送一帧。你无法控制 `async_image` 何时运行，因此请保持其开销低廉。
 
-That means the order matters. When a new image is available (from a coordinator update, a push message, or a timer), you update `image_last_updated` and write the state. The frontend sees the new state and fetches the image. Do not bump `image_last_updated` from inside `async_image`: that would trigger a new fetch on every fetch.
+这意味着顺序很重要。当有新图片可用时（来自协调器（coordinator）更新、推送消息或定时器），你需要更新 `image_last_updated` 并写入状态。前端看到新状态后便会获取图片。不要在 `async_image` 内部更新 `image_last_updated`：那会导致每次获取都触发一次新的获取。
 
-When you use `image_url`, the downloaded image is cached in `self._cached_image`. Set it to `None` when the URL or the image behind it changes, so the next fetch downloads it again.
+使用 `image_url` 时，下载的图片会缓存在 `self._cached_image` 中。当 URL 或其背后的图片发生变化时，将其设置为 `None`，这样下一次获取便会重新下载。
 
-The entity picture of an image entity points to `/api/image_proxy/<entity_id>` with a short-lived access token. Home Assistant rotates those tokens every five minutes, so you never have to deal with them yourself.
+图片实体的实体图片指向 `/api/image_proxy/<entity_id>`，并附带一个短期有效的访问令牌。Home Assistant 每五分钟轮换一次这些令牌，因此你完全无需自行处理。
 
-## Methods
+## 方法
 
-### Return the image
+### 返回图片
 
-Implement one of these when you return bytes instead of setting `image_url`. Return `None` when there is no image.
+当你返回字节数据而不是设置 `image_url` 时，请实现其中之一。没有图片时返回 `None`。
 
 ```python
 class MyImage(ImageEntity):
@@ -58,17 +58,17 @@ class MyImage(ImageEntity):
         """Return bytes of the image."""
 ```
 
-If you fetch the image from a remote source, cache it and only fetch again after `image_last_updated` changed.
+如果你从远程来源获取图片，请将其缓存，并且只在 `image_last_updated` 发生变化后才再次获取。
 
-## States
+## 状态
 
-The state is `image_last_updated` as an ISO 8601 timestamp, like `2026-10-10T08:15:00+00:00`. When `image_last_updated` is `None`, the state is `unknown`. You cannot set the state directly: it is final in the base class.
+状态是以 ISO 8601 时间戳表示的 `image_last_updated`，例如 `2026-10-10T08:15:00+00:00`。当 `image_last_updated` 为 `None` 时，状态为 `unknown`。你不能直接设置状态：它在基类中是 final 的。
 
-The entity also has an `access_token` attribute, which is excluded from the [recorder](/glossary/recorder/), just like `entity_picture`.
+该实体还有一个 `access_token` 属性，它与 `entity_picture` 一样被排除在[记录器（recorder）](/glossary/recorder/)之外。
 
-## Example
+## 示例
 
-An image entity for the map of a robot vacuum, refreshed from a [coordinator](/glossary/coordinator/).
+一个用于扫地机器人地图的图片实体，通过[协调器](/glossary/coordinator/)刷新。
 
 ```python
 from homeassistant.components.image import ImageEntity

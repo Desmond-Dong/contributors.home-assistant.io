@@ -1,31 +1,31 @@
 ---
-title: Date entity
-description: Build a date entity that lets people set a calendar date on a device, like the start of a holiday mode.
+title: 日期实体
+description: 构建一个日期实体，让人们能够在设备上设置一个日历日期，例如假期模式的开始日期。
 sidebarLabel: Date
 sidebarGroup: Inputs and helpers
 ---
 
-A date entity lets people set a calendar date, without a time, on a device or service. Think of the date a holiday mode starts, or the next date a filter needs replacing. Inherit from `DateEntity` in `homeassistant.components.date`.
+日期实体（date entity）让人们能够在设备或服务（service）上设置一个不含时间的日历日期。比如假期模式开始的日期，或者滤网下次需要更换的日期。请继承 `homeassistant.components.date` 中的 `DateEntity`。
 
-Need a time of day too? Use a [date and time](/core/entities/datetime/) entity. Only a time of day? Use a [time](/core/entities/time/) entity. Is the date something the device only reports, like the date it was installed? That is a [sensor](/core/entities/sensor/) with the `date` device class.
+还需要包含一天中的时间？请使用[日期和时间](/core/entities/datetime/)实体。只需要一天中的时间？请使用[时间](/core/entities/time/)实体。如果这个日期是设备只负责报告的信息，例如它的安装日期？那是一个带有 `date` 设备类别的[传感器](/core/entities/sensor/)。
 
-## Properties
+## 属性
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `native_value` | `datetime.date \| None` | Required | The current date. |
+| `native_value` | `datetime.date \| None` | 必填 | 当前日期。 |
 
-A date entity has no device class and no state attributes: both are final and always `None`. The generic properties every entity has, like `name`, `available`, and `unique_id`, are on [the entity class](/core/entities/entity-class/).
+日期实体没有设备类别，也没有状态属性：两者都是固定的，并且始终为 `None`。每个实体都具有的通用属性，例如 `name`、`available` 和 `unique_id`，位于[实体类](/core/entities/entity-class/)上。
 
-## Supported features
+## 支持的功能
 
-This entity has no supported features.
+此实体不支持任何功能。
 
-## Methods
+## 方法
 
-### Set value
+### 设置值
 
-Called when someone picks a date in the UI, or an automation or script calls the `date.set_value` action. Implement one of the two.
+当有人在用户界面（UI）中选择一个日期，或者自动化（automation）或脚本调用 `date.set_value` 动作（action）时被调用。两者实现其一即可。
 
 ```python
 class MyDate(DateEntity):
@@ -38,11 +38,11 @@ class MyDate(DateEntity):
         """Set a new date."""
 ```
 
-## States
+## 状态
 
-The state is `native_value` in ISO 8601 format, like `2026-12-24`. It is `unknown` when `native_value` is `None`.
+状态是 ISO 8601 格式的 `native_value`，例如 `2026-12-24`。当 `native_value` 为 `None` 时，状态为 `unknown`。
 
-## Example
+## 示例
 
 ```python
 from datetime import date

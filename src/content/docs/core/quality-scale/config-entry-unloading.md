@@ -1,22 +1,22 @@
 ---
-title: Support unloading the config entry
-description: "Silver rule config-entry-unloading: the integration can be unloaded and reloaded without a restart."
+title: 支持卸载配置项（config entry）
+description: "银级规则 config-entry-unloading：集成（integration）可以在不重启的情况下被卸载并重新加载。"
 sidebarLabel: config-entry-unloading
 sidebarGroup: Silver
 order: 2
 ---
 
-This is a Silver rule. In `quality_scale.yaml`, it is called `config-entry-unloading`.
+这是一条银级（Silver）规则。在 `quality_scale.yaml` 中，它被称为 `config-entry-unloading`。
 
-The integration must implement `async_unload_entry` in its `__init__.py`. When a [config entry](/glossary/config-entry/) is unloaded, the integration unloads its platforms and cleans up everything it set up: listeners, subscriptions, background tasks, and open connections.
+集成必须在其 `__init__.py` 中实现 `async_unload_entry`。当[配置项（config entry）](/glossary/config-entry/)被卸载时，集成会卸载其平台，并清理它所设置的所有内容：监听器、订阅、后台任务以及打开的连接。
 
-## Why it matters
+## 为什么重要
 
-Unloading is what makes it possible to reload, disable, or remove an integration while Home Assistant keeps running. Without it, the user has to restart Home Assistant to apply a change or get rid of the integration. And whatever is not cleaned up keeps running in the background, using memory and connections for nothing.
+卸载功能使得在 Home Assistant 继续运行的同时，重新加载、禁用或移除集成成为可能。如果没有它，用户必须重启 Home Assistant 才能应用更改或移除集成。而且，任何未被清理的内容都会继续在后台运行，白白占用内存和连接。
 
-## Example
+## 示例
 
-Unload the platforms, and clean up when that succeeds:
+卸载各平台，并在卸载成功时进行清理：
 
 ```python
 async def async_unload_entry(
@@ -31,7 +31,7 @@ async def async_unload_entry(
     return unload_ok
 ```
 
-Often, you do not need to keep track of the cleanup yourself. Register it during setup with `entry.async_on_unload`, and Home Assistant calls it for you:
+通常，您不需要自己跟踪清理工作。在设置期间通过 `entry.async_on_unload` 注册清理回调，Home Assistant 会替您调用它：
 
 ```python
 async def async_setup_entry(
@@ -43,18 +43,18 @@ async def async_setup_entry(
     ...
 ```
 
-The callbacks registered with `entry.async_on_unload` run when `async_unload_entry` succeeds, and also whenever `async_setup_entry` fails: when it raises, like `ConfigEntryNotReady`, `ConfigEntryAuthFailed`, or `ConfigEntryError`, or when it returns `False`. You still need `async_unload_entry` itself: without it, the entry cannot be unloaded at all.
+通过 `entry.async_on_unload` 注册的回调会在 `async_unload_entry` 成功时运行，并且在 `async_setup_entry` 失败时也会运行：无论是抛出异常（如 `ConfigEntryNotReady`、`ConfigEntryAuthFailed` 或 `ConfigEntryError`），还是返回 `False`。您仍然需要 `async_unload_entry` 本身：没有它，配置项根本无法被卸载。
 
-## How it is checked
+## 如何检查
 
-- Pylint, when the rule is `done`: `__init__.py` must define `async_unload_entry` (`home-assistant-missing-config-entry-unloading`).
-- Code that tests never run shows up in the [test coverage](/core/quality-scale/test-coverage/), so a test that unloads the entry is usually needed anyway.
-- Whether everything is cleaned up is checked in review.
+- Pylint，当该规则为 `done` 时：`__init__.py` 必须定义 `async_unload_entry`（`home-assistant-missing-config-entry-unloading`）。
+- 测试从未运行到的代码会显示在[测试覆盖率](/core/quality-scale/test-coverage/)中，因此无论如何通常都需要一个能卸载配置项的测试。
+- 是否清理了所有内容，将在审查（review）中进行检查。
 
-## Exceptions
+## 例外
 
-There are no exceptions to this rule.
+此规则没有任何例外。
 
-## Related rules
+## 相关规则
 
-- [entity-event-setup](/core/quality-scale/entity-event-setup/): subscribe to events in the entity lifecycle.
+- [entity-event-setup](/core/quality-scale/entity-event-setup/)：在实体（entity）生命周期中订阅事件。

@@ -1,27 +1,27 @@
 ---
 title: WebSocket API
-description: The API the frontend uses. How a connection works, the core commands, error handling, and how to add your own commands from an integration.
+description: 前端使用的 API。介绍连接的工作方式、核心命令、错误处理，以及如何从集成中添加你自己的命令。
 sidebarGroup: APIs
 order: 31
 ---
 
-Home Assistant serves a WebSocket API at `/api/websocket`. It is the main API: the frontend and the companion apps use it for nearly everything, and it can stream changes as they happen. Integrations add their own commands to it, so there are far more commands than this page lists.
+Home Assistant 在 `/api/websocket` 提供 WebSocket API。它是主要的 API：前端和伴侣应用（companion app）几乎所有的操作都使用它，而且它可以在变化发生时实时流式传输。集成（integration）会向它添加自己的命令，因此实际存在的命令远多于本页所列。
 
-For JavaScript, use the [home-assistant-js-websocket](https://github.com/home-assistant/home-assistant-js-websocket) library. It handles authentication, reconnecting, and subscriptions, and it is what the frontend uses.
+对于 JavaScript，请使用 [home-assistant-js-websocket](https://github.com/home-assistant/home-assistant-js-websocket) 库。它负责处理身份验证、重连和订阅，前端使用的正是它。
 
-## How a connection works
+## 连接的工作方式
 
-1. The client connects. The server sends `auth_required`.
-2. The client sends an `auth` message with an access token.
-3. The server answers `auth_ok`, or `auth_invalid` and closes the connection.
-4. The command phase starts. The client sends commands, and the server sends results and subscription messages.
-5. Either side closes the connection.
+1. 客户端连接。服务器发送 `auth_required`。
+2. 客户端发送一条带有访问令牌的 `auth` 消息。
+3. 服务器回复 `auth_ok`，或者回复 `auth_invalid` 并关闭连接。
+4. 命令阶段开始。客户端发送命令，服务器发送结果和订阅消息。
+5. 任意一方关闭连接。
 
-Every message is a JSON object with a `type`. In the command phase, every message from the client also has an `id`: a number that increases with each command. The server puts that `id` on everything it sends back, so you can match answers to commands.
+每条消息都是一个带有 `type` 的 JSON 对象。在命令阶段，客户端发出的每条消息还带有一个 `id`：一个随每条命令递增的数字。服务器会在它发回的所有内容上都带上这个 `id`，这样你就能将应答与命令一一对应。
 
-## Authentication
+## 身份验证
 
-Right after connecting, the server sends:
+连接后，服务器会立即发送：
 
 ```json
 {
@@ -30,7 +30,7 @@ Right after connecting, the server sends:
 }
 ```
 
-Send an access token. See the [authentication API](/core/internals/auth-api/) for how to get one.
+发送一个访问令牌。有关如何获取访问令牌，请参阅[身份验证 API](/core/internals/auth-api/)。
 
 ```json
 {
@@ -39,7 +39,7 @@ Send an access token. See the [authentication API](/core/internals/auth-api/) fo
 }
 ```
 
-If the token is valid:
+如果令牌有效：
 
 ```json
 {
@@ -48,11 +48,11 @@ If the token is valid:
 }
 ```
 
-If not, you get `auth_invalid` with a `message`, and the server disconnects.
+如果无效，你会收到带有 `message` 的 `auth_invalid`，服务器随即断开连接。
 
-## Enable features
+## 启用功能
 
-Right after authenticating, a client can turn on optional features with `supported_features`. Today, the one feature is `coalesce_messages`: the server then bundles messages and sends them in bulk, as a JSON list, instead of one by one.
+完成身份验证后，客户端可以立即使用 `supported_features` 开启可选功能。目前只有一个这样的功能，即 `coalesce_messages`：启用后，服务器会将消息打包，以 JSON 列表的形式批量发送，而不是逐条发送。
 
 ```json
 {
@@ -64,9 +64,9 @@ Right after authenticating, a client can turn on optional features with `support
 }
 ```
 
-## Results and errors
+## 结果与错误
 
-The server answers each command with a `result`, except `ping`, which gets a `pong`:
+服务器对每条命令都以 `result` 应答，`ping` 除外，它会收到 `pong`：
 
 ```json
 {
@@ -77,7 +77,7 @@ The server answers each command with a `result`, except `ping`, which gets a `po
 }
 ```
 
-When something goes wrong, `success` is `false` and `error` has a `code` and a `message`:
+当出现问题时，`success` 为 `false`，`error` 中包含 `code` 和 `message`：
 
 ```json
 {
@@ -91,13 +91,13 @@ When something goes wrong, `success` is `false` and `error` has a `code` and a `
 }
 ```
 
-Error codes include `invalid_format`, `not_found`, `not_allowed`, `not_supported`, `unauthorized`, `unknown_command`, `id_reuse`, `home_assistant_error`, `service_validation_error`, `template_error`, `timeout`, and `unknown_error`. When the error comes from a `HomeAssistantError` with translation information, the error also has `translation_domain`, `translation_key`, and `translation_placeholders`, so the frontend can show it in the user's language.
+错误代码包括 `invalid_format`、`not_found`、`not_allowed`、`not_supported`、`unauthorized`、`unknown_command`、`id_reuse`、`home_assistant_error`、`service_validation_error`、`template_error`、`timeout` 和 `unknown_error`。当错误来自带有翻译信息的 `HomeAssistantError` 时，错误还会带有 `translation_domain`、`translation_key` 和 `translation_placeholders`，这样前端就能以用户的语言显示该错误。
 
-## Core commands
+## 核心命令
 
-These are the commands of the `websocket_api` integration itself.
+以下是 `websocket_api` 集成本身的命令。
 
-### Subscribe to events
+### 订阅事件
 
 ```json
 {
@@ -107,7 +107,7 @@ These are the commands of the `websocket_api` integration itself.
 }
 ```
 
-Leave out `event_type` to get all events. That, and most event types, need an admin. Every event comes in as a message of type `event`, with the `id` of the subscription:
+省略 `event_type` 即可获取所有事件。这种情况以及大多数事件类型都需要管理员权限。每个事件都会以类型为 `event` 的消息送达，并带有该订阅的 `id`：
 
 ```json
 {
@@ -131,11 +131,11 @@ Leave out `event_type` to get all events. That, and most event types, need an ad
 }
 ```
 
-The states are shortened here. To follow states, `subscribe_entities` is more efficient.
+此处对状态（state）做了截断处理。要跟踪状态，使用 `subscribe_entities` 效率更高。
 
-### Unsubscribe
+### 取消订阅
 
-Ends any subscription. `subscription` is the `id` of the command that started it.
+结束任意订阅。`subscription` 是启动该订阅的那条命令的 `id`。
 
 ```json
 {
@@ -145,9 +145,9 @@ Ends any subscription. `subscription` is the `id` of the command that started it
 }
 ```
 
-### Subscribe to entities
+### 订阅实体（entity）
 
-`subscribe_entities` is how the frontend follows states. It sends all states the user may read first, then only the changes, in a compact format. Pass `entity_ids` to limit it.
+`subscribe_entities` 是前端用来跟踪状态的方式。它先发送用户可读取的所有状态，之后只发送变化的部分，且采用紧凑格式。传入 `entity_ids` 可以限制范围。
 
 ```json
 {
@@ -157,11 +157,11 @@ Ends any subscription. `subscription` is the `id` of the command that started it
 }
 ```
 
-Each `event` message holds a map with up to three keys: `a` for added entities with their full compressed state, `c` for changed entities with only what changed (under `+`, and removed attributes under `-`), and `r` for the IDs of removed entities. In a compressed state, `s` is the state, `a` the attributes, `c` the context, `lc` last changed, and `lu` last updated.
+每条 `event` 消息包含一个最多含三个键的映射：`a` 表示新增实体及其完整的压缩状态，`c` 表示发生变化的实体且只包含变化的部分（变化在 `+` 下，被移除的属性在 `-` 下），`r` 表示被移除实体的 ID。在压缩状态中，`s` 是状态，`a` 是属性，`c` 是上下文，`lc` 是最后变更时间，`lu` 是最后更新时间。
 
-### Subscribe to a trigger
+### 订阅触发器
 
-**Admin.** Subscribes to one or more [triggers](/glossary/trigger/), in the same format as in automations. You get an `event` message each time a trigger fires, with the trigger variables.
+**需要管理员权限。** 订阅一个或多个[触发器（trigger）](/glossary/trigger/)，格式与自动化（automation）中的相同。触发器每次触发时，你都会收到一条包含触发器变量的 `event` 消息。
 
 ```json
 {
@@ -175,7 +175,7 @@ Each `event` message holds a map with up to three keys: `a` for added entities w
 }
 ```
 
-### Call an action
+### 调用动作（action）
 
 ```json
 {
@@ -192,7 +192,7 @@ Each `event` message holds a map with up to three keys: `a` for added entities w
 }
 ```
 
-`service_data` and `target` are optional. The result has the `context` of the call. To get [response data](/core/integrations/actions/#return-response-data), add `"return_response": true`. The result then also has a `response`:
+`service_data` 和 `target` 是可选的。结果中包含本次调用的 `context`。要获取[响应数据](/core/integrations/actions/#return-response-data)，请添加 `"return_response": true`。此时结果中还会包含一个 `response`：
 
 ```json
 {
@@ -210,9 +210,9 @@ Each `event` message holds a map with up to three keys: `a` for added entities w
 }
 ```
 
-### Fire an event
+### 触发事件
 
-**Admin.** Fires an event, with optional `event_data`. The result has the `context`.
+**需要管理员权限。** 触发一个事件，`event_data` 为可选。结果中包含 `context`。
 
 ```json
 {
@@ -225,22 +225,22 @@ Each `event` message holds a map with up to three keys: `a` for added entities w
 }
 ```
 
-### Get things
+### 获取内容
 
-Each of these takes only an `id` and a `type`, and returns its data in the `result`:
+以下每条命令都只接受一个 `id` 和一个 `type`，并在 `result` 中返回相应数据：
 
-- `get_states`: all states the user may read.
-- `get_config`: the [core configuration](/core/internals/hass/#the-core-configuration).
-- `get_services`: all actions, with their descriptions.
-- `get_panels`: the registered panels. This one comes from the `frontend` integration.
+- `get_states`：用户可读取的所有状态。
+- `get_config`：[核心配置](/core/internals/hass/#the-core-configuration)。
+- `get_services`：所有动作及其描述。
+- `get_panels`：已注册的面板。这一条来自 `frontend` 集成。
 
 ### Ping
 
-Send `{"id": 19, "type": "ping"}` and the server answers `{"id": 19, "type": "pong"}`. Use it as a heartbeat to check the connection is alive.
+发送 `{"id": 19, "type": "ping"}`，服务器会回复 `{"id": 19, "type": "pong"}`。可以把它当作心跳，用来检测连接是否存活。
 
-### Validate configuration
+### 验证配置
 
-`validate_config` checks `triggers`, `conditions`, and `actions` as if they were part of an automation. Each key is optional, and only the keys you send come back.
+`validate_config` 会将 `triggers`、`conditions` 和 `actions` 当作自动化的一部分来进行检查。每个键都是可选的，且只返回你发送的键。
 
 ```json
 {
@@ -265,24 +265,24 @@ Send `{"id": 19, "type": "ping"}` and the server answers `{"id": 19, "type": "po
 }
 ```
 
-### Work with targets
+### 使用目标（target）
 
-These commands take a `target` in the same format as an action call, with `entity_id`, `device_id`, `area_id`, `floor_id`, and `label_id`:
+这些命令接受一个与动作调用格式相同的 `target`，其中可包含 `entity_id`、`device_id`、`area_id`、`floor_id` 和 `label_id`：
 
-- `extract_from_target`: resolves the target into `referenced_entities`, `referenced_devices`, and `referenced_areas`, and lists what does not exist under `missing_devices`, `missing_areas`, `missing_floors`, and `missing_labels`. With `"expand_group": true`, groups are replaced by their members. Defaults to `false`.
-- `get_triggers_for_target`, `get_conditions_for_target`, and `get_services_for_target`: return the triggers, conditions, or actions that apply to at least one entity of the target, like `light.turn_on`. Here, `expand_group` defaults to `true`.
+- `extract_from_target`：将目标解析为 `referenced_entities`、`referenced_devices` 和 `referenced_areas`，并在 `missing_devices`、`missing_areas`、`missing_floors` 和 `missing_labels` 下列出不存在的内容。使用 `"expand_group": true` 时，分组会被替换为其成员。默认为 `false`。
+- `get_triggers_for_target`、`get_conditions_for_target` 和 `get_services_for_target`：返回适用于目标中至少一个实体的触发器、条件或动作，例如 `light.turn_on`。这里 `expand_group` 默认为 `true`。
 
-### More commands
+### 更多命令
 
-The core commands also include `render_template`, `subscribe_condition`, `test_condition`, `execute_script`, `entity/source`, `manifest/list`, `manifest/get`, and `integration/setup_info`. Beyond those, almost every integration with a UI registers commands of its own. A few that apps and other clients rely on are described below, under [integration commands](#integration-commands). For the rest, the frontend source is the best place to see how they are called.
+核心命令还包括 `render_template`、`subscribe_condition`、`test_condition`、`execute_script`、`entity/source`、`manifest/list`、`manifest/get` 和 `integration/setup_info`。除此之外，几乎所有带界面的集成都会注册自己的命令。应用和其他客户端依赖的一些命令在下文的[集成命令](#integration-commands)中有介绍。其余命令的调用方式，最好直接查看前端源码。
 
-## Integration commands
+## 集成命令
 
-These commands don't come from `websocket_api` itself, but from integrations that are always loaded when the frontend is. Companion apps and other clients use them, so their format is a contract.
+这些命令并非来自 `websocket_api` 本身，而是来自那些只要前端加载就一定会加载的集成。伴侣应用和其他客户端都在使用这些命令，因此它们的格式是一种契约。
 
-### List entities for display
+### 列出用于显示的实体
 
-`config/entity_registry/list_for_display` comes from the `config` integration. It returns the entity registry in a compact format: just what a client needs to show entities, with short keys to keep the message small. Any authenticated user can call it. It takes no parameters.
+`config/entity_registry/list_for_display` 来自 `config` 集成。它以紧凑格式返回实体注册表（entity registry）：只包含客户端显示实体所需的信息，并使用短键名来减小消息体积。任何通过身份验证的用户都可以调用它。它不接受任何参数。
 
 ```json
 {
@@ -325,41 +325,41 @@ These commands don't come from `websocket_api` itself, but from integrations tha
 }
 ```
 
-`entity_categories` maps a number to an [entity category](/core/entities/registry/). Entities refer to their category with that number, in `ec`, instead of repeating the string. JSON keys are always strings, so the numbers arrive as `"0"` and `"1"`.
+`entity_categories` 将数字映射到[实体类别（entity category）](/core/entities/registry/)。实体在 `ec` 中用该数字来指代自己的类别，而不是重复字符串。JSON 的键始终是字符串，因此这些数字以 `"0"` 和 `"1"` 的形式送达。
 
-`entities` holds every entity in the registry that is not disabled. Disabled entities are left out, whoever disabled them. Entities without a registry entry, like entities without a unique ID, are not in the list either. Each entity has these keys. Only `ei`, `pl`, and `lb` are always there. The others are left out when they have no value.
+`entities` 包含注册表中所有未停用的实体。已停用的实体一律排除在外，无论是由谁停用的。没有注册表条目的实体，例如没有唯一 ID 的实体，也不会出现在列表中。每个实体都有以下这些键。只有 `ei`、`pl` 和 `lb` 始终存在。其余键在没有值时会被省略。
 
-| Key | Type | Meaning |
+| 键 | 类型 | 含义 |
 | --- | --- | --- |
-| `ei` | string | The entity ID. |
-| `pl` | string | The platform: the integration that provides the entity, like `hue`. |
-| `lb` | list of strings | The IDs of the labels of the entity. An empty list when it has none. |
-| `ai` | string | The ID of the area the entity itself is assigned to. Not set when the entity only gets its area from its device. |
-| `di` | string | The ID of the device the entity belongs to. |
-| `np` | string | Which name comes next when you build the full name of the entity: `area` when the entity has its own area, otherwise `device` when it belongs to a device. |
-| `ic` | string | The icon the user picked, like `mdi:lightbulb`. It overrides the icon of the state. |
-| `tk` | string | The translation key of the entity, used to translate its name and state. |
-| `ec` | number | The entity category, as a key of `entity_categories`. |
-| `hb` | boolean | `true` when the entity is hidden, by the user or by the integration. |
-| `hn` | boolean | `true` when the entity [uses `has_entity_name`](/core/entities/naming/), so its name doesn't include the device name. |
-| `en` | string | The entity name. The name the user set, otherwise the name from the integration. For an integration that doesn't use `has_entity_name`, the name from the integration has the device name stripped from its start, when it starts with it. |
-| `dp` | number | Sensors only: the number of decimals to show. The precision the user set, otherwise the precision the integration suggests. |
+| `ei` | 字符串 | 实体 ID。 |
+| `pl` | 字符串 | 平台：提供该实体的集成，例如 `hue`。 |
+| `lb` | 字符串列表 | 该实体的标签（label）的 ID。没有标签时为空列表。 |
+| `ai` | 字符串 | 实体本身被分配到的区域（area）的 ID。当实体仅从其设备继承区域时，此项不会被设置。 |
+| `di` | 字符串 | 该实体所属设备（device）的 ID。 |
+| `np` | 字符串 | 构建实体全名时接下来使用哪个名称：实体拥有自己的区域时为 `area`，否则当它属于某台设备时为 `device`。 |
+| `ic` | 字符串 | 用户选择的图标，例如 `mdi:lightbulb`。它会覆盖状态的图标。 |
+| `tk` | 字符串 | 实体的翻译键，用于翻译其名称和状态。 |
+| `ec` | 数字 | 实体类别，是 `entity_categories` 的一个键。 |
+| `hb` | 布尔值 | 当实体被隐藏时为 `true`，无论是被用户还是被集成隐藏。 |
+| `hn` | 布尔值 | 当实体[使用 `has_entity_name`](/core/entities/naming/) 时为 `true`，此时其名称不包含设备名称。 |
+| `en` | 字符串 | 实体名称。用户设置的名称，否则为集成提供的名称。对于不使用 `has_entity_name` 的集成，如果集成提供的名称以设备名称开头，则会去掉开头的设备名称。 |
+| `dp` | 数字 | 仅限传感器：要显示的小数位数。为用户设置的精度，否则为集成建议的精度。 |
 
-For the full registry entries, with all fields, use `config/entity_registry/list` (all entries) or `config/entity_registry/get_entries` (the entries for a list of `entity_ids`).
+如需包含所有字段的完整注册表条目，请使用 `config/entity_registry/list`（所有条目）或 `config/entity_registry/get_entries`（一组 `entity_ids` 的条目）。
 
-### Expose entities to voice assistants
+### 向语音助手公开实体
 
-The `homeassistant` integration keeps track of which entities are exposed to which voice assistant. These commands manage that. All of them need an admin.
+`homeassistant` 集成会记录哪些实体向哪个语音助手公开。这些命令用于管理这一设置。所有这些命令都需要管理员权限。
 
-The assistants are identified by these IDs, and the commands accept no others:
+这些助手由以下 ID 标识，命令不接受其他任何 ID：
 
-- `conversation`: Assist
-- `cloud.alexa`: Amazon Alexa through Home Assistant Link
-- `cloud.google_assistant`: Google Assistant through Home Assistant Link
+- `conversation`：Assist
+- `cloud.alexa`：通过 Home Assistant Link 使用的 Amazon Alexa
+- `cloud.google_assistant`：通过 Home Assistant Link 使用的 Google Assistant
 
-#### Expose or unexpose entities
+#### 公开或取消公开实体
 
-`homeassistant/expose_entity` exposes or unexposes entities to one or more assistants. The change applies right away.
+`homeassistant/expose_entity` 向一个或多个助手公开或取消公开实体。更改会立即生效。
 
 ```json
 {
@@ -371,17 +371,17 @@ The assistants are identified by these IDs, and the commands accept no others:
 }
 ```
 
-| Field | Type | Meaning |
+| 字段 | 类型 | 含义 |
 | --- | --- | --- |
-| `assistants` | list of strings | Required. The assistants to change the setting for. |
-| `entity_ids` | list of strings | Required. The entities to change. The IDs are not checked against existing entities. |
-| `should_expose` | boolean | Required. `true` to expose, `false` to unexpose. |
+| `assistants` | 字符串列表 | 必填。要更改此设置的助手。 |
+| `entity_ids` | 字符串列表 | 必填。要更改的实体。这些 ID 不会与现有实体进行核对。 |
+| `should_expose` | 布尔值 | 必填。`true` 表示公开，`false` 表示取消公开。 |
 
-The result is `null`.
+结果为 `null`。
 
-#### List exposed entities
+#### 列出已公开的实体
 
-`homeassistant/expose_entity/list` takes no parameters and returns the entities that are exposed to at least one assistant. Each entity maps to the assistants it is exposed to, always with the value `true`. An assistant the entity is not exposed to is left out, and so is an entity that is exposed to none.
+`homeassistant/expose_entity/list` 不接受参数，返回至少向一个助手公开的实体。每个实体映射到它所公开给的各个助手，值始终为 `true`。实体未公开给的助手会被省略，未向任何助手公开的实体同样不会出现。
 
 ```json
 {
@@ -409,11 +409,11 @@ The result is `null`.
 }
 ```
 
-The list holds what is stored. Home Assistant stores the setting of an entity when someone exposes or unexposes it, and also the first time an assistant asks whether it may use the entity. Until then, an entity is not in the list, even when the default rules below would expose it.
+该列表保存的是已存储的内容。当有人公开或取消公开某个实体时，Home Assistant 会存储该实体的设置；当助手第一次询问它是否可以使用该实体时，Home Assistant 也会进行存储。在此之前，即使下文的默认规则会将其公开，该实体也不会出现在列表中。
 
-#### Expose new entities by default
+#### 默认公开新实体
 
-Each assistant has a setting that decides whether new entities are exposed to it automatically. `homeassistant/expose_new_entities/get` reads it for one `assistant`:
+每个助手都有一个设置，用于决定新实体是否自动向它公开。`homeassistant/expose_new_entities/get` 读取某个 `assistant` 的该设置：
 
 ```json
 {
@@ -434,9 +434,9 @@ Each assistant has a setting that decides whether new entities are exposed to it
 }
 ```
 
-Until it is changed, the setting is `true` for `conversation` and `false` for the other assistants.
+在更改之前，`conversation` 的该设置为 `true`，其他助手则为 `false`。
 
-`homeassistant/expose_new_entities/set` changes it. Both `assistant` and `expose_new` (a boolean) are required. The result is `null`.
+`homeassistant/expose_new_entities/set` 用于更改该设置。`assistant` 和 `expose_new`（一个布尔值）均为必填。结果为 `null`。
 
 ```json
 {
@@ -447,15 +447,15 @@ Until it is changed, the setting is `true` for `conversation` and `false` for th
 }
 ```
 
-With the setting on, not every new entity is exposed. An entity is exposed by default when it has no entity category and isn't hidden, and one of these is true:
+开启该设置后，并非每个新实体都会被公开。当实体没有实体类别且未被隐藏，并且满足以下条件之一时，才会默认公开：
 
-- Its domain is `climate`, `cover`, `fan`, `humidifier`, `light`, `media_player`, `scene`, `switch`, `todo`, `vacuum`, or `water_heater`.
-- It is a binary sensor with the device class `door`, `garage_door`, `lock`, `motion`, `opening`, `presence`, or `window`.
-- It is a sensor with the device class `aqi`, `carbon_monoxide`, `carbon_dioxide`, `humidity`, `pm10`, `pm25`, `temperature`, or `volatile_organic_compounds`.
+- 其域（domain）为 `climate`、`cover`、`fan`、`humidifier`、`light`、`media_player`、`scene`、`switch`、`todo`、`vacuum` 或 `water_heater`。
+- 它是设备类别（device class）为 `door`、`garage_door`、`lock`、`motion`、`opening`、`presence` 或 `window` 的二进制传感器。
+- 它是设备类别为 `aqi`、`carbon_monoxide`、`carbon_dioxide`、`humidity`、`pm10`、`pm25`、`temperature` 或 `volatile_organic_compounds` 的传感器。
 
-## Add your own command
+## 添加你自己的命令
 
-An integration registers commands with `websocket_api.async_register_command`, usually in `async_setup`. Name the command after your domain, like `my_integration/devices`.
+集成使用 `websocket_api.async_register_command` 注册命令，通常是在 `async_setup` 中。请以你的域来命名命令，例如 `my_integration/devices`。
 
 ```python
 from typing import Any
@@ -490,15 +490,15 @@ async def websocket_list_devices(
     connection.send_result(msg["id"], {"devices": devices})
 ```
 
-- `websocket_command` sets the schema. The message is validated before your handler runs.
-- `async_response` is for handlers that are coroutine functions. A handler that does not await can be a `@callback` instead, without `async_response`.
-- `require_admin` limits the command to administrators. Put it above the other decorators.
-- `connection.user` is the user. Use `connection.context(msg)` as the context for anything you do on their behalf. See [permissions](/core/internals/permissions/).
-- `connection.send_result(msg["id"], result)` answers the command. `connection.send_error(msg["id"], code, message)` reports an error, with one of the codes from `websocket_api`, like `websocket_api.ERR_NOT_FOUND`.
+- `websocket_command` 用于设置模式（schema）。消息会在你的处理函数运行之前进行验证。
+- `async_response` 用于协程函数形式的处理函数。不使用 await 的处理函数可以改用 `@callback`，而无需 `async_response`。
+- `require_admin` 将命令限制为仅管理员可用。请把它放在其他装饰器（decorator）之上。
+- `connection.user` 是用户。凡是代表该用户执行的操作，都请使用 `connection.context(msg)` 作为上下文。请参阅[权限](/core/internals/permissions/)。
+- `connection.send_result(msg["id"], result)` 用于应答命令。`connection.send_error(msg["id"], code, message)` 用于报告错误，错误代码应使用 `websocket_api` 提供的代码之一，例如 `websocket_api.ERR_NOT_FOUND`。
 
-### Subscriptions
+### 订阅
 
-For a command that streams updates, store a function that ends the subscription in `connection.subscriptions[msg["id"]]`. Home Assistant calls it when the client unsubscribes or disconnects. Send updates with `connection.send_message(websocket_api.event_message(msg["id"], data))`.
+对于以流方式发送更新的命令，请将一个用于结束订阅的函数存储在 `connection.subscriptions[msg["id"]]` 中。当客户端取消订阅或断开连接时，Home Assistant 会调用该函数。使用 `connection.send_message(websocket_api.event_message(msg["id"], data))` 发送更新。
 
 ```python
 @callback

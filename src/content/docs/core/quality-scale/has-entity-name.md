@@ -1,24 +1,24 @@
 ---
-title: Use has_entity_name
-description: "Bronze rule has-entity-name: entities set has_entity_name to True, and are named in context of their device."
+title: 使用 has_entity_name
+description: "铜牌规则 has-entity-name：实体将 has_entity_name 设置为 True，并以所属设备为上下文进行命名。"
 sidebarLabel: has-entity-name
 sidebarGroup: Bronze
 order: 16
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `has-entity-name`.
+这是一条铜牌（Bronze）规则。在 `quality_scale.yaml` 中，它被称为 `has-entity-name`。
 
-Every entity of the integration must set `has_entity_name` to `True`. The name of the entity then only describes what it is, like "Temperature", and Home Assistant puts the name of the [device](/glossary/device/) in front of it where that is needed. The main feature of a device gets the name `None`, so it takes the name of the device itself.
+集成的每个实体都必须将 `has_entity_name` 设置为 `True`。这样，实体的名称只需描述它是什么，例如“温度”，而 Home Assistant 会在需要的地方把[设备](/glossary/device/)的名称放在它前面。设备的主要功能实体将名称设为 `None`，因此它会沿用设备本身的名称。
 
-## Why it matters
+## 为什么它很重要
 
-With `has_entity_name`, Home Assistant knows which part of the name is the device and which part is the entity. It can show "Temperature" on the device page, where the device is obvious, and "Living room sensor Temperature" in a list of all entities. Naming works the same way in every integration, and users who rename a device see the new name on all its entities.
+有了 `has_entity_name`，Home Assistant 就能知道名称的哪一部分是设备、哪一部分是实体。它可以在设备页面上显示“温度”（因为那里设备本身显而易见），而在所有实体的列表中显示“客厅传感器 温度”。命名方式在所有集成中都是一致的，重命名了设备的用户会在其所有实体上看到新名称。
 
-It is also the base for translated entity names, which are a Gold rule.
+它也是实体名称翻译的基础，而实体名称翻译是一项金牌（Gold）规则。
 
-## Example
+## 示例
 
-A sensor on a device named "My device", called "My device Temperature":
+位于名为“我的设备”的设备上的传感器，其名称为“我的设备 温度”：
 
 ```python
 class MyTemperatureSensor(SensorEntity):
@@ -35,7 +35,7 @@ class MyTemperatureSensor(SensorEntity):
         )
 ```
 
-The lock that is the main feature of a device, called "My device":
+作为设备主要功能的锁，其名称为“我的设备”：
 
 ```python
 class MyLock(LockEntity):
@@ -45,18 +45,18 @@ class MyLock(LockEntity):
     _attr_name = None
 ```
 
-Set `_attr_has_entity_name` once, in the base entity in `entity.py`, and all your entities follow.
+在 `entity.py` 的基础实体（base entity）中设置一次 `_attr_has_entity_name`，你的所有实体都会随之生效。
 
-## How it is checked
+## 如何检查
 
-Pylint, when the rule is `done`: `home-assistant-missing-has-entity-name` warns when an entity class does not always set `has_entity_name` to `True`, either on the class, at the start of a method, or through an entity description. A value that depends on a condition does not count.
+Pylint，当该规则标记为 `done` 时：`home-assistant-missing-has-entity-name` 会在实体类未始终将 `has_entity_name` 设置为 `True` 时发出警告——无论设置是在类上、在方法开头，还是通过实体描述（entity description）进行。依赖于条件的值不计入。
 
-## Exceptions
+## 例外情况
 
-If the integration does not have any entities, this rule does not apply.
+如果集成没有任何实体，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [entity-translations](/core/quality-scale/entity-translations/): translate entity names.
-- [entity-device-class](/core/quality-scale/entity-device-class/): use device classes.
-- [devices](/core/quality-scale/devices/): create devices.
+- [entity-translations](/core/quality-scale/entity-translations/)：翻译实体名称。
+- [entity-device-class](/core/quality-scale/entity-device-class/)：使用设备类别（device class）。
+- [devices](/core/quality-scale/devices/)：创建设备。

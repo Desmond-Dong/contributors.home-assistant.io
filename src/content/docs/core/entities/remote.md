@@ -1,48 +1,48 @@
 ---
-title: Remote entity
-description: Send commands to other devices, like the buttons on a universal remote, and switch between activities.
+title: 遥控器实体
+description: 向其他设备发送命令，就像万能遥控器上的按钮一样，还可以在多个活动之间切换。
 sidebarLabel: Remote
 sidebarGroup: Remotes and signals
 ---
 
-A remote entity sends commands to a device, the way the buttons on a remote control do. It can be a physical remote or hub, like a universal remote that blasts infrared codes, or a virtual one that talks to a TV or a set-top box over the network. On top of single commands, a remote can know activities: a "Watch TV" macro that turns on the TV and the receiver and picks the right input.
+遥控器（remote）实体（entity）会向设备发送命令，其工作方式就像遥控器上的按钮。它可以是一个物理遥控器或集线器（hub），例如发射红外代码的万能遥控器，也可以是一个虚拟遥控器，通过网络与电视或机顶盒通信。除了单个命令之外，遥控器还可以支持活动（activity）：例如一个“观看电视”的宏，它会打开电视和接收器，并选择正确的输入源。
 
-Inherit from `RemoteEntity`, imported from `homeassistant.components.remote`. It builds on `ToggleEntity`, so it has an on and off state like a [switch](/core/entities/switch/). Use a remote entity when your users want to send arbitrary named commands. If you only transmit raw signals for other integrations to use, look at the [infrared](/core/entities/infrared/) and [radio frequency](/core/entities/radio-frequency/) entities instead.
+继承自 `RemoteEntity`，从 `homeassistant.components.remote` 导入。它构建于 `ToggleEntity` 之上，因此像[开关（switch）](/core/entities/switch/)一样具有开和关两种状态。当您的用户需要发送任意命名的命令时，请使用遥控器实体。如果您只是传输原始信号供其他集成（integration）使用，请改为查看[红外（infrared）](/core/entities/infrared/)和[射频（radio frequency）](/core/entities/radio-frequency/)实体。
 
-## Properties
+## 属性
 
-These properties are specific to remote entities. The generic properties every entity has are on [the entity class](/core/entities/entity-class/).
+这些属性是遥控器实体特有的。每个实体都具有的通用属性见[实体类](/core/entities/entity-class/)。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `is_on` | `bool \| None` | `None` | Whether the remote, or the device it controls, is on. `None` means unknown. |
-| `current_activity` | `str \| None` | `None` | The activity that is running right now. |
-| `activity_list` | `list[str] \| None` | `None` | The activities the user can pick from. |
-| `supported_features` | `RemoteEntityFeature` | `RemoteEntityFeature(0)` | The features this remote supports. See below. |
+| `is_on` | `bool \| None` | `None` | 遥控器或其控制的设备是否处于开启状态。`None` 表示未知。 |
+| `current_activity` | `str \| None` | `None` | 当前正在运行的活动。 |
+| `activity_list` | `list[str] \| None` | `None` | 用户可以从中选择的活动。 |
+| `supported_features` | `RemoteEntityFeature` | `RemoteEntityFeature(0)` | 此遥控器支持的功能。见下文。 |
 
-`current_activity` and `activity_list` only end up in the state attributes when the entity supports `RemoteEntityFeature.ACTIVITY`.
+只有当实体支持 `RemoteEntityFeature.ACTIVITY` 时，`current_activity` 和 `activity_list` 才会出现在状态属性中。
 
-## Supported features
+## 支持的功能
 
-Combine the flags of `RemoteEntityFeature` with the bitwise or (`|`) operator.
+使用按位或（`|`）运算符组合 `RemoteEntityFeature` 的各个标志位。
 
-| Flag | Description |
+| 标志位 | 描述 |
 | --- | --- |
-| `LEARN_COMMAND` | The remote can learn new commands from another remote. Implement `learn_command`. |
-| `DELETE_COMMAND` | The remote can delete commands it learned. Implement `delete_command`. |
-| `ACTIVITY` | The remote has activities. Implement `current_activity` and `activity_list`, and handle the `activity` argument when turning on. |
+| `LEARN_COMMAND` | 遥控器可以从另一个遥控器学习新命令。实现 `learn_command`。 |
+| `DELETE_COMMAND` | 遥控器可以删除它学到的命令。实现 `delete_command`。 |
+| `ACTIVITY` | 遥控器具有活动。实现 `current_activity` 和 `activity_list`，并在开启时处理 `activity` 参数。 |
 
-## Activities
+## 活动
 
-An activity is a predefined macro on the remote, like "Watch TV" or "Listen to music". Starting one puts several devices in a known state at once.
+活动是遥控器上预定义的宏，例如“观看电视”或“聆听音乐”。启动一个活动即可同时让多台设备进入已知状态。
 
-The `remote.turn_on`, `remote.turn_off`, and `remote.toggle` actions take an optional `activity`. It arrives in `kwargs` of your methods as `kwargs.get("activity")` (the constant is `ATTR_ACTIVITY` in `homeassistant.components.remote`). Report the activity that is running with `current_activity`, so users can see and automate on it.
+`remote.turn_on`、`remote.turn_off` 和 `remote.toggle` 这些动作（action）接受一个可选的 `activity`。它会以 `kwargs.get("activity")` 的形式出现在您方法的 `kwargs` 中（对应常量是 `homeassistant.components.remote` 中的 `ATTR_ACTIVITY`）。请通过 `current_activity` 报告当前正在运行的活动，以便用户可以查看该活动并基于它创建自动化。
 
-## Methods
+## 方法
 
-Each method has a sync and an async variant. Implement one of them.
+每个方法都有一个同步（sync）变体和一个异步（async）变体。实现其中之一即可。
 
-### Turn on, turn off, and toggle
+### 开启、关闭和切换
 
 ```python
 class MyRemote(RemoteEntity):
@@ -53,11 +53,11 @@ class MyRemote(RemoteEntity):
         """Turn the remote off."""
 ```
 
-The sync variants are `turn_on` and `turn_off`. Toggle comes for free from `ToggleEntity`: it calls turn on or turn off based on `is_on`. Only implement `async_toggle` if your device has a real toggle command.
+同步变体是 `turn_on` 和 `turn_off`。切换功能由 `ToggleEntity` 自动提供：它会根据 `is_on` 调用开启或关闭。只有当您的设备具有真正的切换命令时，才需要实现 `async_toggle`。
 
-### Send command
+### 发送命令
 
-Called by the `remote.send_command` action. `command` is a list of command names. `kwargs` holds `num_repeats` (default `1`) and `hold_secs` (default `0`), and, when the user gives them, `device` and `delay_secs`. When the user leaves out `delay_secs`, use your own default (the constant `DEFAULT_DELAY_SECS` is `0.4`).
+由 `remote.send_command` 动作调用。`command` 是一个命令名称列表。`kwargs` 包含 `num_repeats`（默认为 `1`）和 `hold_secs`（默认为 `0`）；如果用户提供了，还会包含 `device` 和 `delay_secs`。当用户未提供 `delay_secs` 时，请使用您自己的默认值（常量 `DEFAULT_DELAY_SECS` 为 `0.4`）。
 
 ```python
 class MyRemote(RemoteEntity):
@@ -67,11 +67,11 @@ class MyRemote(RemoteEntity):
         """Send commands to a device."""
 ```
 
-The sync variant is `send_command`.
+同步变体是 `send_command`。
 
-### Learn command
+### 学习命令
 
-Only for remotes with `RemoteEntityFeature.LEARN_COMMAND`. Called by the `remote.learn_command` action, which can pass `device`, `command`, `command_type`, `alternative`, and `timeout` in `kwargs`.
+仅适用于带有 `RemoteEntityFeature.LEARN_COMMAND` 的遥控器。由 `remote.learn_command` 动作调用，它可以在 `kwargs` 中传递 `device`、`command`、`command_type`、`alternative` 和 `timeout`。
 
 ```python
 class MyRemote(RemoteEntity):
@@ -79,11 +79,11 @@ class MyRemote(RemoteEntity):
         """Learn a command from a device."""
 ```
 
-The sync variant is `learn_command`.
+同步变体是 `learn_command`。
 
-### Delete command
+### 删除命令
 
-Only for remotes with `RemoteEntityFeature.DELETE_COMMAND`. Called by the `remote.delete_command` action, with `command` and an optional `device` in `kwargs`.
+仅适用于带有 `RemoteEntityFeature.DELETE_COMMAND` 的遥控器。由 `remote.delete_command` 动作调用，`kwargs` 中包含 `command` 和一个可选的 `device`。
 
 ```python
 class MyRemote(RemoteEntity):
@@ -91,21 +91,21 @@ class MyRemote(RemoteEntity):
         """Delete a learned command."""
 ```
 
-The sync variant is `delete_command`.
+同步变体是 `delete_command`。
 
-## States
+## 状态
 
-The state comes from `is_on`.
+状态来自 `is_on`。
 
-| State | When |
+| 状态 | 条件 |
 | --- | --- |
-| `on` | `is_on` is `True`. |
-| `off` | `is_on` is `False`. |
-| `unknown` | `is_on` is `None`. |
+| `on` | `is_on` 为 `True`。 |
+| `off` | `is_on` 为 `False`。 |
+| `unknown` | `is_on` 为 `None`。 |
 
-## Example
+## 示例
 
-A network remote for a media hub with activities.
+一个支持活动功能的媒体集线器网络遥控器。
 
 ```python
 from collections.abc import Iterable

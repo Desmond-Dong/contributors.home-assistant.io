@@ -1,67 +1,67 @@
 ---
-title: Fan entity
-description: Build a fan entity that controls speed, direction, oscillation, and preset modes.
+title: 风扇实体
+description: 构建一个可控制转速、转动方向、摆动和预设模式的风扇实体。
 sidebarLabel: Fan
 sidebarGroup: Lights and climate
 ---
 
-A fan entity controls a fan: its speed, the direction it turns, whether it oscillates, and preset modes like `auto` or `breeze`. Inherit from `FanEntity` in `homeassistant.components.fan`. It builds on the toggle entity, so it has `is_on`, `turn_on`, and `turn_off`.
+风扇实体（fan entity）用于控制风扇：包括其转速、转动方向、是否摆动，以及 `auto` 或 `breeze` 等预设模式。请继承 `homeassistant.components.fan` 中的 `FanEntity`。它建立在开关实体（toggle entity）的基础上，因此具有 `is_on`、`turn_on` 和 `turn_off`。
 
-A fan that is part of an air conditioner or a heat pump belongs to the [climate entity](/core/entities/climate/), as its fan mode. Use a fan entity for a standalone fan, a ceiling fan, or an air purifier fan.
+空调或热泵中的风扇属于[气候实体（climate entity）](/core/entities/climate/)，作为其风扇模式。对于独立风扇、吊扇或空气净化器风扇，请使用风扇实体。
 
-For how the frontend shows a fan, see the [fan more-info view](/design/more-info/fan/).
+关于前端如何展示风扇，请参阅[风扇更多信息视图（fan more-info view）](/design/more-info/fan/)。
 
-## Properties
+## 属性
 
-Fan entities have these properties on top of the [generic entity properties](/core/entities/entity-class/). Every property can be set with its `_attr_` attribute, like `_attr_percentage`.
+除[通用实体属性（generic entity properties）](/core/entities/entity-class/)之外，风扇实体还具有以下属性。每个属性都可以通过其 `_attr_` 属性进行设置，例如 `_attr_percentage`。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `is_on` | `bool \| None` | Calculated | Whether the fan is on. By default, the fan is on when `percentage` is above 0 or a preset is active. Override it when your device knows better. |
-| `percentage` | `int \| None` | `0` | The current speed, from 0 (off) to 100. |
-| `speed_count` | `int` | `100` | The number of speeds the fan has. Home Assistant uses it to calculate `percentage_step`. |
-| `preset_mode` | `str \| None` | `None` | The active preset, or `None` when no preset is active. |
-| `preset_modes` | `list[str] \| None` | `None` | The presets the fan supports. |
-| `current_direction` | `str \| None` | `None` | The direction the fan turns: `DIRECTION_FORWARD` (`"forward"`) or `DIRECTION_REVERSE` (`"reverse"`). |
-| `oscillating` | `bool \| None` | `None` | Whether the fan oscillates. |
+| `is_on` | `bool \| None` | 计算得出 | 风扇是否开启。默认情况下，当 `percentage` 大于 0 或有预设处于激活状态时，风扇即为开启。如果你的设备更了解自身状态，可以重写该属性。 |
+| `percentage` | `int \| None` | `0` | 当前转速，从 0（关闭）到 100。 |
+| `speed_count` | `int` | `100` | 风扇具有的转速档位数。Home Assistant 用它来计算 `percentage_step`。 |
+| `preset_mode` | `str \| None` | `None` | 当前激活的预设；当没有预设激活时为 `None`。 |
+| `preset_modes` | `list[str] \| None` | `None` | 风扇支持的预设。 |
+| `current_direction` | `str \| None` | `None` | 风扇转动的方向：`DIRECTION_FORWARD`（`"forward"`）或 `DIRECTION_REVERSE`（`"reverse"`）。 |
+| `oscillating` | `bool \| None` | `None` | 风扇是否正在摆动。 |
 
-`percentage_step` is calculated from `speed_count` as 100 divided by the number of speeds. You do not set it yourself.
+`percentage_step` 由 `speed_count` 计算得出，等于 100 除以转速档位数。你不需要自己设置它。
 
-### Speeds and percentages
+### 转速与百分比
 
-Home Assistant always talks about fan speed as a percentage. If your device has a fixed number of speeds, set `speed_count` and convert between the two with the helpers in `homeassistant.util.percentage`:
+Home Assistant 始终以百分比来表示风扇转速。如果你的设备具有固定数量的转速档位，请设置 `speed_count`，并使用 `homeassistant.util.percentage` 中的辅助函数在两者之间进行转换：
 
-- `ranged_value_to_percentage` and `percentage_to_ranged_value` for a numeric range, like speeds 1 to 6
-- `ordered_list_item_to_percentage` and `percentage_to_ordered_list_item` for a list of named speeds, like `low`, `medium`, and `high`
+- `ranged_value_to_percentage` 和 `percentage_to_ranged_value` 用于数值范围，例如 1 到 6 档转速
+- `ordered_list_item_to_percentage` 和 `percentage_to_ordered_list_item` 用于命名转速的列表，例如 `low`、`medium` 和 `high`
 
-Off is not part of the range or the list: a percentage of 0 is off.
+关闭不属于该范围或列表：百分比为 0 即表示关闭。
 
-### Preset modes
+### 预设模式
 
-A preset is a mode where the fan controls its own speed, or does something else on its own. Common examples are `auto`, `smart`, `eco`, and `breeze`. When no preset is active, `preset_mode` must be `None`.
+预设（preset）是风扇自行控制转速，或自行执行其他操作的一种模式。常见的例子有 `auto`、`smart`、`eco` 和 `breeze`。当没有预设激活时，`preset_mode` 必须为 `None`。
 
-Named manual speeds are not presets: represent them as percentages. Setting a speed by hand must end the active preset. If the device lets you set a speed while a preset stays active, represent that preset with a separate [switch](/core/entities/switch/) instead.
+命名的手动转速不是预设：请将它们表示为百分比。手动设置转速时必须结束当前激活的预设。如果设备允许在预设保持激活的情况下设置转速，请改用单独的[开关实体（switch）](/core/entities/switch/)来表示该预设。
 
-## Supported features
+## 支持的功能
 
-Combine the `FanEntityFeature` flags with `|` and set them as `supported_features`. See [supported features](/glossary/supported-features/).
+使用 `|` 组合 `FanEntityFeature` 标志，并将其设置为 `supported_features`。参见[支持的功能（supported features）](/glossary/supported-features/)。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `SET_SPEED` | The fan can change speed. Implement `set_percentage`. |
-| `PRESET_MODE` | The fan has preset modes. Implement `set_preset_mode`. |
-| `OSCILLATE` | The fan can oscillate. Implement `oscillate`. |
-| `DIRECTION` | The fan can change direction. Implement `set_direction`. |
-| `TURN_ON` | The fan can be turned on. Implement `turn_on`. |
-| `TURN_OFF` | The fan can be turned off. Implement `turn_off`. |
+| `SET_SPEED` | 风扇可以改变转速。需实现 `set_percentage`。 |
+| `PRESET_MODE` | 风扇具有预设模式。需实现 `set_preset_mode`。 |
+| `OSCILLATE` | 风扇可以摆动。需实现 `oscillate`。 |
+| `DIRECTION` | 风扇可以改变转动方向。需实现 `set_direction`。 |
+| `TURN_ON` | 风扇可以被打开。需实现 `turn_on`。 |
+| `TURN_OFF` | 风扇可以被关闭。需实现 `turn_off`。 |
 
-Actions for a feature you did not set are rejected before they reach your entity.
+对于你未设置的功能，相应操作会在到达你的实体之前被拒绝。
 
-## Methods
+## 方法
 
-Implement the sync or the async variant of each method, not both.
+每个方法只需实现同步或异步变体之一，不要两者都实现。
 
-| Method | Async variant | Feature |
+| 方法 | 异步变体 | 功能 |
 | ------ | ------------- | ------- |
 | `turn_on(percentage: int \| None = None, preset_mode: str \| None = None, **kwargs: Any)` | `async_turn_on` | `TURN_ON` |
 | `turn_off(**kwargs: Any)` | `async_turn_off` | `TURN_OFF` |
@@ -70,19 +70,19 @@ Implement the sync or the async variant of each method, not both.
 | `set_direction(direction: str)` | `async_set_direction` | `DIRECTION` |
 | `oscillate(oscillating: bool)` | `async_oscillate` | `OSCILLATE` |
 
-A few details:
+几点细节：
 
-- `turn_on` can receive a percentage, a preset, both, or neither. When it gets neither, turn the fan on at the speed the device picks.
-- A percentage of 0 means off. The default `async_set_percentage` calls `async_turn_off` for it, and then still passes the 0 on to `set_percentage`. When you override `async_set_percentage`, handle 0 yourself. Decreasing the speed below the lowest step also ends up there as 0.
-- Home Assistant checks a preset against `preset_modes` before it calls `set_preset_mode` or `turn_on`, and raises a validation error when it is not in the list.
-- `toggle` is handled for you: it calls `turn_on` or `turn_off` based on `is_on`.
-- `increase_speed` and `decrease_speed` are handled for you. They step by `percentage_step`, or by the step in the action, and call `set_percentage`. You only override `async_increase_speed` and `async_decrease_speed` when the device has its own commands for them.
+- `turn_on` 可以接收百分比、预设、两者兼有，或两者皆无。当两者皆无时，风扇以设备自行选择的转速开启。
+- 百分比为 0 表示关闭。默认的 `async_set_percentage` 会为此调用 `async_turn_off`，然后仍会将 0 传递给 `set_percentage`。当你重写 `async_set_percentage` 时，需要自行处理 0 的情况。将转速降至最低档以下时，最终也会变为 0。
+- Home Assistant 在调用 `set_preset_mode` 或 `turn_on` 之前，会根据 `preset_modes` 检查预设，如果预设不在列表中，则会引发验证错误。
+- `toggle` 已为你处理好：它会根据 `is_on` 调用 `turn_on` 或 `turn_off`。
+- `increase_speed` 和 `decrease_speed` 已为你处理好。它们会按 `percentage_step` 或操作中指定的步长进行调整，并调用 `set_percentage`。只有当设备对这两个操作有自己的命令时，才需要重写 `async_increase_speed` 和 `async_decrease_speed`。
 
-## States
+## 状态
 
-The state is `on` or `off`, from `is_on`. When `is_on` is `None`, the state is `unknown`.
+状态为 `on` 或 `off`，由 `is_on` 决定。当 `is_on` 为 `None` 时，状态为 `unknown`。
 
-## Example
+## 示例
 
 ```python
 import math

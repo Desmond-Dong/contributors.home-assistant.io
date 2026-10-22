@@ -1,22 +1,22 @@
 ---
-title: Document automation examples
-description: "Gold rule docs-examples: the documentation gives automation examples or blueprints."
+title: 记录自动化示例
+description: "Gold 规则 docs-examples：文档提供自动化示例或蓝图。"
 sidebarLabel: docs-examples
 sidebarGroup: Gold
 order: 6
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `docs-examples`.
+这是一条 Gold 级规则。在 `quality_scale.yaml` 中，它被称为 `docs-examples`。
 
-The integration page on [home-assistant.io](https://www.home-assistant.io/) shows a few common or useful ways to automate with the integration. Give them as YAML [automation](/glossary/automation/) examples, or link to a [blueprint](/glossary/blueprint/). Blueprints can live in the `source/blueprints/integrations` folder of the [home-assistant.io repository](https://github.com/home-assistant/home-assistant.io/tree/current/source/blueprints/integrations), or on the [blueprint exchange](https://community.home-assistant.io/c/blueprints-exchange) of the forum.
+[home-assistant.io](https://www.home-assistant.io/) 上的集成（integration）页面展示了使用该集成进行自动化的几种常见或实用的方式。请以 YAML [自动化（automation）](/glossary/automation/)示例的形式提供，或链接到一个[蓝图（blueprint）](/glossary/blueprint/)。蓝图可以放在 [home-assistant.io 仓库](https://github.com/home-assistant/home-assistant.io/tree/current/source/blueprints/integrations)的 `source/blueprints/integrations` 文件夹中，也可以放在论坛的[蓝图交流区（blueprint exchange）](https://community.home-assistant.io/c/blueprints-exchange)上。
 
-Keep it to a handful. The integration page is not a collection of every automation someone ever wrote.
+数量宜精不宜多。集成页面并不是收录所有人写过的每一个自动化的合集。
 
-## Why it matters
+## 为什么重要
 
-Examples get users from "it is set up" to "it does something useful". A good example also shows how the entities and actions of the integration fit together, which teaches more than a list of entities can.
+示例能让用户从“已完成设置”走向“实现有用的功能”。一个好的示例还能展示集成的实体（entity）和动作（action）是如何协同工作的，这比单纯列出实体更有教学意义。
 
-## Example
+## 示例
 
 ````markdown
 ## Examples
@@ -43,12 +43,12 @@ automation:
 {% enddetails %}
 ````
 
-See [Write integration documentation](/writing/guides/integration/) and the [integration page structure](/writing/reference/integration-page/) for where this section goes.
+关于此部分应放置的位置，请参阅[编写集成文档](/writing/guides/integration/)和[集成页面结构](/writing/reference/integration-page/)。
 
-## How it is checked
+## 如何检查
 
-Checked in review, usually on the documentation pull request.
+在审查时进行检查，通常是在文档的拉取请求（pull request）上进行。
 
-## Exceptions
+## 例外情况
 
-Integrations that do not create entities or provide actions, or that only extend a feature of core, like a backup location, are exempt from this rule.
+不创建实体或不提供动作的集成，或者仅扩展核心（core）某项功能（例如备份位置）的集成，可豁免此规则。

@@ -1,24 +1,24 @@
 ---
-title: Translate entity names
-description: "Gold rule entity-translations: entity names come from strings.json, so they can be translated."
+title: 翻译实体名称
+description: "黄金规则 entity-translations：实体名称来自 strings.json，因此可以被翻译。"
 sidebarLabel: entity-translations
 sidebarGroup: Gold
 order: 16
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `entity-translations`.
+这是一条黄金（Gold）规则。在 `quality_scale.yaml` 中，它被称为 `entity-translations`。
 
-Entities get their names from `strings.json`, through a [translation key](/glossary/translation-key/), instead of a hardcoded English name in Python. The translators of Home Assistant then translate those names into every language it supports.
+实体（entity）通过[翻译键（translation key）](/glossary/translation-key/)从 `strings.json` 获取名称，而不是在 Python 中硬编码英文名称。Home Assistant 的翻译者随后会将这些名称翻译成它支持的每一种语言。
 
-## Why it matters
+## 为什么重要
 
-Home Assistant is used all over the world, and many people use it in a language other than English. An entity called "Phase voltage" in a Dutch, Japanese, or Brazilian interface is a small thing, but a few hundred of them make Home Assistant feel like it was not made for you.
+Home Assistant 在世界各地都被使用，很多人使用的不是英语。在荷兰语、日语或巴西葡萄牙语界面中，一个名为“Phase voltage”的实体似乎是件小事，但几百个这样的实体加在一起，就会让人觉得 Home Assistant 并不是为你而做的。
 
-Translated names only work for entities with `has_entity_name` set to `True`, which is the [has-entity-name](/core/quality-scale/has-entity-name/) rule.
+翻译后的名称只适用于 `has_entity_name` 设置为 `True` 的实体，这也是 [has-entity-name](/core/quality-scale/has-entity-name/) 规则的要求。
 
-## Example
+## 示例
 
-Set the translation key on the entity:
+在实体上设置翻译键：
 
 ```python
 class MyVoltageSensor(SensorEntity):
@@ -28,7 +28,7 @@ class MyVoltageSensor(SensorEntity):
     _attr_translation_key = "phase_voltage"
 ```
 
-And add the name under `entity` in `strings.json`, by platform and translation key:
+然后在 `strings.json` 的 `entity` 下，按平台和翻译键添加名称：
 
 ```json
 {
@@ -42,27 +42,27 @@ And add the name under `entity` in `strings.json`, by platform and translation k
 }
 ```
 
-With a device called "My device", the entity is shown as "My device Phase voltage".
+对于一个名为“My device”的设备，该实体将显示为“My device Phase voltage”。
 
-An entity on the `binary_sensor`, `button`, `event`, `infrared`, `number`, `sensor`, or `update` platform with a device class needs no translation key when the name of the device class fits. It is named after the device class, like "Temperature", and that name is already translated. This does not work for sensors with the `enum` device class.
+`binary_sensor`、`button`、`event`、`infrared`、`number`、`sensor` 或 `update` 平台上带有设备类别（device class）的实体，当设备类别的名称适用时，无需翻译键。它会以设备类别命名，例如“Temperature”，而该名称已经被翻译。这不适用于带有 `enum` 设备类别的传感器。
 
-See [Make your strings translatable](/translate/guides/developers/) for how to write strings that translators can work with.
+关于如何编写翻译者能够使用的字符串，请参见[让你的字符串可被翻译](/translate/guides/developers/)。
 
-## How it is checked
+## 如何检查
 
-- Hassfest validates the format of `strings.json`.
-- Pylint warns when a translation key only repeats the name of the device class (`home-assistant-redundant-translation-key`).
-- Whether every entity has a translated name is checked in review.
+- Hassfest 会验证 `strings.json` 的格式。
+- 当翻译键只是重复设备类别的名称时，Pylint 会发出警告（`home-assistant-redundant-translation-key`）。
+- 每个实体是否都有翻译后的名称会在审查中检查。
 
-## Exceptions
+## 例外情况
 
-- If the integration has no entities, this rule does not apply.
-- If the entities only have names that users define themselves, which cannot be translated, this rule does not apply.
-- If all entities use the name of their device, with `_attr_name = None`, this rule does not apply.
+- 如果集成（integration）没有实体，则此规则不适用。
+- 如果实体只有用户自行定义、无法翻译的名称，则此规则不适用。
+- 如果所有实体都使用其所属设备的名称（即 `_attr_name = None`），则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [has-entity-name](/core/quality-scale/has-entity-name/): use has_entity_name.
-- [entity-device-class](/core/quality-scale/entity-device-class/): use device classes.
-- [icon-translations](/core/quality-scale/icon-translations/): use icon translations.
-- [exception-translations](/core/quality-scale/exception-translations/): translate exception messages.
+- [has-entity-name](/core/quality-scale/has-entity-name/)：使用 has_entity_name。
+- [entity-device-class](/core/quality-scale/entity-device-class/)：使用设备类别。
+- [icon-translations](/core/quality-scale/icon-translations/)：使用图标翻译。
+- [exception-translations](/core/quality-scale/exception-translations/)：翻译异常消息。

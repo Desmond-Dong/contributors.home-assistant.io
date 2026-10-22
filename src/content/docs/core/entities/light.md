@@ -1,77 +1,77 @@
 ---
-title: Light entity
-description: Build a light entity that turns on and off, dims, and changes color or color temperature.
+title: 灯实体
+description: 构建一个可以开关、调光以及更改颜色或色温的灯实体。
 sidebarLabel: Light
 sidebarGroup: Lights and climate
 ---
 
-A light entity controls a light source: turning it on and off, and where the hardware allows it, its brightness, color, color temperature, and effects. Inherit from `LightEntity` in `homeassistant.components.light`. Use it for anything that is a light to the person in the room, like a bulb, an LED strip, or a dimmer that drives a lamp. A plain relay that happens to power a lamp is often still a light, but a relay that powers anything else is a [switch](/core/entities/switch/).
+灯实体（light entity）控制一个光源：开关灯，并在硬件允许的情况下控制其亮度、颜色、色温和效果。请继承 `homeassistant.components.light` 中的 `LightEntity`。对于在房间中的人看来是灯的任何设备都使用它，例如灯泡、LED 灯带，或者驱动灯具的调光器。一个恰好为灯具供电的普通继电器通常仍然是灯，而为其他设备供电的继电器则是[开关](/core/entities/switch/)。
 
-For how the frontend shows a light, see the [light more-info view](/design/more-info/light/).
+关于前端如何展示灯，请参见[灯的更多信息视图](/design/more-info/light/)。
 
-## Properties
+## 属性
 
-Light entities have these properties on top of the [generic entity properties](/core/entities/entity-class/). Every property can be set with its `_attr_` attribute, like `_attr_brightness`.
+灯实体除了[通用实体属性](/core/entities/entity-class/)之外，还具有以下属性。每个属性都可以通过其 `_attr_` 属性进行设置，例如 `_attr_brightness`。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `is_on` | `bool \| None` | `None` | Whether the light is on. |
-| `supported_color_modes` | `set[ColorMode] \| None` | Required | The color modes the light supports. See [Color modes](#color-modes). |
-| `color_mode` | `ColorMode \| None` | `None` | The color mode the light is in right now. Required while the light is on. |
-| `brightness` | `int \| None` | `None` | Brightness from 1 to 255. |
-| `color_temp_kelvin` | `int \| None` | `None` | Color temperature in kelvin. Only used in `ColorMode.COLOR_TEMP`. |
-| `min_color_temp_kelvin` | `int` | `2000` | The warmest color temperature the light supports, in kelvin. |
-| `max_color_temp_kelvin` | `int` | `6535` | The coldest color temperature the light supports, in kelvin. |
-| `hs_color` | `tuple[float, float] \| None` | `None` | Hue (0 to 360) and saturation (0 to 100). Only used in `ColorMode.HS`. |
-| `xy_color` | `tuple[float, float] \| None` | `None` | CIE xy color. Only used in `ColorMode.XY`. |
-| `rgb_color` | `tuple[int, int, int] \| None` | `None` | Red, green, and blue, 0 to 255 each. Only used in `ColorMode.RGB`. |
-| `rgbw_color` | `tuple[int, int, int, int] \| None` | `None` | Red, green, blue, and white. Only used in `ColorMode.RGBW`. |
-| `rgbww_color` | `tuple[int, int, int, int, int] \| None` | `None` | Red, green, blue, cold white, and warm white. Only used in `ColorMode.RGBWW`. |
-| `effect_list` | `list[str] \| None` | `None` | The effects the light can show. Requires `LightEntityFeature.EFFECT`. |
-| `effect` | `str \| None` | `None` | The effect that runs right now. Use `EFFECT_OFF` (`"off"`) when the light supports effects but none runs. |
+| `is_on` | `bool \| None` | `None` | 灯是否开启。 |
+| `supported_color_modes` | `set[ColorMode] \| None` | 必填 | 灯支持的颜色模式。参见[颜色模式](#color-modes)。 |
+| `color_mode` | `ColorMode \| None` | `None` | 灯当前所处的颜色模式。灯开启时必填。 |
+| `brightness` | `int \| None` | `None` | 亮度，范围为 1 到 255。 |
+| `color_temp_kelvin` | `int \| None` | `None` | 以开尔文为单位的色温。仅在 `ColorMode.COLOR_TEMP` 中使用。 |
+| `min_color_temp_kelvin` | `int` | `2000` | 灯支持的最暖色温，以开尔文为单位。 |
+| `max_color_temp_kelvin` | `int` | `6535` | 灯支持的最冷色温，以开尔文为单位。 |
+| `hs_color` | `tuple[float, float] \| None` | `None` | 色相（0 到 360）和饱和度（0 到 100）。仅在 `ColorMode.HS` 中使用。 |
+| `xy_color` | `tuple[float, float] \| None` | `None` | CIE xy 颜色。仅在 `ColorMode.XY` 中使用。 |
+| `rgb_color` | `tuple[int, int, int] \| None` | `None` | 红、绿、蓝，每个取值 0 到 255。仅在 `ColorMode.RGB` 中使用。 |
+| `rgbw_color` | `tuple[int, int, int, int] \| None` | `None` | 红、绿、蓝和白。仅在 `ColorMode.RGBW` 中使用。 |
+| `rgbww_color` | `tuple[int, int, int, int, int] \| None` | `None` | 红、绿、蓝、冷白和暖白。仅在 `ColorMode.RGBWW` 中使用。 |
+| `effect_list` | `list[str] \| None` | `None` | 灯可以显示的效果。需要 `LightEntityFeature.EFFECT`。 |
+| `effect` | `str \| None` | `None` | 当前正在运行的效果。当灯支持效果但没有运行任何效果时，使用 `EFFECT_OFF`（`"off"`）。 |
 
-The color properties only end up in the state when they match the current `color_mode`. A light in `ColorMode.HS` that also returns an `rgb_color` has that value ignored. Home Assistant fills in the other color formats (`hs_color`, `rgb_color`, and `xy_color`) for you, converted from the one that matches the color mode.
+颜色属性只有在与当前 `color_mode` 匹配时才会出现在状态中。处于 `ColorMode.HS` 的灯如果同时返回了 `rgb_color`，该值将被忽略。Home Assistant 会自动为你填充其他颜色格式（`hs_color`、`rgb_color` 和 `xy_color`），由与颜色模式匹配的那个格式转换而来。
 
-In `ColorMode.RGB`, `ColorMode.RGBW`, and `ColorMode.RGBWW`, brightness lives in two places: in `brightness`, and in the color itself. A brightness of 128 with a color of (192, 64, 32) gives an overall brightness of 128/255 × 192/255, about 38%.
+在 `ColorMode.RGB`、`ColorMode.RGBW` 和 `ColorMode.RGBWW` 中，亮度存在于两个地方：`brightness` 以及颜色本身。亮度为 128 且颜色为 (192, 64, 32) 时，整体亮度为 128/255 × 192/255，约 38%。
 
-## Color modes
+## 颜色模式
 
-Every light must set `supported_color_modes`, and every light that is on must report a `color_mode`. Both use the `ColorMode` enum. If a light leaves `supported_color_modes` empty, sets an invalid combination, or reports a color mode it did not list, writing its state raises an error.
+每个灯都必须设置 `supported_color_modes`，并且每个处于开启状态的灯都必须报告 `color_mode`。两者都使用 `ColorMode` 枚举。如果灯将 `supported_color_modes` 留空、设置了无效的组合，或者报告了未列出的颜色模式，写入其状态时会引发错误。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `ColorMode.ONOFF` | The light can only be turned on and off. Must be the only supported mode. |
-| `ColorMode.BRIGHTNESS` | The light can be dimmed, nothing more. Must be the only supported mode. |
-| `ColorMode.COLOR_TEMP` | The light can be dimmed and its white color temperature changed, read through `color_temp_kelvin`. |
-| `ColorMode.HS` | The light can be dimmed and its color set as hue and saturation, through `hs_color`. |
-| `ColorMode.XY` | The light can be dimmed and its color set in CIE xy, through `xy_color`. |
-| `ColorMode.RGB` | The light can be dimmed and its color set as RGB, through `rgb_color`. |
-| `ColorMode.RGBW` | Like RGB, with an extra white channel, through `rgbw_color`. |
-| `ColorMode.RGBWW` | Like RGB, with a cold white and a warm white channel, through `rgbww_color`. |
-| `ColorMode.WHITE` | The light can switch to a plain white mode with the `white` parameter. There is no `white` property. Only valid together with at least one color mode (`HS`, `XY`, `RGB`, `RGBW`, or `RGBWW`). |
-| `ColorMode.UNKNOWN` | The color mode is not known right now. Only valid as `color_mode`, never in `supported_color_modes`. |
+| `ColorMode.ONOFF` | 灯只能开启和关闭。必须是唯一支持的模式。 |
+| `ColorMode.BRIGHTNESS` | 灯可以调光，仅此而已。必须是唯一支持的模式。 |
+| `ColorMode.COLOR_TEMP` | 灯可以调光并更改其白色色温，通过 `color_temp_kelvin` 读取。 |
+| `ColorMode.HS` | 灯可以调光，并通过 `hs_color` 以色相和饱和度设置颜色。 |
+| `ColorMode.XY` | 灯可以调光，并通过 `xy_color` 以 CIE xy 设置颜色。 |
+| `ColorMode.RGB` | 灯可以调光，并通过 `rgb_color` 以 RGB 设置颜色。 |
+| `ColorMode.RGBW` | 类似 RGB，但多一个白色通道，通过 `rgbw_color`。 |
+| `ColorMode.RGBWW` | 类似 RGB，但有一个冷白通道和一个暖白通道，通过 `rgbww_color`。 |
+| `ColorMode.WHITE` | 灯可以使用 `white` 参数切换到普通白色模式。没有 `white` 属性。仅在与至少一种颜色模式（`HS`、`XY`、`RGB`、`RGBW` 或 `RGBWW`）一起使用时有效。 |
+| `ColorMode.UNKNOWN` | 当前颜色模式未知。仅可作为 `color_mode` 使用，绝不能出现在 `supported_color_modes` 中。 |
 
-The difference between the two white modes: `ColorMode.COLOR_TEMP` lets you adjust the color temperature, typically with a bank of warm white and a bank of cold white LEDs. `ColorMode.WHITE` has a single, fixed white.
+两种白色模式的区别：`ColorMode.COLOR_TEMP` 允许你调整色温，通常是通过一组暖白 LED 和一组冷白 LED。`ColorMode.WHITE` 则只有单一的、固定的白色。
 
-### Color mode while an effect runs
+### 效果运行时的颜色模式
 
-While an effect runs, report the color mode that matches what the effect still lets you adjust. If the effect allows no adjustments, use `ColorMode.ONOFF`. If it only allows brightness, use `ColorMode.BRIGHTNESS`. Home Assistant accepts `ColorMode.ONOFF` during an effect even when it is not in `supported_color_modes`, and `ColorMode.BRIGHTNESS` when at least one of your supported color modes has brightness. This only applies to lights with the `EFFECT` feature, while `effect` is set and not `EFFECT_OFF`.
+当效果运行时，报告与该效果仍允许你调整的内容相匹配的颜色模式。如果效果不允许任何调整，使用 `ColorMode.ONOFF`。如果只允许调整亮度，使用 `ColorMode.BRIGHTNESS`。在效果运行期间，即使 `ColorMode.ONOFF` 不在 `supported_color_modes` 中，Home Assistant 也接受它；而当受支持的颜色模式中至少有一个包含亮度时，Home Assistant 接受 `ColorMode.BRIGHTNESS`。这仅适用于具有 `EFFECT` 功能的灯，且仅在 `effect` 已设置且不为 `EFFECT_OFF` 时适用。
 
-## Supported features
+## 支持的功能
 
-Combine the `LightEntityFeature` flags with `|` and set them as `supported_features`. See [supported features](/glossary/supported-features/).
+将 `LightEntityFeature` 的各个标志用 `|` 组合起来，并将其设置为 `supported_features`。参见[支持的功能](/glossary/supported-features/)。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `EFFECT` | The light can show effects. Set `effect_list` and `effect`. |
-| `FLASH` | The light can flash. Your `turn_on` receives `flash` with `short` or `long`. |
-| `TRANSITION` | The light can fade between states. Your `turn_on` and `turn_off` receive `transition` in seconds. |
+| `EFFECT` | 灯可以显示效果。设置 `effect_list` 和 `effect`。 |
+| `FLASH` | 灯可以闪烁。你的 `turn_on` 会收到 `flash`，其值为 `short` 或 `long`。 |
+| `TRANSITION` | 灯可以在状态之间渐变。你的 `turn_on` 和 `turn_off` 会收到以秒为单位的 `transition`。 |
 
-Parameters for features you did not set are removed before your methods are called.
+你没有设置的功能所对应的参数，会在你的方法被调用之前被移除。
 
-## Methods
+## 方法
 
-### Turn on
+### 开启
 
 ```python
 def turn_on(self, **kwargs: Any) -> None:
@@ -81,11 +81,11 @@ async def async_turn_on(self, **kwargs: Any) -> None:
     """Turn the light on."""
 ```
 
-The keyword arguments use the constants from `homeassistant.components.light`, like `ATTR_BRIGHTNESS`, `ATTR_COLOR_TEMP_KELVIN`, `ATTR_HS_COLOR`, `ATTR_RGB_COLOR`, `ATTR_WHITE`, `ATTR_EFFECT`, `ATTR_FLASH`, and `ATTR_TRANSITION`.
+关键字参数使用 `homeassistant.components.light` 中的常量，例如 `ATTR_BRIGHTNESS`、`ATTR_COLOR_TEMP_KELVIN`、`ATTR_HS_COLOR`、`ATTR_RGB_COLOR`、`ATTR_WHITE`、`ATTR_EFFECT`、`ATTR_FLASH` 和 `ATTR_TRANSITION`。
 
-You never receive a color mode. Instead you receive at most one color attribute, and it is always one your light supports. When an action asks for a color in a format your light does not support, Home Assistant converts it first. For example, an `hs_color` becomes an `rgb_color` for a light that only supports `ColorMode.RGB`. Brightness given as a percentage or as a step is also converted to `ATTR_BRIGHTNESS` before it reaches you. For a light that supports `ColorMode.WHITE`, `ATTR_WHITE` carries the brightness for white mode: when an action sets both `white` and `brightness`, you only receive `ATTR_WHITE`, with the value of the brightness. When the brightness, or `white`, ends up at 0, like after a step down from a dim light, Home Assistant calls your `turn_off` instead of `turn_on`.
+你永远不会收到颜色模式。相反，你最多只会收到一个颜色属性，而且它始终是你的灯所支持的。当某个动作以你的灯不支持的格式请求颜色时，Home Assistant 会先进行转换。例如，对于只支持 `ColorMode.RGB` 的灯，`hs_color` 会被转换为 `rgb_color`。以百分比或步进形式给出的亮度也会在到达你之前被转换为 `ATTR_BRIGHTNESS`。对于支持 `ColorMode.WHITE` 的灯，`ATTR_WHITE` 携带白色模式的亮度：当动作同时设置了 `white` 和 `brightness` 时，你只会收到 `ATTR_WHITE`，其值为亮度的值。当亮度或 `white` 最终为 0 时，例如从较暗的灯继续向下步进调低之后，Home Assistant 会调用你的 `turn_off` 而不是 `turn_on`。
 
-### Turn off
+### 关闭
 
 ```python
 def turn_off(self, **kwargs: Any) -> None:
@@ -95,20 +95,20 @@ async def async_turn_off(self, **kwargs: Any) -> None:
     """Turn the light off."""
 ```
 
-`turn_off` can receive `ATTR_TRANSITION` and `ATTR_FLASH`, when the light supports them.
+当灯支持时，`turn_off` 可以接收 `ATTR_TRANSITION` 和 `ATTR_FLASH`。
 
-### Toggle
+### 切换
 
-The `light.toggle` action calls `async_toggle`. By default, it calls your `turn_on` when the light is off, and your `turn_off` otherwise, with the same conversions as those actions. You don't need to implement it. If your device has a toggle command of its own, you can override `async_toggle`. There is no sync `toggle`: Home Assistant never calls it.
+`light.toggle` 动作会调用 `async_toggle`。默认情况下，当灯处于关闭状态时它会调用你的 `turn_on`，否则调用你的 `turn_off`，并使用与这些动作相同的转换。你无需实现它。如果你的设备本身有切换命令，你可以重写 `async_toggle`。不存在同步的 `toggle`：Home Assistant 永远不会调用它。
 
 ```python
 async def async_toggle(self, **kwargs: Any) -> None:
     """Toggle the light."""
 ```
 
-### Scaling brightness
+### 亮度换算
 
-Many devices use another range than 1 to 255. The helpers `value_to_brightness` and `brightness_to_value` in `homeassistant.util.color` convert between the two.
+许多设备使用的范围并非 1 到 255。`homeassistant.util.color` 中的辅助函数 `value_to_brightness` 和 `brightness_to_value` 可以在两者之间进行转换。
 
 ```python
 import math
@@ -121,11 +121,11 @@ brightness = value_to_brightness(BRIGHTNESS_SCALE, device_value)
 device_value = math.ceil(brightness_to_value(BRIGHTNESS_SCALE, brightness))
 ```
 
-## States
+## 状态
 
-The state is `on` or `off`, from `is_on`. When `is_on` is `None`, the state is `unknown`.
+状态为 `on` 或 `off`，取决于 `is_on`。当 `is_on` 为 `None` 时，状态为 `unknown`。
 
-## Example
+## 示例
 
 ```python
 from typing import Any

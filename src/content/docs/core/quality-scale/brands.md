@@ -1,28 +1,27 @@
 ---
-title: Provide brand assets
-description: "Bronze rule brands: the integration has a logo and icon in the brands repository."
+title: 提供品牌资产
+description: "铜牌规则 brands：该集成在 brands 仓库中拥有 logo 和图标。"
 sidebarLabel: brands
 sidebarGroup: Bronze
 order: 3
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `brands`.
+这是一条铜牌（Bronze）规则。在 `quality_scale.yaml` 中，它被称为 `brands`。
 
-The integration has its branding assets, like its icon and logo, in the [brands repository](https://github.com/home-assistant/brands).
+该集成在 [brands 仓库](https://github.com/home-assistant/brands) 中拥有其品牌资产，例如图标和 logo。
 
-## Why it matters
+## 为什么重要
 
-Users recognize an integration by its logo long before they read its name: in the list of integrations, in the setup dialog, and on the integration page of the documentation. Assets that follow the same requirements keep all integrations looking consistent, and make each one easy to spot.
+用户在阅读集成名称之前很久，就能通过其 logo 认出该集成：无论是在集成列表中、设置对话框中，还是在文档的集成页面上。遵循相同要求的资产能让所有集成保持外观一致，并使每个集成都易于辨认。
 
-## What to do
+## 需要做什么
 
-Open a pull request on the brands repository that adds the images for your integration, in `core_integrations/`, in a folder named after its domain. The [README of the brands repository](https://github.com/home-assistant/brands/blob/master/README.md) lists the files you need, their sizes, and the image requirements. Do this early: your integration pull request in core is easier to review when its brand is already there.
+在 brands 仓库上创建一个 pull request，在 `core_integrations/` 中以集成域（domain）命名的文件夹内添加集成所需的图片。[brands 仓库的 README](https://github.com/home-assistant/brands/blob/master/README.md) 列出了所需的文件、它们的尺寸以及图片要求。请尽早完成这项工作：当品牌资产已经就位时，core 中的集成 pull request 会更容易通过审核。
 
-## How it is checked
+## 如何检查
 
-Checked in review.
+在审核（review）时检查。
 
-## Exceptions
+## 例外情况
 
-There are no exceptions to this rule.
-
+此规则没有例外情况。

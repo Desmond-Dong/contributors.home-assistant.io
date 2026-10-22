@@ -1,46 +1,46 @@
 ---
-title: Build a Python library
-description: Why integrations talk to devices through a separate library, what the library must meet, and how to structure authentication and data models.
+title: 构建 Python 库
+description: 为什么集成需要通过独立的库与设备通信、该库必须满足哪些要求，以及如何设计身份验证和数据模型的结构。
 sidebarLabel: Build a Python library
 sidebarGroup: Getting started
 order: 3
 ---
 
-Home Assistant does not contain protocol code. An integration never builds HTTP requests or parses a device's packets itself: it uses a Python library, published on PyPI, that does. The integration translates between that library and Home Assistant. Nothing more.
+Home Assistant 本身不包含协议代码。集成（integration）从不自行构造 HTTP 请求或解析设备的数据包：它使用一个发布在 PyPI 上的 Python 库来完成这些工作。集成只负责在该库与 Home Assistant 之间进行转换，仅此而已。
 
-This keeps integrations small and easier to review, and lets others use and test the library on its own. This page is about writing that library. The example is a REST API with JSON, the most common case, but the structure works for other protocols too.
+这样可以使集成保持精简、更易于审查，也让其他人可以独立地使用和测试该库。本页介绍如何编写这样的库。示例是一个使用 JSON 的 REST API，这是最常见的情况，但该结构同样适用于其他协议。
 
 > [!TIP]
-> Designing the API of your own product? Local, push based APIs work best for Home Assistant. Your users get instant updates, and it keeps working without the internet.
+> 在设计自己产品的 API？本地、基于推送（push）的 API 最适合 Home Assistant。您的用户能够即时收到更新，并且即使没有互联网也能继续正常工作。
 
-## Requirements
+## 要求
 
-A library used by an integration in core must:
+core 中的集成所使用的库必须：
 
-- Be published on PyPI with a source distribution. A library with only binary packages is not accepted.
-- Publish from a public repository, with every release on PyPI matching a tagged release there.
-- Publish automatically, for example from a GitHub Actions workflow, not by hand.
-- Have an issue tracker, if it talks to devices or services.
-- Use an [OSI-approved license](https://opensource.org/licenses), for the library and everything it depends on, and state it in its metadata.
+- 以源代码分发（source distribution）的形式发布在 PyPI 上。仅有二进制包的库不会被接受。
+- 从公开的代码仓库发布，且 PyPI 上的每个版本都与该仓库中对应的标签（tag）版本相匹配。
+- 自动发布，例如通过 GitHub Actions 工作流发布，而不是手动发布。
+- 拥有问题跟踪器（issue tracker），前提是该库与设备或服务通信。
+- 使用 [OSI 批准的许可证](https://opensource.org/licenses)，包括该库及其所有依赖项，并在元数据中进行声明。
 
-If the library mainly exists for Home Assistant and you own the integration, consider an issue template picker that points people to the [core issue tracker](https://github.com/home-assistant/core/issues), like [the one of zwave-js-server-python](https://github.com/home-assistant-libs/zwave-js-server-python/issues/new/choose).
+如果该库主要为 Home Assistant 而编写，并且您是该集成的所有者，可以考虑添加一个问题模板选择器，引导人们前往 [core 问题跟踪器](https://github.com/home-assistant/core/issues)，例如 [zwave-js-server-python 的选择器](https://github.com/home-assistant-libs/zwave-js-server-python/issues/new/choose)。
 
-Home Assistant prefers async libraries. Sync libraries work, through the executor, but cost a thread for every call. See [async in Home Assistant](/core/internals/asyncio/).
+Home Assistant 更倾向于异步（async）库。同步库也能工作（通过 executor），但每次调用都要占用一个线程。请参阅 [Home Assistant 中的异步](/core/internals/asyncio/)。
 
-## Structure
+## 结构
 
-A library has two parts:
+一个库包含两个部分：
 
-- **Authentication**: makes authenticated requests and returns the responses. The only code that talks to the API.
-- **Data models**: represent the data of the API, and offer methods to act on it.
+- **身份验证**：发出经过身份验证的请求并返回响应。这是唯一直接与 API 通信的代码。
+- **数据模型**：表示 API 的数据，并提供操作这些数据的方法。
 
-## Authentication
+## 身份验证
 
-The authentication part gets tokens, refreshes them when needed, and adds them to every request. It does not know what the requests are about, and it does not store tokens: that is the job of whoever uses the library. When you return tokens, return something JSON serializable, like a `dict` of strings and numbers, so Home Assistant can store it in a config entry.
+身份验证部分负责获取令牌（token）、在需要时刷新令牌，并将其添加到每个请求中。它并不了解请求的具体内容，也不会存储令牌：那是库使用者的职责。返回令牌时，请返回 JSON 可序列化的内容，例如由字符串和数字组成的 `dict`，以便 Home Assistant 能够将其存储在配置条目（config entry）中。
 
-If the API can be at different addresses, like a device on the local network, let the caller pass in the host.
+如果 API 可能位于不同的地址，例如本地网络中的设备，请让调用者传入主机地址。
 
-Use `aiohttp`, and let the caller pass in the `ClientSession`. Home Assistant has a shared session, and creating your own costs resources and blocks the event loop while it loads certificates.
+请使用 `aiohttp`，并让调用者传入 `ClientSession`。Home Assistant 拥有一个共享会话，自行创建会话不仅会消耗资源，还会在加载证书时阻塞事件循环（event loop）。
 
 ```python
 from aiohttp import ClientResponse, ClientSession
@@ -69,7 +69,7 @@ class Auth:
         )
 ```
 
-Using it, outside Home Assistant:
+在 Home Assistant 之外使用它：
 
 ```python
 import asyncio
@@ -92,9 +92,9 @@ asyncio.run(main())
 
 ### OAuth 2
 
-With OAuth 2, access tokens expire after a short time, and a refresh token gets new ones. Refreshing needs a client ID and secret, and those may live somewhere else entirely: Home Assistant can refresh tokens through the account linking service of Home Assistant Link, so users do not need their own developer account.
+使用 OAuth 2 时，访问令牌会在短时间内过期，此时需要用刷新令牌（refresh token）获取新的令牌。刷新需要客户端 ID 和密钥（secret），而这些信息可能完全存放在别处：Home Assistant 可以通过 Home Assistant Link 的账号关联服务刷新令牌，因此用户无需拥有自己的开发者账号。
 
-So let the caller decide how to get a valid token. An abstract method does that neatly:
+因此，让调用者自行决定如何获取有效的令牌。使用抽象方法可以优雅地实现这一点：
 
 ```python
 from abc import ABC, abstractmethod
@@ -127,21 +127,21 @@ class AbstractAuth(ABC):
         )
 ```
 
-In the integration, the subclass gets the token from Home Assistant's OAuth 2 helper, which refreshes it when needed. See [OAuth 2 in integrations](/core/integrations/oauth2/).
+在集成中，子类从 Home Assistant 的 OAuth 2 辅助工具获取令牌，该工具会在需要时刷新令牌。请参阅[集成中的 OAuth 2](/core/integrations/oauth2/)。
 
-## Data models
+## 数据模型
 
-Represent the data the way the API does. Keep the names and the structure, even when the API design is odd or has a typo in it. Someone who reads the API documentation should find their way in your library without a translation table.
+按照 API 本身的表示方式来表示数据。保留名称和结构，即使 API 的设计很奇怪或包含拼写错误。阅读 API 文档的人应该无需对照翻译表就能在您的库中轻松找到所需内容。
 
-And do as little as possible. A library represents data, it does not interpret it. Do not convert Celsius to Fahrenheit, for example: that involves choices about rounding and precision, and those belong to whoever uses the library.
+并且尽量少做事情。库只负责表示数据，而不负责解释数据。例如，不要进行摄氏度到华氏度的换算：这涉及舍入和精度的选择，而这些决定应该由库的使用者来做。
 
-Say the API has these endpoints:
+假设该 API 具有以下端点：
 
-- `GET /lights`: all lights, as a list.
-- `GET /light/<id>`: one light, like `{"id": 1234, "name": "Desk", "is_on": true}`.
-- `POST /light/<id>`: control a light with `{"is_on": false}`. Returns the new state.
+- `GET /lights`：所有灯，以列表形式返回。
+- `GET /light/<id>`：单个灯，例如 `{"id": 1234, "name": "Desk", "is_on": true}`。
+- `POST /light/<id>`：使用 `{"is_on": false}` 控制灯。返回新的状态。
 
-A class for a light:
+一个表示灯的类：
 
 ```python
 from typing import Any
@@ -187,7 +187,7 @@ class Light:
         self.raw_data = await response.json()
 ```
 
-And the entry point of the API:
+以及 API 的入口点：
 
 ```python
 from .auth import Auth
@@ -214,22 +214,22 @@ class ExampleHubAPI:
         return Light(await response.json(), self.auth)
 ```
 
-Raise your own exceptions for errors, like `ExampleHubAuthenticationError` and `ExampleHubConnectionError`, so the integration can tell a wrong password from a device that is offline. The integration needs that difference to start reauthentication or to retry later.
+针对错误抛出您自己的异常，例如 `ExampleHubAuthenticationError` 和 `ExampleHubConnectionError`，这样集成就能区分密码错误和设备离线这两种情况。集成需要这种区分，才能启动重新身份验证或稍后重试。
 
-## Try your library in Home Assistant
+## 在 Home Assistant 中试用您的库
 
-Before you publish, install your library in editable mode in the virtual environment of your [development environment](/core/development/environment/). Run this from your core checkout, with the library in a folder next to it:
+在发布之前，请在[开发环境](/core/development/environment/)的虚拟环境中以可编辑模式安装您的库。在您的 core 检出目录中运行以下命令，并将库放在旁边的文件夹中：
 
 ```shell
 uv pip install -e ../my-library
 ```
 
-That path works with a manual setup. The development container only has your core checkout mounted, so clone the library inside the container, like in `~/my-library`, and install it from there. The [tutorial](/core/integrations/tutorial/#1-start-with-the-library) shows both setups.
+该路径适用于手动搭建的环境。开发容器只挂载了您的 core 检出目录，因此需要在容器内克隆该库，例如克隆到 `~/my-library`，然后从那里安装。[教程](/core/integrations/tutorial/#1-start-with-the-library)展示了这两种环境搭建方式。
 
-Then start Home Assistant without letting it install the published version over yours:
+然后启动 Home Assistant，注意不要让它安装已发布的版本覆盖您的版本：
 
 ```shell
 hass --skip-pip-packages my-library
 ```
 
-Once it works, publish a release and set the version in the `requirements` of your integration's [manifest](/core/integrations/manifest/).
+一切正常后，发布一个版本，并在您集成的[清单文件（manifest）](/core/integrations/manifest/)的 `requirements` 中设置该版本。

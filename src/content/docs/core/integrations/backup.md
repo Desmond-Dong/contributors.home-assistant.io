@@ -1,18 +1,18 @@
 ---
-title: Backup
-description: Add a backup agent that stores Home Assistant backups somewhere, or prepare your integration for a backup.
+title: 备份
+description: 添加一个备份代理（backup agent）来存储 Home Assistant 备份，或者为备份准备你的集成。
 sidebarGroup: Integration features
 order: 9
 ---
 
-An integration can take part in backups in two ways, both in a `backup.py` platform file:
+集成可以通过两种方式参与备份，两者都位于 `backup.py` 平台文件中：
 
-- **A backup agent** stores backups somewhere: a network share, a cloud storage service, or anything else. Users pick the agents in the backup settings.
-- **Pre and post hooks** pause or prepare your integration before a backup, and resume after it.
+- **备份代理（backup agent）**将备份存储到某处：网络共享、云存储服务或其他任何地方。用户在备份设置中选择代理。
+- **前置和后置钩子（pre and post hooks）**在备份前暂停或准备你的集成，并在备份后恢复。
 
-## Add a backup agent
+## 添加备份代理
 
-A backup agent extends `BackupAgent` from `homeassistant.components.backup`, and implements five methods:
+备份代理继承自 `homeassistant.components.backup` 中的 `BackupAgent`，并实现五个方法：
 
 ```python
 from collections.abc import AsyncIterator, Callable, Coroutine
@@ -66,22 +66,22 @@ class ExampleBackupAgent(BackupAgent):
         """Return one backup."""
 ```
 
-- `domain`, `name`, and `unique_id` identify the agent. Keep `unique_id` stable.
-- `async_upload_backup` gets a function that opens a stream of the backup, and the metadata of the backup in `backup`.
-- `async_download_backup`, `async_delete_backup`, and `async_get_backup` raise `BackupNotFound` when the backup does not exist.
-- On any other error, raise `BackupAgentError`, or an exception that extends it. Other exceptions are not expected to leave the agent.
+- `domain`、`name` 和 `unique_id` 用于标识代理。保持 `unique_id` 稳定不变。
+- `async_upload_backup` 接收一个打开备份流的函数，以及 `backup` 中的备份元数据。
+- `async_download_backup`、`async_delete_backup` 和 `async_get_backup` 在备份不存在时抛出 `BackupNotFound`。
+- 对于任何其他错误，抛出 `BackupAgentError` 或继承自它的异常。其他异常不应从代理中抛出。
 
-### Report upload progress
+### 报告上传进度
 
-Call `on_progress` while you upload, for example after each chunk, with the total number of bytes uploaded so far. Home Assistant uses it to show the progress of the upload in the UI.
+在上传过程中调用 `on_progress`，例如每上传一个数据块后调用一次，并传入迄今为止已上传的总字节数。Home Assistant 使用它在 UI 中显示上传进度。
 
 ```python
 on_progress(bytes_uploaded=bytes_sent)
 ```
 
-### Tell Home Assistant about your agents
+### 告知 Home Assistant 你的代理
 
-Home Assistant gets your agents from two functions in `backup.py`:
+Home Assistant 从 `backup.py` 中的两个函数获取你的代理：
 
 ```python
 from homeassistant.core import HomeAssistant, callback
@@ -113,7 +113,7 @@ def async_register_backup_agents_listener(
     return remove_listener
 ```
 
-Call the listeners whenever your agents change, so Home Assistant asks for them again. For agents that follow config entries, call them when an entry is loaded or unloaded, in `async_setup_entry`:
+每当你的代理发生变化时，调用这些监听器，以便 Home Assistant 再次请求它们。对于跟随配置条目（config entry）的代理，在 `async_setup_entry` 中，当条目被加载或卸载时调用它们：
 
 ```python
 def _notify_backup_listeners() -> None:
@@ -123,11 +123,11 @@ def _notify_backup_listeners() -> None:
 entry.async_on_unload(entry.async_on_state_change(_notify_backup_listeners))
 ```
 
-`DATA_BACKUP_AGENT_LISTENERS` is a key you define yourself, in `const.py`.
+`DATA_BACKUP_AGENT_LISTENERS` 是你自己定义的键，位于 `const.py` 中。
 
-## Prepare for a backup
+## 为备份做准备
 
-Some integrations need to pause or write their data before a backup, so it can be restored properly. Add these two functions to `backup.py`, or run `python3 -m script.scaffold backup`:
+某些集成需要在备份前暂停或写入其数据，以便能够正确恢复。将这两个函数添加到 `backup.py`，或运行 `python3 -m script.scaffold backup`：
 
 ```python
 from homeassistant.core import HomeAssistant

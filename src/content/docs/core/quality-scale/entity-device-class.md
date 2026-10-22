@@ -1,28 +1,28 @@
 ---
-title: Use device classes
-description: "Gold rule entity-device-class: entities use a device class wherever one fits."
+title: 使用设备类
+description: "黄金级规则 entity-device-class：实体（entity）在适用的地方都会使用设备类（device class）。"
 sidebarLabel: entity-device-class
 sidebarGroup: Gold
 order: 14
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `entity-device-class`.
+这是一条黄金级（Gold）规则。在 `quality_scale.yaml` 中，它被称为 `entity-device-class`。
 
-Entities use a [device class](/glossary/device-class/) wherever one fits. A temperature sensor uses `SensorDeviceClass.TEMPERATURE`, a door contact `BinarySensorDeviceClass.DOOR`, a firmware update `UpdateDeviceClass.FIRMWARE`. The [entity pages](/core/entities/) list the device classes of each platform.
+实体（entity）在适用的地方使用[设备类（device class）](/glossary/device-class/)。温度传感器使用 `SensorDeviceClass.TEMPERATURE`，门磁传感器使用 `BinarySensorDeviceClass.DOOR`，固件更新使用 `UpdateDeviceClass.FIRMWARE`。[实体页面](/core/entities/)列出了每个平台可用的设备类。
 
-## Why it matters
+## 为什么这很重要
 
-A device class tells Home Assistant what an entity measures or represents, and a lot builds on that:
+设备类告诉 Home Assistant 一个实体测量或代表什么，许多功能都建立在此基础之上：
 
-- Users can switch a sensor to another unit, like from °C to °F, only when the device class is known.
-- Assist can answer "what is the temperature in the living room?".
-- Google Assistant and Amazon Alexa know how to expose the entity.
-- The frontend picks a fitting icon, and shows the state in the right way, like "Open" instead of "On" for a door.
-- Entities can be named after their device class, so they need no translation of their own.
+- 只有在设备类已知的情况下，用户才能将传感器切换为其他单位，例如从 °C 切换为 °F。
+- Assist 可以回答“客厅的温度是多少？”。
+- Google Assistant 和 Amazon Alexa 知道如何公开该实体。
+- 前端会选择合适的图标，并以正确的方式显示状态，例如对于门，显示“打开”而不是“开启”。
+- 实体可以按其设备类命名，因此它们自身无需翻译。
 
-## Example
+## 示例
 
-This sensor uses the temperature device class. It has no name of its own, so it is named after the device class: "My device Temperature".
+此传感器使用温度设备类。它没有自己的名称，因此以设备类命名：“My device Temperature”。
 
 ```python
 class MyTemperatureSensor(SensorEntity):
@@ -41,17 +41,17 @@ class MyTemperatureSensor(SensorEntity):
         )
 ```
 
-## How it is checked
+## 检查方式
 
-- Pylint warns when a translation key only repeats the name the device class already provides (`home-assistant-redundant-translation-key`).
-- Whether a device class fits, and whether one is missing, is checked in review.
+- 当翻译键仅重复设备类已提供的名称时，Pylint 会发出警告（`home-assistant-redundant-translation-key`）。
+- 设备类是否合适，以及是否缺少设备类，将在代码审查中检查。
 
-## Exceptions
+## 例外情况
 
-If the integration has no entities, or its entities are on platforms that have no device classes, like `light`, `tts`, or `conversation`, this rule does not apply.
+如果集成（integration）没有实体，或者其实体位于没有设备类的平台上，例如 `light`、`tts` 或 `conversation`，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [has-entity-name](/core/quality-scale/has-entity-name/): use has_entity_name.
-- [entity-translations](/core/quality-scale/entity-translations/): translate entity names.
-- [icon-translations](/core/quality-scale/icon-translations/): use icon translations.
+- [has-entity-name](/core/quality-scale/has-entity-name/)：使用 has_entity_name。
+- [entity-translations](/core/quality-scale/entity-translations/)：翻译实体名称。
+- [icon-translations](/core/quality-scale/icon-translations/)：使用图标翻译。

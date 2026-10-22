@@ -1,24 +1,24 @@
 ---
-title: Mark entities unavailable when appropriate
-description: "Silver rule entity-unavailable: entities become unavailable when the device or service cannot be reached."
+title: 在适当的时候将实体标记为不可用
+description: "银级规则 entity-unavailable：当设备或服务无法连接时，实体会变为不可用。"
 sidebarLabel: entity-unavailable
 sidebarGroup: Silver
 order: 5
 ---
 
-This is a Silver rule. In `quality_scale.yaml`, it is called `entity-unavailable`.
+这是一条银级（Silver）规则。在 `quality_scale.yaml` 中，它被称为 `entity-unavailable`。
 
-When the integration cannot get data from the device or service, its entities must become [unavailable](/glossary/unavailable/). When the connection works but a single value is missing for a moment, that entity reports an unknown state instead (`None`), and stays available.
+当集成（integration）无法从设备或服务获取数据时，其实体必须变为[不可用](/glossary/unavailable/)（unavailable）。当连接正常但某个值暂时缺失时，该实体会改为报告未知状态（`None`），并保持可用。
 
-## Why it matters
+## 为什么这很重要
 
-An entity that keeps showing its last value after the device went offline is lying. The living room is not 21 °C anymore when the sensor has been unreachable for three hours. Unavailable tells users, and their automations, that the value cannot be trusted right now.
+设备离线后仍持续显示上一个值的实体是在说谎。当传感器已经三小时无法连接时，客厅早已不是 21 °C 了。不可用状态会告诉用户及其自动化：这个值当前不可信。
 
-## Example
+## 示例
 
-### With a coordinator
+### 使用 coordinator 时
 
-A `CoordinatorEntity` handles this for you. When the update of the [coordinator](/glossary/coordinator/) raises `UpdateFailed`, `last_update_success` turns `False`, and every entity of the coordinator becomes unavailable:
+`CoordinatorEntity` 会为你处理这件事。当[coordinator](/glossary/coordinator/)的更新抛出 `UpdateFailed` 时，`last_update_success` 会变为 `False`，coordinator 的所有实体都会变为不可用：
 
 ```python
 class MyCoordinator(DataUpdateCoordinator[dict[str, MyDevice]]):
@@ -34,7 +34,7 @@ class MyCoordinator(DataUpdateCoordinator[dict[str, MyDevice]]):
             ) from err
 ```
 
-If an entity needs more than that, like going unavailable when its device is missing from the data, combine your check with `super().available`:
+如果实体需要更多判断，比如当其设备不在数据中时变为不可用，可以将你的检查与 `super().available` 结合：
 
 ```python
 class MySensor(MyEntity, SensorEntity):
@@ -46,11 +46,11 @@ class MySensor(MyEntity, SensorEntity):
         return super().available and self.device_id in self.coordinator.data
 ```
 
-Do not leave out `super().available`. The coordinator keeps the data of the last successful update when an update fails, so a check on `coordinator.data` alone keeps the entity available with old data.
+不要省略 `super().available`。当更新失败时，coordinator 会保留上一次成功更新的数据，因此仅检查 `coordinator.data` 会让实体带着旧数据保持可用。
 
-### With async_update
+### 使用 async_update 时
 
-An entity that updates itself sets `_attr_available`:
+自行更新的实体会设置 `_attr_available`：
 
 ```python
 async def async_update(self) -> None:
@@ -65,23 +65,23 @@ async def async_update(self) -> None:
     self._attr_native_value = data.temperature
 ```
 
-## How it is checked
+## 如何检查
 
-- Pylint warns when an `available` override of a coordinator entity only looks at `coordinator.data`, and ignores whether the last update succeeded (`home-assistant-coordinator-entity-available`).
-- The rest is checked in review.
+- 当 coordinator 实体的 `available` 重写只检查 `coordinator.data`，而忽略上次更新是否成功时，Pylint 会发出警告（`home-assistant-coordinator-entity-available`）。
+- 其余部分在审查（review）中检查。
 
-## Exceptions
+## 例外情况
 
-If the integration has no entities, this rule does not apply.
+如果集成没有实体，则此规则不适用。
 
-Devices that go into standby are a special case. If the integration has a way to turn the device on while it is in standby, through a user-defined automation or a second channel like Wake-on-LAN or an infrared blaster, report the device as `off` while it is in standby, not as unavailable. If there is no such way, and the device cannot be controlled in its current state, report it as unavailable.
+进入待机状态的设备是一种特殊情况。如果集成有办法在设备处于待机状态时将其打开，例如通过用户定义的自动化或第二通道（如 Wake-on-LAN 或红外发射器），则在设备待机时应将其报告为 `off`，而不是不可用。如果没有这样的办法，且设备在当前状态下无法被控制，则将其报告为不可用。
 
-For example, a media player that can only be turned on with an infrared blaster:
+例如，一个只能通过红外发射器打开的媒体播放器：
 
-- When first added, with no connection, it is unavailable.
-- Once the user sets up an automation to turn it on, it is `off` while in standby.
-- Once it is turned on and the connection is back, it is `on`.
+- 刚添加时，由于没有连接，它是不可用的。
+- 一旦用户设置了打开它的自动化，它在待机时就是 `off`。
+- 一旦它被打开且连接恢复，它就是 `on`。
 
-## Related rules
+## 相关规则
 
-- [log-when-unavailable](/core/quality-scale/log-when-unavailable/): log once when unavailable, and once when back.
+- [log-when-unavailable](/core/quality-scale/log-when-unavailable/)：在变为不可用时记录一次日志，恢复时再记录一次。

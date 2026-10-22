@@ -1,38 +1,38 @@
 ---
-title: LoRaWAN devices
-description: How a connection integration registers a LoRaWAN network server, and how a device integration finds and exposes the devices on it.
+title: LoRaWAN 设备
+description: 连接集成如何注册 LoRaWAN 网络服务器，以及设备集成如何查找并公开其上的设备。
 sidebarLabel: LoRaWAN
 sidebarGroup: APIs
 order: 35
 ---
 
-LoRaWAN is a long-range, low-power radio protocol, used by battery-powered sensors that send a reading now and then. The devices do not talk to Home Assistant directly. They talk to a network server, like ChirpStack or The Things Stack, and Home Assistant talks to that server.
+LoRaWAN 是一种远距离、低功耗的无线电协议，被那些时不时发送一次读数的电池供电传感器所使用。这些设备不直接与 Home Assistant 通信，而是与网络服务器（network server，如 ChirpStack 或 The Things Stack）通信，Home Assistant 再与该服务器通信。
 
-So LoRaWAN support comes in two kinds of integrations, connected by the shared `lorawan` integration:
+因此，LoRaWAN 支持分为两类集成，它们通过共享的 `lorawan` 集成连接在一起：
 
-- A **connection integration** sets up a network server and registers its connection with Home Assistant.
-- A **device integration** supports the devices of one vendor. It finds them on every registered connection, and turns them into entities.
+- **连接集成（connection integration）**负责建立网络服务器，并将其连接注册到 Home Assistant。
+- **设备集成（device integration）**支持某一厂商的设备。它会在每个已注册的连接上查找这些设备，并将它们转换为实体（entity）。
 
-Both list `lorawan` in the `dependencies` of their [manifest](/core/integrations/manifest/#dependencies). Both build on [`lorawan-connection`](https://github.com/home-assistant-libs/lorawan-connection), a Python package maintained by the Home Assistant project. Like every integration, the code that talks to the server, and the code that decodes the payloads of a device, lives in a [library](/core/integrations/api-library/). The integration handles configuration, discovery, and entities.
+两者都在其[清单（manifest）](/core/integrations/manifest/#dependencies)的 `dependencies` 中列出 `lorawan`。两者都基于 [`lorawan-connection`](https://github.com/home-assistant-libs/lorawan-connection) 构建，这是由 Home Assistant 项目维护的一个 Python 包。与所有集成一样，与服务器通信的代码以及解码设备有效负载的代码都位于[库（library）](/core/integrations/api-library/)中。集成负责处理配置、发现和实体。
 
-## Connection integrations
+## 连接集成
 
-### Implement the backend
+### 实现后端
 
-The library of a connection integration implements the `Connection` protocol of `lorawan-connection`:
+连接集成的库实现 `lorawan-connection` 的 `Connection` 协议：
 
-- `stack_type`: the namespace of the server, like `"chirpstack"` or `"tts"`. It is known before you connect.
-- `async_subscribe(brands=..., listener=...)`: sends all matching devices to the listener first, then returns a function to unsubscribe, and keeps sending live device events after that. `brands` is a `frozenset` of `(stack, brand_id)` pairs. `None` selects all devices.
-- `on_disconnect(listener)`: reports when the connection is lost, and returns a function to unsubscribe.
-- `async_send_downlink(downlink)`: queues a command for a device, and returns its ID.
+- `stack_type`：服务器的命名空间，如 `"chirpstack"` 或 `"tts"`。在连接之前就已经确定。
+- `async_subscribe(brands=..., listener=...)`：先将所有匹配的设备发送给监听器，然后返回一个取消订阅的函数，并在此之后持续发送实时设备事件。`brands` 是由 `(stack, brand_id)` 对组成的 `frozenset`。`None` 表示选择所有设备。
+- `on_disconnect(listener)`：在连接丢失时进行报告，并返回一个取消订阅的函数。
+- `async_send_downlink(downlink)`：为设备排入一条下行消息（downlink），并返回其 ID。
 
-Every device the backend reports has a `DeviceDescriptor`. Set its `network_id` to the ID of the config entry of your connection integration. Set its `stack` to the `stack_type` of the connection, and fill in the `brand_id` and `model_id` the server knows the device by. Discovery and model selection match on those.
+后端报告的每个设备都有一个 `DeviceDescriptor`。将其 `network_id` 设置为你连接集成的配置条目（config entry）的 ID。将其 `stack` 设置为该连接的 `stack_type`，并填入服务器用来识别设备的 `brand_id` 和 `model_id`。发现和型号选择会依据这些信息进行匹配。
 
-The [backend guide](https://home-assistant-libs.github.io/lorawan-connection/connection/adding-a-backend/) of the library covers the order of events, filtering, and downlinks.
+该库的[后端指南](https://home-assistant-libs.github.io/lorawan-connection/connection/adding-a-backend/)涵盖了事件的顺序、过滤以及下行消息。
 
-### Register the connection
+### 注册连接
 
-Connect to the server in `async_setup_entry`, then register the connection with `async_register_connection`:
+在 `async_setup_entry` 中连接到服务器，然后使用 `async_register_connection` 注册连接：
 
 ```python
 from lorawan_connection import Connection
@@ -50,31 +50,31 @@ async def async_register_server(
     entry.async_on_unload(unregister)
 ```
 
-Registration returns once the connection has sent its devices, and starts discovery for the ones a device integration matches. A config entry can register one connection at a time: a second one raises `ValueError`. The function it returns withdraws the connection. It does not close it.
+注册会在该连接发送完其设备后返回，并为设备集成所匹配的设备启动发现。一个配置条目一次只能注册一个连接：注册第二个会引发 `ValueError`。它返回的函数用于撤回连接，但不会关闭它。
 
-The rest stays with your integration:
+其余部分由你的集成负责：
 
-- If setup fails or is canceled, close the backend. Raise `ConfigEntryAuthFailed` when authentication fails, and `ConfigEntryNotReady` when the server cannot be reached for now. See [handling setup failures](/core/integrations/setup-failures/).
-- When the connection is lost, `lorawan` withdraws it. Your integration reconnects, or reloads its config entry, and registers the new connection. Keep the same `network_id`, so the devices on it stay the same devices.
-- On unload, and when Home Assistant stops, withdraw the registration and close the backend. Remove your own reconnect listeners before you close the backend on purpose, or closing it schedules a reload.
+- 如果设置失败或被取消，请关闭后端。当身份验证失败时引发 `ConfigEntryAuthFailed`，当暂时无法连接服务器时引发 `ConfigEntryNotReady`。请参阅[处理设置失败](/core/integrations/setup-failures/)。
+- 当连接丢失时，`lorawan` 会将其撤回。你的集成进行重连，或重新加载其配置条目，并注册新的连接。保持相同的 `network_id`，这样其上的设备仍是相同的设备。
+- 在卸载时以及 Home Assistant 停止时，撤回注册并关闭后端。在你有意关闭后端之前，先移除你自己的重连监听器，否则关闭它会安排一次重新加载。
 
-## Device integrations
+## 设备集成
 
-### Get discovered
+### 被发现
 
-Add a `lorawan` key to your [manifest](/core/integrations/manifest/#lorawan) with the `(stack, brand_id)` pairs of your vendor. Your integration needs a [config flow](/core/integrations/config-flow/), and `lorawan` in its `dependencies`. Hassfest checks both.
+在你的[清单](/core/integrations/manifest/#lorawan)中添加一个 `lorawan` 键，其中包含你厂商的 `(stack, brand_id)` 对。你的集成需要一个[配置流程（config flow）](/core/integrations/config-flow/)，并在其 `dependencies` 中包含 `lorawan`。Hassfest 会检查这两项。
 
-When a connection reports a device that matches, Home Assistant starts your config flow with the `integration_discovery` source and a `LoRaWANDiscoveryInfo`, from `homeassistant.helpers.service_info.lorawan`. The discovery info has no fields: the flow only needs to know that a device of your vendor showed up. Only added devices start discovery. Updates and activity of devices do not.
+当连接报告一个匹配的设备时，Home Assistant 会以 `integration_discovery` 来源和来自 `homeassistant.helpers.service_info.lorawan` 的 `LoRaWANDiscoveryInfo` 启动你的配置流程。该发现信息没有任何字段：流程只需要知道你的某个厂商设备出现了。只有新添加的设备才会触发发现。设备的更新和活动不会。
 
-Your integration needs one config entry, for the vendor, not one per device or per server. The device manager finds the devices on every connection, so the user does not pick a server. Use the domain of your integration as the unique ID, send both the user step and the discovery step to a step that asks for confirmation, and abort with `_abort_if_unique_id_configured()` when the entry exists.
+你的集成需要一个配置条目（针对该厂商），而不是每个设备或每台服务器一个。设备管理器会在每个连接上查找设备，因此用户无需选择服务器。使用你集成的域（domain）作为唯一 ID，将用户步骤和发现步骤都指向一个要求确认的步骤，并在条目已存在时使用 `_abort_if_unique_id_configured()` 中止。
 
-The manifest matches on the brand, and selects your integration. Your library decides which models it supports. It has a `Device` subclass per model, which lists the `(brand_id, model_id)` per stack in its `identifiers`, and a `DeviceCollection` subclass that lists those models in `DEVICES`. See [writing a device library](https://home-assistant-libs.github.io/lorawan-connection/patterns/library/).
+清单按品牌进行匹配，并选择你的集成。你的库决定支持哪些型号。它为每个型号提供一个 `Device` 子类，在其 `identifiers` 中列出每个 stack 的 `(brand_id, model_id)`，以及一个在 `DEVICES` 中列出这些型号的 `DeviceCollection` 子类。请参阅[编写设备库](https://home-assistant-libs.github.io/lorawan-connection/patterns/library/)。
 
-### Set up the device manager
+### 设置设备管理器
 
-`DeviceManager` does the bookkeeping. It creates a collection of your library for every connection, including connections that register later, and one coordinator for every device that matches a model. You give it a function that creates the collection from a `Connection`, and one that creates a coordinator from `hass` and a device.
+`DeviceManager` 负责记录管理工作。它会为每个连接创建一个你的库的集合（collection），包括稍后注册的连接，并为每个匹配型号的设备创建一个协调器（coordinator）。你需要向它提供一个从 `Connection` 创建集合的函数，以及一个从 `hass` 和设备创建协调器的函数。
 
-In the examples, `ExampleDevice` and `ExampleDevices` stand for the classes of your device library. List that library in the `requirements` of your manifest.
+在示例中，`ExampleDevice` 和 `ExampleDevices` 代表你的设备库中的类。请在清单的 `requirements` 中列出该库。
 
 ```python title="__init__.py"
 from example_lorawan import ExampleDevice, ExampleDevices
@@ -118,9 +118,9 @@ async def async_unload_entry(
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 ```
 
-### Share device updates
+### 共享设备更新
 
-All entities of a device share its coordinator. The coordinator does not poll: it starts with the device as its data, and listens to the device for updates. No update interval, and no first refresh.
+一个设备的所有实体共享其协调器。协调器不进行轮询：它以设备作为其数据启动，并监听设备以获取更新。没有更新间隔，也没有首次刷新。
 
 ```python title="coordinator.py"
 import logging
@@ -156,7 +156,7 @@ class ExampleCoordinator(DataUpdateCoordinator[ExampleDevice]):
         await super().async_shutdown()
 ```
 
-Each platform asks the manager for coordinators with `subscribe_coordinator_added`. The listener gets the coordinators that exist right away, and every new one after that. Unsubscribe on unload:
+每个平台使用 `subscribe_coordinator_added` 向管理器请求协调器。监听器会立即收到已存在的协调器，以及之后每一个新建的协调器。卸载时取消订阅：
 
 ```python title="sensor.py"
 async def async_setup_entry(
@@ -175,11 +175,11 @@ async def async_setup_entry(
     )
 ```
 
-### Entities and devices
+### 实体和设备
 
-Base your entities on `LoRaWANEntity`, together with the entity class of the platform. `LoRaWANEntity` is a [`CoordinatorEntity`](/core/integrations/fetching-data/) that gives you the device as `self.device`, and makes the entity unavailable when the device is closed. It sets `_attr_has_entity_name`, and its `async_update` does nothing, because updates come in through the device.
+将你的实体基于 `LoRaWANEntity` 构建，并结合该平台的实体类。`LoRaWANEntity` 是一个 [`CoordinatorEntity`](/core/integrations/fetching-data/)，它以 `self.device` 的形式为你提供设备，并在设备关闭时将实体标记为不可用。它会设置 `_attr_has_entity_name`，其 `async_update` 不做任何事情，因为更新是通过设备传入的。
 
-Describe the device in the `device_info` of your entities, and identify it with `device_identifier`:
+在实体的 `device_info` 中描述设备，并使用 `device_identifier` 标识它：
 
 ```python title="entity.py"
 from typing import override
@@ -207,25 +207,25 @@ class ExampleEntity(LoRaWANEntity[ExampleDevice]):
         )
 ```
 
-The identifier is your domain, with the network ID and the DevEUI of the device. Two servers can each have a device with the same DevEUI, so put the network ID and the DevEUI in the unique IDs of your entities too, followed by the key of the measurement or channel.
+该标识符是你的域，加上网络 ID 和设备的 DevEUI。两台服务器可以各自拥有一个具有相同 DevEUI 的设备，因此也要将网络 ID 和 DevEUI 放入你实体的唯一 ID 中，其后是测量项或通道的键。
 
-Decoding payloads and encoding commands stays in your library. Entity properties read the state of the device, and entity actions call methods of the device. Turn a failed command into a [Home Assistant exception](/core/development/style/#error-handling).
+解码有效负载和编码命令的工作留在你的库中。实体属性读取设备的状态（state），实体动作调用设备的方法。将失败的命令转换为 [Home Assistant 异常](/core/development/style/#error-handling)。
 
-### What the device manager handles
+### 设备管理器处理的事项
 
-- When a connection is lost, the manager keeps the devices and their registry entries, and marks their coordinators as failed, so the entities become unavailable. When a new connection registers for the same config entry, it compares the devices. Devices that are still there keep their model and coordinator. Devices that are gone are removed.
-- The manager has no timeout. A device that sends rarely stays available.
-- When a device is removed from the server, or the config entry of its connection is deleted, the manager removes the device from the device registry and shuts down its coordinator. Its entities go with it.
-- When your config entry unloads, the manager closes the collections and coordinators. It keeps the registry entries, and it does not touch the connections.
+- 当连接丢失时，管理器保留设备及其注册表条目，并将其协调器标记为失败，从而使实体变为不可用。当同一配置条目注册了新连接时，它会对比设备。仍然存在的设备保留其型号和协调器。已消失的设备会被移除。
+- 管理器没有超时机制。很少发送数据的设备仍保持可用。
+- 当设备从服务器上被移除，或其连接的配置条目被删除时，管理器会将该设备从设备注册表中移除，并关闭其协调器。其实体也随之移除。
+- 当你的配置条目卸载时，管理器会关闭集合和协调器。它会保留注册表条目，并且不会触碰连接。
 
-## Testing
+## 测试
 
-`lorawan_connection.mock.MockConnection` stands in for a server in tests. Use it with the real collections of your library, to test the devices it reports, live updates, discovery, entities, removal, and unload. Cases worth a test:
+`lorawan_connection.mock.MockConnection` 在测试中替代服务器。将它与你库中的真实集合一起使用，以测试它报告的设备、实时更新、发现、实体、移除和卸载。值得测试的情形：
 
-- A connection that registers after your integration has loaded.
-- Two connections with a device with the same DevEUI.
-- A disconnect and a reconnect, including a device removed while the connection was down.
-- Cleanup of the Home Assistant subscriptions and the collections when setup fails, is canceled, or Home Assistant stops.
-- Cleanup of the device registry, including for a connection entry deleted while your integration was not loaded.
+- 在你的集成已加载之后才注册的连接。
+- 两个连接各自拥有一个具有相同 DevEUI 的设备。
+- 断开连接和重新连接，包括在连接中断期间被移除的设备。
+- 当设置失败、被取消或 Home Assistant 停止时，对 Home Assistant 订阅和集合的清理。
+- 设备注册表的清理，包括在你的集成未加载期间被删除的连接条目。
 
-Test the decoding in your library, not in the integration. Test the backend of a connection integration on its own, against a real server: authentication, the list of devices, event delivery, downlinks, and closing the transport when setup fails, is canceled, or Home Assistant stops.
+在你的库中测试解码，而不是在集成中。单独针对真实服务器测试连接集成的后端：身份验证、设备列表、事件传递、下行消息，以及当设置失败、被取消或 Home Assistant 停止时关闭传输层。

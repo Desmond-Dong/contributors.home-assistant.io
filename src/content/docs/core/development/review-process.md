@@ -1,55 +1,55 @@
 ---
-title: After you open a pull request
-description: What happens after you open a pull request to Home Assistant Core, and what you can do to help it along.
+title: 打开拉取请求之后
+description: 打开 Home Assistant Core 的拉取请求后会发生什么，以及你可以做些什么来推动它。
 sidebarGroup: Pull requests
 order: 3
 ---
 
-Your pull request is open. Now it waits for a [review](/glossary/review/). What happens next is mostly the same in every Home Assistant repository: the bots, the wait, review comments, and stale pull requests. [Pull requests and reviews](/start/pull-requests/#after-you-open-it) explains all of it. This page adds what is specific to core.
+你的拉取请求已经打开。现在它在等待[评审](/glossary/review/)。接下来发生的事情在每个 Home Assistant 仓库中基本相同：机器人、等待、评审评论，以及过期的拉取请求。[拉取请求与评审](/start/pull-requests/#after-you-open-it)解释了所有这些内容。本页补充的是 core 特有的部分。
 
-## Who reviews
+## 谁来评审
 
-Maintainers merge pull requests. The [integration owners](/glossary/integration-owner/) of an integration, listed in its `manifest.json`, are asked for a review automatically when you change it. But anyone can review: "I tested this with my device, and it works" already helps.
+维护者负责合并拉取请求。当你修改某个集成（integration）时，会自动请求该集成的[集成所有者](/glossary/integration-owner/)（在其 `manifest.json` 中列出）进行评审。但任何人都可以评审：“我用我的设备测试过了，可以正常工作”这样的反馈就已经很有帮助了。
 
-A new tier on the quality scale needs the approval of a member of the core team. See [raise the tier of an integration](/core/quality-scale/raise-tier/#the-review).
+质量等级的新层级需要 core 团队成员的批准。参见[提升集成的层级](/core/quality-scale/raise-tier/#the-review)。
 
-## Automated reviewers
+## 自动评审者
 
-Two automated reviewers in core comment on pull requests before a human looks at them. They comment, they don't decide.
+core 中有两个自动评审者会在人工查看之前对拉取请求发表评论。它们只发表评论，不做决定。
 
-- **Quality scale reviewer**: runs when a pull request that changes an integration is opened, reopened, or marked ready for review. It checks the change against the [quality scale](/core/quality-scale/) rules the integration marks as `done` or `exempt` in its `quality_scale.yaml`, and posts an inline comment on every line that breaks one. When nothing breaks a rule, it leaves one short comment. Very large pull requests are skipped.
-- **Check requirements**: runs when a pull request changes a requirements file. For every new or updated Python package, it checks that the source repository is public, that your description links to it (for a new package) or to a changelog or comparison of the two versions (for an update), how the package is published to PyPI, and more. It posts the result as one comment.
+- **质量等级评审者**：当更改集成的拉取请求被打开、重新打开或标记为准备好评审时运行。它会根据该集成在其 `quality_scale.yaml` 中标记为 `done` 或 `exempt` 的[质量等级](/core/quality-scale/)规则检查更改，并在每个违反规则的行上发布内联评论。当没有任何内容违反规则时，它会留下一条简短的评论。非常大的拉取请求会被跳过。
+- **检查依赖要求**：当拉取请求更改了依赖要求文件时运行。对于每个新增或更新的 Python 包，它会检查源仓库是否公开、你的描述是否链接到它（对于新包）或链接到两个版本之间的变更日志或比较（对于更新）、该包如何发布到 PyPI，等等。它会将结果作为一条评论发布。
 
-Read their comments like you read any review. When you think one is wrong, say why in a reply.
+像阅读任何评审一样阅读它们的评论。当你认为某条评论有误时，在回复中说明原因。
 
-## What blocks the merge
+## 什么会阻止合并
 
-Next to CI, a bot sets a few status checks on your pull request. They must be green before a maintainer can merge it:
+除了 CI 之外，一个机器人会在你的拉取请求上设置一些状态检查。在维护者能够合并之前，它们必须全部通过（绿色）：
 
-- `required-labels`: red while the pull request has no type label, like `bugfix` or `new-feature`. The bot adds that label from the box you check under "Type of change" in the template, so check exactly one.
-- `docs-missing`: red while the pull request has the `docs-missing` label, or when a new integration or platform has no link to a documentation pull request on [home-assistant.io](https://www.home-assistant.io/). The template has a field for that link under "Additional information".
-- `cla-bot`: red until you sign the Contributor License Agreement.
-- `code-owner-approval`: for a Platinum integration, red until one of its integration owners approves the pull request.
-- `blocking-label-awaiting-frontend`: red while the pull request has the `awaiting-frontend` label, because it waits for a change in the frontend.
+- `required-labels`：当拉取请求没有类型标签（如 `bugfix` 或 `new-feature`）时为红色。机器人会根据你在模板中“Type of change”下勾选的选项添加该标签，所以请只勾选一个。
+- `docs-missing`：当拉取请求带有 `docs-missing` 标签，或者新的集成或平台没有链接到 [home-assistant.io](https://www.home-assistant.io/) 上的文档拉取请求时为红色。模板中“Additional information”下有填写该链接的字段。
+- `cla-bot`：在你签署贡献者许可协议（Contributor License Agreement）之前为红色。
+- `code-owner-approval`：对于 Platinum 级别的集成，在其集成所有者之一批准该拉取请求之前为红色。
+- `blocking-label-awaiting-frontend`：当拉取请求带有 `awaiting-frontend` 标签时为红色，因为它在等待前端的更改。
 
-## What moves faster
+## 什么能更快推进
 
-Bug fixes, code quality improvements, and pull requests with tests go before new features. Small pull requests go before big ones. Changes that need someone with specific knowledge, like an architectural change or an integration owner who is not around, take longer.
+缺陷修复、代码质量改进以及带有测试的拉取请求会优先于新功能。小的拉取请求会优先于大的拉取请求。需要具备特定知识的人的更改，例如架构更改或集成所有者不在场的情况，会花费更长时间。
 
-Tests help more than anything else. They show your code works, keep it working, and help reviewers understand the problem you solved.
+测试比任何东西都更有帮助。它们证明你的代码可以工作、保持其正常工作，并帮助评审者理解你解决的问题。
 
-## When changes are requested
+## 当被要求修改时
 
-When a reviewer requests changes, a bot turns your pull request into a draft. Push your fixes as new commits: do not amend, squash, or rebase what you already pushed. When you have addressed every comment and CI passes, select **Ready for review**. The bot then lets the reviewers who requested changes know it is their turn again.
+当评审者要求修改时，机器人会将你的拉取请求转为草稿状态。将你的修复作为新的提交推送：不要 amend、squash 或 rebase 你已经推送的内容。当你处理完每一条评论且 CI 通过后，选择 **Ready for review**。然后机器人会通知那些要求修改的评审者，又轮到他们了。
 
-## Keep it up to date
+## 保持最新
 
-After a week or so without activity, [bring in the latest `dev`](/core/development/catching-up/) with a merge, and run the tests again. Then your pull request is ready to go when the review starts.
+大约一周没有活动后，通过合并[引入最新的 `dev`](/core/development/catching-up/)，并再次运行测试。这样当评审开始时，你的拉取请求就可以随时进行。
 
-## Fixes for a patch release
+## 针对补丁版本的修复
 
-Home Assistant releases monthly, with patch releases in between. If your fix should go into the next patch release, say so clearly in the description. The reviewer checks that it qualifies, and adds it to the milestone of the next patch release.
+Home Assistant 每月发布一次版本，期间会有补丁版本。如果你的修复应该进入下一个补丁版本，请在描述中明确说明。评审者会检查它是否符合条件，并将其添加到下一个补丁版本的里程碑中。
 
-## Use the wait
+## 利用等待时间
 
-Review other pull requests while you wait. It is the best way to make the queue move, and to learn how core works. [Reviewing pull requests](/core/development/reviewing/) tells you what to look for.
+在等待时评审其他拉取请求。这是让队列向前推进的最好方式，也是了解 core 如何运作的最好方式。[评审拉取请求](/core/development/reviewing/)告诉你应该关注什么。

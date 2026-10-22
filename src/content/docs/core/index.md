@@ -1,49 +1,49 @@
 ---
-title: Core and integrations
-description: Python, core, and the integration platform. Everything you need to build and improve integrations, and to work on Home Assistant Core itself.
+title: 核心与集成
+description: Python、核心与集成平台。构建和改进集成、参与 Home Assistant Core 本身开发所需的一切。
 ---
 
-Home Assistant Core is the Python application at the heart of every Home Assistant installation. It runs the state machine, the event bus, automations, and the thousands of integrations that connect Home Assistant to devices and services. All of it lives in one repository: [home-assistant/core](https://github.com/home-assistant/core).
+Home Assistant Core 是每个 Home Assistant 安装的核心 Python 应用程序。它运行着状态机、事件总线、自动化，以及将 Home Assistant 与设备和服务连接起来的数千个集成。所有这些都存放在同一个代码仓库中：[home-assistant/core](https://github.com/home-assistant/core)。
 
-Most contributions to core are about [integrations](/glossary/integration/): adding support for a new device, fixing a bug in an existing one, or bringing an integration up to a higher level of quality. Some contributions go deeper, into the helpers and APIs that every integration builds on.
+对核心的大多数贡献都与[集成](/glossary/integration/)（integration）有关：为一种新设备添加支持、修复现有设备中的缺陷，或者将集成提升到更高的质量水平。有些贡献则更为深入，涉及每个集成所依赖的辅助元素（helper）和 API。
 
-This area is for you if you write Python, or want to. You do not need to know the whole codebase. Most people start with one integration they use at home, and grow from there.
+如果你编写 Python，或者想要编写 Python，这个板块就是为你准备的。你不需要了解整个代码库。大多数人从自己在家里使用的一个集成入手，然后逐步深入。
 
-## What you can work on
+## 你可以参与的工作
 
-- **Fix a bug**: pick up an issue in an integration you use, reproduce it, and fix it.
-- **Improve an integration**: add tests, add type hints, or work toward the next tier of the [integration quality scale](/core/quality-scale/).
-- **Add an integration**: connect Home Assistant to a device or service it does not support yet.
-- **Review**: test and review pull requests from others. It is one of the most valuable things you can do.
+- **修复缺陷**：在你使用的集成中认领一个 issue，复现它，然后修复它。
+- **改进集成**：添加测试、添加类型注解（type hints），或者朝着[集成质量标准](/core/quality-scale/)的下一个等级努力。
+- **添加集成**：让 Home Assistant 连接到它尚不支持的设备或服务。
+- **审查**：测试并审查他人的拉取请求（pull request）。这是你能做的最有价值的事情之一。
 
-## Start here
+## 从这里开始
 
-Pick the path that matches what you want to do:
+选择与你想要做的事情相匹配的路径：
 
-1. **Fix something first.** Never contributed to core? Start with [your first contribution](/core/first-contribution/): set up your environment, fix a small bug, and open your first pull request. A small fix teaches you the whole process, also if you want to build an integration later.
-2. **Build a new integration.** Read [how an integration fits in](/core/integrations/concepts/), then follow the [tutorial](/core/integrations/tutorial/). It builds a small integration from the scaffold to a pull request that meets the Bronze tier. For your own device or service, the project recommends starting in the [Marketplace](/marketplace/): see [does it belong in core](/core/integrations/create/#does-it-belong-in-core).
+1. **先修复一个小问题。** 从未为核心做过贡献？从[你的第一次贡献](/core/first-contribution/)开始：搭建好你的环境，修复一个小缺陷，然后提交你的第一个拉取请求。一个小修复能让你了解整个流程，即使你以后想构建集成，这也会有所帮助。
+2. **构建一个新的集成。** 阅读[集成如何融入核心](/core/integrations/concepts/)，然后按照[教程](/core/integrations/tutorial/)操作。该教程会从脚手架（scaffold）开始构建一个小型集成，直到提交一个符合 Bronze 等级的拉取请求。对于你自己的设备或服务，项目建议从 [Marketplace](/marketplace/) 入手：参见[它是否属于核心](/core/integrations/create/#does-it-belong-in-core)。
 
-Then use the rest of this area as your reference: the [development workflow](/core/development/) for the tools and the pull request process, and the guides below for everything else.
+然后将本板块的其余内容作为你的参考：[开发工作流](/core/development/)介绍了相关工具和拉取请求流程，下面的指南则涵盖其他所有内容。
 
-## Guides and reference
+## 指南与参考
 
-- [Building integrations](/core/integrations/): the files of an integration, config flows, fetching data, and everything else an integration is made of.
-- [Entities and platforms](/core/entities/): sensors, lights, climate devices, and every other entity type, with the properties and features each one supports.
-- [Integration quality scale](/core/quality-scale/): the tiers and rules that describe how good an integration is, and what reviewers look for.
-- [How core works](/core/internals/): asyncio, the `hass` object, events, states, authentication, the APIs, intents, and LLM support.
+- [构建集成](/core/integrations/)：集成的文件构成、配置流程（config flow）、数据获取，以及构成集成的其他所有内容。
+- [实体与平台](/core/entities/)：传感器、灯光、温控设备以及所有其他实体（entity）类型，以及每种类型支持的属性和功能。
+- [集成质量标准](/core/quality-scale/)：描述集成质量优劣的等级和规则，以及审查者所关注的内容。
+- [核心的工作原理](/core/internals/)：asyncio、`hass` 对象、事件、状态、身份验证、API、意图（intent）以及 LLM 支持。
 
-## Related areas
+## 相关板块
 
-- [Translations](/translate/guides/developers/): how to write strings in `strings.json` that translators can work with.
-- [Writing documentation](/writing/): every integration has a page on [home-assistant.io](https://www.home-assistant.io/), and you write it together with your code.
-- [Frontend](/frontend/): when your change needs something new in the interface.
-- [Architecture](/architecture/): the decisions behind how Home Assistant is built.
-- [Marketplace](/marketplace/): publish a custom integration, so others can install it from the Marketplace.
+- [翻译](/translate/guides/developers/)：如何在 `strings.json` 中编写翻译人员可以处理的字符串。
+- [编写文档](/writing/)：每个集成都会在 [home-assistant.io](https://www.home-assistant.io/) 上有一个页面，你需要随代码一起编写它。
+- [前端](/frontend/)：当你的更改需要在界面中添加新内容时。
+- [架构](/architecture/)：Home Assistant 构建方式背后的决策。
+- [Marketplace](/marketplace/)：发布自定义集成，让其他人可以从 Marketplace 安装它。
 
-## Who to talk to
+## 与谁交流
 
-- The **#core** channel on the [Home Assistant Discord](https://www.home-assistant.io/join-chat/) is the place for questions about Core and integrations. General development questions fit **#developers**. For a longer question, start a thread in **#support**. Can't see the channels? Under **Channels & Roles**, choose **I want to contribute dev skills to Home Assistant**.
-- Bugs and pull requests live in the [core repository](https://github.com/home-assistant/core). Feature ideas go to [GitHub discussions](https://github.com/orgs/home-assistant/discussions).
-- Bigger changes to how core works are discussed in the [architecture repository](https://github.com/home-assistant/architecture/discussions) first.
+- [Home Assistant Discord](https://www.home-assistant.io/join-chat/) 上的 **#core** 频道是询问有关核心和集成问题的地方。一般性的开发问题适合发在 **#developers**。对于较长的问题，请在 **#support** 中发起一个讨论串。看不到这些频道？在 **Channels & Roles** 下，选择 **I want to contribute dev skills to Home Assistant**。
+- 缺陷和拉取请求位于[核心仓库](https://github.com/home-assistant/core)中。功能想法请提交到 [GitHub discussions](https://github.com/orgs/home-assistant/discussions)。
+- 对核心工作方式的较大改动会先在[架构仓库](https://github.com/home-assistant/architecture/discussions)中讨论。
 
-When you ask for help, push your work to a branch and share the link. People can help you much faster when they can see the code, and a link keeps the channel readable.
+当你寻求帮助时，请将你的工作推送到一个分支并分享链接。当人们能够看到代码时，他们能更快地为你提供帮助，而且链接也能保持频道整洁易读。

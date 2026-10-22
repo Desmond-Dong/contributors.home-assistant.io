@@ -1,35 +1,35 @@
 ---
-title: Naming entities
-description: How has_entity_name, translation keys, and device classes give your entities a name, and how Home Assistant turns that into a friendly name and an entity ID.
+title: 实体命名
+description: has_entity_name、翻译键和设备类如何为您的实体命名，以及 Home Assistant 如何将其转换为友好名称和实体 ID。
 sidebarLabel: Naming
 sidebarGroup: Basics
 order: 2
 ---
 
-A good entity name is short and only says what the entity is: "Battery", "Power usage", "Child lock". Home Assistant adds the device name in front of it by itself. Your job as an integration author is to give the entity that short name, in a way that can be translated.
+一个好的实体名称应该简短，且只说明这个实体是什么："Battery"（电池）、"Power usage"（用电量）、"Child lock"（童锁）。Home Assistant 会自动在其前面加上设备名称。作为集成（integration）作者，您的任务是以可翻译的方式为实体提供这个简短名称。
 
-## Use `has_entity_name`
+## 使用 `has_entity_name`
 
-Set `has_entity_name` to `True` on every entity. It is required for new integrations. It tells Home Assistant that the name of the entity describes only the entity, not the device it belongs to.
+在每个实体上将 `has_entity_name` 设置为 `True`。新集成必须这样做。它告诉 Home Assistant，实体的名称仅描述实体本身，而不描述它所属的设备。
 
 ```python
 class ExampleSensor(SensorEntity):
     _attr_has_entity_name = True
 ```
 
-With `has_entity_name` set, the name of the entity is one of three things:
+设置了 `has_entity_name` 之后，实体的名称是以下三种情况之一：
 
-- **A name of its own**, like "Battery", for an entity that is one of several on a device. Give it through a [translation key](#translated-names).
-- **`None`**, for the entity that is the main feature of its device, like the light of a smart bulb. The entity then takes the name of the device.
-- **Not set**, for some platforms: the entity is then named after its [device class](#names-from-the-device-class).
+- **有自己的名称**，比如 "Battery"，适用于设备上多个实体中的某个实体。请通过[翻译键（translation key）](#translated-names)提供它。
+- **`None`**，适用于作为其设备主要功能的实体，例如智能灯泡的灯。此时实体将采用设备的名称。
+- **未设置**，适用于某些平台：此时实体根据其[设备类（device class）](#names-from-the-device-class)命名。
 
-Entity names start with a capital letter, and the rest is lowercase, unless a word is a proper noun or an abbreviation that is always written in capitals.
+实体名称以大写字母开头，其余为小写，除非某个单词是专有名词或总是以大写书写的缩写词。
 
-Integrations that don't set `has_entity_name` use the legacy behavior, where `name` holds the full name including the device. Don't use it for anything new.
+未设置 `has_entity_name` 的集成使用旧版行为，即 `name` 中包含包括设备在内的完整名称。请不要在任何新内容中使用它。
 
-## Translated names
+## 翻译名称
 
-Don't hard code an English name. Set a `translation_key` instead, and put the name in the `entity` section of your integration's `strings.json`:
+不要硬编码英文名称。改为设置 `translation_key`，并将名称放入您的集成的 `strings.json` 的 `entity` 部分：
 
 ```json
 {
@@ -43,7 +43,7 @@ Don't hard code an English name. Set a `translation_key` instead, and put the na
 }
 ```
 
-The key under `entity` is the domain of the entity, and the key below it is the translation key. The same translation key is used to translate the states and state attributes of the entity, its unit of measurement, and to look up its [icons](/core/entities/icons/). For the full picture of the `strings.json` file, see [translations](/core/integrations/translations/).
+`entity` 下的键是实体的域（domain），其下面的键是翻译键。同一个翻译键用于翻译实体的状态（state）和状态属性、其测量单位，以及查找其[图标](/core/entities/icons/)。有关 `strings.json` 文件的完整介绍，请参阅[翻译](/core/integrations/translations/)。
 
 ```python
 class ExampleSensor(SensorEntity):
@@ -51,14 +51,14 @@ class ExampleSensor(SensorEntity):
     _attr_translation_key = "water_temperature"
 ```
 
-Only skip translation for names that are the same in every language: proper nouns, model names, or names that come from the device or its library. In those cases, set `name` directly.
+仅当名称在所有语言中都相同时才可以跳过翻译：专有名词、型号名称，或来自设备或其库的名称。在这些情况下，直接设置 `name`。
 
 > [!NOTE]
-> Translated names are resolved in the language of the Home Assistant server when the entity is first created, not in the language of the user's interface. Changing the server language later doesn't rename existing entities.
+> 翻译名称在实体首次创建时以 Home Assistant 服务器的语言解析，而不是以用户界面的语言。之后更改服务器语言不会重命名现有实体。
 
-### Placeholders
+### 占位符
 
-When the name has a part that differs per entity, like a channel number, use a placeholder in the translation and fill it with `translation_placeholders`:
+当名称中包含每个实体各不相同的部分（例如频道号）时，请在翻译中使用占位符（placeholder），并用 `translation_placeholders` 填充它：
 
 ```json
 {
@@ -81,24 +81,24 @@ class ExampleOutlet(SwitchEntity):
         self._attr_translation_placeholders = {"number": str(number)}
 ```
 
-If the placeholders don't match the name, Home Assistant raises an error on development and beta versions, and logs a warning on stable releases.
+如果占位符与名称不匹配，Home Assistant 会在开发和 beta 版本上引发错误，并在稳定版本上记录警告。
 
-## Names from the device class
+## 来自设备类的名称
 
-Some platforms name an entity after its device class when you don't set a name: `binary_sensor`, `button`, `event`, `number`, `sensor`, and `update`, and the emitter and receiver entities of `infrared`. A sensor with the `temperature` device class and no name is called "Temperature", translated to the server language. In many cases that is all you need. Sensors with the `enum` device class are the exception: they don't get a name from it.
+当您不设置名称时，某些平台会根据实体的设备类为其命名：`binary_sensor`、`button`、`event`、`number`、`sensor` 和 `update`，以及 `infrared` 的发射器和接收器实体。具有 `temperature` 设备类且没有名称的传感器被称为 "Temperature"，并翻译为服务器语言。在许多情况下，这就足够了。具有 `enum` 设备类的传感器是例外：它们不会从中获得名称。
 
-This only happens when the name is not set at all. `_attr_name = None` still means "use the device name".
+这仅在名称完全未设置时发生。`_attr_name = None` 仍然表示"使用设备名称"。
 
-## Friendly name and entity ID
+## 友好名称和实体 ID
 
-From the entity name and the device name, Home Assistant builds the `friendly_name` attribute:
+Home Assistant 根据实体名称和设备名称构建 `friendly_name` 属性：
 
-| Situation | Friendly name |
+| 情况 | 友好名称 |
 | --- | --- |
-| The entity has no device | The entity name |
-| The entity has a device and a name | Device name, then entity name: "Nightlight Battery" |
-| The entity has a device, and its name is `None` | The device name: "Nightlight" |
+| 实体没有设备 | 实体名称 |
+| 实体有设备和名称 | 设备名称，然后是实体名称："Nightlight Battery" |
+| 实体有设备，且其名称为 `None` | 设备名称："Nightlight" |
 
-The entity ID is built from name parts too, when the entity is first registered. By default those are the area, the name of the parent device (for a child device), the device name, and the entity name, so a battery sensor of a device called "Nightlight" without an area becomes `sensor.nightlight_battery`, and its light becomes `light.nightlight`. The names come from the English translations, unless the server language is one of the languages that get entity IDs in their own language. Users can choose which parts Home Assistant uses for new entity IDs. Because of that, never rely on a specific entity ID in your integration: look entities up by their unique ID in the [entity registry](/core/entities/registry/).
+实体 ID 同样由名称部分构建，在实体首次注册时生成。默认情况下，这些部分是区域（area）、父设备的名称（对于子设备而言）、设备名称和实体名称，因此一个名为 "Nightlight" 且没有区域的设备，其电池传感器会变为 `sensor.nightlight_battery`，而它的灯会变为 `light.nightlight`。这些名称来自英文翻译，除非服务器语言是那些以自身语言生成实体 ID 的语言之一。用户可以选择 Home Assistant 为新实体 ID 使用哪些部分。因此，请勿在您的集成中依赖特定的实体 ID：请在[实体注册表（entity registry）](/core/entities/registry/)中通过实体的唯一 ID（unique ID）查找实体。
 
-When the user renames an entity or its device, Home Assistant uses the new names. Your code never needs to know.
+当用户重命名实体或其设备时，Home Assistant 会使用新的名称。您的代码无需知晓。

@@ -1,55 +1,55 @@
 ---
-title: Alarm control panel entity
-description: Build an alarm control panel entity that arms, disarms, and triggers a security system.
+title: 报警控制面板实体
+description: 构建一个可布防、撤防并触发安防系统的报警控制面板实体。
 sidebarLabel: Alarm control panel
 sidebarGroup: Openings and security
 ---
 
-An alarm control panel entity controls a security system: it arms the system in one or more modes, disarms it, and can trigger the alarm. It can ask for a code. Inherit from `AlarmControlPanelEntity` in `homeassistant.components.alarm_control_panel`.
+报警控制面板实体用于控制安防系统：它以一种或多种模式布防（arm）系统、撤防（disarm）系统，并可以触发报警。它可以要求输入密码（code）。请继承 `homeassistant.components.alarm_control_panel` 中的 `AlarmControlPanelEntity`。
 
-The sensors of the system, like door contacts and motion detectors, are [binary sensors](/core/entities/binary-sensor/). A siren that is part of the system is a [siren](/core/entities/siren/).
+系统的传感器，如门磁和移动探测器，是[二进制传感器（binary sensor）](/core/entities/binary-sensor/)。属于系统一部分的警报器（siren）则是一个[警报器（siren）](/core/entities/siren/)。
 
-For how the frontend shows an alarm control panel, see the [alarm control panel more-info view](/design/more-info/alarm-control-panel/).
+有关前端如何显示报警控制面板，请参见[报警控制面板的更多信息视图（more-info view）](/design/more-info/alarm-control-panel/)。
 
-## Properties
+## 属性
 
-Alarm control panel entities have these properties on top of the [generic entity properties](/core/entities/entity-class/). Every property can be set with its `_attr_` attribute, like `_attr_alarm_state`.
+报警控制面板实体在[通用实体属性](/core/entities/entity-class/)的基础上还具有以下属性。每个属性都可以通过其对应的 `_attr_` 特性进行设置，例如 `_attr_alarm_state`。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `alarm_state` | `AlarmControlPanelState \| None` | Required | The state of the alarm. See [States](#states). |
-| `code_format` | `CodeFormat \| None` | `None` | The kind of code the panel asks for: `CodeFormat.NUMBER` or `CodeFormat.TEXT`. `None` means no code. |
-| `code_arm_required` | `bool` | `True` | Whether arming needs a code. Disarming always passes the code along when there is one. |
-| `changed_by` | `str \| None` | `None` | Who or what changed the alarm last. |
+| `alarm_state` | `AlarmControlPanelState \| None` | 必填 | 报警的状态。参见[状态](#states)。 |
+| `code_format` | `CodeFormat \| None` | `None` | 面板要求输入的密码类型：`CodeFormat.NUMBER` 或 `CodeFormat.TEXT`。`None` 表示无需密码。 |
+| `code_arm_required` | `bool` | `True` | 布防时是否需要密码。撤防时，只要有密码就总是会将密码传递过去。 |
+| `changed_by` | `str \| None` | `None` | 最后更改报警的人或事物。 |
 
-`code_format` tells the frontend which keypad to show: a number pad for `NUMBER`, a text field for `TEXT`.
+`code_format` 告诉前端应显示哪种键盘：`NUMBER` 显示数字键盘，`TEXT` 显示文本输入框。
 
-## Codes
+## 密码
 
-Your methods receive the code as the `code` argument, or `None` when there is none. Users can store a default code in the entity settings. When a disarm or arm action comes without a code, Home Assistant uses that default code. The trigger action does not: `alarm_trigger` gets only the code from the action. It reads the setting from the [entity registry options](/core/entities/registry/) for you.
+您的方法通过 `code` 参数接收密码，如果没有密码则为 `None`。用户可以在实体设置中存储默认密码。当撤防或布防操作未提供密码时，Home Assistant 会使用该默认密码。触发操作则不会：`alarm_trigger` 只会获取操作中附带的密码。它会为您从[实体注册表选项](/core/entities/registry/)中读取该设置。
 
-When `code_arm_required` is `True` and an arm action has no code and there is no default code, Home Assistant raises a validation error before it calls you. Set `code_arm_required` to `False` when the panel arms without a code.
+当 `code_arm_required` 为 `True`、布防操作没有密码且也没有默认密码时，Home Assistant 会在调用您的方法之前抛出验证错误。当面板可以在无密码情况下布防时，请将 `code_arm_required` 设置为 `False`。
 
-## Supported features
+## 支持的功能
 
-Combine the `AlarmControlPanelEntityFeature` flags with `|` and set them as `supported_features`. See [supported features](/glossary/supported-features/). Disarming is always available.
+将 `AlarmControlPanelEntityFeature` 标志用 `|` 组合起来，并将其设置为 `supported_features`。参见[支持的功能（supported features）](/glossary/supported-features/)。撤防始终可用。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `ARM_HOME` | The alarm can arm in home mode. Implement `alarm_arm_home`. |
-| `ARM_AWAY` | The alarm can arm in away mode. Implement `alarm_arm_away`. |
-| `ARM_NIGHT` | The alarm can arm in night mode. Implement `alarm_arm_night`. |
-| `ARM_VACATION` | The alarm can arm in vacation mode. Implement `alarm_arm_vacation`. |
-| `ARM_CUSTOM_BYPASS` | The alarm can arm with some zones bypassed. Implement `alarm_arm_custom_bypass`. |
-| `TRIGGER` | The alarm can be triggered from Home Assistant. Implement `alarm_trigger`. |
+| `ARM_HOME` | 报警可以在在家（home）模式下布防。请实现 `alarm_arm_home`。 |
+| `ARM_AWAY` | 报警可以在离家（away）模式下布防。请实现 `alarm_arm_away`。 |
+| `ARM_NIGHT` | 报警可以在夜间（night）模式下布防。请实现 `alarm_arm_night`。 |
+| `ARM_VACATION` | 报警可以在度假（vacation）模式下布防。请实现 `alarm_arm_vacation`。 |
+| `ARM_CUSTOM_BYPASS` | 报警可以在旁路（bypass）部分防区的情况下布防。请实现 `alarm_arm_custom_bypass`。 |
+| `TRIGGER` | 报警可以从 Home Assistant 触发。请实现 `alarm_trigger`。 |
 
-## Methods
+## 方法
 
-Implement the sync or the async variant of each method, not both. Every method takes `code: str | None = None`.
+请实现每个方法的同步（sync）或异步（async）变体，不要两者都实现。每个方法都接受 `code: str | None = None` 参数。
 
-| Method | Async variant | Feature |
+| 方法 | 异步变体 | 功能 |
 | ------ | ------------- | ------- |
-| `alarm_disarm` | `async_alarm_disarm` | Always |
+| `alarm_disarm` | `async_alarm_disarm` | 始终 |
 | `alarm_arm_home` | `async_alarm_arm_home` | `ARM_HOME` |
 | `alarm_arm_away` | `async_alarm_arm_away` | `ARM_AWAY` |
 | `alarm_arm_night` | `async_alarm_arm_night` | `ARM_NIGHT` |
@@ -57,24 +57,24 @@ Implement the sync or the async variant of each method, not both. Every method t
 | `alarm_arm_custom_bypass` | `async_alarm_arm_custom_bypass` | `ARM_CUSTOM_BYPASS` |
 | `alarm_trigger` | `async_alarm_trigger` | `TRIGGER` |
 
-## States
+## 状态
 
-The state is the value of `alarm_state`, from the `AlarmControlPanelState` enum. When `alarm_state` is `None`, the state is `unknown`.
+状态是 `alarm_state` 的值，来自 `AlarmControlPanelState` 枚举。当 `alarm_state` 为 `None` 时，状态为 `unknown`。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `DISARMED` | The alarm is disarmed. |
-| `ARMED_HOME` | The alarm is armed in home mode. |
-| `ARMED_AWAY` | The alarm is armed in away mode. |
-| `ARMED_NIGHT` | The alarm is armed in night mode. |
-| `ARMED_VACATION` | The alarm is armed in vacation mode. |
-| `ARMED_CUSTOM_BYPASS` | The alarm is armed with one or more zones or sensors bypassed, in a combination that does not match home, away, or night. Do not use it to signal a disconnected, broken, or low battery sensor. Report those with their own sensor entities. |
-| `PENDING` | The alarm is about to trigger, giving you time to disarm it. |
-| `ARMING` | The alarm is arming, usually during an exit delay. |
-| `DISARMING` | The alarm is disarming. |
-| `TRIGGERED` | The alarm is triggered. |
+| `DISARMED` | 报警已撤防。 |
+| `ARMED_HOME` | 报警已在在家模式下布防。 |
+| `ARMED_AWAY` | 报警已在离家模式下布防。 |
+| `ARMED_NIGHT` | 报警已在夜间模式下布防。 |
+| `ARMED_VACATION` | 报警已在度假模式下布防。 |
+| `ARMED_CUSTOM_BYPASS` | 报警在一个或多个防区（zone）或传感器被旁路的情况下布防，且其组合与在家、离家或夜间模式均不匹配。不要用它来表示传感器已断开、损坏或电量不足。这些情况应通过传感器自身的传感器实体来报告。 |
+| `PENDING` | 报警即将触发，为您留出撤防的时间。 |
+| `ARMING` | 报警正在布防，通常处于退出延时（exit delay）期间。 |
+| `DISARMING` | 报警正在撤防。 |
+| `TRIGGERED` | 报警已触发。 |
 
-## Example
+## 示例
 
 ```python
 from homeassistant.components.alarm_control_panel import (

@@ -1,41 +1,41 @@
 ---
-title: Versioning
-description: How Home Assistant Core versions are built up, from stable releases to betas, nightlies, and development versions.
+title: 版本管理
+description: Home Assistant Core 的版本是如何构建的，从稳定版到 beta 版、nightly 版和开发版本。
 sidebarGroup: Changing behavior
 order: 2
 ---
 
-Home Assistant Core uses [calendar versioning](https://calver.org/). A version has three parts:
+Home Assistant Core 使用[日历化版本管理（calendar versioning）](https://calver.org/)。版本号由三部分组成：
 
 ```text
 YYYY.MM.PATCH
 ```
 
-| Part | Meaning |
+| 部分 | 含义 |
 | --- | --- |
-| `YYYY` | The year of the release, like `2026`. |
-| `MM` | The month of the release, without a leading zero: `5`, not `05`. |
-| `PATCH` | The patch release within that month, starting at `0`. |
+| `YYYY` | 发布年份，例如 `2026`。 |
+| `MM` | 发布月份，不带前导零：`5`，而不是 `05`。 |
+| `PATCH` | 该月份内的补丁版本号，从 `0` 开始。 |
 
-So `2026.5.0` is the release of May 2026, and `2026.5.1` and `2026.5.2` are its patch releases. For the release schedule and the release channels, see the [release FAQ](https://www.home-assistant.io/faq/release/).
+因此 `2026.5.0` 是 2026 年 5 月的发布版本，而 `2026.5.1` 和 `2026.5.2` 是它的补丁版本。关于发布时间表和发布渠道，请参阅[发布常见问题](https://www.home-assistant.io/faq/release/)。
 
-## Betas, nightlies, and development versions
+## Beta 版、nightly 版和开发版本
 
-Versions follow [PEP 440](https://peps.python.org/pep-0440/), so the patch part can carry a suffix for builds that are not stable:
+版本号遵循 [PEP 440](https://peps.python.org/pep-0440/)，因此补丁部分可以带有后缀，用于表示非稳定版本：
 
-| Kind | Format | Example |
+| 类型 | 格式 | 示例 |
 | --- | --- | --- |
-| Stable release | `YYYY.MM.PATCH` | `2026.5.0` |
-| Beta | `YYYY.MM.PATCH` + `b<N>` | `2026.5.0b0` |
-| Nightly | `YYYY.MM.PATCH` + `.dev<YYYYMMDDHHMM>` | `2026.7.0.dev202607241254` |
-| Development | `YYYY.MM.PATCH` + `.dev<N>` | `2026.7.0.dev0` |
+| 稳定版 | `YYYY.MM.PATCH` | `2026.5.0` |
+| Beta 版 | `YYYY.MM.PATCH` + `b<N>` | `2026.5.0b0` |
+| Nightly 版 | `YYYY.MM.PATCH` + `.dev<YYYYMMDDHHMM>` | `2026.7.0.dev202607241254` |
+| 开发版 | `YYYY.MM.PATCH` + `.dev<N>` | `2026.7.0.dev0` |
 
-## Where the version lives
+## 版本号所在位置
 
-The version is set in [`homeassistant/const.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/const.py), in the `MAJOR_VERSION`, `MINOR_VERSION`, and `PATCH_VERSION` constants. The `dev` branch always carries the next release as a development version, like `2026.7.0.dev0`.
+版本号在 [`homeassistant/const.py`](https://github.com/home-assistant/core/blob/dev/homeassistant/const.py) 中通过 `MAJOR_VERSION`、`MINOR_VERSION` 和 `PATCH_VERSION` 常量进行设置。`dev` 分支始终以下一个版本的开发版本形式存在，例如 `2026.7.0.dev0`。
 
-The version does not come from tags or dates. It is bumped on purpose, with [`script/version_bump.py`](https://github.com/home-assistant/core/blob/dev/script/version_bump.py), which knows how to move to the next `minor`, `patch`, `dev`, `beta`, or `nightly` version. Cutting the first beta turns `2026.7.0.dev0` into `2026.7.0b0`, and the release drops the suffix: `2026.7.0`.
+版本号并非来自标签或日期，而是有意进行提升的，使用的是 [`script/version_bump.py`](https://github.com/home-assistant/core/blob/dev/script/version_bump.py)，它知道如何切换到下一个 `minor`、`patch`、`dev`、`beta` 或 `nightly` 版本。发布第一个 beta 版会将 `2026.7.0.dev0` 变为 `2026.7.0b0`，而正式发布则会去掉后缀：`2026.7.0`。
 
-## Comparing versions
+## 比较版本
 
-When your code needs to behave differently depending on the version of Home Assistant, compare versions with [AwesomeVersion](https://github.com/ludeeus/awesomeversion). Do not parse the string yourself: betas, development versions, and patch releases have to sort correctly, and that is easy to get wrong.
+当你的代码需要根据 Home Assistant 的版本执行不同操作时，请使用 [AwesomeVersion](https://github.com/ludeeus/awesomeversion) 来比较版本。不要自己解析版本字符串：beta 版、开发版本和补丁版本必须能够正确排序，而这很容易出错。

@@ -1,24 +1,24 @@
 ---
-title: Async in Home Assistant
-description: Why Home Assistant runs on one asyncio event loop, the kinds of functions you write, and how to move work in and out of the loop.
-sidebarLabel: Async in Home Assistant
+title: Home Assistant 中的异步
+description: 为什么 Home Assistant 运行在单个 asyncio 事件循环上、你所编写的函数有哪些类型，以及如何将工作移入和移出事件循环。
+sidebarLabel: Home Assistant 中的异步
 sidebarGroup: Async
 order: 10
 ---
 
-Home Assistant Core runs on Python's `asyncio`. All core objects, like the state machine, the event bus, and the registries, live in one thread: the [event loop](/glossary/event-loop/). Only one piece of code runs there at a time. Between two `await`s, your code runs without anything else running in between, so a state change is never half done when other code looks at it.
+Home Assistant Core 运行在 Python 的 `asyncio` 之上。所有核心对象，比如状态机（state machine）、事件总线（event bus）和注册表（registries），都位于同一个线程中：[事件循环（event loop）](/glossary/event-loop/)。同一时刻只有一段代码在事件循环中运行。在两个 `await` 之间，你的代码运行时不会有其他代码插入其中，因此当其他代码查看状态时，状态变更永远不会处于完成一半的状态。
 
-That has two sides. When a coroutine awaits something, like a network response, other code runs in the meantime. So a job that spans an `await` can still need an `asyncio.Lock` to keep two runs of it apart. The coordinator does that for its refreshes, for example. But when code in the event loop _blocks_, like a network call from a synchronous library or reading a file from disk, _everything_ waits. A single blocking call makes the whole system sluggish. Most of this page is about avoiding that.
+这有两面性。当一个协程（coroutine）在等待某些东西（比如网络响应）时，其他代码会在期间运行。因此，跨越 `await` 的任务仍然可能需要 `asyncio.Lock` 来避免两次运行互相干扰。例如，协调器（coordinator）在刷新时就是这样做的。但是，当事件循环中的代码发生_阻塞_时，比如同步库的网络调用或从磁盘读取文件，_所有东西_都要等待。单个阻塞调用就会让整个系统变得迟缓。本页的大部分内容就是在讲如何避免这种情况。
 
-New to asyncio? The Python documentation on [developing with asyncio](https://docs.python.org/3/library/asyncio-dev.html) is a good start, and so is [this talk by Robert Smallshire](https://www.youtube.com/watch?v=M-UcUs7IMIM) on how and why asyncio works the way it does.
+刚接触 asyncio？Python 文档中的[使用 asyncio 进行开发](https://docs.python.org/3/library/asyncio-dev.html)是一个很好的起点，[Robert Smallshire 的这场演讲](https://www.youtube.com/watch?v=M-UcUs7IMIM)讲述了 asyncio 如何以及为什么以这种方式工作，同样值得一听。
 
-## The kinds of functions
+## 函数的种类
 
-Home Assistant has a naming convention: a function whose name starts with `async_` must be run in the event loop. There are four kinds of functions you deal with.
+Home Assistant 有一套命名约定：名称以 `async_` 开头的函数必须在事件循环中运行。你需要打交道的是四种函数。
 
-### Coroutine functions
+### 协程函数
 
-Declared with `async def`. Calling one returns a coroutine, which does nothing until it is awaited or scheduled as a task. While it awaits, other work runs in the event loop.
+使用 `async def` 声明。调用一个协程函数会返回一个协程，在被 await 或作为任务（task）调度之前它什么也不做。在它等待期间，事件循环中会运行其他工作。
 
 ```python
 async def async_update_data(self) -> None:
@@ -26,11 +26,11 @@ async def async_update_data(self) -> None:
     self._data = await self._client.async_get_status()
 ```
 
-Use these for anything that waits on I/O, as long as the library you call is async.
+任何需要等待 I/O 的操作都可以使用协程函数，前提是你调用的库是异步的。
 
-### Callbacks
+### 回调函数
 
-A plain function decorated with `@callback` from `homeassistant.core`. It promises to be safe to run in the event loop: it does no I/O and never blocks. It cannot await anything, but it can schedule a task.
+使用来自 `homeassistant.core` 的 `@callback` 装饰的普通函数。它承诺在事件循环中运行是安全的：不做任何 I/O，也永远不会阻塞。它不能 await 任何东西，但可以调度任务。
 
 ```python
 from homeassistant.core import Event, callback
@@ -43,27 +43,27 @@ def _async_handle_event(self, event: Event) -> None:
     self.async_write_ha_state()
 ```
 
-Why not make everything a coroutine? Speed and consistency. Home Assistant runs a callback right away. A coroutine must be wrapped in a task and scheduled, and every `await` is a point where other code runs in between. Event listeners, state change handlers, and small helpers are callbacks in core.
+为什么不把所有东西都做成协程？为了速度和一致性。Home Assistant 会立即运行回调。而协程必须被包装成任务并调度，且每个 `await` 都是一个其他代码可能插入运行的点。在核心代码中，事件监听器、状态变更处理器和小型辅助函数都是回调。
 
-Forgetting `@callback` is a common bug. Home Assistant then treats the function as blocking and runs it in a thread, where calling `async_` APIs is not thread safe. See [thread safety](/core/internals/thread-safety/).
+忘记 `@callback` 是一个常见的 bug。此时 Home Assistant 会将该函数当作阻塞函数，并在线程中运行它，而在线程中调用 `async_` API 不是线程安全的。参见[线程安全](/core/internals/thread-safety/)。
 
-### Thread safe functions
+### 线程安全函数
 
-Functions that only compute, like `sum()` or merging two dictionaries, are safe anywhere. There is no marker for them. When in doubt, read their implementation.
+只做计算的函数，比如 `sum()` 或合并两个字典，在任何地方都是安全的。它们没有专门的标记。如有疑问，请阅读其实现代码。
 
-### Everything else
+### 其他所有函数
 
-Functions that do I/O, sleep, or are not known to be safe. They must not run in the event loop. Run them in the executor.
+会执行 I/O、休眠，或者不能确定是否安全的函数。它们不得在事件循环中运行，请将它们放入执行器（executor）中运行。
 
-## Move blocking work to the executor
+## 将阻塞工作移至执行器
 
-The executor is a pool of threads for blocking code. From the event loop, hand a function to it with `hass.async_add_executor_job` and await the result:
+执行器是一个用于阻塞代码的线程池。在事件循环中，使用 `hass.async_add_executor_job` 将函数交给它，并 await 结果：
 
 ```python
 data = await hass.async_add_executor_job(client.get_status)
 ```
 
-Arguments go after the function. For keyword arguments, wrap the call in `functools.partial`:
+参数跟在函数后面。对于关键字参数，请将调用包装在 `functools.partial` 中：
 
 ```python
 from functools import partial
@@ -73,11 +73,11 @@ data = await hass.async_add_executor_job(
 )
 ```
 
-Prefer async libraries when they exist. An executor thread is much more expensive than a coroutine, and the pool is not unlimited. See [blocking operations](/core/internals/blocking-operations/) for the calls Home Assistant detects, and what to do about them.
+如果存在异步库，请优先使用。执行器线程比协程开销大得多，而且线程池并非没有限制。关于 Home Assistant 能检测到哪些调用以及如何处理，请参见[阻塞操作](/core/internals/blocking-operations/)。
 
-## Start work in the background
+## 在后台启动工作
 
-To start a coroutine without waiting for it, create a task. In an integration, use the methods on the config entry, so the task is tied to the life of the entry:
+要启动一个协程而不等待其完成，请创建任务。在集成（integration）中，请使用配置条目（config entry）上的方法，这样任务就会与该条目的生命周期绑定在一起：
 
 ```python
 entry.async_create_background_task(
@@ -85,12 +85,12 @@ entry.async_create_background_task(
 )
 ```
 
-- `entry.async_create_task(hass, coro)` and `hass.async_create_task(coro)` create a task that Home Assistant waits for during startup.
-- `entry.async_create_background_task(hass, coro, name)` and `hass.async_create_background_task(coro, name)` create a task for something that runs a long time, like a listener on a socket. It does not hold up startup, and it is cancelled on shutdown. The config entry version is also cancelled when the entry is unloaded.
+- `entry.async_create_task(hass, coro)` 和 `hass.async_create_task(coro)` 创建的任务会被 Home Assistant 在启动期间等待。
+- `entry.async_create_background_task(hass, coro, name)` 和 `hass.async_create_background_task(coro, name)` 为需要长时间运行的东西创建任务，比如套接字上的监听器。它不会拖慢启动，并且会在关闭时被取消。配置条目版本还会在条目卸载时被取消。
 
-## Call async code from a thread
+## 从线程调用异步代码
 
-Sometimes you are in a thread, like a callback from a sync library, and need to call something async. Use the sync version of the API if there is one, like `hass.bus.fire` instead of `hass.bus.async_fire`. Otherwise, schedule a coroutine on the loop and wait for the result:
+有时你正处于某个线程中，比如同步库的回调，此时需要调用异步的东西。如果该 API 有同步版本，请使用同步版本，比如使用 `hass.bus.fire` 而不是 `hass.bus.async_fire`。否则，请在事件循环上调度协程并等待结果：
 
 ```python
 import asyncio
@@ -104,27 +104,27 @@ def say_hello(hass: HomeAssistant, target: str) -> str:
 ```
 
 > [!WARNING]
-> Never do this from inside the event loop: it deadlocks. And be careful when the coroutine itself uses the executor, because that can deadlock too.
+> 切勿在事件循环内部这样做：这会导致死锁。另外，当协程本身使用执行器时也要小心，因为这也可能造成死锁。
 
-## Make your code async
+## 将你的代码改为异步
 
-If you work on an integration that still uses sync code, these are the async counterparts:
+如果你参与开发的集成仍在使用同步代码，以下是对应的异步版本：
 
-| Sync | Async |
+| 同步 | 异步 |
 | --- | --- |
 | `def setup(hass, config)` | `async def async_setup(hass, config)` |
-| `def update(self)` on an entity | `async def async_update(self)` |
+| 实体（entity）上的 `def update(self)` | `async def async_update(self)` |
 | `def turn_on(self, **kwargs)` | `async def async_turn_on(self, **kwargs)` |
 
-Entity properties are read from the event loop. Never do I/O in a property: fetch the data in the update method or a [coordinator](/glossary/coordinator/), and return what you stored.
+实体的属性是从事件循环中读取的。绝不要在属性中执行 I/O：请在更新方法或[协调器](/glossary/coordinator/)中获取数据，然后返回你存储的内容。
 
-## Find mistakes early
+## 尽早发现错误
 
-Turn on debug mode while you develop. It makes Home Assistant check for many thread safety and blocking errors, and report them with a stack trace. Add this to `configuration.yaml`:
+开发时请打开调试模式。它会让 Home Assistant 检查许多线程安全和阻塞方面的错误，并附上堆栈跟踪进行报告。将以下内容添加到 `configuration.yaml` 中：
 
 ```yaml
 homeassistant:
   debug: true
 ```
 
-You can also start Home Assistant with Python's [asyncio debug mode](https://docs.python.org/3/library/asyncio-dev.html#debug-mode), which reports coroutines that are never awaited and callbacks that take too long.
+你也可以使用 Python 的 [asyncio 调试模式](https://docs.python.org/3/library/asyncio-dev.html#debug-mode)启动 Home Assistant，它会报告从未被 await 的协程以及耗时过长的回调。

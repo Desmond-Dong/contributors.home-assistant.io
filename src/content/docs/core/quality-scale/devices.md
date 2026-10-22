@@ -1,24 +1,24 @@
 ---
-title: Create devices
-description: "Gold rule devices: entities are grouped in devices, with complete device information."
+title: 创建设备
+description: "黄金规则 devices：实体归入设备，并填写完整的设备信息。"
 sidebarLabel: devices
 sidebarGroup: Gold
 order: 1
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `devices`.
+这是一条黄金规则（Gold rule）。在 `quality_scale.yaml` 中，它被称为 `devices`。
 
-The integration creates [devices](/glossary/device/) and adds its entities to them. A device stands for one physical device, or for one service. Fill in the device information as completely as the integration can: name, manufacturer, model, serial number, software and hardware versions, and the connections and identifiers that make the device recognizable.
+该集成会创建[设备（device）](/glossary/device/)并将其实体（entity）添加到其中。一个设备代表一个物理设备，或一项服务（service）。请尽可能完整地填写集成所能提供的设备信息：名称、制造商、型号、序列号、软件和硬件版本，以及能让设备被识别的连接信息和标识符。
 
-## Why it matters
+## 为什么重要
 
-People think in devices, not in entities. They add a thermostat or a weather service to Home Assistant, not a list of sensors. Devices group those entities in one place, with a device page that shows what the device is and which firmware it runs.
+人们以设备而非实体来思考。他们添加到 Home Assistant 的是一个温控器或一项天气服务，而不是一排传感器。设备将这些实体归拢在一处，其设备页面会展示该设备是什么，以及它运行着哪个固件。
 
-Complete device information pays off elsewhere too. The serial number and model help users and support find the right device, and connections like a MAC address let other integrations and discovery recognize the same device.
+完整的设备信息在其他方面也有回报。序列号和型号能帮助用户和支持人员找到正确的设备，而像 MAC 地址这样的连接信息则能让其他集成和发现机制识别出同一设备。
 
-## Example
+## 示例
 
-Set `_attr_device_info` on the entity. Entities with the same identifiers end up on the same device:
+在实体上设置 `_attr_device_info`。具有相同标识符的实体会归入同一个设备：
 
 ```python
 class MySensor(SensorEntity):
@@ -41,18 +41,18 @@ class MySensor(SensorEntity):
         )
 ```
 
-A device that sits behind a hub can point to the hub with `via_device_id`, the device registry ID of the hub. When the device is a service instead of a physical device, like a weather service or a cloud account, add `entry_type=DeviceEntryType.SERVICE`.
+位于集线器（hub）之后的设备可以通过 `via_device_id`（即集线器的设备注册表 ID）指向该集线器。当设备是一项服务而非物理设备时，例如天气服务或云账户，请添加 `entry_type=DeviceEntryType.SERVICE`。
 
-Most integrations set the device information once, in a shared base entity in `entity.py`. See [common-modules](/core/quality-scale/common-modules/).
+大多数集成会在 `entity.py` 中的一个共享基础实体里一次性设置设备信息。参见 [common-modules](/core/quality-scale/common-modules/)。
 
-## How it is checked
+## 如何检查
 
-Checked in review. The device information must be a `DeviceInfo`, not a plain dictionary. Home Assistant still accepts a dictionary for now, but only mypy rejects it, and only when the integration is typed. See [register a device through an entity](/core/integrations/device-registry/#register-a-device-through-an-entity).
+在代码审查（review）中检查。设备信息必须是 `DeviceInfo`，而不是普通的字典。Home Assistant 目前仍然接受字典，但只有 mypy 会拒绝它，且仅在集成已启用类型标注时才会如此。参见[通过实体注册设备](/core/integrations/device-registry/#register-a-device-through-an-entity)。
 
-## Exceptions
+## 例外
 
-There are no exceptions to this rule.
+此规则没有例外。
 
-## Related rules
+## 相关规则
 
-- [has-entity-name](/core/quality-scale/has-entity-name/): use has_entity_name.
+- [has-entity-name](/core/quality-scale/has-entity-name/)：使用 has_entity_name。

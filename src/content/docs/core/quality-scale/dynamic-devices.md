@@ -1,24 +1,24 @@
 ---
-title: Add new devices automatically
-description: "Gold rule dynamic-devices: devices that appear after setup are added without a reload."
+title: 自动添加新设备
+description: "Gold 规则 dynamic-devices：设置后出现的设备无需重新加载即可自动添加。"
 sidebarLabel: dynamic-devices
 sidebarGroup: Gold
 order: 12
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `dynamic-devices`.
+这是一条 Gold 规则。在 `quality_scale.yaml` 中，它被称为 `dynamic-devices`。
 
-When a new device shows up after the integration is set up, like a new light paired to a hub or a new device added to a cloud account, the integration creates its entities by itself. The user does not have to reload the integration or restart Home Assistant.
+当集成（integration）设置完成后出现新设备（device）时，例如配对到集线器的新灯具或添加到云账户的新设备，集成会自行创建其实体（entity）。用户无需重新加载集成或重启 Home Assistant。
 
-## Why it matters
+## 为什么这很重要
 
-Users add a device to their hub or account, and expect it to show up in Home Assistant. Having to know that a reload is needed, and where to find it, is the kind of friction that Gold is about removing.
+用户将设备添加到集线器或账户后，期望它出现在 Home Assistant 中。而用户必须知道需要重新加载、以及到哪里找到重新加载选项，这正是 Gold 级别要消除的摩擦。
 
-This is the other side of [stale-devices](/core/quality-scale/stale-devices/): devices come and go, and Home Assistant follows.
+这是 [stale-devices](/core/quality-scale/stale-devices/) 的另一面：设备来来去去，Home Assistant 跟随变化。
 
-## Example
+## 示例
 
-With a [coordinator](/glossary/coordinator/), keep track of the devices the platform already knows. A listener on the coordinator runs after every update, and adds entities for the new devices:
+借助[协调器](/glossary/coordinator/)，跟踪平台已知的设备。协调器上的监听器在每次更新后运行，并为新设备添加实体：
 
 ```python
 async def async_setup_entry(
@@ -45,18 +45,18 @@ async def async_setup_entry(
     entry.async_on_unload(coordinator.async_add_listener(_add_new_devices))
 ```
 
-The listener is removed when the config entry unloads, through `entry.async_on_unload`.
+当配置条目（config entry）卸载时，监听器会通过 `entry.async_on_unload` 被移除。
 
-In this example, `known_devices` only grows while the entry is loaded. When the integration also removes devices that are gone, like [stale-devices](/core/quality-scale/stale-devices/) describes, a device that comes back later is still in `known_devices`, and its entities are not added again until the entry reloads. Drop removed devices from `known_devices` as well, so they are treated as new when they return.
+在此示例中，`known_devices` 只在条目加载期间增长。当集成同时移除已消失的设备时（如 [stale-devices](/core/quality-scale/stale-devices/) 所述），稍后重新出现的设备仍保留在 `known_devices` 中，其实体在条目重新加载之前不会被再次添加。同时也应从 `known_devices` 中移除已删除的设备，这样它们在重新出现时会被视为新设备。
 
-## How it is checked
+## 如何检查
 
-Checked in review.
+在代码审查中检查。
 
-## Exceptions
+## 例外情况
 
-Integrations with a single, fixed device per config entry, that lives and goes with the config entry, are exempt from this rule.
+对于每个配置条目只有一个固定设备的集成，如果该设备随配置条目一同创建和移除，则可豁免此规则。
 
-## Related rules
+## 相关规则
 
-- [stale-devices](/core/quality-scale/stale-devices/): remove stale devices.
+- [stale-devices](/core/quality-scale/stale-devices/)：移除失效设备。

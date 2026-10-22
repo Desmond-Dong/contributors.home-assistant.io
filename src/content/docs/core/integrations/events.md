@@ -1,24 +1,24 @@
 ---
-title: Events in integrations
-description: Make events of your devices available to users, and react to what happens inside Home Assistant with the event helpers.
+title: 集成中的事件
+description: 让设备的事件对用户可用，并使用事件辅助元素（helper）响应 Home Assistant 内部发生的事情。
 sidebarGroup: Data and updates
 order: 2
 sidebarLabel: Events
 ---
 
-Everything that happens in Home Assistant goes over the event bus: state changes, action calls, and the start and stop of Home Assistant itself. Your integration can put its own [events](/glossary/event/) on that bus, and it can listen to what happens.
+Home Assistant 中发生的一切都会经过事件总线（event bus）：状态变化、动作（action）调用，以及 Home Assistant 本身的启动和停止。你的集成（integration）可以将自己的[事件（event）](/glossary/event/)放到该总线上，也可以监听发生的事情。
 
-This page is about using events in your integration. How the bus works underneath, like what an event object holds, how listeners run, and event filters, is on [how core works: events](/core/internals/events/).
+本页介绍在你的集成中使用事件。总线底层的工作原理，例如事件对象包含哪些内容、监听器如何运行以及事件过滤器，请参阅[核心工作原理：事件](/core/internals/events/)。
 
-## Make device events available
+## 让设备事件可用
 
-Many devices have events that are not a state: a button was pressed, motion was detected, a doorbell rang.
+许多设备具有不属于状态的事件：按钮被按下、检测到移动、门铃响了。
 
-The preferred way to offer them is an [event entity](/core/entities/event/). Users can find all events of a device in one place, and use them in automations like any other entity.
+提供这些事件的首选方式是使用[事件实体（event entity）](/core/entities/event/)。用户可以在一个地方找到设备的所有事件，并像其他任何实体一样在自动化（automation）中使用它们。
 
-### Fire events on the bus
+### 在总线上触发事件
 
-Some integrations fire events on the event bus directly. Name the event type `<domain>_event`, like `zha_event`, and add the `device_id` from the [device registry](/core/integrations/device-registry/) when the event belongs to a device:
+一些集成直接在事件总线上触发事件。将事件类型命名为 `<domain>_event`，例如 `zha_event`，并在事件属于某个设备时，添加来自[设备注册表（device registry）](/core/integrations/device-registry/)的 `device_id`：
 
 ```python
 hass.bus.async_fire(
@@ -30,19 +30,19 @@ hass.bus.async_fire(
 )
 ```
 
-If a device only fires events and has no entities, [register it in the device registry yourself](/core/integrations/device-registry/#register-a-device-yourself), so there is a device to attach the events to.
+如果设备只触发事件而没有实体，请[自行将其注册到设备注册表](/core/integrations/device-registry/#register-a-device-yourself)，这样就有设备可以关联这些事件。
 
-A few rules:
+几条规则：
 
-- Turn events of your devices into Home Assistant events from the setup of the integration (`async_setup_entry` in `__init__.py`), not from entity code.
-- Do not fake events with state. A binary sensor that is `on` for 30 seconds after a button press is not an event.
-- Users find bus events hard to discover. [Device triggers](/core/integrations/device-automations/) used to be how integrations made them visible, but new device automations are no longer accepted. Use an event entity.
+- 在集成的设置阶段（`__init__.py` 中的 `async_setup_entry`）将你设备的事件转换为 Home Assistant 事件，而不是在实体代码中进行。
+- 不要用状态伪造事件。按钮按下后 `on` 30 秒的二进制传感器并不是事件。
+- 用户很难发现总线事件。[设备触发器（device trigger）](/core/integrations/device-automations/)曾是集成让这些事件可见的方式，但新的设备自动化已不再被接受。请使用事件实体。
 
-## Listen to Home Assistant
+## 监听 Home Assistant
 
-Your integration may need to act when something happens inside Home Assistant. Use the helpers in `homeassistant.helpers.event` when one fits: they are optimized to call your code only for the changes you care about, which matters on a system with thousands of entities. Listen to the bus directly only when there is no helper.
+当 Home Assistant 内部发生某些事情时，你的集成可能需要做出响应。如果有合适的辅助元素，请使用 `homeassistant.helpers.event` 中的辅助元素：它们经过了优化，只会针对你关心的变化调用你的代码，这在拥有数千个实体的系统上非常重要。只有在没有合适的辅助元素时才直接监听总线。
 
-Every helper returns a function that removes the listener. Register it with `entry.async_on_unload` (or `self.async_on_remove` in an entity), so the listener stops when the config entry unloads:
+每个辅助元素都返回一个用于移除监听器的函数。使用 `entry.async_on_unload`（或在实体中使用 `self.async_on_remove`）注册它，以便在配置条目（config entry）卸载时停止监听器：
 
 ```python
 from homeassistant.core import Event, EventStateChangedData, callback
@@ -66,52 +66,52 @@ entry.async_on_unload(
 )
 ```
 
-Most helpers also exist without the `async_` prefix, for code that does not run in the event loop.
+大多数辅助元素也有不带 `async_` 前缀的版本，供不在事件循环（event loop）中运行的代码使用。
 
-### State changes
+### 状态变化
 
-| Helper | Use it to |
+| 辅助元素 | 用途 |
 | --- | --- |
-| `async_track_state_change_event` | Follow state changes of specific entities |
-| `async_track_state_added_domain` | Follow entities that are added to one or more domains |
-| `async_track_state_removed_domain` | Follow entities that are removed from one or more domains |
-| `async_track_state_change_filtered` | Follow state changes with a filter you can update later |
-| `async_track_same_state` | Run something when entities keep a state for a period of time |
+| `async_track_state_change_event` | 跟踪特定实体的状态变化 |
+| `async_track_state_added_domain` | 跟踪被添加到一个或多个域（domain）的实体 |
+| `async_track_state_removed_domain` | 跟踪从一个或多个域中移除的实体 |
+| `async_track_state_change_filtered` | 使用可稍后更新的过滤器跟踪状态变化 |
+| `async_track_same_state` | 当实体在一段时间内保持某个状态时运行某些操作 |
 
-### Templates
+### 模板（template）
 
-| Helper | Use it to |
+| 辅助元素 | 用途 |
 | --- | --- |
-| `async_track_template` | Run something when a template becomes true |
-| `async_track_template_result` | Run something when the result of a template changes |
+| `async_track_template` | 当模板变为真时运行某些操作 |
+| `async_track_template_result` | 当模板的结果发生变化时运行某些操作 |
 
-### Registries
+### 注册表
 
-| Helper | Use it to |
+| 辅助元素 | 用途 |
 | --- | --- |
-| `async_track_entity_registry_updated_event` | Follow registry changes of specific entities |
-| `async_track_device_registry_updated_event` | Follow registry changes of specific devices |
+| `async_track_entity_registry_updated_event` | 跟踪特定实体的注册表变化 |
+| `async_track_device_registry_updated_event` | 跟踪特定设备的注册表变化 |
 
-### Time
+### 时间
 
-| Helper | Use it to |
+| 辅助元素 | 用途 |
 | --- | --- |
-| `async_call_later` | Run something once, after a delay |
-| `async_track_point_in_time` | Run something once, at a point in time |
-| `async_track_point_in_utc_time` | Run something once, at a point in time in UTC |
-| `async_track_time_interval` | Run something repeatedly, at an interval |
-| `async_track_time_change` | Run something when the local time matches a pattern |
-| `async_track_utc_time_change` | Run something when the UTC time matches a pattern |
-| `async_track_sunrise` | Run something every day, at an offset from sunrise |
-| `async_track_sunset` | Run something every day, at an offset from sunset |
+| `async_call_later` | 延迟一段时间后运行一次某些操作 |
+| `async_track_point_in_time` | 在某个时间点运行一次某些操作 |
+| `async_track_point_in_utc_time` | 在 UTC 的某个时间点运行一次某些操作 |
+| `async_track_time_interval` | 按间隔重复运行某些操作 |
+| `async_track_time_change` | 当本地时间匹配某个模式时运行某些操作 |
+| `async_track_utc_time_change` | 当 UTC 时间匹配某个模式时运行某些操作 |
+| `async_track_sunrise` | 每天在相对于日出偏移的时间运行某些操作 |
+| `async_track_sunset` | 每天在相对于日落偏移的时间运行某些操作 |
 
-Most time helpers call your function with the moment it runs, as a `datetime`. The sunrise and sunset helpers call it without arguments. Watch the order of the arguments: `async_track_point_in_time(hass, action, point_in_time)` and `async_track_time_interval(hass, action, interval)` take your function first, but `async_call_later(hass, delay, action)` takes the delay first, in seconds or as a `timedelta`.
+大多数时间辅助元素会在调用你的函数时传入其运行的时间点，类型为 `datetime`。日出和日落辅助元素调用时不带参数。注意参数的顺序：`async_track_point_in_time(hass, action, point_in_time)` 和 `async_track_time_interval(hass, action, interval)` 将你的函数放在前面，而 `async_call_later(hass, delay, action)` 将延迟放在前面，延迟以秒为单位或以 `timedelta` 形式表示。
 
-If you need to poll, use a [coordinator](/core/integrations/fetching-data/) instead of `async_track_time_interval`.
+如果你需要轮询（poll），请使用[协调器（coordinator）](/core/integrations/fetching-data/)而不是 `async_track_time_interval`。
 
-### Start of Home Assistant
+### Home Assistant 的启动
 
-To run something once Home Assistant has started, use `async_at_started` from `homeassistant.helpers.start`. It runs right away if Home Assistant is already running, which is the case when a user adds your integration later. `async_at_start` does the same for the earlier start phase.
+要在 Home Assistant 启动后运行某些操作，请使用 `homeassistant.helpers.start` 中的 `async_at_started`。如果 Home Assistant 已经在运行，它会立即运行，当用户稍后添加你的集成时正是这种情况。`async_at_start` 对较早的启动阶段执行同样的操作。
 
 ```python
 from homeassistant.helpers.start import async_at_started
@@ -119,9 +119,9 @@ from homeassistant.helpers.start import async_at_started
 entry.async_on_unload(async_at_started(hass, _async_start_export))
 ```
 
-## Listen to the bus directly
+## 直接监听总线
 
-When there is no helper, listen to the bus with `hass.bus.async_listen` or, for an event that you only need once, `hass.bus.async_listen_once`. Both return a function that removes the listener.
+当没有合适的辅助元素时，使用 `hass.bus.async_listen` 监听总线，或者对于只需要触发一次的事件，使用 `hass.bus.async_listen_once`。两者都返回一个用于移除监听器的函数。
 
 ```python
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
@@ -131,19 +131,19 @@ entry.async_on_unload(
 )
 ```
 
-`EVENT_HOMEASSISTANT_START`, `EVENT_HOMEASSISTANT_STARTED`, and `EVENT_HOMEASSISTANT_STOP` only fire once per run, so `async_listen_once` is the right call for them.
+`EVENT_HOMEASSISTANT_START`、`EVENT_HOMEASSISTANT_STARTED` 和 `EVENT_HOMEASSISTANT_STOP` 在每次运行中只触发一次，因此对它们使用 `async_listen_once` 是正确的选择。
 
-| Event | Fired when |
+| 事件 | 触发时机 |
 | --- | --- |
-| `EVENT_HOMEASSISTANT_START` | Setup is done, and Home Assistant enters the start phase |
-| `EVENT_HOMEASSISTANT_STARTED` | All integrations have had a chance to load. Often used by voice assistants and by integrations that export states. |
-| `EVENT_HOMEASSISTANT_STOP` | Home Assistant enters the stop phase |
-| `EVENT_HOMEASSISTANT_FINAL_WRITE` | The last chance to write data to disk |
-| `EVENT_HOMEASSISTANT_CLOSE` | Teardown |
-| `EVENT_STATE_CHANGED` | The state of an entity changed. Use the [state change helpers](#state-changes) instead. |
-| `EVENT_ENTITY_REGISTRY_UPDATED` | The entity registry changed. Use the [registry helpers](#registries) instead. |
-| `EVENT_COMPONENT_LOADED` | An integration finished loading. Use `async_at_start` instead. |
-| `EVENT_SERVICE_REGISTERED`, `EVENT_SERVICE_REMOVED` | An action was registered or removed |
-| `EVENT_CALL_SERVICE` | An action was called |
-| `EVENT_CORE_CONFIG_UPDATE` | The core configuration changed |
-| `EVENT_THEMES_UPDATED` | The themes changed |
+| `EVENT_HOMEASSISTANT_START` | 设置完成，Home Assistant 进入启动阶段 |
+| `EVENT_HOMEASSISTANT_STARTED` | 所有集成都已有机会加载。语音助手以及导出状态的集成经常使用它。 |
+| `EVENT_HOMEASSISTANT_STOP` | Home Assistant 进入停止阶段 |
+| `EVENT_HOMEASSISTANT_FINAL_WRITE` | 将数据写入磁盘的最后机会 |
+| `EVENT_HOMEASSISTANT_CLOSE` | 清理（teardown） |
+| `EVENT_STATE_CHANGED` | 实体的状态发生了变化。请改用[状态变化辅助元素](#state-changes)。 |
+| `EVENT_ENTITY_REGISTRY_UPDATED` | 实体注册表发生了变化。请改用[注册表辅助元素](#registries)。 |
+| `EVENT_COMPONENT_LOADED` | 一个集成加载完成。请改用 `async_at_start`。 |
+| `EVENT_SERVICE_REGISTERED`、`EVENT_SERVICE_REMOVED` | 一个动作被注册或移除 |
+| `EVENT_CALL_SERVICE` | 一个动作被调用 |
+| `EVENT_CORE_CONFIG_UPDATE` | 核心配置发生了变化 |
+| `EVENT_THEMES_UPDATED` | 主题发生了变化 |

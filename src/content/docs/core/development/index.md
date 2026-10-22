@@ -1,6 +1,6 @@
 ---
-title: Development workflow
-description: How code gets from your machine into a Home Assistant release. The environment, the tools, the checks, and the review process.
+title: 开发工作流
+description: 代码如何从你的机器进入 Home Assistant 发布版本。包括环境、工具、检查和评审流程。
 order: 2
 sidebarGroups:
   - Write code
@@ -8,35 +8,35 @@ sidebarGroups:
   - Changing behavior
 ---
 
-Every change to Home Assistant Core follows the same path. You write code in a development environment, the tests and linters check it, you open a pull request against the `dev` branch, someone reviews it, and once it is merged, it ships in the first monthly release whose beta is cut from `dev` after that.
+对 Home Assistant Core 的每一项更改都遵循相同的路径。你在开发环境中编写代码，测试和代码检查工具对其进行检查，然后针对 `dev` 分支发起一个拉取请求（pull request），有人对其进行评审，一旦合并，它就会在此之后从 `dev` 分支切出 beta 版的第一个月度发布中发布。
 
-This section covers that path. It applies to everything in core, from a one line fix to a new integration.
+本节介绍这条路径。它适用于 core 中的所有内容，从一行修复到新的集成（integration）。
 
-## Write code
+## 编写代码
 
-- [Development environment](/core/development/environment/): the development container, or a manual setup on Linux, macOS, or Windows.
-- [Code style](/core/development/style/): formatting, docstrings, logging, and the conventions reviewers look for.
-- [Type hints](/core/development/typing/): how core uses mypy, and how to opt in to strict checking.
-- [Running the tests](/core/development/testing/): pytest, coverage, snapshots, and what CI runs.
-- [Writing tests](/core/development/tests/): how the tests of an integration are organized, with fixtures, mocks, and snapshots.
-- [Linters, hassfest, and CI](/core/development/checks/): the checks that run on every commit and every pull request.
-- [Validating input](/core/development/input-validation/): schemas for config flows, actions, and YAML.
+- [开发环境](/core/development/environment/)：开发容器，或在 Linux、macOS 或 Windows 上的手动安装。
+- [代码风格](/core/development/style/)：格式化、文档字符串（docstring）、日志记录，以及评审者关注的约定。
+- [类型注解](/core/development/typing/)：core 如何使用 mypy，以及如何启用严格检查。
+- [运行测试](/core/development/testing/)：pytest、覆盖率、快照，以及 CI 运行的内容。
+- [编写测试](/core/development/tests/)：集成的测试如何组织，包括 fixture、mock 和快照。
+- [代码检查工具、hassfest 和 CI](/core/development/checks/)：在每次提交和每个拉取请求上运行的检查。
+- [输入验证](/core/development/input-validation/)：用于配置流程、动作和 YAML 的模式（schema）。
 
-## Pull requests
+## 拉取请求
 
-- [Development checklist](/core/development/checklist/): what to check before you commit.
-- [Submitting a pull request](/core/development/submitting/): branches, commits, the template, and scoping your change.
-- [After you open a pull request](/core/development/review-process/): what happens next, and how to speed it up.
-- [Keeping your branch up to date](/core/development/catching-up/): bringing in the latest changes from `dev`.
-- [Reviewing pull requests](/core/development/reviewing/): what to look for when you review someone else's work.
-- [Tips and tricks](/core/development/tips/): smaller things that make your life easier.
+- [开发清单](/core/development/checklist/)：提交前需要检查的内容。
+- [提交拉取请求](/core/development/submitting/)：分支、提交、模板，以及如何界定你的更改范围。
+- [发起拉取请求之后](/core/development/review-process/)：接下来会发生什么，以及如何加快速度。
+- [保持分支最新](/core/development/catching-up/)：引入 `dev` 分支的最新更改。
+- [评审拉取请求](/core/development/reviewing/)：评审他人工作时应该关注什么。
+- [技巧与窍门](/core/development/tips/)：让你工作更轻松的小技巧。
 
-## Changing behavior
+## 更改行为
 
-- [Deprecating](/core/development/deprecating/): how to remove or change something without breaking people's homes overnight.
-- [Versioning](/core/development/versioning/): how Home Assistant versions are built up.
-- [Labs preview features](/core/development/labs/): ship a feature people can opt into before it becomes standard.
+- [弃用](/core/development/deprecating/)：如何在不一夜之间破坏用户家庭的情况下移除或更改某些内容。
+- [版本控制](/core/development/versioning/)：Home Assistant 版本号的构成方式。
+- [Labs 预览功能](/core/development/labs/)：在功能成为标准之前，发布可供用户选择加入的功能。
 
-## The short version
+## 简要版本
 
-If you only remember one thing from this section: keep pull requests small. One fix, one feature, or one refactor per pull request. Small pull requests get reviewed faster, break less, and are easier for everyone, including you.
+如果你只从本节记住一件事，那就是：保持拉取请求小而精。每个拉取请求只包含一个修复、一个功能或一次重构。小的拉取请求评审更快、更不容易出问题，对包括你自己在内的所有人都更容易。

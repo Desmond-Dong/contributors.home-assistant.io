@@ -1,24 +1,24 @@
 ---
-title: Put common patterns in common modules
-description: "Bronze rule common-modules: the coordinator lives in coordinator.py and the base entity in entity.py."
+title: 将通用模式放在通用模块中
+description: "铜牌规则 common-modules：协调器（coordinator）位于 coordinator.py 中，基础实体（entity）位于 entity.py 中。"
 sidebarLabel: common-modules
 sidebarGroup: Bronze
 order: 4
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `common-modules`.
+这是一条铜牌（Bronze）规则。在 `quality_scale.yaml` 中，它被称为 `common-modules`。
 
-Patterns that many integrations share live in the same module in every integration. The [coordinator](/glossary/coordinator/) goes in `coordinator.py`. A base entity class, shared by the entities of all platforms, goes in `entity.py`.
+许多集成（integration）共享的模式位于每个集成中同一个模块里。[协调器（coordinator）](/glossary/coordinator/)放在 `coordinator.py` 中。由所有平台（platform）的实体（entity）共享的基础实体类放在 `entity.py` 中。
 
-## Why it matters
+## 为什么这很重要
 
-Consistency makes core easier to work on. When every integration keeps its coordinator in `coordinator.py`, you know where to look in an integration you have never seen before. That helps reviewers, helps the next contributor, and helps you when you come back to your own code a year later.
+一致性让核心代码更容易上手。当每个集成都将协调器放在 `coordinator.py` 中时，你就能知道在一个从未见过的集成中应该去哪里查找。这能帮助审查者，帮助下一位贡献者，也帮助你在一年后回头查看自己的代码。
 
-A base entity also removes duplicated code: the device info, the naming, and the coordinator link are written once, instead of once per platform.
+基础实体还能消除重复代码：设备信息、命名以及与协调器的关联只需编写一次，而不是每个平台各写一次。
 
-## Example
+## 示例
 
-`coordinator.py` holds the coordinator:
+`coordinator.py` 存放协调器：
 
 ```python
 class MyCoordinator(DataUpdateCoordinator[MyData]):
@@ -44,7 +44,7 @@ class MyCoordinator(DataUpdateCoordinator[MyData]):
         return await self.client.get_data()
 ```
 
-`entity.py` holds the base entity that every platform builds on:
+`entity.py` 存放每个平台赖以构建的基础实体：
 
 ```python
 class MyEntity(CoordinatorEntity[MyCoordinator]):
@@ -61,12 +61,11 @@ class MyEntity(CoordinatorEntity[MyCoordinator]):
         )
 ```
 
-## How it is checked
+## 如何进行检查
 
-- Pylint suggests moving a class to the module it belongs in (`home-assistant-enforce-class-module`). It flags a subclass of `DataUpdateCoordinator` outside `coordinator.py`, and a base entity that derives straight from a class like `Entity` or `CoordinatorEntity` outside `entity.py`. That second check skips the integrations that define an entity platform, like `light`.
-- The rest is checked in review.
+- Pylint 会建议将类移动到它所属的模块（`home-assistant-enforce-class-module`）。它会标记位于 `coordinator.py` 之外的 `DataUpdateCoordinator` 子类，以及位于 `entity.py` 之外、直接派生自 `Entity` 或 `CoordinatorEntity` 等类的基础实体。后一项检查会跳过定义了实体平台（entity platform）的集成，例如 `light`。
+- 其余内容在代码审查中进行检查。
 
-## Exceptions
+## 例外情况
 
-There are no exceptions to this rule. An integration without a coordinator or a base entity simply has nothing to move.
-
+这条规则没有例外。没有协调器或基础实体的集成只是没有需要移动的内容而已。

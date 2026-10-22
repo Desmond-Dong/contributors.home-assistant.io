@@ -1,59 +1,59 @@
 ---
-title: Siren entity
-description: Build a siren entity for sirens and chimes that sound with a tone, a volume, and a duration.
+title: 警报器实体
+description: 构建一个警报器实体，适用于以音调、音量和持续时间发声的警报器和门铃。
 sidebarLabel: Siren
 sidebarGroup: Openings and security
 ---
 
-A siren entity controls something that makes a loud sound to get attention: an alarm siren, a strobe siren, or a doorbell chime. It turns on and off, and can take a tone, a volume, and a duration. Inherit from `SirenEntity` in `homeassistant.components.siren`. It builds on the toggle entity, so it has `is_on`, `turn_on`, and `turn_off`.
+警报器（siren）实体控制能发出响亮声音以引起注意的设备：报警警笛、频闪警报器或门铃。它可以打开和关闭，并且可以接受音调、音量和持续时间。继承 `homeassistant.components.siren` 中的 `SirenEntity`。它基于开关实体（toggle entity）构建，因此具有 `is_on`、`turn_on` 和 `turn_off`。
 
-The security system the siren belongs to is an [alarm control panel](/core/entities/alarm-control-panel/). A speaker that plays any audio is a [media player](/core/entities/media-player/).
+警报器所属的安全系统是[报警控制面板（alarm control panel）](/core/entities/alarm-control-panel/)。播放任意音频的扬声器是[媒体播放器（media player）](/core/entities/media-player/)。
 
-## Properties
+## 属性
 
-Siren entities have these properties on top of the [generic entity properties](/core/entities/entity-class/). Every property can be set with its `_attr_` attribute, like `_attr_available_tones`.
+警报器实体在[通用实体属性](/core/entities/entity-class/)的基础上还具有以下属性。每个属性都可以通过其 `_attr_` 属性设置，例如 `_attr_available_tones`。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `is_on` | `bool \| None` | `None` | Whether the siren is sounding. |
-| `available_tones` | `list[int \| str] \| dict[int, str] \| None` | `None` | The tones the siren can play. Required with `TONES`. Can also be set on the entity description. |
+| `is_on` | `bool \| None` | `None` | 警报器是否正在发声。 |
+| `available_tones` | `list[int \| str] \| dict[int, str] \| None` | `None` | 警报器可以播放的音调。使用 `TONES` 时必填。也可以在实体描述（entity description）中设置。 |
 
-`available_tones` is a list of tone names or numbers, or a dictionary from tone number to tone name. With a dictionary, an action can pick a tone by its name, and Home Assistant passes you the matching number.
+`available_tones` 是音调名称或数字的列表，或者是从音调数字到音调名称的字典。使用字典时，动作（action）可以通过名称选择音调，Home Assistant 会将对应的数字传递给你。
 
-## Supported features
+## 支持的功能
 
-Combine the `SirenEntityFeature` flags with `|` and set them as `supported_features`. See [supported features](/glossary/supported-features/).
+将 `SirenEntityFeature` 标志用 `|` 组合起来，并将其设置为 `supported_features`。参见[支持的功能](/glossary/supported-features/)。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `TURN_ON` | The siren can be turned on. Implement `turn_on`. |
-| `TURN_OFF` | The siren can be turned off. Implement `turn_off`. |
-| `TONES` | The siren can play different tones. Set `available_tones`. |
-| `VOLUME_SET` | The volume can be set when the siren turns on. |
-| `DURATION` | The duration can be set when the siren turns on. |
+| `TURN_ON` | 警报器可以被打开。需实现 `turn_on`。 |
+| `TURN_OFF` | 警报器可以被关闭。需实现 `turn_off`。 |
+| `TONES` | 警报器可以播放不同的音调。需设置 `available_tones`。 |
+| `VOLUME_SET` | 警报器打开时可以设置音量。 |
+| `DURATION` | 警报器打开时可以设置持续时间。 |
 
-## Methods
+## 方法
 
-Implement the sync or the async variant of each method, not both.
+实现每个方法的同步或异步变体，不要两者都实现。
 
-| Method | Async variant | Feature |
+| 方法 | 异步变体 | 功能 |
 | ------ | ------------- | ------- |
 | `turn_on(**kwargs: Any)` | `async_turn_on` | `TURN_ON` |
 | `turn_off(**kwargs: Any)` | `async_turn_off` | `TURN_OFF` |
 
-`turn_on` can receive these keyword arguments, only for the features you set:
+`turn_on` 可以接收以下关键字参数，仅适用于你所设置的功能：
 
-- `ATTR_TONE`: the tone to play, checked against `available_tones` first
-- `ATTR_VOLUME_LEVEL`: the volume, from 0 to 1
-- `ATTR_DURATION`: how long to sound, in seconds
+- `ATTR_TONE`：要播放的音调，会先根据 `available_tones` 进行检查
+- `ATTR_VOLUME_LEVEL`：音量，取值范围为 0 到 1
+- `ATTR_DURATION`：发声时长，以秒为单位
 
-## States
+## 状态
 
-The state is `on` or `off`, from `is_on`. When `is_on` is `None`, the state is `unknown`.
+状态为 `on` 或 `off`，由 `is_on` 决定。当 `is_on` 为 `None` 时，状态为 `unknown`。
 
-`available_tones` is a capability attribute. It is only there when the siren supports `TONES`, and it is left out of the recorder history.
+`available_tones` 是一个能力属性。只有当警报器支持 `TONES` 时它才会存在，并且它不会包含在 recorder 的历史记录中。
 
-## Example
+## 示例
 
 ```python
 from typing import Any

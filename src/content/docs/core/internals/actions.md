@@ -1,41 +1,41 @@
 ---
-title: The action registry
-description: How the action registry works underneath, what an action handler gets, and how to call actions from code.
+title: 动作注册表
+description: 动作注册表（action registry）的底层工作原理、动作处理程序会接收到什么，以及如何从代码中调用动作。
 sidebarGroup: The core
 order: 4
 sidebarLabel: Actions
 ---
 
-This page explains how the action registry works underneath: what a handler gets, how the data is validated, and how actions are called. To register actions in your integration, describe them in `services.yaml`, and return response data, see [actions in integrations](/core/integrations/actions/).
+本页介绍动作注册表（action registry）的底层工作方式：处理程序（handler）会接收到什么、数据如何进行验证，以及动作是如何被调用的。要在您的集成（integration）中注册动作、在 `services.yaml` 中描述它们以及返回响应数据，请参阅[集成中的动作](/core/integrations/actions/)。
 
-An [action](/glossary/action/) is something Home Assistant can do on request, like `light.turn_on` or `weather.get_forecasts`. Automations, scripts, dashboards, voice assistants, and the APIs all call actions. Every action lives in the action registry on `hass.services`.
+[动作](/glossary/action/)（action）是 Home Assistant 应请求而执行的操作，例如 `light.turn_on` 或 `weather.get_forecasts`。自动化（automation）、脚本、仪表盘（dashboard）、语音助手以及各种 API 都会调用动作。每个动作都存放在 `hass.services` 上的动作注册表中。
 
 > [!NOTE]
-> Actions used to be called services. The code still says service almost everywhere: `hass.services`, `ServiceCall`, `services.yaml`, and the `call_service` event. In text, write action. In code, use the names the code uses.
+> 动作过去被称为服务（service）。代码中几乎处处仍在使用 service 这一名称：`hass.services`、`ServiceCall`、`services.yaml` 以及 `call_service` 事件。在文字中请写“动作”，在代码中请使用代码所使用的名称。
 
-## The registry
+## 注册表
 
-`hass.services.async_register(domain, service, handler)` adds an action to the registry. It takes an optional `schema`, and `supports_response` for actions that return data. Integrations register their actions in `async_setup`, see [register actions in async_setup](/core/integrations/actions/#register-actions-in-async_setup).
+`hass.services.async_register(domain, service, handler)` 会将一个动作添加到注册表中。它接受一个可选的 `schema`，以及用于返回数据的动作所需的 `supports_response`。集成在 `async_setup` 中注册它们的动作，请参阅[在 async_setup 中注册动作](/core/integrations/actions/#register-actions-in-async_setup)。
 
-Home Assistant uses `probatio` for schemas. Import it as `probatio`, without an alias. When you register a schema, it runs before your handler, so invalid data never reaches you. Without a schema, `call.data` is whatever the caller sent.
+Home Assistant 使用 `probatio` 来处理模式（schema）。请以 `probatio` 的名称导入，不要使用别名。当您注册了一个模式后，它会在您的处理程序之前运行，因此无效的数据绝不会到达您这里。如果没有模式，`call.data` 就是调用者发送的任何内容。
 
-## The handler
+## 处理程序
 
-The handler gets a `ServiceCall` with:
+处理程序会接收到一个 `ServiceCall`，其中包含：
 
-- `call.data`: the validated data, read-only.
-- `call.context`: the `Context` of the call, with the user who started it. Pass it on to anything you do on their behalf. See [permissions](/core/internals/permissions/).
-- `call.domain` and `call.service`: which action was called.
-- `call.return_response`: whether the caller asked for response data.
-- `call.hass`: the Home Assistant instance.
+- `call.data`：经过验证的数据，只读。
+- `call.context`：此次调用的 `Context`，其中包含发起调用的用户。凡是以该用户的名义执行的任何操作，都请将其传递下去。请参阅[权限](/core/internals/permissions/)。
+- `call.domain` 和 `call.service`：被调用的是哪个动作。
+- `call.return_response`：调用者是否请求了响应数据。
+- `call.hass`：Home Assistant 实例。
 
-The handler can be a coroutine function, a function decorated with `@callback`, or a plain function. A plain function runs in the executor, like an [event listener](/core/internals/events/#listen-for-events).
+处理程序可以是一个协程函数（coroutine function）、一个用 `@callback` 装饰的函数，或者一个普通函数。普通函数会在执行器（executor）中运行，就像[事件监听器](/core/internals/events/#listen-for-events)一样。
 
-When something goes wrong, the handler raises an exception. It never returns an error code, also not in response data. Which exception to raise is on [raise errors](/core/integrations/actions/#raise-errors).
+当出现问题时，处理程序会抛出异常。它从不返回错误码，响应数据中也不会返回。应该抛出哪种异常，请参见[抛出错误](/core/integrations/actions/#raise-errors)。
 
-Actions that act on entities do not register a plain handler. `async_register_platform_entity_service` from `homeassistant.helpers.service` resolves the target the user picked (entities, devices, areas, floors, or labels), checks permissions, and calls a method on each targeted entity. See [entity actions](/core/integrations/actions/#entity-actions).
+作用于实体（entity）的动作不会注册普通处理程序。`homeassistant.helpers.service` 中的 `async_register_platform_entity_service` 会解析用户选择的目标（实体、设备（device）、区域（area）、楼层或标签），检查权限，并在每个目标实体上调用一个方法。请参阅[实体动作](/core/integrations/actions/#entity-actions)。
 
-## Call an action
+## 调用动作
 
 ```python
 await hass.services.async_call(
@@ -48,12 +48,12 @@ await hass.services.async_call(
 )
 ```
 
-- `blocking=True` waits until the action is done, and raises its exceptions. With `blocking=False`, the call is started in the background, and errors only end up in the log.
-- `return_response=True` returns the response data. It only works together with `blocking=True`, and only for actions that support responses.
-- `context`: pass the context of whatever caused this call, so it is attributed correctly.
+- `blocking=True` 会等待动作完成，并抛出其异常。使用 `blocking=False` 时，调用会在后台启动，错误只会记录到日志中。
+- `return_response=True` 会返回响应数据。它只能与 `blocking=True` 配合使用，并且仅适用于支持响应的动作。
+- `context`：传递引发此次调用的上下文，以便正确归因。
 
-Calling an action from your own integration is unusual. Talk to your own code directly. Calling another integration's actions is mostly something automations and scripts do.
+从您自己的集成中调用动作的情况并不常见。您应该直接与自己的代码交互。调用其他集成的动作主要是自动化和脚本才会做的事情。
 
-## What happens under the hood
+## 底层运行机制
 
-When an action is called, the registry looks up the handler, validates the data against the schema if there is one, fires a `call_service` event on the [event bus](/core/internals/events/), and runs the handler. `hass.services.async_services()` returns everything that is registered, and `hass.services.has_service(domain, service)` checks for one. Registering and removing actions fire the `service_registered` and `service_removed` events.
+当一个动作被调用时，注册表会查找处理程序，如果存在模式，则根据该模式验证数据，在[事件总线](/core/internals/events/)（event bus）上触发一个 `call_service` 事件，然后运行处理程序。`hass.services.async_services()` 返回所有已注册的内容，`hass.services.has_service(domain, service)` 则用于检查某个动作是否存在。注册和移除动作会触发 `service_registered` 和 `service_removed` 事件。

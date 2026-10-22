@@ -1,26 +1,26 @@
 ---
-title: Check the connection during setup
-description: "Bronze rule test-before-setup: setup checks that it works, and raises the right exception when it does not."
+title: 在设置期间检查连接
+description: "青铜规则 test-before-setup：设置时会检查其能否正常工作，如果不能，则抛出正确的异常。"
 sidebarLabel: test-before-setup
 sidebarGroup: Bronze
 order: 19
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `test-before-setup`.
+这是一条青铜（Bronze）规则。在 `quality_scale.yaml` 中，它被称为 `test-before-setup`。
 
-When a config entry is set up, `async_setup_entry` must check that the integration can work, and raise the right exception when it cannot:
+当配置条目（config entry）被设置时，`async_setup_entry` 必须检查集成（integration）能否正常工作，并在无法正常工作时抛出正确的异常：
 
-- `ConfigEntryNotReady` when the problem is temporary, like a device that is offline. Home Assistant retries the setup later.
-- `ConfigEntryAuthFailed` when the credentials are wrong or expired. Home Assistant starts the reauthentication flow, if the integration has one.
-- `ConfigEntryError` when the problem will not go away by itself, like a closed account. Home Assistant does not retry.
+- `ConfigEntryNotReady`：当问题是临时性的，例如设备（device）离线。Home Assistant 稍后会重试设置。
+- `ConfigEntryAuthFailed`：当凭证错误或已过期时。如果集成具有重新认证流程，Home Assistant 会启动该流程。
+- `ConfigEntryError`：当问题不会自行消失时，例如账户已被关闭。Home Assistant 不会重试。
 
-## Why it matters
+## 为什么这很重要
 
-These exceptions are how the user finds out that something is wrong. The integration card in **Settings** > **Devices & services** shows that the entry failed to set up, and why, instead of entities that silently never get a value. Home Assistant also handles the retry for you, with a backoff, so you do not have to write that yourself.
+这些异常是用户发现问题的途径。**设置** > **设备与服务**中的集成卡片会显示该条目设置失败及其原因，而不是让实体（entity）默默地永远取不到值。Home Assistant 还会以退避（backoff）的方式为你处理重试，因此你不必自己编写这部分逻辑。
 
-## Example
+## 示例
 
-Map the exceptions of the library to the setup exceptions:
+将库抛出的异常映射为设置时的异常：
 
 ```python
 async def async_setup_entry(hass: HomeAssistant, entry: MyConfigEntry) -> bool:
@@ -45,25 +45,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: MyConfigEntry) -> bool:
     return True
 ```
 
-You often get this for free. `await coordinator.async_config_entry_first_refresh()` raises `ConfigEntryNotReady` when the first update of a [coordinator](/glossary/coordinator/) fails, and `ConfigEntryAuthFailed` and `ConfigEntryError` raised by the update pass through. `await session.async_ensure_token_valid()` on an OAuth2 session raises the right exception when the token cannot be refreshed.
+这通常是自动获得的。当 [coordinator](/glossary/coordinator/) 的首次更新失败时，`await coordinator.async_config_entry_first_refresh()` 会抛出 `ConfigEntryNotReady`，而更新过程中抛出的 `ConfigEntryAuthFailed` 和 `ConfigEntryError` 则会直接传递。在 OAuth2 会话上调用 `await session.async_ensure_token_valid()` 时，如果令牌无法刷新，就会抛出正确的异常。
 
-Do not log the error yourself before raising: Home Assistant already reports these exceptions, and for `ConfigEntryNotReady` it would log on every retry.
+不要在抛出异常之前自己记录错误：Home Assistant 已经会报告这些异常，而对于 `ConfigEntryNotReady`，每次重试都会记录一次日志。
 
-### Devices that are often offline
+### 经常离线的设备
 
-Some devices are offline on purpose, like a solar inverter at night or a TV in standby. For those, you can finish the setup without reaching the device. Refresh the coordinator with `await coordinator.async_refresh()`, which does not raise, and the entities stay unavailable until the device answers. Until then, `coordinator.data` is still `None`, so code that reads it while setting up the platforms has to handle that. Fetch anything you could not get during setup, like device information, once the device is back. Errors that are not temporary, like wrong credentials or a closed account, must still be reported during setup when they are detected.
+有些设备是故意离线的，例如夜间的太阳能逆变器或处于待机状态的电视。对于这些设备，你可以在不连接设备的情况下完成设置。使用 `await coordinator.async_refresh()` 刷新 coordinator，它不会抛出异常，实体将保持不可用状态，直到设备响应。在此之前，`coordinator.data` 仍然是 `None`，因此在设置平台（platform）期间读取它的代码必须处理这种情况。等设备恢复后，再获取你在设置期间无法获取的任何内容，例如设备信息。对于非临时性的错误（例如凭证错误或账户已被关闭），在设置期间检测到时仍必须予以报告。
 
-## How it is checked
+## 如何检查
 
-- Hassfest, when the rule is `done`: `async_setup_entry` must await `async_config_entry_first_refresh` or `async_ensure_token_valid`, or the integration must raise `ConfigEntryNotReady`, `ConfigEntryAuthFailed`, or `ConfigEntryError` somewhere in its code.
-- Pylint: `home-assistant-log-and-raise` warns when an error is logged at warning level or higher and then raised.
-- Whether the right exception is raised for each failure is checked in review.
+- Hassfest（当规则为 `done` 时）：`async_setup_entry` 必须 await `async_config_entry_first_refresh` 或 `async_ensure_token_valid`，或者集成必须在其代码中的某处抛出 `ConfigEntryNotReady`、`ConfigEntryAuthFailed` 或 `ConfigEntryError`。
+- Pylint：当错误先以警告级别或更高级别记录日志、然后又被抛出时，`home-assistant-log-and-raise` 会发出警告。
+- 对于每种失败情况是否抛出了正确的异常，会在代码审查中检查。
 
-## Exceptions
+## 例外情况
 
-If the integration cannot check its configuration during setup, or it only does local calculations, this rule does not apply.
+如果集成无法在设置期间检查其配置，或者它只进行本地计算，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [runtime-data](/core/quality-scale/runtime-data/): store runtime data in runtime_data.
-- [entity-unavailable](/core/quality-scale/entity-unavailable/): mark entities unavailable when appropriate.
+- [runtime-data](/core/quality-scale/runtime-data/)：将运行时数据存储在 runtime_data 中。
+- [entity-unavailable](/core/quality-scale/entity-unavailable/)：在适当时将实体标记为不可用。

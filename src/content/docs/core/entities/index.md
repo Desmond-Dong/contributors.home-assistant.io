@@ -1,6 +1,6 @@
 ---
-title: Entities
-description: How entities work in Home Assistant Core, and a reference for every entity platform, from sensors and lights to voice and AI.
+title: 实体
+description: 实体在 Home Assistant Core 中的工作原理，以及每个实体平台（从传感器和灯光到语音和 AI）的参考。
 order: 20
 sidebarGroups:
   - Basics
@@ -14,108 +14,108 @@ sidebarGroups:
   - Inputs and helpers
 ---
 
-An [entity](/glossary/entity/) is the smallest thing in Home Assistant that has a state: one temperature reading, one light, one lock. Users build their automations, dashboards, and voice commands out of entities, so they are the most visible part of any integration you write.
+[实体（entity）](/glossary/entity/)是 Home Assistant 中拥有状态（state）的最小单元：一条温度读数、一盏灯、一把锁。用户用实体来构建自动化（automation）、仪表盘（dashboard）和语音指令，因此实体是你所编写的任何集成（integration）中最显眼的部分。
 
-Entities come in domains, like `sensor`, `light`, or `climate`. Each domain is an entity platform: a base class with its own properties, features, and states, that every integration implements in the same way. That shared shape is what makes a light from one brand work exactly like a light from another one, in the interface, in automations, and in voice assistants.
+实体按领域（domain）划分，例如 `sensor`、`light` 或 `climate`。每个领域都是一个实体平台（entity platform）：一个拥有自身属性、特性和状态的基类，所有集成都以相同的方式实现它。正是这种共同的结构，使得一个品牌的灯在界面中、自动化中以及语音助手中，都能与另一个品牌的灯完全一致地工作。
 
-These pages are for developers who build or maintain an integration, or work on an entity platform itself. They assume you know Python and have a [development environment](/core/development/) running. To learn how an integration sets up its platforms and creates entities in the first place, start with [integrations](/core/integrations/).
+这些页面面向构建或维护集成，或参与实体平台本身开发的开发者。内容假设你了解 Python，并且已经运行了[开发环境](/core/development/)。要了解集成最初是如何设置其平台并创建实体的，请从[集成](/core/integrations/)开始。
 
-## How an entity works
+## 实体如何工作
 
-1. Your integration creates entity objects in a platform module, like `sensor.py`, and passes them to `async_add_entities`.
-2. Home Assistant registers each entity in the [entity registry](/core/entities/registry/), links it to its device, and gives it an entity ID.
-3. The entity keeps its data up to date, by [polling or push](/core/entities/state-updates/), and writes its state to the state machine.
-4. Users control it through actions, which call methods on your entity, like `async_turn_on`.
-5. When the integration unloads, the entity is removed, and [cleans up after itself](/core/entities/lifecycle/).
+1. 你的集成在平台模块（例如 `sensor.py`）中创建实体对象，并将它们传递给 `async_add_entities`。
+2. Home Assistant 会在[实体注册表](/core/entities/registry/)中注册每个实体，将其与所属设备（device）关联，并为其分配一个实体 ID。
+3. 实体通过[轮询或推送](/core/entities/state-updates/)保持数据最新，并将其状态写入状态机。
+4. 用户通过动作（action）来控制实体，这些动作会调用你实体上的方法，例如 `async_turn_on`。
+5. 当集成卸载时，实体会被移除，并[进行自我清理](/core/entities/lifecycle/)。
 
-## Basics
+## 基础
 
-Read these first. They apply to every entity, whatever its domain.
+请先阅读这些内容。它们适用于每个实体，无论其领域是什么。
 
-- [The entity class](/core/entities/entity-class/): the base class, the three ways to set properties, and the generic properties.
-- [Naming entities](/core/entities/naming/): `has_entity_name`, translated names, friendly names, and entity IDs.
-- [Updating state](/core/entities/state-updates/): polling, push, writing the state, and availability.
-- [Entity lifecycle](/core/entities/lifecycle/): the hooks that run when an entity is added, changed, and removed.
-- [State and attributes](/core/entities/state-attributes/): what ends up in the state object, and what to keep out of it.
-- [Icons](/core/entities/icons/): icon translations and the icon property.
-- [The entity registry](/core/entities/registry/): unique IDs, devices, entity categories, and disabled entities.
+- [实体类](/core/entities/entity-class/)：基类、设置属性的三种方式，以及通用属性。
+- [实体命名](/core/entities/naming/)：`has_entity_name`、翻译名称、友好名称和实体 ID。
+- [更新状态](/core/entities/state-updates/)：轮询、推送、写入状态和可用性。
+- [实体生命周期](/core/entities/lifecycle/)：实体被添加、更改和移除时运行的钩子。
+- [状态和属性](/core/entities/state-attributes/)：哪些内容会进入状态对象，哪些内容应避免放入其中。
+- [图标](/core/entities/icons/)：图标翻译和 icon 属性。
+- [实体注册表](/core/entities/registry/)：唯一 ID、设备、实体类别和已禁用的实体。
 
-## Entity platforms
+## 实体平台
 
-Every platform page has the same structure: what the entity represents, its properties, its supported features, the methods you implement, its states, and an example. Where the frontend shows a domain in its own way, the page links to its more-info view in the [Design area](/design/more-info/).
+每个平台页面都遵循相同的结构：实体代表什么、它的属性、它支持的特性、你需要实现的方法、它的状态，以及一个示例。当前端以自己的方式展示某个领域时，该页面会链接到[设计区域](/design/more-info/)中对应的更多信息（more-info）视图。
 
-### Sensors and status
+### 传感器和状态
 
-- [Sensor](/core/entities/sensor/): a measured or read value, like a temperature or a power reading.
-- [Binary sensor](/core/entities/binary-sensor/): something that is on or off, like an open door or detected motion.
-- [Event](/core/entities/event/): something that happens, like a button press or a doorbell ring.
-- [Weather](/core/entities/weather/): current conditions and forecasts.
-- [Device tracker](/core/entities/device-tracker/): where a device is, or whether it is home.
-- [Geolocation](/core/entities/geo-location/): events with a location from an external feed.
-- [Calendar](/core/entities/calendar/): events with a start and an end.
-- [Air quality](/core/entities/air-quality/): deprecated, use sensors instead.
+- [传感器（sensor）](/core/entities/sensor/)：测量或读取到的数值，例如温度或功率读数。
+- [二进制传感器（binary sensor）](/core/entities/binary-sensor/)：只有开或关两种状态的事物，例如敞开的门或检测到的运动。
+- [事件（event）](/core/entities/event/)：发生的某件事，例如按下按钮或门铃响起。
+- [天气（weather）](/core/entities/weather/)：当前天气状况和预报。
+- [设备追踪器（device tracker）](/core/entities/device-tracker/)：设备在哪里，或者它是否在家。
+- [地理位置（geolocation）](/core/entities/geo-location/)：来自外部数据源的带有位置信息的事件。
+- [日历（calendar）](/core/entities/calendar/)：具有开始和结束时间的事件。
+- [空气质量（air quality）](/core/entities/air-quality/)：已弃用，请改用传感器。
 
-### Lights and climate
+### 灯光和气候
 
-- [Light](/core/entities/light/)
-- [Climate](/core/entities/climate/)
-- [Fan](/core/entities/fan/)
-- [Humidifier](/core/entities/humidifier/)
-- [Water heater](/core/entities/water-heater/)
+- [灯（light）](/core/entities/light/)
+- [气候（climate）](/core/entities/climate/)
+- [风扇（fan）](/core/entities/fan/)
+- [加湿器（humidifier）](/core/entities/humidifier/)
+- [热水器（water heater）](/core/entities/water-heater/)
 
-### Openings and security
+### 门窗和安全
 
-- [Cover](/core/entities/cover/): blinds, shades, garage doors, and gates.
-- [Valve](/core/entities/valve/): water and gas valves.
-- [Lock](/core/entities/lock/)
-- [Alarm control panel](/core/entities/alarm-control-panel/)
-- [Siren](/core/entities/siren/)
+- [卷帘（cover）](/core/entities/cover/)：百叶窗、窗帘、车库门和大门。
+- [阀门（valve）](/core/entities/valve/)：水阀和燃气阀。
+- [锁（lock）](/core/entities/lock/)
+- [警报控制面板（alarm control panel）](/core/entities/alarm-control-panel/)
+- [警笛（siren）](/core/entities/siren/)
 
-### Media
+### 媒体
 
-- [Media player](/core/entities/media-player/): speakers, TVs, and receivers.
-- [Camera](/core/entities/camera/): still images and live streams.
-- [Image](/core/entities/image/): a still image that changes now and then.
+- [媒体播放器（media player）](/core/entities/media-player/)：音箱、电视和功放。
+- [摄像头（camera）](/core/entities/camera/)：静态图像和实时视频流。
+- [图像（image）](/core/entities/image/)：会不时变化的静态图像。
 
-### Remotes and signals
+### 遥控和信号
 
-- [Remote](/core/entities/remote/): send commands to other devices.
-- [Infrared](/core/entities/infrared/): shared infrared transmitters and receivers.
-- [Radio frequency](/core/entities/radio-frequency/): shared RF transmitters.
+- [遥控器（remote）](/core/entities/remote/)：向其他设备发送命令。
+- [红外（infrared）](/core/entities/infrared/)：共享的红外发射器和接收器。
+- [射频（radio frequency）](/core/entities/radio-frequency/)：共享的射频发射器。
 
-### Voice and AI
+### 语音和 AI
 
-- [Conversation](/core/entities/conversation/): agents that understand and answer what people say to Assist.
-- [Speech-to-text](/core/entities/stt/)
-- [Text-to-speech](/core/entities/tts/)
-- [Wake word detection](/core/entities/wake-word/)
-- [Assist satellite](/core/entities/assist-satellite/): devices that listen and talk back.
-- [AI task](/core/entities/ai-task/): generate data or images with a model.
+- [对话（conversation）](/core/entities/conversation/)：理解并应答人们对 Assist 所说内容的代理。
+- [语音转文本（speech-to-text）](/core/entities/stt/)
+- [文本转语音（text-to-speech）](/core/entities/tts/)
+- [唤醒词检测（wake word detection）](/core/entities/wake-word/)
+- [Assist 卫星（Assist satellite）](/core/entities/assist-satellite/)：能够聆听并作出回应的设备。
+- [AI 任务（AI task）](/core/entities/ai-task/)：使用模型生成数据或图像。
 
-### Appliances
+### 家电
 
-- [Vacuum](/core/entities/vacuum/)
-- [Lawn mower](/core/entities/lawn-mower/)
-- [Update](/core/entities/update/): firmware and software updates.
+- [吸尘器（vacuum）](/core/entities/vacuum/)
+- [割草机（lawn mower）](/core/entities/lawn-mower/)
+- [更新（update）](/core/entities/update/)：固件和软件更新。
 
-### Inputs and helpers
+### 输入和辅助元素
 
-- [Switch](/core/entities/switch/): turn something on or off.
-- [Button](/core/entities/button/): trigger a single action.
-- [Number](/core/entities/number/), [select](/core/entities/select/), and [text](/core/entities/text/): set a value on a device.
-- [Date](/core/entities/date/), [date and time](/core/entities/datetime/), and [time](/core/entities/time/): set a moment on a device.
-- [Scene](/core/entities/scene/): activate a scene stored on a device.
-- [To-do list](/core/entities/todo/): a list of items with a status.
-- [Notify](/core/entities/notify/): send a message.
+- [开关（switch）](/core/entities/switch/)：打开或关闭某个东西。
+- [按钮（button）](/core/entities/button/)：触发单个动作。
+- [数字（number）](/core/entities/number/)、[选择（select）](/core/entities/select/)和[文本（text）](/core/entities/text/)：为设备设置一个值。
+- [日期（date）](/core/entities/date/)、[日期和时间（date and time）](/core/entities/datetime/)和[时间（time）](/core/entities/time/)：为设备设置一个时刻。
+- [场景（scene）](/core/entities/scene/)：激活存储在设备上的场景。
+- [待办事项列表（to-do list）](/core/entities/todo/)：带有状态的条目列表。
+- [通知（notify）](/core/entities/notify/)：发送消息。
 
-## Picking the right platform
+## 选择合适的平台
 
-Choose the platform that matches what the thing really is, not the one that is easiest to implement. A pump that turns on and off is a switch, but a valve is a valve, and a light is a light, even if both only turn on and off. The right platform gives users the right controls, gives voice assistants the right device type, and gives you the right features as the device grows. Each platform page says when it is, and isn't, the right fit.
+选择与该事物本质相符的平台，而不是最容易实现的那个。一个只能开启和关闭的水泵是开关，但阀门就是阀门，灯就是灯，即使它们同样只有开和关。合适的平台能为用户提供正确的控件，为语音助手提供正确的设备类型，并在设备功能不断增强时为你提供正确的特性。每个平台页面都说明了它在什么情况下合适、什么情况下不合适。
 
-If no platform fits, or a platform misses something many devices have, don't work around it with attributes. Propose a change in the [architecture discussions](https://github.com/home-assistant/architecture/discussions) first. See [proposing changes to an entity model](/core/entities/entity-class/#proposing-changes-to-an-entity-model).
+如果没有合适的平台，或者某个平台缺少许多设备都具备的功能，请不要用属性（attribute）来变通实现。请先在[架构讨论](https://github.com/home-assistant/architecture/discussions)中提出更改建议。参见[提议对实体模型的更改](/core/entities/entity-class/#proposing-changes-to-an-entity-model)。
 
-## Who to talk to
+## 向谁咨询
 
-- Questions while building an entity? Ask in the **#core** channel on the [Home Assistant Discord](https://www.home-assistant.io/join-chat/).
-- Want to add a feature, state, or device class to a domain? Open a discussion in the [architecture repository](https://github.com/home-assistant/architecture/discussions). When a decision is made, it is recorded there as an architecture decision record.
-- Found a bug in an entity platform? Open an issue in the [core repository](https://github.com/home-assistant/core/issues).
+- 在构建实体时有疑问？请在 [Home Assistant Discord](https://www.home-assistant.io/join-chat/) 的 **#core** 频道中提问。
+- 想为某个领域添加特性、状态或设备类别？请在[架构仓库](https://github.com/home-assistant/architecture/discussions)中发起讨论。一旦做出决定，就会以架构决策记录（architecture decision record）的形式记录在那里。
+- 在实体平台中发现了 bug？请在 [core 仓库](https://github.com/home-assistant/core/issues)中提交 issue。

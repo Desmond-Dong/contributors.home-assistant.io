@@ -1,72 +1,72 @@
 ---
-title: Cover entity
-description: Build a cover entity for blinds, shades, garage doors, gates, and other things that open and close.
+title: 卷帘实体
+description: 构建用于百叶窗、遮光帘、车库门、大门及其他可开合物体的卷帘实体。
 sidebarLabel: Cover
 sidebarGroup: Openings and security
 ---
 
-A cover entity controls something that opens and closes over an opening: blinds, shades, curtains, awnings, garage doors, gates, and motorized windows. It can report and set a position, and a tilt for blinds with slats. Inherit from `CoverEntity` in `homeassistant.components.cover`.
+卷帘（cover）实体用于控制通过开口进行开合的物体：百叶窗、遮光帘、窗帘、遮阳篷、车库门、大门以及电动窗。它可以报告和设置位置，对于带有叶片的百叶窗还可以报告和设置倾斜角度（tilt）。请继承 `homeassistant.components.cover` 中的 `CoverEntity`。
 
-Only use a cover for something that covers an opening. A device that controls the flow of water or gas is a [valve](/core/entities/valve/). A door you lock and unlock is a [lock](/core/entities/lock/). For anything else, use another entity type, like a [number](/core/entities/number/), even where older integrations used a cover.
+卷帘只能用于遮挡开口的物体。控制水或气体流动的设备应使用[阀门（valve）](/core/entities/valve/)。需要上锁和解锁的门应使用[锁（lock）](/core/entities/lock/)。对于其他任何情况，请使用其他实体（entity）类型，例如[数字（number）](/core/entities/number/)，即使在旧集成中使用的是卷帘。
 
-For how the frontend shows a cover, see the [cover more-info view](/design/more-info/cover/).
+有关前端如何显示卷帘，请参阅[卷帘更多信息视图](/design/more-info/cover/)。
 
-## Properties
+## 属性
 
-Cover entities have these properties on top of the [generic entity properties](/core/entities/entity-class/). Every property can be set with its `_attr_` attribute, like `_attr_is_closed`.
+卷帘实体除了具有[通用实体属性](/core/entities/entity-class/)之外，还具有以下属性。每个属性都可以通过其对应的 `_attr_` 属性来设置，例如 `_attr_is_closed`。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `is_closed` | `bool \| None` | Required | Whether the cover is closed. Used for the state. |
-| `is_opening` | `bool \| None` | `None` | Whether the cover is opening. Used for the state. |
-| `is_closing` | `bool \| None` | `None` | Whether the cover is closing. Used for the state. |
-| `current_cover_position` | `int \| None` | `None` | The position, from 0 (closed) to 100 (fully open). |
-| `current_cover_tilt_position` | `int \| None` | `None` | The tilt, from 0 (closed or no tilt) to 100 (open or maximum tilt). |
-| `device_class` | `CoverDeviceClass \| None` | `None` | What kind of cover it is. See [Device classes](#device-classes). |
-| `supported_speeds` | `list[str] \| None` | `None` | The speeds the cover can move at when it opens, closes, or moves to a position. `None` or an empty list means no speed selection. |
+| `is_closed` | `bool \| None` | 必填 | 卷帘是否处于关闭状态。用于状态（state）。 |
+| `is_opening` | `bool \| None` | `None` | 卷帘是否正在打开。用于状态。 |
+| `is_closing` | `bool \| None` | `None` | 卷帘是否正在关闭。用于状态。 |
+| `current_cover_position` | `int \| None` | `None` | 位置，取值从 0（关闭）到 100（完全打开）。 |
+| `current_cover_tilt_position` | `int \| None` | `None` | 倾斜角度，取值从 0（关闭或无倾斜）到 100（打开或最大倾斜）。 |
+| `device_class` | `CoverDeviceClass \| None` | `None` | 卷帘的类别。参见[设备类别](#device-classes)。 |
+| `supported_speeds` | `list[str] \| None` | `None` | 卷帘在打开、关闭或移动到某个位置时的运行速度。`None` 或空列表表示不支持速度选择。 |
 
-When you set `supported_speeds` to a list, Home Assistant adds it as the `supported_speeds` attribute, and checks the `speed` in an action against it before it calls you. A speed that is not in the list raises a validation error. Without speeds, a `speed` in an action is dropped.
+当您将 `supported_speeds` 设置为一个列表时，Home Assistant 会将其作为 `supported_speeds` 属性添加，并在调用您的实现之前检查动作（action）中的 `speed` 是否在该列表中。不在列表中的速度会引发验证错误。如果没有设置速度，动作中的 `speed` 将被丢弃。
 
-## Device classes
+## 设备类别
 
-Set a [device class](/glossary/device-class/) from `CoverDeviceClass`. It sets the icon, the wording of the states in the frontend, and how voice assistants talk about the cover.
+从 `CoverDeviceClass` 中设置一个[设备类别（device class）](/glossary/device-class/)。它决定了图标、前端中状态的措辞，以及语音助手对卷帘的称呼。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `AWNING` | An awning, like an exterior retractable window, door, or patio cover. |
-| `BLIND` | Blinds: linked slats that expand, collapse, or tilt to cover an opening, like window blinds. |
-| `CURTAIN` | Curtains or drapes, often fabric hung above a window or door, drawn open and closed. |
-| `DAMPER` | A mechanical damper that reduces air flow, sound, or light. |
-| `DOOR` | A door that gives access to an area, typically part of a building. |
-| `GARAGE` | A garage door. |
-| `GATE` | A gate to a driveway or other area, outside a building and typically part of a fence. |
-| `SHADE` | Shades: one continuous piece of material or connected cells that expands or collapses over an opening, like window shades. |
-| `SHUTTER` | Shutters: linked slats that swing out or in, or tilt, to cover an opening, like window shutters. |
-| `WINDOW` | A window that opens, closes, or tilts. |
+| `AWNING` | 遮阳篷，例如窗户、门或露台外侧的可伸缩遮篷。 |
+| `BLIND` | 百叶窗：通过展开、收拢或倾斜来遮挡开口的联动叶片，例如窗用百叶窗。 |
+| `CURTAIN` | 窗帘或帷幔，通常是悬挂在窗户或门上方、可拉开和拉上的布料。 |
+| `DAMPER` | 用于减少气流、声音或光线的机械风门。 |
+| `DOOR` | 供人员进出某个区域的门，通常是建筑物的一部分。 |
+| `GARAGE` | 车库门。 |
+| `GATE` | 通向车道或其他区域的大门，位于建筑物外部，通常是围栏的一部分。 |
+| `SHADE` | 遮光帘：一整块连续的材料或相连的帘布单元，通过展开或收拢来遮挡开口，例如窗用遮光帘。 |
+| `SHUTTER` | 护窗板：通过向外或向内摆动或倾斜叶片来遮挡开口的联动叶片，例如窗用护窗板。 |
+| `WINDOW` | 可以打开、关闭或倾斜的窗户。 |
 
-## Supported features
+## 支持的功能
 
-Combine the `CoverEntityFeature` flags with `|` and set them as `supported_features`. See [supported features](/glossary/supported-features/).
+将 `CoverEntityFeature` 标志用 `|` 组合起来，并将其设置为 `supported_features`。参见[支持的功能（supported features）](/glossary/supported-features/)。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `OPEN` | The cover can open. Implement `open_cover`. |
-| `CLOSE` | The cover can close. Implement `close_cover`. |
-| `SET_POSITION` | The cover can move to a position. Implement `set_cover_position`. |
-| `STOP` | The cover can stop while it moves. Implement `stop_cover`. |
-| `OPEN_TILT` | The cover can tilt open. Implement `open_cover_tilt`. |
-| `CLOSE_TILT` | The cover can tilt closed. Implement `close_cover_tilt`. |
-| `STOP_TILT` | The cover can stop while it tilts. Implement `stop_cover_tilt`. |
-| `SET_TILT_POSITION` | The cover can tilt to a position. Implement `set_cover_tilt_position`. |
-| `SPEED` | The cover can move at different speeds. Set `supported_speeds`. |
+| `OPEN` | 卷帘可以打开。实现 `open_cover`。 |
+| `CLOSE` | 卷帘可以关闭。实现 `close_cover`。 |
+| `SET_POSITION` | 卷帘可以移动到某个位置。实现 `set_cover_position`。 |
+| `STOP` | 卷帘在移动过程中可以停止。实现 `stop_cover`。 |
+| `OPEN_TILT` | 卷帘可以倾斜打开。实现 `open_cover_tilt`。 |
+| `CLOSE_TILT` | 卷帘可以倾斜关闭。实现 `close_cover_tilt`。 |
+| `STOP_TILT` | 卷帘在倾斜过程中可以停止。实现 `stop_cover_tilt`。 |
+| `SET_TILT_POSITION` | 卷帘可以倾斜到某个位置。实现 `set_cover_tilt_position`。 |
+| `SPEED` | 卷帘可以以不同速度移动。设置 `supported_speeds`。 |
 
-If you do not set `supported_features` at all, Home Assistant guesses: `OPEN`, `CLOSE`, and `STOP`, plus `SET_POSITION` when the cover reports a position, all tilt features when it reports a tilt, and `SPEED` when it has speeds. Set the features yourself, so the frontend only shows what the cover can really do.
+如果您完全没有设置 `supported_features`，Home Assistant 会自动推断：包括 `OPEN`、`CLOSE` 和 `STOP`；当卷帘报告位置时会加上 `SET_POSITION`；当它报告倾斜角度时会加上所有倾斜功能；当它支持速度时会加上 `SPEED`。请自行设置这些功能，让前端只显示卷帘真正支持的操作。
 
-## Methods
+## 方法
 
-Implement the sync or the async variant of each method, not both.
+实现每个方法的同步或异步变体之一，不要同时实现两者。
 
-| Method | Async variant | Feature |
+| 方法 | 异步变体 | 功能 |
 | ------ | ------------- | ------- |
 | `open_cover(**kwargs: Any)` | `async_open_cover` | `OPEN` |
 | `close_cover(**kwargs: Any)` | `async_close_cover` | `CLOSE` |
@@ -77,24 +77,24 @@ Implement the sync or the async variant of each method, not both.
 | `set_cover_tilt_position(**kwargs: Any)` | `async_set_cover_tilt_position` | `SET_TILT_POSITION` |
 | `stop_cover_tilt(**kwargs: Any)` | `async_stop_cover_tilt` | `STOP_TILT` |
 
-`set_cover_position` receives `ATTR_POSITION`, and `set_cover_tilt_position` receives `ATTR_TILT_POSITION`, both from 0 to 100. `open_cover`, `close_cover`, and `set_cover_position` can receive `ATTR_SPEED` when the cover has `supported_speeds`.
+`set_cover_position` 接收 `ATTR_POSITION`，`set_cover_tilt_position` 接收 `ATTR_TILT_POSITION`，两者的取值范围均为 0 到 100。当卷帘具有 `supported_speeds` 时，`open_cover`、`close_cover` 和 `set_cover_position` 可以接收 `ATTR_SPEED`。
 
-Toggling is handled for you. `toggle` stops a moving cover when it supports `STOP`, opens a closed or closing cover, and closes an opening or fully open one. A cover that stopped partly open moves the other way from the last direction it reported, and closes when it never reported one. `toggle_tilt` opens the tilt when it is at 0, and closes it otherwise.
+切换（toggle）操作已为您处理好。`toggle` 会在卷帘支持 `STOP` 时停止正在移动的卷帘，打开已关闭或正在关闭的卷帘，并关闭正在打开或已完全打开的卷帘。停在半开状态的卷帘会沿其最后报告方向的反方向移动；如果它从未报告过方向，则会关闭。`toggle_tilt` 会在倾斜角度为 0 时打开倾斜，否则关闭倾斜。
 
-## States
+## 状态
 
-The state comes from `is_opening`, `is_closing`, and `is_closed`, in that order, as a `CoverState`:
+状态由 `is_opening`、`is_closing` 和 `is_closed` 按此顺序确定，为一个 `CoverState`：
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `CoverState.OPENING` | The cover is opening. |
-| `CoverState.CLOSING` | The cover is closing. |
-| `CoverState.CLOSED` | The cover is closed. |
-| `CoverState.OPEN` | The cover is open, fully or partly. |
+| `CoverState.OPENING` | 卷帘正在打开。 |
+| `CoverState.CLOSING` | 卷帘正在关闭。 |
+| `CoverState.CLOSED` | 卷帘已关闭。 |
+| `CoverState.OPEN` | 卷帘处于打开状态，可以是完全打开或部分打开。 |
 
-When the cover is not moving and `is_closed` is `None`, the state is `unknown`.
+当卷帘未在移动且 `is_closed` 为 `None` 时，状态为 `unknown`。
 
-## Example
+## 示例
 
 ```python
 from typing import Any

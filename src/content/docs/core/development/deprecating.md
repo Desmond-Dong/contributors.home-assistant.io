@@ -1,34 +1,34 @@
 ---
-title: Deprecating
-description: How to remove or change behavior in Home Assistant Core without breaking homes overnight. Deprecation periods, repair issues, and the helpers for developer facing APIs.
+title: 弃用
+description: 如何在不一夜之间破坏用户家庭的情况下移除或更改 Home Assistant Core 中的行为。弃用期、修复问题，以及面向开发者 API 的辅助工具。
 sidebarGroup: Changing behavior
 order: 1
 ---
 
-A [deprecation](/glossary/deprecation/) is a [backward-incompatible change](/glossary/backward-incompatible-change/) scheduled for later. The old behavior keeps working, everyone affected gets a warning, and the removal happens in a later release.
+[弃用](/glossary/deprecation/)是指被安排在稍后执行的[不向后兼容的更改](/glossary/backward-incompatible-change/)。旧行为继续工作，所有受影响的人都会收到警告，而移除会在之后的版本中发生。
 
-Anything you remove has to be deprecated first. That holds even when you think only a handful of people use it: an entity, an action, or a constant can be used in automations, scripts, dashboards, and custom integrations you cannot see.
+任何你要移除的内容都必须先经过弃用。即使你认为只有少数人在使用它也是如此：一个实体（entity）、一个动作（action）或一个常量都可能被你无法看到的自动化、脚本、仪表盘（dashboard）和自定义集成（custom integration）所使用。
 
-## How long
+## 时长
 
-| Who is affected | Minimum period |
+| 受影响的对象 | 最短期限 |
 | --- | --- |
-| Users: YAML configuration, actions, entities, attributes, integrations | 6 months |
-| Developers: constants, helpers, entity properties, platform APIs that custom integrations use | 12 months |
+| 用户：YAML 配置、动作、实体、属性、集成 | 6 个月 |
+| 开发者：常量、辅助工具（helper）、实体属性、自定义集成使用的平台 API | 12 个月 |
 
-A deprecation period can be extended when the ecosystem has not caught up yet, but it is never shortened. Name the release in which the removal happens as `breaks_in_ha_version`, in the [version format](/core/development/versioning/), like `"2027.1.0"`.
+当生态系统尚未跟上时，弃用期可以延长，但绝不能缩短。以[版本格式](/core/development/versioning/)在 `breaks_in_ha_version` 中指明执行移除的版本，例如 `"2027.1.0"`。
 
-Use `IssueSeverity.WARNING` as long as the old behavior still works. Use `IssueSeverity.ERROR` only when it has stopped working: the integration is gone, or a migration failed, and the configuration of the user is no longer in effect. The same split goes for log levels, when you remove a developer facing feature that cannot raise a repair issue.
+只要旧行为仍然有效，就使用 `IssueSeverity.WARNING`。只有当它已经停止工作时才使用 `IssueSeverity.ERROR`：集成已不存在，或者迁移失败，用户的配置不再生效。当你移除一个无法创建修复问题（repair issue）的面向开发者的功能时，日志级别也采用同样的划分。
 
-## User facing deprecations
+## 面向用户的弃用
 
-Every deprecation that needs the user to do something gets a [repair issue](/glossary/repair/). When an integration can be set up more than once, include the config entry in the `issue_id`, or the issues of different entries overwrite each other. After the deprecation period, open a follow up pull request that removes the old behavior and the issue.
+每一个需要用户采取行动的弃用都会生成一个[修复问题](/glossary/repair/)。当一个集成可以被多次设置时，请在 `issue_id` 中包含配置条目（config entry），否则不同条目的问题会相互覆盖。弃用期结束后，打开一个后续的拉取请求（pull request），移除旧行为和该问题。
 
-Every issue you create under your own domain needs an `issues.<translation_key>` entry in the `strings.json` of the integration. Issues created under `HOMEASSISTANT_DOMAIN`, like `deprecated_yaml`, use text that already exists in core.
+你在自己域名下创建的每个问题都需要在集成的 `strings.json` 中有一个 `issues.<translation_key>` 条目。在 `HOMEASSISTANT_DOMAIN` 下创建的问题（如 `deprecated_yaml`）使用 core 中已有的文本。
 
-### Dropping YAML support
+### 移除 YAML 支持
 
-To move an integration from YAML to the UI, add a config flow with an import step. In `async_setup`, import the YAML configuration. When the import succeeds, raise the `deprecated_yaml` issue of core. That issue lives in the `homeassistant` domain, so create it under `HOMEASSISTANT_DOMAIN`, and set `issue_domain` to your own domain:
+要将一个集成从 YAML 迁移到 UI，需要添加一个带有导入步骤的配置流程（config flow）。在 `async_setup` 中导入 YAML 配置。当导入成功时，抛出 core 的 `deprecated_yaml` 问题。该问题属于 `homeassistant` 域，因此要在 `HOMEASSISTANT_DOMAIN` 下创建它，并将 `issue_domain` 设置为你自己的域名：
 
 ```python
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
@@ -66,13 +66,13 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     return True
 ```
 
-Raise `deprecated_yaml` only after the import succeeded. Otherwise you tell users their configuration was imported when it was not. An abort because the entry already exists counts as a success: that is what happens on every start after the first import. Which reason your import step uses depends on how it checks for an existing entry, so match the reasons to your own config flow.
+只有在导入成功后才抛出 `deprecated_yaml`。否则你会告诉用户他们的配置已被导入，而实际上并没有。因为条目已存在而中止算作成功：这正是首次导入之后每次启动时发生的情况。你的导入步骤使用哪个原因取决于它如何检查现有条目，因此请将原因与你自己的配置流程相匹配。
 
-When the period is over and the YAML code is gone, set the `CONFIG_SCHEMA` to `cv.config_entry_only_config_schema(DOMAIN)`. It logs an error and raises a repair issue for anyone who still has the integration in `configuration.yaml`.
+当期限结束且 YAML 代码被移除后，将 `CONFIG_SCHEMA` 设置为 `cv.config_entry_only_config_schema(DOMAIN)`。它会为任何仍在 `configuration.yaml` 中保留该集成的人记录一条错误并抛出一个修复问题。
 
-### Single YAML options
+### 单个 YAML 选项
 
-To deprecate one option, or a few, raise the issue in `async_setup` where the YAML is read, and only when the option is actually used. The option keeps working until the period is over.
+要弃用一个或几个选项，请在读取 YAML 的 `async_setup` 中抛出问题，并且仅在该选项实际被使用时才抛出。该选项在期限结束前会继续工作。
 
 ```python
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
@@ -89,11 +89,11 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         )
 ```
 
-When the period is over, do not just drop the option from the schema. Put `cv.removed(CONF_IPV6)` in its place: it tells users the option is gone, instead of failing with a generic validation error.
+当期限结束时，不要只是从模式（schema）中删除该选项。在原处放置 `cv.removed(CONF_IPV6)`：它会告诉用户该选项已被移除，而不是因一个笼统的验证错误而失败。
 
-### Actions
+### 动作
 
-Raise the issue in the handler of the action. To deprecate a single field of an action, raise it only when that field is passed.
+在动作的处理程序中抛出问题。要弃用动作的单个字段，仅在该字段被传入时才抛出。
 
 ```python
 async def render_image(call: ServiceCall) -> ServiceResponse:
@@ -109,11 +109,11 @@ async def render_image(call: ServiceCall) -> ServiceResponse:
     )
 ```
 
-### Entities and attributes
+### 实体和属性
 
-When an attribute becomes an entity of its own, an entity moves to another platform, or an entity goes away, create the new entity first, and keep the old one working during the period.
+当一个属性变成一个独立的实体、一个实体迁移到另一个平台，或者一个实体被移除时，先创建新实体，并在期限内保持旧实体继续工作。
 
-Raise an issue for every deprecated entity that still exists and is enabled. Use `automations_with_entity()` and `scripts_with_entity()` to name the automations and scripts that will break. The user acknowledges the deprecation by disabling the entity. Once it is disabled and nothing uses it, remove it from the registry, so it is not created again.
+为每一个仍然存在且已启用的被弃用实体抛出一个问题。使用 `automations_with_entity()` 和 `scripts_with_entity()` 来列出将会失效的自动化和脚本。用户通过禁用该实体来确认弃用。一旦它被禁用且没有任何东西使用它，就将其从注册表（registry）中移除，这样它就不会被再次创建。
 
 ```python
 def async_deprecate_entity(
@@ -158,7 +158,7 @@ def async_deprecate_entity(
     return True
 ```
 
-Call it in `async_setup_entry` of the platform, and let its answer decide which entities are added. An entity that does not exist yet returns `False`, so new users never get the deprecated entity.
+在平台的 `async_setup_entry` 中调用它，并让它的返回值决定添加哪些实体。一个尚不存在的实体会返回 `False`，因此新用户永远不会得到被弃用的实体。
 
 ```python
 async def async_setup_entry(
@@ -181,7 +181,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 ```
 
-The issue is not persistent: it is created again on every start, as long as the entity is in use. The message names every place the entity may be used, not only automations and scripts, and tells the user that disabling it is what makes the issue go away:
+该问题不是持久化的：只要该实体仍在使用，它会在每次启动时被重新创建。消息会列出该实体可能被使用的每一个地方，而不仅仅是自动化和脚本，并告诉用户禁用它就能让问题消失：
 
 ```json
 {
@@ -194,11 +194,11 @@ The issue is not persistent: it is created again on every start, as long as the 
 }
 ```
 
-The code above uses a second key, `deprecated_entity_used`, when the entity is still in use. Add it next to `deprecated_entity`, with the same title, and an `{items}` placeholder in the description: that is where the list of automations and scripts goes. Its description tells the user to update those, along with any dashboards and templates, then disable the deprecated entity and restart.
+上面的代码在实体仍在使用时会使用第二个键 `deprecated_entity_used`。将它添加在 `deprecated_entity` 旁边，使用相同的标题，并在描述中带有一个 `{items}` 占位符：自动化和脚本的列表就放在那里。它的描述告诉用户更新这些内容以及所有仪表盘和模板，然后禁用被弃用的实体并重启。
 
-### Removing an integration
+### 移除一个集成
 
-When an integration stops working for good, for example because the vendor shut down its API, remove it. Strip it down to a stub that raises an `ERROR` issue, and keep a minimal `config_flow.py`, so existing entries still load and the user sees what happened. The established translation key is `integration_removed`:
+当一个集成永久停止工作时，例如因为供应商关闭了其 API，就将其移除。将它精简为一个抛出 `ERROR` 问题的存根（stub），并保留一个最小的 `config_flow.py`，这样现有的条目仍能加载，用户也能看到发生了什么。既定的翻译键是 `integration_removed`：
 
 ```python
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -217,25 +217,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 ```
 
-The `entries` placeholder links to the config entries of the user. Explain in the text why the integration was removed, and that they can remove the entries. Delete the issue again in `async_unload_entry`, once the last config entry of the domain is unloaded.
+`entries` 占位符链接到用户的配置条目。在文本中解释集成为何被移除，以及他们可以移除这些条目。在该域的最后一个配置条目被卸载后，在 `async_unload_entry` 中再次删除该问题。
 
-When the integration is replaced by a successor, it is a deprecation instead: use `WARNING` with a `breaks_in_ha_version`, and abort the config flow with the reason `deprecated`, so nobody can add new entries.
+当集成被后继者取代时，这属于弃用：使用带有 `breaks_in_ha_version` 的 `WARNING`，并以 `deprecated` 为原因中止配置流程，这样任何人都无法添加新条目。
 
-### Documentation and tests
+### 文档和测试
 
-The repair issue and the release notes announce the deprecation. Do not add a deprecation notice to the documentation on [home-assistant.io](https://www.home-assistant.io/): it only describes what works today.
+修复问题和版本发布说明会宣布弃用。不要在 [home-assistant.io](https://www.home-assistant.io/) 的文档中添加弃用通知：它只描述今天可用的功能。
 
-Test with the `issue_registry` fixture that the issue is created, and that it is deleted again when the last config entry unloads.
+使用 `issue_registry` fixture 测试问题被创建，并且在最后一个配置条目卸载时问题被再次删除。
 
-## Developer facing deprecations
+## 面向开发者的弃用
 
-Anything that other integrations import or subclass is a core API: everything in `homeassistant/helpers/`, `homeassistant/const.py`, and entity platforms like `homeassistant/components/sensor/`. Changing one affects authors of [custom integrations](/glossary/custom-integration/), who need time to react. These deprecations get 12 months, and a post on the [blog](/blog/) that names the replacement, if there is one, and the release of the removal.
+任何被其他集成导入或继承的内容都是核心 API：`homeassistant/helpers/`、`homeassistant/const.py` 中的所有内容，以及像 `homeassistant/components/sensor/` 这样的实体平台。更改其中之一会影响[自定义集成](/glossary/custom-integration/)的作者，他们需要时间来做出反应。这些弃用有 12 个月的期限，并在[博客](/blog/)上发布一篇文章，指明替代方案（如果有的话）以及执行移除的版本。
 
-The helpers below log a warning that names the integration that uses the deprecated code. They do not create a repair issue: users cannot fix the code of a custom integration.
+下面的辅助工具会记录一条警告，指明使用被弃用代码的集成。它们不会创建修复问题：用户无法修复自定义集成的代码。
 
-### Constants, aliases, and enum members
+### 常量、别名和枚举成员
 
-Rename the old constant with a `_DEPRECATED_` prefix, wrap it, and add the three module hooks. Reading the old name then works, and warns:
+用 `_DEPRECATED_` 前缀重命名旧常量，将其包装起来，并添加三个模块钩子。这样读取旧名称仍然有效，并会发出警告：
 
 ```python
 from functools import partial
@@ -259,7 +259,7 @@ __dir__ = partial(
 __all__ = all_with_deprecated_constants(globals())
 ```
 
-Use `DeprecatedConstant` for a plain value, `DeprecatedConstantEnum` for an enum member, and `DeprecatedAlias` when a class or function moved. To deprecate one member of an enum you keep, use the `EnumWithDeprecatedMembers` metaclass:
+对于普通值使用 `DeprecatedConstant`，对于枚举成员使用 `DeprecatedConstantEnum`，当类或函数被移动时使用 `DeprecatedAlias`。要弃用你保留的枚举中的一个成员，请使用 `EnumWithDeprecatedMembers` 元类：
 
 ```python
 class MediaPlayerState(
@@ -279,9 +279,9 @@ class MediaPlayerState(
     STANDBY = "standby"
 ```
 
-Deprecated constants only warn when the code that reads them belongs to an integration. Core code and tests read them silently. That is why the test helpers below go through a custom integration.
+被弃用的常量只在读取它们的代码属于某个集成时才发出警告。核心代码和测试会静默地读取它们。这就是为什么下面的测试辅助工具要通过一个自定义集成来进行。
 
-### Functions, methods, and classes
+### 函数、方法和类
 
 ```python
 @deprecated_function(
@@ -293,11 +293,11 @@ def get_astral_location(hass: HomeAssistant) -> tuple[Location, Elevation]:
     """Get an astral location for Home Assistant."""
 ```
 
-`@deprecated_class` warns when the class is instantiated, and is the way to keep a renamed class around as an alias. Both take the replacement as a string. To deprecate a leading `hass` argument that a function no longer needs, use `@deprecated_hass_argument`. It warns, and drops the argument.
+`@deprecated_class` 在类被实例化时发出警告，是将重命名后的类作为别名保留的方式。两者都以字符串形式接收替代项。要弃用函数不再需要的开头的 `hass` 参数，请使用 `@deprecated_hass_argument`。它会发出警告，并丢弃该参数。
 
-### Patterns
+### 模式
 
-Sometimes the problem is not a name, but a way of using something, like setting a property you want gone, or calling a function that a platform now replaces. Use `report_usage()` from `homeassistant.helpers.frame`:
+有时问题不在于名称，而在于某种使用方式，比如设置一个你想要移除的属性，或者调用一个现在被平台取代的函数。使用 `homeassistant.helpers.frame` 中的 `report_usage()`：
 
 ```python
 report_usage(
@@ -309,20 +309,20 @@ report_usage(
 )
 ```
 
-The first argument is inserted into "Detected that integration 'domain' ...", so write it as a verb phrase.
+第一个参数会被插入到 "Detected that integration 'domain' ..." 中，因此请将其写成一个动词短语。
 
-`report_usage()` finds the responsible integration by walking the call stack. That works when the integration calls the deprecated code itself. It does not work when core reads something the integration set earlier, like a deprecated entity property: by then, the integration is no longer on the stack. In that case, pass `integration_domain`, from an object that knows where it comes from, like `self.platform.platform_name` on an entity.
+`report_usage()` 通过遍历调用栈来找到负责的集成。当集成自己调用被弃用的代码时，这有效。但当核心读取集成之前设置的某些内容时，例如一个被弃用的实体属性，这就无效了：到那时，集成已不在调用栈上。在这种情况下，请从一个知道其来源的对象传递 `integration_domain`，例如实体上的 `self.platform.platform_name`。
 
-Three parameters decide who gets what. Each takes a `ReportBehavior`: `IGNORE` says nothing, `LOG` logs once per caller at `level`, and `ERROR` logs and raises a `RuntimeError`.
+三个参数决定谁得到什么。每个参数都接受一个 `ReportBehavior`：`IGNORE` 什么都不说，`LOG` 以 `level` 为每个调用者记录一次，`ERROR` 则记录并抛出 `RuntimeError`。
 
-| Parameter | Applies to | Default |
+| 参数 | 适用于 | 默认值 |
 | --- | --- | --- |
-| `core_behavior` | Code in `homeassistant/`, with no integration on the stack | `ERROR` |
-| `core_integration_behavior` | A built in integration | `LOG` |
-| `custom_integration_behavior` | A custom integration | `LOG` |
+| `core_behavior` | `homeassistant/` 中的代码，调用栈上没有集成 | `ERROR` |
+| `core_integration_behavior` | 内置集成 | `LOG` |
+| `custom_integration_behavior` | 自定义集成 | `LOG` |
 
-The defaults are usually right: core code fails loudly in tests, integrations get a warning. While you are still migrating the built in integrations, set `core_integration_behavior` to `IGNORE`, so authors of custom integrations get the warning without the logs filling up with cases you are already fixing.
+默认值通常是正确的：核心代码在测试中会大声失败，集成会收到警告。当你仍在迁移内置集成时，将 `core_integration_behavior` 设置为 `IGNORE`，这样自定义集成的作者就能收到警告，而日志不会充满你已经在修复的案例。
 
-### Tests
+### 测试
 
-`tests/common.py` has `import_and_test_deprecated_constant`, `import_and_test_deprecated_constant_enum`, `import_and_test_deprecated_alias`, and `help_test_all` for deprecated names. The `mock_integration_frame` fixture helps you test `report_usage()` warnings.
+`tests/common.py` 为被弃用的名称提供了 `import_and_test_deprecated_constant`、`import_and_test_deprecated_constant_enum`、`import_and_test_deprecated_alias` 和 `help_test_all`。`mock_integration_frame` fixture 帮助你测试 `report_usage()` 的警告。

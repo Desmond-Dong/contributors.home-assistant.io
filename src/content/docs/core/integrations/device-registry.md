@@ -1,51 +1,51 @@
 ---
-title: Device registry
-description: Register the devices of your integration, link them to hubs, split products into child devices, and let users remove devices.
+title: 设备注册表
+description: 注册集成的设备，将它们链接到集线器，把产品拆分为子设备，并允许用户删除设备。
 sidebarGroup: Devices and registries
 order: 1
 ---
 
-The device registry is where Home Assistant keeps track of [devices](/glossary/device/). A device groups the entities that belong together: a temperature and humidity sensor with a battery is one device with three entities. Users see devices on their own page, put them in areas, and target them in automations.
+设备注册表（device registry）是 Home Assistant 跟踪[设备（device）](/glossary/device/)的地方。设备将属于一体的实体（entity）组合在一起：一个带电池的温湿度传感器就是一个包含三个实体的设备。用户可以在设备专属页面上查看设备、把它们放入区域（area），并在自动化（automation）中指定它们。
 
-## What is a device
+## 什么是设备
 
-A device is a physical device with its own control unit, or a service. The control unit does not have to be smart, but it has to be in control of what happens.
+设备可以是拥有自己控制单元的物理设备，也可以是一个服务（service）。控制单元不必是智能的，但必须能够控制所发生的事情。
 
-- A thermostat with four room sensors is five devices: one for the thermostat with its built-in sensors, and one per room sensor.
-- A sensor connected to another device to read its data is a separate device from that other device. The sensor could be moved to read another device.
-- A product with several independent parts, like a power strip with separately switched outlets, can be split into a parent device with [child devices](#child-devices).
+- 一个带有四个房间传感器的温控器是五个设备：一个对应温控器及其内置传感器，每个房间传感器各一个。
+- 连接到另一个设备以读取其数据的传感器，是与该设备分开的独立设备。该传感器之后可以被移去读取另一个设备。
+- 具有多个独立部件的产品，例如每个插座都可以独立开关的电源插排，可以拆分为一个父设备和若干[子设备（child device）](#child-devices)。
 
-Devices belong to the config entry that registered them. A physical device that is set up by two integrations is two devices, one per config entry.
+设备属于注册它们的配置条目（config entry）。由两个集成（integration）设置的物理设备是两个设备，每个配置条目各一个。
 
-## Device properties
+## 设备属性
 
-| Property | What it is |
+| 属性 | 含义 |
 | --- | --- |
-| `id` | The ID Home Assistant generated for the device |
-| `identifiers` | A set of `(DOMAIN, identifier)` tuples, like a serial number. Each one is unique within the config entry. |
-| `connections` | A set of `(connection_type, value)` tuples, like a MAC address. Each one is unique within the config entry. The types are `CONNECTION_NETWORK_MAC`, `CONNECTION_BLUETOOTH`, `CONNECTION_UPNP`, and `CONNECTION_ZIGBEE`. |
-| `config_entry_id` | The config entry the device belongs to |
-| `config_subentry_id` | The [subentry](/core/integrations/subentries/) the device belongs to, or `None` |
-| `name` | The name of the device |
-| `name_by_user` | The name the user gave it |
-| `manufacturer` | The manufacturer |
-| `model` | The model name |
-| `model_id` | The model identifier |
-| `serial_number` | The serial number. Unlike a serial number in `identifiers`, it does not have to be unique. |
-| `sw_version` | The firmware version |
-| `hw_version` | The hardware version |
-| `configuration_url` | Where the device or service can be configured. Use `homeassistant://<path>` to link to a page inside Home Assistant. |
-| `entry_type` | `None`, or `DeviceEntryType.SERVICE` for a service |
-| `via_device_id` | The device Home Assistant reaches this device through, like a hub |
-| `parent_device_id` | For a child device: its parent |
-| `area_id` | The area the device is in |
-| `labels` | The labels of the device |
-| `disabled_by` | Who disabled the device, or `None` |
-| `created_at`, `modified_at` | When the device was created and last changed. Managed by the registry. |
+| `id` | Home Assistant 为该设备生成的 ID |
+| `identifiers` | 一组 `(DOMAIN, identifier)` 元组，例如序列号。每个元组在配置条目内都是唯一的。 |
+| `connections` | 一组 `(connection_type, value)` 元组，例如 MAC 地址。每个元组在配置条目内都是唯一的。类型有 `CONNECTION_NETWORK_MAC`、`CONNECTION_BLUETOOTH`、`CONNECTION_UPNP` 和 `CONNECTION_ZIGBEE`。 |
+| `config_entry_id` | 设备所属的配置条目 |
+| `config_subentry_id` | 设备所属的[子条目（subentry）](/core/integrations/subentries/)，或 `None` |
+| `name` | 设备的名称 |
+| `name_by_user` | 用户为它起的名称 |
+| `manufacturer` | 制造商 |
+| `model` | 型号名称 |
+| `model_id` | 型号标识符 |
+| `serial_number` | 序列号。与 `identifiers` 中的序列号不同，它不必是唯一的。 |
+| `sw_version` | 固件版本 |
+| `hw_version` | 硬件版本 |
+| `configuration_url` | 设备或服务的配置位置。使用 `homeassistant://<path>` 链接到 Home Assistant 内部的页面。 |
+| `entry_type` | `None`，对于服务则为 `DeviceEntryType.SERVICE` |
+| `via_device_id` | Home Assistant 经由其到达此设备的设备，例如集线器 |
+| `parent_device_id` | 对于子设备：其父设备 |
+| `area_id` | 设备所在的区域 |
+| `labels` | 设备的标签 |
+| `disabled_by` | 禁用此设备的一方，或 `None` |
+| `created_at`, `modified_at` | 设备的创建时间和最后修改时间。由注册表管理。 |
 
-## Register a device through an entity
+## 通过实体注册设备
 
-The usual way: give your entities a `device_info`. Home Assistant creates or updates the device when the entity is added. That only works for entities added from a config entry, with a [unique ID](/glossary/unique-id/).
+最常见的方式：为你的实体提供 `device_info`。当实体被添加时，Home Assistant 会创建或更新设备。这只适用于从配置条目添加的、具有[唯一 ID](/glossary/unique-id/) 的实体。
 
 ```python
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -70,13 +70,13 @@ class ExampleEntity(CoordinatorEntity[ExampleCoordinator]):
         )
 ```
 
-`DeviceInfo` takes `identifiers`, `connections`, `name`, `manufacturer`, `model`, `model_id`, `serial_number`, `sw_version`, `hw_version`, `configuration_url`, `entry_type`, `suggested_area`, `via_device_id`, and `translation_key` with `translation_placeholders` for a translated name.
+`DeviceInfo` 接受 `identifiers`、`connections`、`name`、`manufacturer`、`model`、`model_id`、`serial_number`、`sw_version`、`hw_version`、`configuration_url`、`entry_type`、`suggested_area`、`via_device_id`，以及用于翻译名称的 `translation_key` 和 `translation_placeholders`。
 
-The registry looks for an existing device of the same config entry, by identifiers first and then by connections. One match is enough: the other identifiers and connections you pass are then added to that device. If they already belong to another device of the same config entry, that is a collision, and the registry raises an error.
+注册表会查找同一配置条目下的现有设备，先按标识符查找，再按连接信息查找。匹配到一个就足够了：你传递的其他标识符和连接信息随后会被添加到该设备。如果它们已经属于同一配置条目的另一个设备，那就是冲突，注册表会抛出错误。
 
-## Register a device yourself
+## 自行注册设备
 
-A device without entities, like a hub, is registered directly. Do this in `async_setup_entry`:
+没有实体的设备（例如集线器）需要直接注册。请在 `async_setup_entry` 中执行此操作：
 
 ```python
 from homeassistant.helpers import device_registry as dr
@@ -95,13 +95,13 @@ hub = device_registry.async_get_or_create(
 )
 ```
 
-It returns the `DeviceEntry`, with its `id`.
+它会返回 `DeviceEntry`，其中包含其 `id`。
 
-## Link devices to a hub
+## 将设备链接到集线器
 
-`via_device_id` tells Home Assistant which device it reaches another device through, like the bulbs behind a bridge. It shows the topology of the network. It takes the Home Assistant ID of the hub device, so the hub has to be registered first.
+`via_device_id` 告诉 Home Assistant 它通过哪个设备到达另一个设备，例如网桥后面的灯泡。它展示了网络的拓扑结构。它接受集线器设备的 Home Assistant ID，因此集线器必须先被注册。
 
-If you registered the hub yourself, you already have its ID: pass `hub.id` to your entities. Otherwise, look it up from the identifiers of the hub:
+如果你自行注册了集线器，你已经拥有它的 ID：将 `hub.id` 传递给你的实体。否则，请从集线器的标识符中查找它：
 
 ```python
 via_device_id = dr.async_get_device_id_by_identifier(
@@ -109,28 +109,28 @@ via_device_id = dr.async_get_device_id_by_identifier(
 )
 ```
 
-It raises `ValueError` when the hub does not exist yet.
+当集线器尚不存在时，会抛出 `ValueError`。
 
-## Child devices
+## 子设备
 
 > [!WARNING]
-> Child devices are new, and the design is still being finalized. The API and behavior can change.
+> 子设备是新增功能，其设计仍在完善中。API 和行为可能会发生变化。
 
-A child device is a lightweight device for a logical part of one physical product, like one outlet of a power strip or one gang of a wall switch. The parent device holds what belongs to the whole product, like the network connection and firmware updates. Each child holds the entities of its part, like a switch and an energy sensor per outlet. Users can put each part in a different area.
+子设备是用于一个物理产品的逻辑部分的轻量级设备，例如电源插排的一个插座，或墙壁开关的一个按键。父设备保存属于整个产品的内容，例如网络连接和固件更新。每个子设备保存其对应部分的实体，例如每个插座的开关和能耗传感器。用户可以把每个部分放在不同的区域。
 
-Do not mix this up with `via_device_id`: that is about connectivity between separate products. Child devices are about the parts of one product.
+不要将此与 `via_device_id` 混淆：那是关于独立产品之间的连接关系。子设备针对的是一个产品的各个部分。
 
-A child device:
+子设备：
 
-- Belongs to one parent, referenced by the device ID of the parent (`parent_device_id`).
-- Belongs to the same config entry and subentry as its parent.
-- Has no identity of its own: no `connections`, `via_device_id`, `manufacturer`, `model`, firmware versions, or serial number. Those belong to the parent.
-- Gets the area of its parent, unless it has its own.
-- Cannot have child devices of its own.
+- 属于一个父设备，通过父设备的设备 ID（`parent_device_id`）引用。
+- 与其父设备属于相同的配置条目和子条目。
+- 没有自己的身份标识：没有 `connections`、`via_device_id`、`manufacturer`、`model`、固件版本或序列号。这些都属于父设备。
+- 获取其父设备的区域，除非它有自己的区域。
+- 不能拥有自己的子设备。
 
-### Register a child device
+### 注册子设备
 
-Through an entity, return a `ChildDeviceInfo` with `identifiers` and `parent_device_id`. The parent must already be registered:
+通过实体，返回一个带有 `identifiers` 和 `parent_device_id` 的 `ChildDeviceInfo`。父设备必须已经注册：
 
 ```python
 from homeassistant.helpers.device_registry import ChildDeviceInfo
@@ -142,7 +142,7 @@ self._attr_device_info = ChildDeviceInfo(
 )
 ```
 
-Or directly:
+或者直接注册：
 
 ```python
 outlet = device_registry.async_get_or_create_child(
@@ -153,26 +153,26 @@ outlet = device_registry.async_get_or_create_child(
 )
 ```
 
-If the parent belongs to a subentry, pass its `config_subentry_id` as well. It is not inherited. The registry never creates the parent for you: it raises a `DeviceInfoError` when the parent does not exist, is a child device itself, or belongs to another config entry or subentry.
+如果父设备属于某个子条目，请同时传递它的 `config_subentry_id`。它不会被继承。注册表绝不会为你创建父设备：当父设备不存在、本身是子设备，或属于另一个配置条目或子条目时，它会抛出 `DeviceInfoError`。
 
-### Move existing devices to child devices
+### 将现有设备迁移为子设备
 
-If the identifiers of a child device match an existing device of the same config entry, that device becomes a child device, and keeps its ID. Automations that use the device keep working. That makes it easy to move an integration that already split products into separate devices.
+如果子设备的标识符与同一配置条目下的某个现有设备匹配，该设备就会变成子设备，并保留其 ID。使用该设备的自动化将继续正常工作。这使得已经把产品拆分为独立设备的集成可以轻松迁移。
 
-The other way around is not supported directly. To turn a child device back into a normal device, remove it with `async_remove_device`, then register it again with `async_get_or_create`, with the same identifiers.
+反过来的操作不受直接支持。要把子设备转换回普通设备，请先用 `async_remove_device` 将其删除，然后使用相同的标识符通过 `async_get_or_create` 重新注册。
 
-### What follows the parent
+### 随父设备联动的行为
 
-- Removing a parent removes its children.
-- Disabling a parent disables its children, and enabling the parent enables the children it disabled again. A child of a disabled parent cannot be enabled on its own.
-- A child without an area of its own is in the area of its parent. `dr.async_get_effective_area_id(hass, device)` returns the area that applies.
-- Labels are not inherited.
-- A parent with children cannot move to another config entry or subentry.
-- An action that targets a parent device also targets the entities of its children. An action that targets a child only targets the entities of that child.
+- 删除父设备会删除其子设备。
+- 禁用父设备会禁用其子设备；启用父设备会重新启用它之前禁用的子设备。被禁用父设备的子设备不能被单独启用。
+- 没有自己区域的子设备位于其父设备的区域中。`dr.async_get_effective_area_id(hass, device)` 返回实际生效的区域。
+- 标签不会被继承。
+- 有子设备的父设备不能移动到另一个配置条目或子条目。
+- 以父设备为目标的操作也会以其子设备的实体为目标。以子设备为目标的操作仅以该子设备的实体为目标。
 
-## Look up devices
+## 查找设备
 
-Inside an entity, use `self.device_entry`. Elsewhere, scope lookups to the config entry: identifiers and connections are only unique within one config entry.
+在实体内部，使用 `self.device_entry`。在其他地方，请将查找范围限定在配置条目内：标识符和连接信息只在单个配置条目内是唯一的。
 
 ```python
 device_registry = dr.async_get(hass)
@@ -192,21 +192,21 @@ device = device_registry.async_get_device_by_connection(
 devices = dr.async_entries_for_config_entry(device_registry, entry.entry_id)
 ```
 
-These return normal devices, not child devices. For child devices, use `async_get_child_device_by_identifier(identifier, config_entry_id)`, or `dr.async_entries_for_parent_device(device_registry, parent_device_id)` for all children of a device. To get every device with an identifier or connection across config entries, use `device_registry.async_get_devices()`.
+这些方法返回的是普通设备，而不是子设备。对于子设备，请使用 `async_get_child_device_by_identifier(identifier, config_entry_id)`，或使用 `dr.async_entries_for_parent_device(device_registry, parent_device_id)` 获取某个设备的所有子设备。要获取跨配置条目中具有某个标识符或连接信息的所有设备，请使用 `device_registry.async_get_devices()`。
 
-To get a device together with the config entry of your integration that owns it, for example in an action, use `dr.async_get_device_and_config_entry_for_domain(hass, device_id, domain=DOMAIN)`. It returns `(None, None)` when the device is unknown, and `(device, None)` when no config entry of your domain owns it.
+要同时获取设备以及拥有它的集成配置条目（例如在操作中），请使用 `dr.async_get_device_and_config_entry_for_domain(hass, device_id, domain=DOMAIN)`。当设备未知时，它返回 `(None, None)`；当没有你所在域的配置条目拥有该设备时，它返回 `(device, None)`。
 
-## Update devices
+## 更新设备
 
-When something changes, like the firmware version after an update, update the device:
+当某些内容发生变化时，例如更新之后的固件版本，请更新该设备：
 
 ```python
 device_registry.async_update_device(device.id, sw_version=new_version)
 ```
 
-## Let users remove devices
+## 允许用户删除设备
 
-Users can only delete a device from the UI if your integration allows it. Implement `async_remove_config_entry_device` in `__init__.py`. Return `True` if the device can go, after any cleanup it needs:
+只有当你的集成允许时，用户才能从 UI 中删除设备。请在 `__init__.py` 中实现 `async_remove_config_entry_device`。在完成所需的清理工作后，如果该设备可以被删除，则返回 `True`：
 
 ```python
 from homeassistant.helpers.device_registry import DeviceEntry
@@ -224,6 +224,6 @@ async def async_remove_config_entry_device(
     )
 ```
 
-This example only allows removing devices that the hub no longer reports. The integration can also act on `EVENT_DEVICE_REGISTRY_UPDATED` instead, if that is more convenient.
+此示例仅允许删除集线器不再报告的设备。如果更方便的话，集成也可以改为响应 `EVENT_DEVICE_REGISTRY_UPDATED`。
 
-Integrations that see devices disappear should also remove stale devices by themselves: that is a rule of the Gold tier of the [quality scale](/core/quality-scale/).
+能够察觉到设备消失的集成也应该自行删除过期的设备：这是[质量标准（quality scale）](/core/quality-scale/)黄金等级（Gold tier）的规则之一。

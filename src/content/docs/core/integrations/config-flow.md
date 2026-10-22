@@ -1,23 +1,23 @@
 ---
-title: Config flow
-description: Let users add your integration from the UI with a config flow, and make sure the same device is never set up twice.
+title: 配置流程
+description: 让用户通过配置流程（config flow）从 UI 添加您的集成，并确保同一设备永远不会被设置两次。
 sidebarGroup: Setup and configuration
 order: 2
 ---
 
-A [config flow](/glossary/config-flow/) is the dialog users go through when they add your integration: a few steps that collect what is needed, check that it works, and create a [config entry](/core/integrations/config-entries/). Discovery starts the same flow when Home Assistant finds one of your devices.
+[配置流程](/glossary/config-flow/)（config flow）是用户添加您的集成时经过的对话框：通过几个步骤收集所需的信息、验证其是否有效，并创建一个[配置条目](/core/integrations/config-entries/)（config entry）。当 Home Assistant 发现您的某台设备时，发现（discovery）功能会启动相同的流程。
 
-Because the flow validates everything before the entry exists, your integration does not have to check its configuration on every start.
+由于流程会在条目存在之前完成所有验证，您的集成无需在每次启动时检查其配置。
 
-Every integration in core needs a config flow. What it must do to meet the quality scale, like a `data_description` for every field and the split between `data` and `options`, is in the [config-flow](/core/quality-scale/config-flow/) rule.
+核心（core）中的每个集成都需要一个配置流程。要达到质量标准（quality scale）必须做到的事项，例如为每个字段提供 `data_description`，以及 `data` 与 `options` 之间的划分，都写在 [config-flow](/core/quality-scale/config-flow/) 规则中。
 
-## Add a config flow
+## 添加配置流程
 
-1. Set `"config_flow": true` in the [manifest](/core/integrations/manifest/#config_flow).
-2. Create `config_flow.py` with a class that extends `ConfigFlow` and passes your domain.
-3. Run `python3 -m script.hassfest` once, so Home Assistant knows your integration has a config flow.
+1. 在[清单文件](/core/integrations/manifest/#config_flow)（manifest）中设置 `"config_flow": true`。
+2. 创建 `config_flow.py`，其中包含一个继承 `ConfigFlow` 并传入您的域（domain）的类。
+3. 运行一次 `python3 -m script.hassfest`，让 Home Assistant 知道您的集成拥有配置流程。
 
-The [scaffold script](/core/integrations/create/) does all three for you.
+[脚手架脚本](/core/integrations/create/)会替您完成这三步。
 
 ```python
 from typing import Any
@@ -68,28 +68,28 @@ class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 ```
 
-Each step is a method named `async_step_<step_id>`. It is called once without input to show its form, and again with the input when the user submits it. A step returns what happens next: a form, a menu, a new entry, or an abort. [Forms, menus, and progress](/core/integrations/flow-steps/) covers all of them.
+每个步骤都是一个名为 `async_step_<step_id>` 的方法。它会在没有输入时被调用一次以显示其表单，并在用户提交时带着输入再次被调用。一个步骤会返回接下来发生的事情：表单、菜单、新条目或中止。[表单、菜单和进度](/core/integrations/flow-steps/)涵盖了所有这些内容。
 
-Schemas are written with Probatio (`import probatio`), the validation library Home Assistant uses, often combined with [selectors](/glossary/selector/).
+模式（schema）使用 Home Assistant 所用的验证库 Probatio（`import probatio`）编写，通常与[选择器](/glossary/selector/)（selector）结合使用。
 
-## Reserved steps
+## 保留步骤
 
-Some step names have a fixed meaning. Home Assistant calls them for you:
+有些步骤名称具有固定的含义。Home Assistant 会替您调用它们：
 
-| Step | When it runs |
+| 步骤 | 何时运行 |
 | --- | --- |
-| `user` | The user adds the integration from the UI. Also used for discovery if you do not implement the matching discovery step. |
-| `reconfigure` | The user reconfigures an existing entry. See [reauthentication and reconfiguration](/core/integrations/reauth-reconfigure/). |
-| `reauth` | Your integration reports that its credentials no longer work |
-| `bluetooth`, `dhcp`, `homekit`, `mqtt`, `ssdp`, `usb`, `zeroconf` | Your device was discovered through the matcher in your [manifest](/core/integrations/manifest/#discovery) |
-| `hassio` | A Supervisor app announced itself to your integration |
-| `integration_discovery` | Another integration found a device for you. See [discovery](/core/integrations/discovery/#discovery-by-another-integration). |
-| `import` | Reserved for moving YAML configuration into a config entry |
-| `discovery` | Deprecated. Called when a discovery step for the source is missing. |
+| `user` | 用户从 UI 添加集成。如果您没有实现对应的发现步骤，也用于发现。 |
+| `reconfigure` | 用户重新配置现有条目。请参见[重新认证和重新配置](/core/integrations/reauth-reconfigure/)。 |
+| `reauth` | 您的集成报告其凭据不再有效 |
+| `bluetooth`, `dhcp`, `homekit`, `mqtt`, `ssdp`, `usb`, `zeroconf` | 您的设备通过[清单文件](/core/integrations/manifest/#discovery)中的匹配器被发现 |
+| `hassio` | 一个 Supervisor 应用向您的集成了通告了自己 |
+| `integration_discovery` | 另一个集成为您发现了一台设备。请参见[发现](/core/integrations/discovery/#discovery-by-another-integration)。 |
+| `import` | 保留用于将 YAML 配置迁移到配置条目中 |
+| `discovery` | 已弃用。当缺少对应来源的发现步骤时被调用。 |
 
-## Unique IDs
+## 唯一 ID
 
-A unique ID ties a config entry to the device or account behind it, so it cannot be set up twice. Set it in the flow with `async_set_unique_id`, and the config entry inherits it. It only needs to be unique within your integration.
+唯一 ID（unique ID）将配置条目与其背后的设备或账户绑定在一起，因此它不会被设置两次。在流程中使用 `async_set_unique_id` 设置它，配置条目便会继承该 ID。它只需要在您的集成内部保持唯一即可。
 
 ```python
 # Abort if another flow for this device is already in progress
@@ -99,7 +99,7 @@ await self.async_set_unique_id(device.serial_number)
 self._abort_if_unique_id_configured()
 ```
 
-When the flow aborts because the entry exists, users see the `already_configured` abort reason from your `strings.json`. Use the shared string for it:
+当流程因条目已存在而中止时，用户会看到来自您的 `strings.json` 的 `already_configured` 中止原因。请为此使用共享的字符串：
 
 ```json
 {
@@ -111,33 +111,33 @@ When the flow aborts because the entry exists, users see the `already_configured
 }
 ```
 
-A unique ID also lets users ignore a discovered device, so they are not asked about it again. That is why discovery requires one.
+唯一 ID 还让用户能够忽略一个已被发现的设备，从而不再被询问该设备。这就是为什么发现功能需要一个唯一 ID。
 
-### Update connection details on the fly
+### 即时更新连接信息
 
-When a device on the local network gets a new IP address, the unique ID lets you update the existing entry from a discovery step. Pass the new values to `_abort_if_unique_id_configured`. If the data changed, Home Assistant updates the entry and reloads it:
+当局域网中的设备获得了新的 IP 地址时，唯一 ID 让您能够从发现步骤更新现有条目。将新值传递给 `_abort_if_unique_id_configured`。如果数据发生了变化，Home Assistant 会更新该条目并重新加载它：
 
 ```python
 await self.async_set_unique_id(serial_number)
 self._abort_if_unique_id_configured(updates={CONF_HOST: host})
 ```
 
-The reload only happens when the entry is loaded or waiting to retry its setup. Pass `reload_on_update=False` to update the entry without a reload. Even without changes, a discovery reloads an entry that is waiting to retry its setup: the device is evidently online again.
+只有当条目已加载或正在等待重试其设置时才会发生重新加载。传入 `reload_on_update=False` 可以在不重新加载的情况下更新条目。即使没有变化，发现功能也会重新加载一个正在等待重试设置的条目：该设备显然又重新上线了。
 
-### What makes a good unique ID
+### 什么样的唯一 ID 才是好的
 
-It must be a string, stable, and not something the user can change.
+它必须是一个字符串、保持稳定，并且不是用户可以更改的内容。
 
-- **Good**: a serial number, a MAC address formatted with `homeassistant.helpers.device_registry.format_mac`, a unique identifier printed on the device or burned into it, or a latitude and longitude.
-- **Sometimes fine for local devices**: a hostname, if part of it contains one of the good sources.
-- **Sometimes fine for cloud services**: an email address in lowercase, a username (in lowercase if usernames are not case sensitive), or an account ID that cannot collide.
-- **Never**: an IP address, a device name, a URL, or a hostname the user can change.
+- **好**：序列号、使用 `homeassistant.helpers.device_registry.format_mac` 格式化的 MAC 地址、印在设备上或烧录进设备中的唯一标识符，或经纬度。
+- **对本地设备有时可以**：主机名，前提是其中一部分包含上述好的来源之一。
+- **对云服务有时可以**：小写的电子邮件地址、用户名（如果用户名不区分大小写，则使用小写），或不会发生冲突的账户 ID。
+- **绝不使用**：IP 地址、设备名称、URL，或用户可以更改的主机名。
 
-Get the MAC address from the device API or from discovery. Tools that read the ARP cache, like `getmac`, do not work in every network setup Home Assistant runs in.
+从设备 API 或发现过程中获取 MAC 地址。读取 ARP 缓存的工具（例如 `getmac`）并不能在 Home Assistant 运行的每种网络环境中都正常工作。
 
-### Discovery without a unique ID
+### 没有唯一 ID 的发现
 
-If some of your devices have no unique ID, call this in the discovery step instead. Discovery then still works, as long as no entry of your integration exists yet:
+如果您的某些设备没有唯一 ID，请改为在发现步骤中调用此方法。这样，只要您的集成尚不存在任何条目，发现功能仍然可以工作：
 
 ```python
 if device_unique_id:
@@ -146,15 +146,15 @@ else:
     await self._async_handle_discovery_without_unique_id()
 ```
 
-If you never get a unique ID, leave the discovery steps out. Home Assistant then calls your `user` step when it discovers a device, as long as your integration has no config entry yet.
+如果您始终无法获得唯一 ID，请省略发现步骤。这样，只要您的集成还没有配置条目，Home Assistant 在发现设备时就会调用您的 `user` 步骤。
 
-## Discovery steps
+## 发现步骤
 
-A discovery step receives a service info object with what was found, like a `ZeroconfServiceInfo`. It has to:
+发现步骤会接收一个包含所发现内容的服务信息对象，例如 `ZeroconfServiceInfo`。它必须：
 
-- Make sure no other flow is already setting up the same device. Setting the unique ID usually takes care of that. When the same device can be found in several ways that give different unique IDs, implement `is_matching(self, other_flow)` on your flow, and call `self.hass.config_entries.flow.async_has_matching_flow(self)`. Home Assistant then calls `is_matching` for every other flow in progress.
-- Make sure the device is not already set up.
-- Always ask the user to confirm. A discovery step must never create an entry by itself.
+- 确保没有其他流程正在设置同一设备。设置唯一 ID 通常就能做到这一点。当同一设备可以通过多种方式被发现、而这些方式会给出不同的唯一 ID 时，请在您的流程上实现 `is_matching(self, other_flow)`，并调用 `self.hass.config_entries.flow.async_has_matching_flow(self)`。这样 Home Assistant 会对每一个正在进行中的其他流程调用 `is_matching`。
+- 确保设备尚未被设置。
+- 始终要求用户确认。发现步骤绝不能自行创建条目。
 
 ```python
 async def async_step_zeroconf(
@@ -187,40 +187,40 @@ async def async_step_discovery_confirm(
     return self.async_show_form(step_id="discovery_confirm")
 ```
 
-`_set_confirm_only()` tells the frontend this step only asks for confirmation. See [discovery](/core/integrations/discovery/) for how devices get found in the first place.
+`_set_confirm_only()` 告诉前端该步骤仅要求确认。关于设备最初是如何被发现的，请参见[发现](/core/integrations/discovery/)。
 
-### Discoverable integrations without authentication
+### 无需身份验证的可发现集成
 
-If your integration is discoverable and needs no authentication, you might not need to write a flow at all. `python3 -m script.scaffold integration` generates this flow when you answer that your device is discoverable and needs no authentication. For an existing integration, run `python3 -m script.scaffold config_flow_discovery`. The flow checks whether any devices can be found before it finishes, supports every discovery method in the manifest, and allows a single config entry that takes care of all devices.
+如果您的集成是可发现的且无需身份验证，您可能根本不需要编写流程。当您回答设备是可发现的且无需身份验证时，`python3 -m script.scaffold integration` 会生成此流程。对于现有集成，请运行 `python3 -m script.scaffold config_flow_discovery`。该流程会在结束前检查是否能找到任何设备，支持清单文件中的每一种发现方法，并允许使用一个配置条目来管理所有设备。
 
-The generated `config_flow.py` has no flow class. It calls `config_entry_flow.register_discovery_flow()` with your domain, a title, and a function that returns whether any device can be found. Home Assistant only calls that function when a user adds the integration by hand and no discovered device is waiting to be set up.
+生成的 `config_flow.py` 没有流程类。它会使用您的域、一个标题以及一个返回是否能找到任何设备的函数来调用 `config_entry_flow.register_discovery_flow()`。只有当用户手动添加集成、且没有已发现的设备正在等待被设置时，Home Assistant 才会调用该函数。
 
-#### Scanning in the flow and in setup
+#### 在流程和设置中进行扫描
 
-Many discovery protocols wait for a timeout to collect every device that answers. Your function only has to know whether there is at least one, and then `async_setup_entry` has to find all of them. That looks like scanning twice. The integrations in core that use this helper accept that, and keep the cost low:
+许多发现协议会等待超时，以收集所有应答的设备。而您的函数只需要知道是否至少有一台设备，随后 `async_setup_entry` 则必须找到所有设备。这看起来像是扫描了两次。核心中使用此辅助机制的集成接受了这一点，并将开销保持在较低水平：
 
-- Nothing the function finds reaches setup. The helper creates the entry with empty `data`, and skips the function when the flow started from discovery. Setup also runs on every start of Home Assistant. So setup always does its own discovery, and only the first setup by hand scans twice.
-- Return as soon as one device answers, instead of waiting for the full timeout. Govee lights local polls until the first device shows up, within a timeout. Deako asks for a single address. Fjäråskupan does not scan at all: it checks the Bluetooth devices Home Assistant has already seen.
-- In setup, keep discovering, and add entities for devices that show up later. Gree, Refoss, and Zerproc scan again on an interval with `async_track_time_interval()`. Govee lights local and Escea keep a listener running. A device that answers late still gets added.
+- 该函数找到的任何内容都不会传递到设置中。辅助机制会以空的 `data` 创建条目，并在流程从发现功能启动时跳过该函数。设置还会在 Home Assistant 每次启动时运行。因此设置总是自行执行发现，只有第一次手动设置才会扫描两次。
+- 只要有一台设备应答就立即返回，而不是等待完整的超时时间。Govee lights local 会轮询直到第一台设备出现（在超时范围内）。Deako 只请求一个地址。Fjäråskupan 则完全不扫描：它检查 Home Assistant 已经见过的蓝牙设备。
+- 在设置中持续进行发现，并为稍后出现的设备添加实体（entity）。Gree、Refoss 和 Zerproc 使用 `async_track_time_interval()` 按间隔再次扫描。Govee lights local 和 Escea 保持监听器一直运行。晚些时候才应答的设备依然会被添加。
 
-Escea is the one exception that shares work between the two. Its function starts a discovery service and stores it in `hass.data`, and `async_setup_entry` picks up the running service instead of starting a second one. When the function finds nothing, it stops the service again. This only makes sense when your library has a discovery service that runs for as long as the entry is loaded.
+Escea 是唯一一个在两者之间共享工作的例外。它的函数会启动一个发现服务并将其存储在 `hass.data` 中，`async_setup_entry` 会使用正在运行的服务而不是再启动一个。当函数没有找到任何内容时，它会再次停止该服务。只有当您的库中有一个在条目加载期间一直运行的发现服务时，这种做法才有意义。
 
-## The flow title
+## 流程标题
 
-The title of a flow in the UI, like the name of a discovered device, is chosen in this order:
+流程在 UI 中显示的标题（例如被发现设备的名称）按以下顺序确定：
 
-1. If the flow sets `title_placeholders` in `self.context`, and it is not empty:
-   1. With a `flow_title` in your translations, that string is used, with the placeholders filled in.
-   2. Without a `flow_title`, the `name` placeholder is used, if there is one.
-2. The `title` of your translations.
-3. The `name` of the manifest.
-4. The domain.
+1. 如果流程在 `self.context` 中设置了 `title_placeholders`，并且它不为空：
+   1. 如果您的翻译中有 `flow_title`，则使用该字符串，并填入占位符。
+   2. 如果没有 `flow_title`，则使用 `name` 占位符（如果存在）。
+2. 您的翻译中的 `title`。
+3. 清单文件中的 `name`。
+4. 域（domain）。
 
-Reauthentication flows set `title_placeholders` to `{"name": <entry title>}` by themselves.
+重新认证流程会自行将 `title_placeholders` 设置为 `{"name": <entry title>}`。
 
-## Texts and translations
+## 文本和翻译
 
-All text of the flow lives in `strings.json`, under the `config` key: titles, descriptions, field labels, errors, and abort reasons. For example:
+流程的所有文本都存放在 `strings.json` 的 `config` 键下：标题、描述、字段标签、错误和中止原因。例如：
 
 ```json
 {
@@ -245,11 +245,11 @@ All text of the flow lives in `strings.json`, under the `config` key: titles, de
 }
 ```
 
-While developing, run `python3 -m script.translations develop` to see changes to `strings.json` in the UI. See [translations](/core/integrations/translations/#flows) for every key, [make your strings translatable](/translate/guides/developers/) for the rules, and [forms, menus, and progress](/core/integrations/flow-steps/#labels-and-descriptions) for the keys of a step.
+在开发过程中，运行 `python3 -m script.translations develop` 可以在 UI 中查看对 `strings.json` 的更改。所有键请参见[翻译](/core/integrations/translations/#flows)，规则请参见[让您的字符串可翻译](/translate/guides/developers/)，步骤的键请参见[表单、菜单和进度](/core/integrations/flow-steps/#labels-and-descriptions)。
 
-## Continue in another flow
+## 在另一个流程中继续
 
-A flow can start another flow, and let the frontend show it as soon as the first one finishes. Pass `next_flow` to `async_create_entry`, with the type and ID of the next flow:
+一个流程可以启动另一个流程，并让前端在第一个流程完成后立即显示它。将 `next_flow` 连同下一个流程的类型和 ID 一起传递给 `async_create_entry`：
 
 ```python
 from homeassistant.config_entries import SOURCE_USER, FlowType
@@ -265,7 +265,7 @@ return self.async_create_entry(
 )
 ```
 
-Subentry flows and options flows need the config entry to exist before they start. To continue with one of those, override `async_on_create_entry`. It runs after the entry is created:
+子条目流程和选项流程在启动之前需要配置条目已经存在。要继续其中一种流程，请重写 `async_on_create_entry`。它会在条目创建之后运行：
 
 ```python
 from homeassistant.config_entries import SubentryFlowContext
@@ -287,13 +287,13 @@ async def async_on_create_entry(
     return result
 ```
 
-## Simple flows with SchemaConfigFlowHandler
+## 使用 SchemaConfigFlowHandler 的简单流程
 
-For helpers and other integrations with simple flows, `SchemaConfigFlowHandler` defines the whole config flow and options flow as data. Keep its limits in mind:
+对于辅助元素（helper）和其他具有简单流程的集成，`SchemaConfigFlowHandler` 将整个配置流程和选项流程定义为数据。请记住它的局限：
 
-- All input is stored in the `options` of the entry, not in `data`. That makes it unsuitable for connection details or API keys.
-- Extensive validation, unique IDs, or duplicate checks are often easier in a normal config flow.
-- Starting the flow with steps other than `user` and `import` is discouraged.
+- 所有输入都存储在条目的 `options` 中，而不是 `data` 中。这使得它不适合用于连接信息或 API 密钥。
+- 复杂的验证、唯一 ID 或重复检查通常在普通配置流程中更容易实现。
+- 不建议使用 `user` 和 `import` 以外的步骤来启动流程。
 
 ```python
 from homeassistant.helpers.schema_config_entry_flow import (
@@ -349,6 +349,6 @@ class ExampleConfigFlowHandler(SchemaConfigFlowHandler, domain=DOMAIN):
         return cast(str, options[CONF_NAME])
 ```
 
-## Test your config flow
+## 测试您的配置流程
 
-Integrations in core need full test coverage of `config_flow.py`. Test every path: success, every error, every abort, and that a second setup of the same device aborts. See [writing tests](/core/development/tests/).
+核心中的集成需要对 `config_flow.py` 有完整的测试覆盖率。测试每一条路径：成功、每个错误、每次中止，以及同一设备被第二次设置时会中止。请参见[编写测试](/core/development/tests/)。

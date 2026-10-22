@@ -1,22 +1,22 @@
 ---
-title: Document the installation
-description: "Bronze rule docs-installation-instructions: the documentation has step-by-step setup instructions, with prerequisites."
+title: 记录安装步骤
+description: "青铜规则 docs-installation-instructions：文档包含分步设置说明，并列出前提条件。"
 sidebarLabel: docs-installation-instructions
 sidebarGroup: Bronze
 order: 11
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `docs-installation-instructions`.
+这是一条青铜（Bronze）规则。在 `quality_scale.yaml` 中，它被称为 `docs-installation-instructions`。
 
-The integration page on [home-assistant.io](https://www.home-assistant.io/) must explain, step by step, how to set up the integration. If something has to happen before setup, like creating an account, installing an app, or turning on a local API on the device, the page lists that as prerequisites.
+[home-assistant.io](https://www.home-assistant.io/) 上的集成页面必须逐步说明如何设置集成。如果在设置之前还需要执行某些操作，例如创建账户、安装应用程序或在设备上启用本地 API，页面应将这些列为前提条件。
 
-## Why it matters
+## 为什么重要
 
-Setup is the first experience users have with your integration. When the device needs a setting changed first, and the documentation does not say so, the user ends up with a config flow that cannot connect and no idea why. Clear instructions, including what to prepare, prevent that frustration and a lot of support questions.
+设置是用户对您的集成的最初体验。如果设备需要先修改某项设置，而文档中却没有说明，用户就会遇到无法连接的配置流程（config flow），并且不知道原因。清晰的说明（包括需要做哪些准备）可以避免这种挫败感，也能减少大量的支持问题。
 
-## Example
+## 示例
 
-List the prerequisites as numbered steps, then use the standard config flow include for the setup itself:
+将前提条件列为编号步骤，然后在设置部分使用标准的配置流程 include：
 
 ```markdown
 ## Prerequisites
@@ -28,19 +28,19 @@ List the prerequisites as numbered steps, then use the standard config flow incl
 {% include integrations/config_flow.md %}
 ```
 
-The include adds a [My link](/glossary/my-link/) badge, `{% my config_flow_start badge domain=domain %}`, that opens the config flow of your integration in the reader's own Home Assistant. You do not add that badge yourself.
+该 include 会添加一个 [My link](/glossary/my-link/) 徽章，`{% my config_flow_start badge domain=domain %}`，它会在读者自己的 Home Assistant 中打开您集成的配置流程。您无需自己添加该徽章。
 
-See [Write integration documentation](/writing/guides/integration/) and the [integration page structure](/writing/reference/integration-page/) for where this goes on the page.
+有关其在页面中的位置，请参阅[编写集成文档](/writing/guides/integration/)和[集成页面结构](/writing/reference/integration-page/)。
 
-## How it is checked
+## 如何检查
 
-Checked in review. The reviewer of the documentation pull request reads the instructions, and ideally follows them.
+通过评审进行检查。文档拉取请求（pull request）的评审者会阅读这些说明，理想情况下还会亲自按照说明操作。
 
-## Exceptions
+## 例外情况
 
-There are no exceptions to this rule.
+此规则没有例外情况。
 
-## Related rules
+## 相关规则
 
-- [docs-installation-parameters](/core/quality-scale/docs-installation-parameters/): document the setup parameters.
-- [docs-removal-instructions](/core/quality-scale/docs-removal-instructions/): document how to remove the integration.
+- [docs-installation-parameters](/core/quality-scale/docs-installation-parameters/)：记录设置参数。
+- [docs-removal-instructions](/core/quality-scale/docs-removal-instructions/)：记录如何移除集成。

@@ -1,37 +1,37 @@
 ---
-title: Actions in integrations
-description: Register actions that users call from automations, scripts, and dashboards, describe them in services.yaml, and return response data.
+title: 集成中的动作
+description: 注册用户可从自动化、脚本和仪表盘中调用的动作，在 services.yaml 中描述这些动作，并返回响应数据。
 sidebarGroup: Integration features
 order: 1
 sidebarLabel: Actions
 ---
 
-An [action](/glossary/action/) is something users can call from an automation, a script, or the **Actions** tab of the developer tools, like `light.turn_on`. Entity integrations, like `light`, provide the common actions. Your integration can register its own, for things that are specific to it, like `sonos.set_sleep_timer`.
+动作（action）是用户可以从自动化（automation）、脚本或开发者工具的**动作**标签页中调用的内容，例如 `light.turn_on`。实体（entity）集成（如 `light`）提供了常见的动作。您的集成可以注册自己的动作，用于特定于该集成的事项，例如 `sonos.set_sleep_timer`。
 
-This page is about adding actions to your integration. How the action registry works underneath, what a handler gets, and how to call actions from code, is on [how core works: actions](/core/internals/actions/).
+本页面介绍如何向您的集成添加动作。动作注册表底层的工作原理、处理函数（handler）会接收到什么，以及如何在代码中调用动作，请参见[核心工作原理：动作](/core/internals/actions/)。
 
-Add an action to your own integration first, rather than changing a shared one. When a pattern shows up across integrations, it can become a shared action later.
+请先为您自己的集成添加动作，而不是修改共享的动作。当某种模式出现在多个集成中时，它以后可以成为共享动作。
 
 > [!NOTE]
-> In code, actions are still called services: `hass.services`, `ServiceCall`, and `services.yaml`. It is the same thing.
+> 在代码中，动作仍然被称为服务（service）：`hass.services`、`ServiceCall` 和 `services.yaml`。它们是同一回事。
 
-## Register actions in async_setup
+## 在 async_setup 中注册动作
 
-Register actions in `async_setup` of your integration, not in `async_setup_entry` and not in a platform. That way they exist even when no config entry is loaded, so automations that use them can be edited and validated, and users get a clear error instead of an unknown action. That is a rule of the Bronze tier of the [quality scale](/core/quality-scale/).
+请在您集成的 `async_setup` 中注册动作，不要在 `async_setup_entry` 中注册，也不要在平台中注册。这样，即使没有加载任何配置条目（config entry），这些动作也存在，因此使用它们的自动化可以被编辑和验证，用户也会得到明确的错误提示，而不是未知动作。这是[质量等级](/core/quality-scale/)中铜级（Bronze）的一项规则。
 
-Since your integration now has an `async_setup`, it needs a `CONFIG_SCHEMA`. See [integrations without YAML](/core/integrations/yaml/#integrations-without-yaml).
+由于您的集成现在有了 `async_setup`，因此它需要一个 `CONFIG_SCHEMA`。参见[不使用 YAML 的集成](/core/integrations/yaml/#integrations-without-yaml)。
 
-## Choose the right target
+## 选择正确的目标
 
-Target the thing the action acts on, at the right level. Do not use a higher or lower level, even if one can be resolved to the other.
+请在正确的层级上定位动作所作用的对象。不要使用更高或更低的层级，即使其中一个可以解析为另一个。
 
-- **Entity**: the action controls or needs a specific entity, like setting a sleep timer on a media player. Register an [entity action](#entity-actions).
-- **Device**: the action needs a device as a whole, like rebooting it. Use a `device_id` field. Do not use an entity ID as a stand-in for its device.
-- **Config entry**: the action needs the integration instance, like creating something in the account at a cloud service. Use a `config_entry_id` field. Do not use a device or entity ID as a stand-in for its config entry.
+- **实体**：动作控制或需要特定的实体，例如在媒体播放器上设置睡眠定时器。注册一个[实体动作](#entity-actions)。
+- **设备（device）**：动作需要将设备作为一个整体来操作，例如重启设备。使用 `device_id` 字段。不要用实体 ID 作为其设备的替代。
+- **配置条目**：动作需要集成实例，例如在云服务的账户中创建内容。使用 `config_entry_id` 字段。不要用设备或实体 ID 作为其配置条目的替代。
 
-When an action needs a target, make it required. Do not fall back to a default target: an automation that works today would silently do something else when the user adds a second device.
+当动作需要目标（target）时，请将其设为必填。不要回退到默认目标：今天运行正常的自动化，在用户添加第二台设备后会悄悄执行其他操作。
 
-## Actions for a config entry
+## 配置条目的动作
 
 ```python
 import probatio
@@ -81,11 +81,11 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     return True
 ```
 
-`service.async_get_config_entry` checks that the config entry exists, belongs to your integration, and is loaded. If not, it raises a `ServiceValidationError` with a translated message. For device targets, `service.async_get_device_and_config_entry(hass, DOMAIN, device_id)` does the same for a device and the config entry that owns it.
+`service.async_get_config_entry` 会检查配置条目是否存在、是否属于您的集成，以及是否已加载。如果不满足，它会抛出带有已翻译消息的 `ServiceValidationError`。对于设备目标，`service.async_get_device_and_config_entry(hass, DOMAIN, device_id)` 会对设备及其所属的配置条目执行相同的检查。
 
-## Entity actions
+## 实体动作
 
-Entity actions run on the entities the user targets. Users can target them by entity, device, area, floor, or label, and Home Assistant resolves that to your entities. Register them with `async_register_platform_entity_service`, under your own domain (like `sonos`), not under the entity domain (like `media_player`):
+实体动作在用户定位的实体上运行。用户可以按实体、设备、区域（area）、楼层（floor）或标签（label）来定位它们，Home Assistant 会将这些解析为您的实体。请使用 `async_register_platform_entity_service` 在您自己的域（如 `sonos`）下注册它们，而不是在实体域（如 `media_player`）下注册：
 
 ```python
 import probatio
@@ -110,33 +110,33 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     return True
 ```
 
-This calls the `set_sleep_timer` method of every targeted entity with `sleep_time` as keyword argument. Instead of a method name, `func` can be an async function that receives the entity and the `ServiceCall`. The schema can be a dictionary, which is turned into an entity action schema for you. To only allow entities with certain features, pass `required_features`.
+这会调用每个被定位实体的 `set_sleep_timer` 方法，并以 `sleep_time` 作为关键字参数。除了方法名之外，`func` 也可以是一个接收实体和 `ServiceCall` 的异步函数。模式（schema）可以是一个字典，系统会自动将其转换为实体动作模式。若只想允许具有某些功能的实体，请传入 `required_features`。
 
-## Admin-only actions
+## 仅管理员可用的动作
 
-Actions that can change configuration, or have other security implications, should only be available to administrators. Register them with `async_register_admin_service` from `homeassistant.helpers.service`, instead of `hass.services.async_register`. It takes `hass` first, then the same arguments, and checks that the user of the call is an admin before your handler runs.
+能够更改配置或具有其他安全影响的动作，应该只对管理员开放。请使用 `homeassistant.helpers.service` 中的 `async_register_admin_service` 来注册它们，而不是使用 `hass.services.async_register`。它先接收 `hass`，然后接收相同的参数，并在您的处理函数运行之前检查调用者是否为管理员。
 
-## Raise errors
+## 抛出错误
 
-When an action fails, raise an exception, so the user sees what went wrong: `ServiceValidationError` when the user did something wrong, `HomeAssistantError` for anything else. Use translated messages. See [exceptions in actions](/core/integrations/setup-failures/#exceptions-in-actions-and-entity-methods).
+当动作失败时，请抛出异常，以便用户看到出了什么问题：用户操作错误时使用 `ServiceValidationError`，其他情况使用 `HomeAssistantError`。请使用已翻译的消息。参见[动作中的异常](/core/integrations/setup-failures/#exceptions-in-actions-and-entity-methods)。
 
-## Return response data
+## 返回响应数据
 
-Actions can return data, for automations that need more than the state of an entity, like a list of calendar events or search results. Do not use it for data that fits entity state: a temperature is a sensor, not a response.
+动作可以返回数据，供那些需要实体状态（state）之外信息的自动化使用，例如日历事件列表或搜索结果。不要将其用于适合作为实体状态的数据：温度是传感器，而不是响应。
 
-Response data is a `dict` that can be serialized to JSON. Pass `supports_response` when you register the action:
+响应数据是一个可序列化为 JSON 的 `dict`。注册动作时请传入 `supports_response`：
 
-| Value | Meaning |
+| 值 | 含义 |
 | --- | --- |
-| `SupportsResponse.NONE` | The action returns nothing. The default. |
-| `SupportsResponse.OPTIONAL` | The action does something, and can also return data. Check `call.return_response` to see if the caller wants it, and return `None` if not. |
-| `SupportsResponse.ONLY` | The action does nothing but return data |
+| `SupportsResponse.NONE` | 动作不返回任何内容。默认值。 |
+| `SupportsResponse.OPTIONAL` | 动作执行某些操作，同时也可以返回数据。检查 `call.return_response` 以确定调用者是否需要数据，若不需要则返回 `None`。 |
+| `SupportsResponse.ONLY` | 动作只返回数据，不做其他事情 |
 
-Errors are always exceptions, never error codes in the response. Users should not need error handling in their automations.
+错误始终以异常的形式表示，绝不会是响应中的错误码。用户不应需要在自动化中进行错误处理。
 
-## Describe actions in services.yaml
+## 在 services.yaml 中描述动作
 
-Users only use actions they can find. Describe every action in `services.yaml`, so the UI can show the right fields and selectors. The key is the name of the action, without your domain:
+用户只会使用他们能找到的动作。请在 `services.yaml` 中描述每个动作，以便 UI 显示正确的字段和选择器（selector）。键是动作的名称，不包含您的域：
 
 ```yaml
 set_speed:
@@ -167,14 +167,14 @@ set_speed:
               max: 100
 ```
 
-- `target`: for actions that take entities. It lets users pick entities, devices, and areas. Without a filter it offers every entity, so narrow it with the `entity` [selector](/glossary/selector/). Hassfest refuses a `device` filter on a target: use a device selector in a field for that. With `target`, do not add an `entity_id` field.
-- `supported_features`: only offer entities that support at least one of these features. To require several features together, put them in a nested list.
-- `fields`: one entry per field, with `required`, an `example`, a `default`, and a `selector` that decides the input in the UI.
-- Sections: a key with `collapsed` and its own `fields` groups fields in a collapsible section. It only changes how the fields look: the data is not nested, so the action above gets `{"speed_pct": 50}`.
+- `target`：用于接受实体的动作。它允许用户选择实体、设备和区域。在没有过滤器的情况下，它会提供所有实体，因此请使用 `entity` [选择器](/glossary/selector/)来缩小范围。Hassfest 不允许在目标上使用 `device` 过滤器：为此，请在字段中使用设备选择器。使用 `target` 时，不要添加 `entity_id` 字段。
+- `supported_features`：只提供至少支持这些功能之一的实体。若需要同时满足多个功能，请将它们放在嵌套列表中。
+- `fields`：每个字段一个条目，包含 `required`、`example`、`default`，以及决定 UI 中输入方式的 `selector`。
+- 分区（section）：带有 `collapsed` 及其自身 `fields` 的键，会将字段分组到一个可折叠的分区中。它只改变字段的显示方式：数据并不会嵌套，因此上面的动作会收到 `{"speed_pct": 50}`。
 
-### Show fields only when they apply
+### 仅在适用时显示字段
 
-A `filter` on a field shows it only when at least one selected entity supports it. Filters only work in actions with a `target`, because they look at the selected entities: hassfest refuses them in other actions. Use either `supported_features` or `attribute`, not both:
+字段上的 `filter` 仅在至少一个所选实体支持它时才显示该字段。过滤器只在带有 `target` 的动作中起作用，因为它们查看的是所选实体：hassfest 会拒绝在其他动作中使用过滤器。请使用 `supported_features` 或 `attribute` 其中之一，不要同时使用：
 
 ```yaml
 temperature:
@@ -189,11 +189,11 @@ color_temp:
         - light.ColorMode.HS
 ```
 
-With an `attribute` filter, the field is shown when the attribute of a selected entity has one of the listed values. If the attribute is a list, one matching item is enough.
+使用 `attribute` 过滤器时，当所选实体的属性具有所列值之一时，就会显示该字段。如果属性是一个列表，只需有一项匹配即可。
 
-### Names and descriptions
+### 名称和描述
 
-The name and description of each action and each field are not in `services.yaml`: they are in `strings.json`, under `services`, and every action and field needs one. Keep URLs out of translations with description placeholders, which you pass when you register the action:
+每个动作和每个字段的名称和描述并不在 `services.yaml` 中：它们位于 `strings.json` 的 `services` 之下，并且每个动作和字段都需要有条目。请通过描述占位符将 URL 排除在翻译之外，这些占位符在您注册动作时传入：
 
 ```python
 hass.services.async_register(
@@ -206,11 +206,11 @@ hass.services.async_register(
 )
 ```
 
-See [translations](/core/integrations/translations/#actions) for the format, and [make your strings translatable](/translate/guides/developers/).
+格式参见[翻译](/core/integrations/translations/#actions)，另请参阅[让您的字符串可翻译](/translate/guides/developers/)。
 
-### Icons
+### 图标
 
-Give each action an icon in `icons.json`, under `services`. Sections can have an icon too:
+请在 `icons.json` 的 `services` 下为每个动作指定图标。分区也可以有图标：
 
 ```json
 {
@@ -225,6 +225,6 @@ Give each action an icon in `icons.json`, under `services`. Sections can have an
 }
 ```
 
-## Try it
+## 试一试
 
-Open the **Actions** tab of the developer tools, pick your action, fill in the fields, and select **Perform action**.
+打开开发者工具的**动作**标签页，选择您的动作，填写字段，然后选择**执行动作**。

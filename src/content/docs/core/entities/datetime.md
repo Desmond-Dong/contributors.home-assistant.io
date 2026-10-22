@@ -1,31 +1,31 @@
 ---
-title: Date and time entity
-description: Build a date and time entity that lets people set a moment in time on a device, like when a charging session starts.
+title: 日期时间实体
+description: 构建一个日期时间实体，让人们能够在设备上设置一个时间点，例如充电会话开始的时间。
 sidebarLabel: Date and time
 sidebarGroup: Inputs and helpers
 ---
 
-A date and time entity lets people set a full moment in time, a date with a time of day, on a device or service. Think of the moment a charging session starts, or when a dishwasher must be done. Inherit from `DateTimeEntity` in `homeassistant.components.datetime`.
+日期时间（date and time）实体（entity）让人们能够在设备或服务上设置一个完整的时间点，即一个带有一天中时间的日期。想想充电会话开始的时刻，或者洗碗机必须完成的时间。请继承 `homeassistant.components.datetime` 中的 `DateTimeEntity`。
 
-Only need a date? Use a [date](/core/entities/date/) entity. Only a time of day that repeats every day, like a wake-up time? Use a [time](/core/entities/time/) entity. Is the moment something the device only reports, like when it last booted? That is a [sensor](/core/entities/sensor/) with the `timestamp` device class.
+只需要日期？请使用[日期（date）](/core/entities/date/)实体。只需要每天重复的一天中某个时间，例如起床时间？请使用[时间（time）](/core/entities/time/)实体。如果这个时刻是设备只上报的内容，例如它最后一次启动的时间？那它就是一个带有 `timestamp` 设备类别（device class）的[传感器（sensor）](/core/entities/sensor/)。
 
-## Properties
+## 属性
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `native_value` | `datetime.datetime \| None` | Required | The current date and time. It must include a time zone. |
+| `native_value` | `datetime.datetime \| None` | 必需 | 当前的日期和时间。必须包含时区。 |
 
-A date and time entity has no device class and no state attributes: both are final and always `None`. The generic properties every entity has, like `name`, `available`, and `unique_id`, are on [the entity class](/core/entities/entity-class/).
+日期时间实体没有设备类别，也没有状态属性（state attribute）：两者都是固定的，并且始终为 `None`。每个实体都具有的通用属性，例如 `name`、`available` 和 `unique_id`，位于[实体类（entity class）](/core/entities/entity-class/)上。
 
-## Supported features
+## 支持的功能
 
-This entity has no supported features.
+此实体没有支持的功能。
 
-## Methods
+## 方法
 
-### Set value
+### 设置值
 
-Called when someone picks a date and time in the UI, or an automation or script calls the `datetime.set_value` action. Implement one of the two.
+当有人在 UI 中选择日期和时间，或者自动化（automation）或脚本调用 `datetime.set_value` 动作（action）时，此方法会被调用。请实现两者之一。
 
 ```python
 class MyDateTime(DateTimeEntity):
@@ -38,15 +38,15 @@ class MyDateTime(DateTimeEntity):
         """Set a new date and time."""
 ```
 
-The value you get always has a time zone. When the action gets a date and time without one, it uses the time zone of the Home Assistant configuration.
+你获得的值始终带有时区。当动作接收到没有时区的日期和时间时，它会使用 Home Assistant 配置中的时区。
 
-## States
+## 状态
 
-The state is `native_value`, converted to UTC, in ISO 8601 format with seconds, like `2026-12-24T17:30:00+00:00`. It is `unknown` when `native_value` is `None`.
+状态是 `native_value` 转换为 UTC 后、以带秒数的 ISO 8601 格式表示的值，例如 `2026-12-24T17:30:00+00:00`。当 `native_value` 为 `None` 时，状态为 `unknown`。
 
-A `native_value` without a time zone raises a `ValueError` when the state is written. Use the helpers in `homeassistant.util.dt` to get time zone aware values, like `dt_util.as_local()` or `dt_util.utcnow()`.
+没有时区的 `native_value` 会在写入状态时引发 `ValueError`。请使用 `homeassistant.util.dt` 中的辅助函数来获取带时区的值，例如 `dt_util.as_local()` 或 `dt_util.utcnow()`。
 
-## Example
+## 示例
 
 ```python
 from datetime import datetime

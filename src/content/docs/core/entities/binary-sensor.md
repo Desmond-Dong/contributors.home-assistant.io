@@ -1,80 +1,80 @@
 ---
-title: Binary sensor entity
-description: Report something that is either on or off, like a door that is open or motion that is detected.
-sidebarLabel: Binary sensor
-sidebarGroup: Sensors and status
+title: 二元传感器实体
+description: 报告只有开或关两种状态的事物，例如打开的门或检测到的移动。
+sidebarLabel: 二元传感器
+sidebarGroup: 传感器与状态
 ---
 
-A binary sensor reports one of two states: on or off. What on and off mean depends on its device class: a door is open or closed, a smoke detector sees smoke or is clear, a battery is low or normal. Inherit from `BinarySensorEntity`, imported from `homeassistant.components.binary_sensor`.
+二元传感器（binary sensor）报告两种状态之一：开或关。开和关的具体含义取决于其设备类（device class）：门是打开或关闭，烟雾探测器是检测到烟雾或无异常，电池是电量低或正常。请继承自 `BinarySensorEntity`，它从 `homeassistant.components.binary_sensor` 导入。
 
-Use a binary sensor when the value has exactly two states and the user cannot change it. If the user can turn it on and off, use a [switch](/core/entities/switch/). If it has more than two states, use a [sensor](/core/entities/sensor/) with the `enum` device class.
+当值恰好只有两种状态且用户无法更改时，使用二元传感器。如果用户可以打开和关闭它，请使用[开关（switch）](/core/entities/switch/)。如果它有两种以上的状态，请使用带有 `enum` 设备类的[传感器（sensor）](/core/entities/sensor/)。
 
-## Properties
+## 属性
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `is_on` | `bool \| None` | Required | Whether the binary sensor is on. `None` means the state is unknown. |
-| `device_class` | `BinarySensorDeviceClass \| None` | `None` | What the binary sensor detects. See [device classes](#device-classes). |
+| `is_on` | `bool \| None` | 必需 | 二元传感器是否处于开启状态。`None` 表示状态未知。 |
+| `device_class` | `BinarySensorDeviceClass \| None` | `None` | 二元传感器检测的内容。参见[设备类](#device-classes)。 |
 
-The generic properties every entity has, like `name` or `available`, are on [the entity class](/core/entities/entity-class/).
+每个实体都具有的通用属性，例如 `name` 或 `available`，请参见[实体类](/core/entities/entity-class/)。
 
-A binary sensor can never have the `config` [entity category](/glossary/entity-category/): Home Assistant refuses to add it.
+二元传感器不能使用 `config` [实体类别（entity category）](/glossary/entity-category/)：Home Assistant 会拒绝添加它。
 
-## Supported features
+## 支持的功能
 
-This entity has no supported features.
+此实体没有支持的功能。
 
-## Device classes
+## 设备类
 
-The [device class](/glossary/device-class/) changes how the frontend shows on and off, and which icon the entity gets. A binary sensor with a device class and no name is named after its device class. See [naming](/core/entities/naming/).
+[设备类](/glossary/device-class/)决定了前端如何显示开和关，以及实体获得的图标。带有设备类且没有名称的二元传感器会根据其设备类命名。参见[命名](/core/entities/naming/)。
 
-| Device class | On means | Off means |
+| 设备类 | 开表示 | 关表示 |
 | --- | --- | --- |
-| `BATTERY` | Low | Normal |
-| `BATTERY_CHARGING` | Charging | Not charging |
-| `CO` | Carbon monoxide detected | Clear |
-| `COLD` | Cold | Normal |
-| `CONNECTIVITY` | Connected | Disconnected |
-| `DOOR` | Open | Closed |
-| `GARAGE_DOOR` | Open | Closed |
-| `GAS` | Gas detected | Clear |
-| `GLASS_BREAK` | Glass break detected | Clear |
-| `HEAT` | Hot | Normal |
-| `LIGHT` | Light detected | No light |
-| `LOCK` | Unlocked | Locked |
-| `MOISTURE` | Wet | Dry |
-| `MOTION` | Motion detected | Clear |
-| `MOVING` | Moving | Stopped |
-| `OCCUPANCY` | Occupied | Clear |
-| `OPENING` | Open | Closed |
-| `PLUG` | Plugged in | Unplugged |
-| `POWER` | Power detected | No power |
-| `PRESENCE` | Home | Away |
-| `PROBLEM` | Problem detected | OK |
-| `RUNNING` | Running | Not running |
-| `SAFETY` | Unsafe | Safe |
-| `SMOKE` | Smoke detected | Clear |
-| `SOUND` | Sound detected | Clear |
-| `TAMPER` | Tampering detected | Clear |
-| `UPDATE` | Update available | Up to date |
-| `VIBRATION` | Vibration detected | No vibration |
-| `WINDOW` | Open | Closed |
+| `BATTERY` | 电量低 | 正常 |
+| `BATTERY_CHARGING` | 正在充电 | 未在充电 |
+| `CO` | 检测到一氧化碳 | 无异常 |
+| `COLD` | 寒冷 | 正常 |
+| `CONNECTIVITY` | 已连接 | 已断开 |
+| `DOOR` | 打开 | 关闭 |
+| `GARAGE_DOOR` | 打开 | 关闭 |
+| `GAS` | 检测到气体 | 无异常 |
+| `GLASS_BREAK` | 检测到玻璃破碎 | 无异常 |
+| `HEAT` | 炎热 | 正常 |
+| `LIGHT` | 检测到光 | 无光 |
+| `LOCK` | 已解锁 | 已上锁 |
+| `MOISTURE` | 潮湿 | 干燥 |
+| `MOTION` | 检测到移动 | 无异常 |
+| `MOVING` | 正在移动 | 已停止 |
+| `OCCUPANCY` | 有人 | 无人 |
+| `OPENING` | 打开 | 关闭 |
+| `PLUG` | 已插入 | 已拔出 |
+| `POWER` | 检测到电力 | 无电力 |
+| `PRESENCE` | 在家 | 离家 |
+| `PROBLEM` | 检测到问题 | 正常 |
+| `RUNNING` | 正在运行 | 未在运行 |
+| `SAFETY` | 不安全 | 安全 |
+| `SMOKE` | 检测到烟雾 | 无异常 |
+| `SOUND` | 检测到声音 | 无异常 |
+| `TAMPER` | 检测到篡改 | 无异常 |
+| `UPDATE` | 有可用更新 | 已是最新 |
+| `VIBRATION` | 检测到振动 | 无振动 |
+| `WINDOW` | 打开 | 关闭 |
 
-The device classes are in `BinarySensorDeviceClass`, in `homeassistant/components/binary_sensor/const.py`.
+设备类定义在 `homeassistant/components/binary_sensor/const.py` 的 `BinarySensorDeviceClass` 中。
 
-Avoid the `UPDATE` device class. To report that new firmware or software is available, use an [update entity](/core/entities/update/) instead.
+请避免使用 `UPDATE` 设备类。要报告有新的固件或软件可用，请改用[更新实体（update entity）](/core/entities/update/)。
 
-## Methods
+## 方法
 
-A binary sensor has no actions, so there is nothing to implement beyond keeping `is_on` current. Fetch data in `update` or `async_update`, or push it with `async_write_ha_state`. See [updating state](/core/entities/state-updates/).
+二元传感器没有操作（action），因此除了保持 `is_on` 为最新之外，无需实现其他内容。可以在 `update` 或 `async_update` 中获取数据，或通过 `async_write_ha_state` 推送数据。参见[更新状态](/core/entities/state-updates/)。
 
-## States
+## 状态
 
-The base class sets the state from `is_on`: `on` for `True`, `off` for `False`, and `unknown` for `None`. Do not set `state` yourself.
+基类会根据 `is_on` 设置状态：`True` 对应 `on`，`False` 对应 `off`，`None` 对应 `unknown`。不要自行设置 `state`。
 
-## Example
+## 示例
 
-A motion detector that receives pushed updates from a device:
+一个从设备接收推送更新的移动探测器：
 
 ```python
 from homeassistant.components.binary_sensor import (
@@ -107,4 +107,4 @@ class ExampleMotionSensor(BinarySensorEntity):
         self.async_write_ha_state()
 ```
 
-The entity has no name, so it is named after its device class: "Motion".
+该实体没有名称，因此根据其设备类命名为："Motion"。

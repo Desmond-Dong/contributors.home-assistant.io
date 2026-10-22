@@ -1,24 +1,24 @@
 ---
-title: Document supported functionality
-description: "Gold rule docs-supported-functions: the documentation describes the entities and functionality it provides."
+title: 记录支持的功能
+description: "Gold 规则 docs-supported-functions：文档描述了集成（integration）提供的实体（entity）和功能。"
 sidebarLabel: docs-supported-functions
 sidebarGroup: Gold
 order: 9
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `docs-supported-functions`.
+这是一条 Gold 级规则。在 `quality_scale.yaml` 中，它被称为 `docs-supported-functions`。
 
-The integration page on [home-assistant.io](https://www.home-assistant.io/) describes what the integration provides: its entities per platform, what each one does, and on which devices it is available. Sort the list by entity type, or by device when the integration supports very different devices.
+[home-assistant.io](https://www.home-assistant.io/) 上的集成页面描述了该集成提供的功能：它在每个平台上提供的实体、每个实体的作用，以及在哪些设备上可用。请按实体类型对列表进行排序；当集成支持的设备差异很大时，也可以按设备排序。
 
-## Why it matters
+## 为什么这很重要
 
-Users want to know what they get before they buy a device. Someone who looks for a fridge they can monitor would be disappointed to find out after the purchase that the integration only reports whether the door is open, and not the temperature. A clear list of entities sets the right expectations.
+用户希望在购买设备之前知道自己会得到什么。想要一台可以监控的冰箱的用户，如果在购买后才发现集成只报告门是否打开、而不报告温度，会感到失望。一份清晰的实体列表能够设定正确的预期。
 
-The list also helps users who already have the device, to find the entity they are looking for, and to understand what it means.
+该列表还能帮助已经拥有该设备的用户找到他们要找的实体，并理解其含义。
 
-## Example
+## 示例
 
-Sorted by entity type:
+按实体类型排序：
 
 ```markdown
 ## Supported functionality
@@ -41,7 +41,7 @@ Sorted by entity type:
   - **Remarks**: Disabled by default.
 ```
 
-Sorted by device:
+按设备排序：
 
 ```markdown
 ## Supported functionality
@@ -59,12 +59,12 @@ Sorted by device:
 - **Favorite level**: The fan level of the favorite mode, from 0 to 10.
 ```
 
-See [Write integration documentation](/writing/guides/integration/) and the [integration page structure](/writing/reference/integration-page/) for where this section goes.
+关于该部分应放在哪里，请参阅[编写集成文档](/writing/guides/integration/)和[集成页面结构](/writing/reference/integration-page/)。
 
-## How it is checked
+## 如何检查
 
-Checked in review, usually on the documentation pull request.
+在审查中检查，通常是在文档的拉取请求（pull request）上进行。
 
-## Exceptions
+## 例外情况
 
-There are no exceptions to this rule.
+此规则没有例外。

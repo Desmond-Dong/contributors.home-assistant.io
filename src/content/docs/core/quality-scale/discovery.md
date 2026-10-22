@@ -1,24 +1,24 @@
 ---
-title: Support discovery
-description: "Gold rule discovery: devices are discovered, so users do not have to look them up."
+title: 支持发现
+description: "黄金规则 discovery：设备会被自动发现，因此用户无需自行查找。"
 sidebarLabel: discovery
 sidebarGroup: Gold
 order: 3
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `discovery`.
+这是一条黄金（Gold）规则。在 `quality_scale.yaml` 中，它被称为 `discovery`。
 
-If the devices of the integration can be found on the network or on a bus, the integration supports [discovery](/glossary/discovery/). Home Assistant can discover devices with Bluetooth, DHCP, HomeKit, mDNS (zeroconf), MQTT, SSDP, and USB, and apps can announce a service through the Supervisor. You declare what to listen for in `manifest.json`, and handle the discovery in a step of the config flow.
+如果集成的设备可以在网络或总线上被发现，则该集成支持[发现（discovery）](/glossary/discovery/)。Home Assistant 可以通过 Bluetooth、DHCP、HomeKit、mDNS（zeroconf）、MQTT、SSDP 和 USB 发现设备，应用也可以通过 Supervisor 宣告服务。你在 `manifest.json` 中声明要监听的内容，并在配置流程（config flow）的一个步骤中处理发现。
 
-## Why it matters
+## 为什么重要
 
-Without discovery, users first have to find out which integration supports their device, and then look up its IP address. With discovery, Home Assistant tells them it found a device, and they confirm. That is the difference between a setup that takes a minute and one that needs a router admin page.
+没有发现功能时，用户首先需要弄清楚哪个集成支持他们的设备，然后再查找其 IP 地址。有了发现功能，Home Assistant 会告诉用户它发现了一台设备，用户只需确认即可。这就是一分钟完成配置与需要登录路由器管理页面之间的区别。
 
-Discovery also keeps working after setup: when the device gets a new IP address, the integration can update its configuration. See [discovery-update-info](/core/quality-scale/discovery-update-info/).
+发现功能在配置完成后仍然持续起作用：当设备获得新的 IP 地址时，集成可以更新其配置。参见 [discovery-update-info](/core/quality-scale/discovery-update-info/)。
 
-## Example
+## 示例
 
-The device announces a `_mydevice._tcp.local.` service over mDNS. Declare it in `manifest.json`:
+设备通过 mDNS 宣告一个 `_mydevice._tcp.local.` 服务。在 `manifest.json` 中声明它：
 
 ```json
 {
@@ -26,7 +26,7 @@ The device announces a `_mydevice._tcp.local.` service over mDNS. Declare it in 
 }
 ```
 
-Then handle it in `config_flow.py`, next to the user step. The discovery step sets the unique ID, aborts when the device is already configured, and asks the user to confirm:
+然后在 `config_flow.py` 中处理它，位置在用户步骤旁边。发现步骤会设置唯一 ID，在设备已被配置时中止流程，并请求用户确认：
 
 ```python
 class MyConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -65,23 +65,23 @@ class MyConfigFlow(ConfigFlow, domain=DOMAIN):
         return self.async_show_form(step_id="discovery_confirm")
 ```
 
-`ZeroconfServiceInfo` comes from `homeassistant.helpers.service_info.zeroconf`. The other discovery methods have their own service info classes in `homeassistant.helpers.service_info`, and their own steps, like `async_step_dhcp` or `async_step_bluetooth`.
+`ZeroconfServiceInfo` 来自 `homeassistant.helpers.service_info.zeroconf`。其他发现方法在 `homeassistant.helpers.service_info` 中有各自的服务信息类，以及各自的步骤，例如 `async_step_dhcp` 或 `async_step_bluetooth`。
 
-If the user step sets the same unique ID, pass `raise_on_progress=False` to `async_set_unique_id` there. Otherwise, a user who sets up the device by hand while a discovery flow for it is open gets an abort.
+如果用户步骤设置了相同的唯一 ID，请在该步骤中向 `async_set_unique_id` 传入 `raise_on_progress=False`。否则，当该设备的发现流程处于打开状态时，手动设置设备的用户会遇到流程中止。
 
-## How it is checked
+## 如何检查
 
-- Hassfest, when the rule is `done`: the integration needs a `config_flow.py`, and either a discovery key in `manifest.json` (`bluetooth`, `dhcp`, `homekit`, `lorawan`, `mqtt`, `ssdp`, `usb`, or `zeroconf`) or a discovery step in the config flow, like `async_step_zeroconf` or `async_step_hassio`.
-- Codecov requires 100% test coverage of the changed lines in `config_flow.py`, so the discovery steps need tests.
-- Whether every way the device can be discovered is used, is checked in review.
+- Hassfest，当该规则标记为 `done` 时：集成需要有一个 `config_flow.py`，并且在 `manifest.json` 中包含发现键（`bluetooth`、`dhcp`、`homekit`、`lorawan`、`mqtt`、`ssdp`、`usb` 或 `zeroconf`），或者在配置流程中包含发现步骤，例如 `async_step_zeroconf` 或 `async_step_hassio`。
+- Codecov 要求对 `config_flow.py` 中更改的行实现 100% 的测试覆盖率，因此发现步骤需要测试。
+- 设备可被发现的每一种方式是否都得到使用，会在审查中检查。
 
-## Exceptions
+## 例外情况
 
-Not every device can be discovered. If the devices or service of the integration cannot be discovered, this rule does not apply.
+并非所有设备都可以被发现。如果集成的设备或服务无法被发现，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [config-flow](/core/quality-scale/config-flow/): set up from the UI with a config flow.
-- [test-before-configure](/core/quality-scale/test-before-configure/): test the connection in the config flow.
-- [unique-config-entry](/core/quality-scale/unique-config-entry/): prevent duplicate config entries.
-- [config-flow-test-coverage](/core/quality-scale/config-flow-test-coverage/): test the config flow fully.
+- [config-flow](/core/quality-scale/config-flow/)：使用配置流程从 UI 进行设置。
+- [test-before-configure](/core/quality-scale/test-before-configure/)：在配置流程中测试连接。
+- [unique-config-entry](/core/quality-scale/unique-config-entry/)：防止出现重复的配置条目。
+- [config-flow-test-coverage](/core/quality-scale/config-flow-test-coverage/)：完整地测试配置流程。

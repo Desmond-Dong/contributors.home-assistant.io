@@ -1,24 +1,24 @@
 ---
-title: Disable noisy or less popular entities
-description: "Gold rule entity-disabled-by-default: entities that few users need are disabled by default."
+title: 禁用噪声大或不太常用的实体
+description: "金牌规则 entity-disabled-by-default：只有少数用户需要的实体默认禁用。"
 sidebarLabel: entity-disabled-by-default
 sidebarGroup: Gold
 order: 15
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `entity-disabled-by-default`.
+这是一条金牌（Gold）规则。在 `quality_scale.yaml` 中，它被称为 `entity-disabled-by-default`。
 
-Entities that most users do not need, or that change their state very often, are disabled by default. Users who want them can enable them in the entity settings.
+大多数用户不需要的实体（entity），或者状态（state）变化非常频繁的实体，默认是禁用的。需要它们的用户可以在实体设置中启用。
 
-There is no fixed list of which entities those are. It depends on the device. The signal strength of a Bluetooth temperature sensor is of little use to most people, so it is disabled by default. For a device that exists to measure signal strength, the same entity is the main feature, and stays enabled.
+并没有一份固定的列表来说明哪些实体属于此类。这取决于设备（device）。蓝牙温度传感器的信号强度对大多数人没什么用处，因此默认禁用。而对于一台以测量信号强度为存在目的的设备来说，同一个实体却是主要功能，因此保持启用。
 
-## Why it matters
+## 为什么重要
 
-Home Assistant records the history of every enabled entity. Each state change costs a bit of CPU, memory, and disk space, and noisy entities change a lot. Multiply that by the number of devices in a home, and it adds up, especially on small hardware like a Raspberry Pi.
+Home Assistant 会记录每个已启用实体的历史。每次状态变化都会消耗一定的 CPU、内存和磁盘空间，而噪声大的实体变化非常频繁。将这一点乘以家中的设备数量，开销就会累积起来，尤其是在 Raspberry Pi 这样的小型硬件上。
 
-Disabling those entities by default means only the users who need them pay that cost. It also keeps the list of entities manageable for everyone else.
+默认禁用这些实体意味着只有需要它们的用户才承担这些开销。这也让其他用户的实体列表保持易于管理。
 
-## Example
+## 示例
 
 ```python
 class MySignalStrengthSensor(SensorEntity):
@@ -31,18 +31,18 @@ class MySignalStrengthSensor(SensorEntity):
     _attr_entity_registry_enabled_default = False
 ```
 
-With entity descriptions, set `entity_registry_enabled_default=False` on the description instead.
+如果使用实体描述（entity descriptions），请改为在描述上设置 `entity_registry_enabled_default=False`。
 
-The setting only applies when the entity is added to the entity registry for the first time. Changing it later does not disable entities that users already have.
+该设置仅在实体首次添加到实体注册表时生效。之后再更改它，并不会禁用用户已经拥有的实体。
 
-## How it is checked
+## 如何检查
 
-Checked in review.
+通过审查进行检查。
 
-## Exceptions
+## 例外
 
-If the integration has no entities, or none of its entities are noisy or rarely used, this rule does not apply.
+如果集成（integration）没有实体，或者其实体中没有任何噪声大或很少使用的实体，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [appropriate-polling](/core/quality-scale/appropriate-polling/): poll at an appropriate interval.
+- [appropriate-polling](/core/quality-scale/appropriate-polling/)：以合适的间隔进行轮询。

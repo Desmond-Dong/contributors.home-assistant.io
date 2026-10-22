@@ -1,24 +1,24 @@
 ---
-title: Log once when unavailable, and once when back
-description: "Silver rule log-when-unavailable: the integration logs a lost connection once, and once when it comes back."
+title: 不可用时记录一次日志，恢复时再记录一次
+description: "银级规则 log-when-unavailable：集成在连接丢失时记录一次日志，并在连接恢复时再记录一次。"
 sidebarLabel: log-when-unavailable
 sidebarGroup: Silver
 order: 7
 ---
 
-This is a Silver rule. In `quality_scale.yaml`, it is called `log-when-unavailable`.
+这是一条银级（Silver）规则。在 `quality_scale.yaml` 中，它被称为 `log-when-unavailable`。
 
-When the device or service cannot be reached, the integration logs that once. When it can be reached again, the integration logs that once as well. Not on every failed update in between. When you write these messages yourself, log them at `info` level.
+当无法访问设备或服务时，集成（integration）会记录一次日志。当能够再次访问时，集成也会记录一次日志。而不会在期间每次更新失败时都记录。如果您自己编写这些消息，请以 `info` 级别记录。
 
-## Why it matters
+## 为什么重要
 
-When entities go [unavailable](/glossary/unavailable/), users look in the logs to find out why. One message when the connection was lost, and one when it came back, tells them what happened and when. A message on every failed poll buries that in noise, fills the log file, and hides other problems.
+当实体（entity）变为[不可用（unavailable）](/glossary/unavailable/)时，用户会查看日志以找出原因。连接丢失时的一条消息，以及连接恢复时的一条消息，能告诉他们发生了什么以及何时发生。每次轮询失败都记录一条消息会把有用的信息淹没在噪音中，填满日志文件，并掩盖其他问题。
 
-## Example
+## 示例
 
-### With a coordinator
+### 使用协调器时
 
-The coordinator does this for you. Raise `UpdateFailed` when the update fails. The coordinator logs the first failure, stays quiet while the failures continue, and logs at `info` level when fetching the data recovers:
+协调器（coordinator）会为您完成这项工作。当更新失败时抛出 `UpdateFailed`。协调器会记录第一次失败，在失败持续期间保持安静，并在数据获取恢复时以 `info` 级别记录日志：
 
 ```python
 async def _async_update_data(self) -> MyData:
@@ -32,9 +32,9 @@ async def _async_update_data(self) -> MyData:
         ) from err
 ```
 
-### With async_update
+### 使用 async_update 时
 
-An entity that updates itself keeps track of whether it already logged:
+自行更新的实体会跟踪自己是否已经记录过日志：
 
 ```python
 class MySensor(SensorEntity):
@@ -60,15 +60,15 @@ class MySensor(SensorEntity):
             self._unavailable_logged = False
 ```
 
-## How it is checked
+## 如何检查
 
-- Pylint warns when an error is logged at warning level or higher earlier in the same block that raises it to Home Assistant, like logging before raising `UpdateFailed` (`home-assistant-log-and-raise`). Home Assistant already reports those exceptions.
-- The rest is checked in review.
+- 当错误在同一个代码块中、在向 Home Assistant 抛出它之前，以警告（warning）级别或更高级别被记录时，Pylint 会发出警告，例如在抛出 `UpdateFailed` 之前记录日志（`home-assistant-log-and-raise`）。Home Assistant 已经会报告这些异常。
+- 其余部分在代码审查中检查。
 
-## Exceptions
+## 例外情况
 
-If the integration has no entities, this rule does not apply.
+如果集成没有实体，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [entity-unavailable](/core/quality-scale/entity-unavailable/): mark entities unavailable when appropriate.
+- [entity-unavailable](/core/quality-scale/entity-unavailable/)：在适当的时候将实体标记为不可用。

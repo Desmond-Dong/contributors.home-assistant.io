@@ -1,25 +1,25 @@
 ---
-title: Device automations
-description: How device triggers, conditions, and actions work, for the integrations that already have them.
+title: 设备自动化
+description: 面向已拥有设备自动化的集成，介绍设备触发器、条件和动作的工作方式。
 sidebarGroup: Integration features
 order: 3
 ---
 
 > [!IMPORTANT]
-> Alternatives to device automations are being explored. Existing device automations keep working, but new device automations are not accepted. This page is for maintaining the ones that exist.
+> 我们正在探索设备自动化的替代方案。现有的设备自动化将继续正常工作，但不再接受新的设备自动化。本页面仅用于维护已有的设备自动化。
 
-Device automations let users build automations around a device, without knowing about states, events, or actions. They pick a device, and then pick from a list of triggers, conditions, and actions for it, like "Button 1 pressed" or "Turn on the light". Under the hood, they use the same events, states, and actions as everything else.
+设备自动化让用户围绕设备构建自动化，而无需了解状态（state）、事件或动作。用户选择一个设备，然后从该设备可用的触发器（trigger）、条件（condition）和动作（action）列表中进行选择，例如“按下按钮 1”或“打开灯”。在底层，它们与其他部分使用相同的事件、状态和动作。
 
-They come from two places:
+它们来自两个地方：
 
-- The integration of the device, for things that are not tied to an entity, like a button press on a remote (ZHA and deCONZ do this).
-- The entity integrations, for things that are tied to an entity, like a light turning on. The `light` integration provides these for every light.
+- 设备所属的集成，用于与实体（entity）无关的功能，例如按下遥控器上的按钮（ZHA 和 deCONZ 就是这样做的）。
+- 实体集成，用于与实体相关的功能，例如打开灯。`light` 集成为每个灯提供这些功能。
 
-An integration adds them with three platform files: `device_trigger.py`, `device_condition.py`, and `device_action.py`. Each one defines a schema, a function that lists what a device supports, and a function that does the work. The scaffold script has templates for all three: `python3 -m script.scaffold device_trigger`, `device_condition`, or `device_action`.
+集成通过三个平台文件来添加它们：`device_trigger.py`、`device_condition.py` 和 `device_action.py`。每个文件都会定义一个模式（schema）、一个列出设备所支持功能的函数，以及一个执行具体工作的函数。脚手架（scaffold）脚本提供了这三个文件的模板：`python3 -m script.scaffold device_trigger`、`device_condition` 或 `device_action`。
 
-## Device triggers
+## 设备触发器
 
-A trigger fires when something happens to the device, like an event on the bus or a state change.
+当设备上发生某些事情时，触发器就会触发，例如总线上发生事件或状态发生变化。
 
 ```python
 import probatio
@@ -80,35 +80,35 @@ async def async_attach_trigger(
     )
 ```
 
-- `TRIGGER_SCHEMA` validates a trigger. Define it as a constant in the module, and Home Assistant applies it for you. Do not apply it yourself.
-- `async_get_triggers` lists the triggers a device supports. These are what users can pick.
-- `async_attach_trigger` makes the trigger fire. It returns a function that detaches it.
+- `TRIGGER_SCHEMA` 用于校验触发器。将其定义为模块中的常量，Home Assistant 会自动应用它。不要自行应用。
+- `async_get_triggers` 列出设备支持的触发器。这些就是用户可以选择的选项。
+- `async_attach_trigger` 使触发器触发。它返回一个用于解除该触发器的函数。
 
-If the static schema is not enough, implement `async_validate_trigger_config(hass, config)` to validate dynamically.
+如果静态模式无法满足需求，可以实现 `async_validate_trigger_config(hass, config)` 来进行动态校验。
 
-## Device conditions
+## 设备条件
 
-A condition checks something about the device, like whether a light is on.
+条件检查设备的某些情况，例如灯是否处于打开状态。
 
-- `CONDITION_SCHEMA`: extends `DEVICE_CONDITION_BASE_SCHEMA` from `homeassistant.helpers.config_validation`.
-- `async_get_conditions(hass, device_id)`: lists the conditions a device supports.
-- `async_condition_from_config(hass, config)`: returns a function that checks the condition, and returns a `bool`. It must be safe to call from the event loop.
+- `CONDITION_SCHEMA`：扩展自 `homeassistant.helpers.config_validation` 中的 `DEVICE_CONDITION_BASE_SCHEMA`。
+- `async_get_conditions(hass, device_id)`：列出设备支持的条件。
+- `async_condition_from_config(hass, config)`：返回一个检查该条件的函数，该函数返回一个 `bool` 值。必须确保可以安全地从事件循环（event loop）中调用它。
 
-Implement `async_validate_condition_config(hass, config)` for dynamic validation.
+实现 `async_validate_condition_config(hass, config)` 以进行动态校验。
 
-## Device actions
+## 设备动作
 
-An action makes the device do something, like turning on a light or rebooting the device.
+动作让设备执行某些操作，例如打开灯或重启设备。
 
-- `ACTION_SCHEMA`: extends `DEVICE_ACTION_BASE_SCHEMA` from `homeassistant.helpers.config_validation`. Home Assistant applies it, do not apply it yourself.
-- `async_get_actions(hass, device_id)`: lists the actions a device supports.
-- `async_call_action_from_config(hass, config, variables, context)`: performs the action.
+- `ACTION_SCHEMA`：扩展自 `homeassistant.helpers.config_validation` 中的 `DEVICE_ACTION_BASE_SCHEMA`。Home Assistant 会自动应用它，不要自行应用。
+- `async_get_actions(hass, device_id)`：列出设备支持的动作。
+- `async_call_action_from_config(hass, config, variables, context)`：执行该动作。
 
-Implement `async_validate_action_config(hass, config)` for dynamic validation.
+实现 `async_validate_action_config(hass, config)` 以进行动态校验。
 
-## Secondary device automations
+## 次要设备自动化
 
-Devices with many triggers, conditions, or actions can overwhelm users. Mark the less important ones as secondary. They are still available, but may be shown after the others, or behind a "show more" option.
+拥有大量触发器、条件或动作的设备可能会让用户不知所措。请将较不重要的项目标记为次要（secondary）。它们仍然可用，但可能会显示在其他项目之后，或者隐藏在“显示更多”选项之后。
 
 ```python
 {
@@ -120,11 +120,11 @@ Devices with many triggers, conditions, or actions can overwhelm users. Mark the
 }
 ```
 
-If a device automation refers to an entity with an `entity_id` key, it is marked secondary automatically when that entity is hidden, or has an [entity category](/glossary/entity-category/).
+如果设备自动化通过 `entity_id` 键引用了某个实体，那么当该实体被隐藏或具有[实体类别（entity category）](/glossary/entity-category/)时，该设备自动化会被自动标记为次要。
 
-## Texts
+## 文本
 
-The names users see come from `strings.json`, under `device_automation`:
+用户看到的名称来自 `strings.json` 中 `device_automation` 下的内容：
 
 ```json
 {
@@ -143,4 +143,4 @@ The names users see come from `strings.json`, under `device_automation`:
 }
 ```
 
-Run `python3 -m script.translations develop` to see changes while you develop.
+在开发过程中，运行 `python3 -m script.translations develop` 即可查看更改。

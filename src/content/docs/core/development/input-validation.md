@@ -1,13 +1,13 @@
 ---
-title: Validating input
-description: Validate what users give your integration with probatio schemas and the helpers in config_validation, in config flows, actions, and YAML.
+title: 验证输入
+description: 在配置流程、动作和 YAML 中，使用 probatio 模式（schema）以及 config_validation 中的辅助函数来验证用户提交给集成的数据。
 sidebarGroup: Write code
 order: 6
 ---
 
-Whatever a user gives your integration, check it before you use it. That goes for a config flow form, the data of an action, and YAML configuration. A clear error up front beats a confusing failure halfway through the setup.
+无论用户提交给集成的是什么，在使用之前都要先检查。这适用于配置流程表单、动作的数据以及 YAML 配置。在开始时就给出清晰的错误提示，总比在设置进行到一半时出现令人困惑的失败要好。
 
-Core validates input with schemas from [probatio](https://pypi.org/project/probatio/). A schema says which keys are required or optional, and what type or values each key accepts.
+Core 使用来自 [probatio](https://pypi.org/project/probatio/) 的模式（schema）来验证输入。模式规定了哪些键是必需的或可选的，以及每个键接受的类型或值。
 
 ```python
 import probatio
@@ -26,41 +26,41 @@ DATA_SCHEMA = probatio.Schema(
 )
 ```
 
-In a config flow, you pass a schema like this as the `data_schema` of a step. For YAML, the schema is the `CONFIG_SCHEMA` of the integration. [Building integrations](/core/integrations/) covers both.
+在配置流程中，你将这样的模式作为某个步骤的 `data_schema` 传入。对于 YAML，该模式就是集成的 `CONFIG_SCHEMA`。[构建集成](/core/integrations/) 对两者都有介绍。
 
-## Rules for schemas
+## 模式的规则
 
-- Import probatio as `import probatio`. Ruff blocks the old `vol` alias, and it blocks voluptuous itself.
-- Use the `CONF_*` constants from `homeassistant.const` when one exists, and your own from `const.py` otherwise.
-- Put the required keys first, then the optional ones.
-- A default must be a valid value. Never use `default=None` for a string: use `default=""` if you need a default at all.
+- 使用 `import probatio` 导入 probatio。Ruff 会阻止旧的 `vol` 别名，也会阻止直接使用 voluptuous 本身。
+- 如果 `homeassistant.const` 中已有 `CONF_*` 常量，就使用它们；否则使用你自己 `const.py` 中定义的常量。
+- 把必需的键放在前面，然后是可选的键。
+- 默认值必须是有效值。绝不要对字符串使用 `default=None`：如果确实需要默认值，请使用 `default=""`。
 
-## Helpers in config_validation
+## config_validation 中的辅助函数
 
-Next to the validators of probatio, `homeassistant.helpers.config_validation`, usually imported as `cv`, has validators for things that are specific to Home Assistant:
+除了 probatio 的验证器之外，`homeassistant.helpers.config_validation`（通常以 `cv` 导入）还提供了一些针对 Home Assistant 特有内容的验证器：
 
-- **Types**: `cv.string`, `cv.byte`, `cv.boolean`
-- **Entity IDs**: `cv.entity_id`, `cv.entity_ids`
-- **Numbers**: `cv.small_float`, `cv.positive_int`
-- **Time**: `cv.time`, `cv.time_zone`
-- **Other**: `cv.template`, `cv.slug`, `cv.temperature_unit`, `cv.latitude`, `cv.longitude`, `cv.isfile`, `cv.sun_event`, `cv.url`, `cv.icon`
+- **类型**：`cv.string`、`cv.byte`、`cv.boolean`
+- **实体 ID**：`cv.entity_id`、`cv.entity_ids`
+- **数字**：`cv.small_float`、`cv.positive_int`
+- **时间**：`cv.time`、`cv.time_zone`
+- **其他**：`cv.template`、`cv.slug`、`cv.temperature_unit`、`cv.latitude`、`cv.longitude`、`cv.isfile`、`cv.sun_event`、`cv.url`、`cv.icon`
 
-For MQTT topics, the MQTT integration has `valid_subscribe_topic` and `valid_publish_topic` in `homeassistant/components/mqtt/util.py`.
+对于 MQTT 主题，MQTT 集成在 `homeassistant/components/mqtt/util.py` 中提供了 `valid_subscribe_topic` 和 `valid_publish_topic`。
 
-Some of the older `cv` helpers are now thin wrappers around a probatio validator. In core, a lint rule makes you use the probatio version directly:
+一些较旧的 `cv` 辅助函数现在只是 probatio 验证器的简单封装。在 core 中，一条 lint 规则要求你直接使用 probatio 版本：
 
-| Instead of | Use |
+| 不要使用 | 应使用 |
 | --- | --- |
 | `cv.ensure_list` | `probatio.EnsureList()` |
 | `cv.port` | `probatio.Port()` |
 | `cv.has_at_least_one_key` | `probatio.AtLeastOne` |
 | `cv.has_at_most_one_key` | `probatio.AtMostOne` |
 
-The `cv` names keep working for custom integrations.
+对于自定义集成，这些 `cv` 名称仍然可以使用。
 
-## Examples
+## 示例
 
-### Limit the choices
+### 限制可选值
 
 ```python
 DATA_SCHEMA = probatio.Schema(
@@ -72,7 +72,7 @@ DATA_SCHEMA = probatio.Schema(
 )
 ```
 
-### A list of known options
+### 已知选项的列表
 
 ```python
 SENSOR_TYPES = {
@@ -89,13 +89,13 @@ DATA_SCHEMA = probatio.Schema(
 )
 ```
 
-### Secrets
+### 密钥
 
-Wrap a key in `probatio.Secret` when its value grants access, like a password, a token, an API key, or a PIN. When validation fails, the error then names the key and the problem, but not the value, so the secret does not end up in the log:
+当某个键的值能够授予访问权限时，比如密码、令牌、API 密钥或 PIN 码，请用 `probatio.Secret` 将其包裹起来。这样当验证失败时，错误信息会指出键名和问题所在，但不会显示其值，从而避免密钥出现在日志中：
 
 ```text
 Invalid config for 'demo': value should be a string for dictionary value
 'password', got **REDACTED**
 ```
 
-Only mark real secrets. A host name, a serial number, or a GPIO pin is not a secret, and hiding it makes the error useless to the person trying to fix their configuration.
+只标记真正的密钥。主机名、序列号或 GPIO 引脚都不是密钥，隐藏它们只会让试图修复配置的人无法从错误信息中获得帮助。

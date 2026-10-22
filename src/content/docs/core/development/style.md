@@ -1,32 +1,32 @@
 ---
-title: Code style
-description: The style rules for Python in Home Assistant Core. Formatting, docstrings, logging, error handling, and the conventions reviewers look for.
+title: 代码风格
+description: Home Assistant Core 中 Python 的风格规则。格式化、docstring、日志、错误处理，以及审查者所关注的约定。
 sidebarGroup: Write code
 order: 2
 ---
 
-Core is a big codebase with thousands of contributors. A consistent style makes it readable for all of them. Most of the rules are enforced by tools, so you do not have to remember them. The rest are conventions that reviewers will point out.
+Core 是一个拥有数千名贡献者的大型代码库。一致的风格使其对所有人来说都易于阅读。大多数规则由工具强制执行，因此你不必记住它们。其余的约定则由审查者指出。
 
-## Formatting and linting
+## 格式化和代码检查
 
-You don't format code by hand, and there is no style guide to memorize: the tools decide.
+你不需要手动格式化代码，也没有需要背诵的风格指南：由工具来决定。
 
-- [Ruff](https://docs.astral.sh/ruff/) formats all code, and its linter catches most problems, including the order of your imports. Docstrings follow the Google convention, which Ruff checks too.
-- [Pylint](https://pylint.readthedocs.io/), with a set of checks written for Home Assistant, catches the patterns Ruff cannot see.
+- [Ruff](https://docs.astral.sh/ruff/) 格式化所有代码，其 linter 能捕获大多数问题，包括导入的顺序。Docstring 遵循 Google 约定，Ruff 也会对此进行检查。
+- [Pylint](https://pylint.readthedocs.io/) 带有一套为 Home Assistant 编写的检查规则，能捕获 Ruff 看不到的模式。
 
-Both run when you commit, and again in CI. A pull request that does not pass them is not merged. See [Linters, hassfest, and CI](/core/development/checks/) for how to run them yourself.
+两者都会在你提交时运行，并在 CI 中再次运行。未通过这些检查的拉取请求（pull request）不会被合并。请参阅 [Linters, hassfest, and CI](/core/development/checks/) 了解如何自行运行它们。
 
-Core requires Python 3.14 or newer, so use what it offers. You do not need `from __future__ import annotations` (Ruff even blocks it), and forward references in annotations do not need quotes.
+Core 要求 Python 3.14 或更新版本，因此请使用它所提供的特性。你不需要 `from __future__ import annotations`（Ruff 甚至会阻止它），并且注解中的前向引用也不需要加引号。
 
-## Docstrings and comments
+## Docstring 和注释
 
-Every module, class, and function has a docstring. The docstring at the top of a file says what the file is about:
+每个模块、类和函数都有 docstring。文件顶部的 docstring 说明该文件的内容：
 
 ```python
 """Support for Example sensors."""
 ```
 
-Type hints document the parameters of a function. When a function needs more explanation, use the [Google style](https://google.github.io/styleguide/pyguide.html#383-functions-and-methods), and leave the types out: they are already in the signature.
+类型提示（type hints）用于记录函数的参数。当函数需要更多说明时，请使用 [Google 风格](https://google.github.io/styleguide/pyguide.html#383-functions-and-methods)，并且不要包含类型：它们已经在函数签名中了。
 
 ```python
 def calculate_dew_point(temperature: float, humidity: float) -> float:
@@ -41,17 +41,17 @@ def calculate_dew_point(temperature: float, humidity: float) -> float:
     """
 ```
 
-Comments are full sentences that end with a period. Keep them short, and use them to explain *why*, never *what*: the code already says what it does. Do not leave commented out code behind. Git remembers it.
+注释应是完整的句子并以句号结尾。保持简短，并用它们解释*为什么*，而不是*是什么*：代码本身已经说明了它做什么。不要留下被注释掉的代码。Git 会记住它。
 
-## Order and constants
+## 顺序和常量
 
-- Keep constants, and the contents of lists and dictionaries, in alphabetical order where the order does not matter.
-- Constants that more than one module of an integration uses go in `const.py`, and are imported from there. A constant only one module uses stays in that module.
-- Replace magic strings with constants.
+- 在顺序无关紧要的情况下，保持常量以及列表和字典的内容按字母顺序排列。
+- 集成（integration）中多个模块使用的常量放在 `const.py` 中，并从那里导入。只有一个模块使用的常量则保留在该模块中。
+- 用常量替换魔法字符串。
 
-## Logging
+## 日志
 
-The logger already adds the name of the integration, so do not repeat it in the message. Like syslog messages, log messages do not end with a period.
+日志记录器（logger）已经添加了集成的名称，因此不要在消息中重复它。与 syslog 消息一样，日志消息不以句号结尾。
 
 ```python
 _LOGGER.error("No route to device: %s", self._resource)
@@ -61,33 +61,33 @@ _LOGGER.error("No route to device: %s", self._resource)
 ERROR [homeassistant.components.example] No route to device: 10.0.0.8
 ```
 
-- Use `_LOGGER.debug` for anything that is not meant for the user. Be careful with `_LOGGER.info`.
-- Use `_LOGGER.error` only for things the user should act on, and `_LOGGER.warning` when something works, but not fully. A device that is offline is expected, not an error.
-- Never log API keys, tokens, usernames, or passwords. Not even wrong ones.
+- 使用 `_LOGGER.debug` 记录任何非面向用户的内容。谨慎使用 `_LOGGER.info`。
+- 仅在用户需要采取行动时使用 `_LOGGER.error`，而在某项功能可以工作但不完全正常时使用 `_LOGGER.warning`。设备离线是预期情况，而不是错误。
+- 永远不要记录 API 密钥、令牌、用户名或密码。即使是错误的也不要记录。
 
-## String formatting
+## 字符串格式化
 
-Use f-strings, not `%` or `str.format`:
+使用 f-strings，而不是 `%` 或 `str.format`：
 
 ```python
 name = f"{device_name} {sensor_name}"
 ```
 
-Logging is the exception. Pass the values as arguments, so the message is only formatted when it is actually logged:
+日志记录是例外。将值作为参数传递，这样消息只在实际记录时才被格式化：
 
 ```python
 _LOGGER.info("Can't connect to %s at %s", service, host)
 ```
 
-## Error handling
+## 错误处理
 
-- Catch only the exceptions you expect, like the connection and API errors of your library. Do not use `except Exception:`. The one accepted place is the last `except` of a config flow step, which logs the unexpected error with `_LOGGER.exception` and shows the `unknown` error, like the scaffold generates.
-- Keep `try` blocks small. Only put the lines in them that can raise the exception you catch.
-- Prefer early returns over deep nesting: `if not condition: return`.
-- When validation guarantees that a key exists, use `data["key"]`, not `data.get("key")`. A missing key is a bug, and it should show.
-- Do not add checks for input that an action schema already validated.
+- 只捕获你预期的异常，例如你的库的连接和 API 错误。不要使用 `except Exception:`。唯一可接受的位置是配置流程（config flow）步骤的最后一个 `except`，它会使用 `_LOGGER.exception` 记录意外错误并显示 `unknown` 错误，就像脚手架生成的那样。
+- 保持 `try` 块较小。只将可能引发你所捕获异常的代码行放入其中。
+- 优先使用提前返回而不是深层嵌套：`if not condition: return`。
+- 当验证保证某个键存在时，使用 `data["key"]`，而不是 `data.get("key")`。缺失的键是一个 bug，应该让它显现出来。
+- 不要为操作（action）模式（schema）已验证的输入添加检查。
 
-When an action fails, raise `HomeAssistantError`, or `ServiceValidationError` when the input was wrong, so the user sees the error in the interface. Do not log it as well, the message is already logged.
+当操作失败时，抛出 `HomeAssistantError`，如果输入有误则抛出 `ServiceValidationError`，以便用户在界面中看到错误。不要同时记录日志，消息已经被记录了。
 
 ```python
 async def async_turn_on(self, **kwargs: Any) -> None:
@@ -98,9 +98,9 @@ async def async_turn_on(self, **kwargs: Any) -> None:
         raise HomeAssistantError(f"Failed to turn on: {err}") from err
 ```
 
-## Using assert
+## 使用 assert
 
-Python removes `assert` statements when it runs with `-O`, so they are not for checks at runtime. Use them in tests, and to help the type checker narrow a type. In that case, put them in a `TYPE_CHECKING` block, so they never run:
+Python 在以 `-O` 运行时会移除 `assert` 语句，因此它们不用于运行时检查。在测试中使用它们，以及帮助类型检查器收窄类型。在后一种情况下，将它们放在 `TYPE_CHECKING` 块中，这样它们就永远不会运行：
 
 ```python
 from typing import TYPE_CHECKING
@@ -109,12 +109,12 @@ if TYPE_CHECKING:
     assert self.client is not None
 ```
 
-## Structure
+## 结构
 
-- Use a dataclass to pass related values around, instead of a tuple or a dictionary.
-- Do not store the same value in two places.
-- Entities use the `_attr_` attributes, like `_attr_native_value`, instead of properties, unless the value has to be computed when it is read.
-- Actions that change configuration or have security impact require an admin. Register them with `async_register_admin_service`.
-- Integrations do not contain `.gitignore` files.
+- 使用 dataclass 传递相关的值，而不是元组或字典。
+- 不要在两个地方存储相同的值。
+- 实体（entity）使用 `_attr_` 属性，例如 `_attr_native_value`，而不是属性（property），除非该值必须在读取时计算。
+- 更改配置或具有安全影响的操作需要管理员权限。使用 `async_register_admin_service` 注册它们。
+- 集成中不包含 `.gitignore` 文件。
 
-Not sure how something should look? Look at an integration on the Platinum or Gold tier of the [integration quality scale](/core/quality-scale/). The tier is in its `manifest.json`.
+不确定某些东西应该是什么样子？请查看[集成质量量表](/core/quality-scale/)上 Platinum 或 Gold 级别的集成。级别记录在其 `manifest.json` 中。

@@ -1,64 +1,64 @@
 ---
-title: Update entity
-description: Build an update entity that tells users a new firmware or software version is available, and lets them install it.
+title: 更新实体
+description: 构建一个更新实体，告知用户有新的固件或软件版本可用，并允许他们进行安装。
 sidebarLabel: Update
 sidebarGroup: Appliances
 ---
 
-An update entity tells users that a newer version is available for a device or service, like firmware for a light bulb or router, or software for an app or a container. It can also install that update from Home Assistant, show the release notes, and report progress while installing. Inherit from `UpdateEntity` in `homeassistant.components.update`.
+更新实体（update entity）会告知用户，某个设备或服务有更新的版本可用，例如灯泡或路由器的固件，或应用程序或容器的软件。它还可以从 Home Assistant 安装该更新、显示发行说明（release notes），并在安装过程中报告进度。请继承 `homeassistant.components.update` 中的 `UpdateEntity`。
 
-Users find available updates in **Settings**, next to the updates of Home Assistant itself. For how the frontend shows one, see the [update more-info view](/design/more-info/update/).
+用户可以在**设置**（Settings）中找到可用的更新，它们位于 Home Assistant 自身更新的旁边。有关前端如何展示更新，请参阅[更新更多信息视图](/design/more-info/update/)。
 
-## Properties
+## 属性
 
-Update entities have these properties on top of the [generic entity properties](/core/entities/entity-class/). Every property can be set with its `_attr_` attribute, like `_attr_installed_version`.
+除了[通用实体属性](/core/entities/entity-class/)之外，更新实体还具有以下属性。每个属性都可以通过其对应的 `_attr_` 属性来设置，例如 `_attr_installed_version`。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `installed_version` | `str \| None` | `None` | The version that is installed and in use now. |
-| `latest_version` | `str \| None` | `None` | The newest version available. |
-| `title` | `str \| None` | `None` | The name of the software, like `Tasmota`, when that differs from the device or entity name. |
-| `release_summary` | `str \| None` | `None` | A short excerpt of the release notes. Cut off at 255 characters. |
-| `release_url` | `str \| None` | `None` | A link to the full release notes. |
-| `auto_update` | `bool` | `False` | The device or service updates itself. Users cannot skip versions of such an entity. |
-| `in_progress` | `bool \| None` | `False` | Whether an install is running. Requires `UpdateEntityFeature.PROGRESS`. |
-| `update_percentage` | `int \| float \| None` | `None` | How far the install is, from 0 to 100. Requires `UpdateEntityFeature.PROGRESS`, and is only shown while `in_progress` is `True`. |
-| `display_precision` | `int` | `0` | The number of decimals to show for `update_percentage`. |
-| `device_class` | `UpdateDeviceClass \| None` | `None` | The kind of update. See [Device classes](#device-classes). |
-| `restart_required` | `bool` | `False` | Home Assistant needs a restart once this update is installed. See [Install](#install). |
-| `has_update` | `bool` | Compares the versions | Whether an update is available. See [Decide whether an update is available](#decide-whether-an-update-is-available). |
+| `installed_version` | `str \| None` | `None` | 当前已安装并正在使用的版本。 |
+| `latest_version` | `str \| None` | `None` | 可用的最新版本。 |
+| `title` | `str \| None` | `None` | 软件的名称（例如 `Tasmota`），用于名称与设备或实体名称不同的情况。 |
+| `release_summary` | `str \| None` | `None` | 发行说明的简短摘录。最多 255 个字符。 |
+| `release_url` | `str \| None` | `None` | 完整发行说明的链接。 |
+| `auto_update` | `bool` | `False` | 设备或服务会自行更新。用户不能跳过此类实体的版本。 |
+| `in_progress` | `bool \| None` | `False` | 是否正在进行安装。需要 `UpdateEntityFeature.PROGRESS`。 |
+| `update_percentage` | `int \| float \| None` | `None` | 安装进行到什么程度，从 0 到 100。需要 `UpdateEntityFeature.PROGRESS`，并且仅在 `in_progress` 为 `True` 时显示。 |
+| `display_precision` | `int` | `0` | `update_percentage` 显示的小数位数。 |
+| `device_class` | `UpdateDeviceClass \| None` | `None` | 更新的类型。参见[设备类别](#device-classes)。 |
+| `restart_required` | `bool` | `False` | 安装此更新后，Home Assistant 需要重启。参见[安装](#install)。 |
+| `has_update` | `bool` | 比较版本 | 是否有可用更新。参见[判断是否有可用更新](#decide-whether-an-update-is-available)。 |
 
-Update entities change a few generic defaults:
+更新实体更改了一些通用默认值：
 
-- `entity_category` is `EntityCategory.CONFIG` when the entity supports `INSTALL`, and `EntityCategory.DIAGNOSTIC` otherwise. Set it yourself to override that. When the entity has an entity description, the `entity_category` of the description is used instead. `UpdateEntityDescription` defaults it to `EntityCategory.CONFIG`.
-- `entity_picture` is the brand icon of your integration.
-- An entity without a name, but with a device class, is named after its device class, like **Firmware**.
+- 当实体支持 `INSTALL` 时，`entity_category` 为 `EntityCategory.CONFIG`，否则为 `EntityCategory.DIAGNOSTIC`。你可以自行设置该属性来覆盖默认值。当实体具有实体描述（entity description）时，则会改用该描述中的 `entity_category`。`UpdateEntityDescription` 默认将其设为 `EntityCategory.CONFIG`。
+- `entity_picture` 为你的集成的品牌图标。
+- 没有名称但具有设备类别（device class）的实体，会以其设备类别命名，例如**固件**（Firmware）。
 
-## Supported features
+## 支持的功能
 
-Combine the values of `UpdateEntityFeature` with the bitwise or (`|`) operator. Home Assistant checks them when the `update.install` action is called, and refuses what the entity does not support.
+使用按位或（`|`）运算符组合 `UpdateEntityFeature` 的各个值。当调用 `update.install` 动作（action）时，Home Assistant 会检查这些值，并拒绝执行实体不支持的操作。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `INSTALL` | The update can be installed from Home Assistant. Implement `install`. |
-| `SPECIFIC_VERSION` | A specific version can be installed, passed as `version` to `install`. |
-| `BACKUP` | The device or service can make a backup before it installs, when `backup` is `True`. |
-| `PROGRESS` | The entity reports install progress with `in_progress` and `update_percentage`. |
-| `RELEASE_NOTES` | The entity can fetch the full release notes. Implement `release_notes`. |
+| `INSTALL` | 可以通过 Home Assistant 安装该更新。实现 `install`。 |
+| `SPECIFIC_VERSION` | 可以安装特定版本，作为 `version` 传递给 `install`。 |
+| `BACKUP` | 当 `backup` 为 `True` 时，设备或服务可以在安装前进行备份。 |
+| `PROGRESS` | 实体通过 `in_progress` 和 `update_percentage` 报告安装进度。 |
+| `RELEASE_NOTES` | 实体可以获取完整的发行说明。实现 `release_notes`。 |
 
-Without `PROGRESS`, Home Assistant still shows that an install is running: it sets `in_progress` itself for as long as your install method runs. Set `PROGRESS` when the device reports real progress, it gives users a better picture.
+即使没有 `PROGRESS`，Home Assistant 仍会显示安装正在进行：在你的安装方法运行期间，它会自行设置 `in_progress`。当设备报告真实进度时，请设置 `PROGRESS`，这能让用户更清楚地了解情况。
 
-## Device classes
+## 设备类别
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `UpdateDeviceClass.FIRMWARE` | The update is firmware for a device. |
+| `UpdateDeviceClass.FIRMWARE` | 该更新是设备的固件。 |
 
-## Methods
+## 方法
 
-### Install
+### 安装
 
-Requires `UpdateEntityFeature.INSTALL`. Implement `install` or `async_install`.
+需要 `UpdateEntityFeature.INSTALL`。实现 `install` 或 `async_install`。
 
 ```python
 async def async_install(
@@ -67,24 +67,24 @@ async def async_install(
     """Install an update."""
 ```
 
-`version` is the version to install, or `None` for the latest. `backup` asks for a backup first. When the `update.install` action calls it, Home Assistant has already checked that there is something to install, that no install is running, and that the entity supports the requested version and backup.
+`version` 是要安装的版本，为 `None` 时表示最新版本。`backup` 表示要求先进行备份。当 `update.install` 动作调用它时，Home Assistant 已经检查过：有可安装的内容、当前没有正在进行的安装，并且实体支持所请求的版本和备份。
 
-Return when the install is done, or raise a `HomeAssistantError` when it fails. Whichever way it ends, Home Assistant then resets `_attr_in_progress` to `False` and writes the state. If you override the `in_progress` property, make sure it reports `False` by then.
+安装完成后即可返回；如果失败，则抛出 `HomeAssistantError`。无论以哪种方式结束，Home Assistant 随后都会将 `_attr_in_progress` 重置为 `False` 并写入状态。如果你重写了 `in_progress` 属性，请确保到那时它报告的是 `False`。
 
-If the update only takes effect after Home Assistant restarts, set `restart_required` to `True`. Once the install finishes without raising, the entity [asks for a restart](/core/integrations/restart-required/) on behalf of your integration. A failed install does not.
+如果更新只有在 Home Assistant 重启后才会生效，请将 `restart_required` 设置为 `True`。一旦安装顺利完成而未抛出异常，实体就会代表你的集成[请求重启](/core/integrations/restart-required/)。如果安装失败，则不会。
 
-### Release notes
+### 发行说明
 
-Requires `UpdateEntityFeature.RELEASE_NOTES`. Implement `release_notes` or `async_release_notes`, and return the full release notes of the latest version. The frontend shows them in the more-info dialog before the user installs, and renders Markdown.
+需要 `UpdateEntityFeature.RELEASE_NOTES`。实现 `release_notes` 或 `async_release_notes`，并返回最新版本的完整发行说明。前端会在用户安装之前，在更多信息（more-info）对话框中显示这些内容，并渲染 Markdown。
 
 ```python
 async def async_release_notes(self) -> str | None:
     """Return the release notes."""
 ```
 
-### Compare versions
+### 比较版本
 
-By default, a version counts as newer when [AwesomeVersion](https://github.com/ludeeus/awesomeversion) says so. If your versions don't compare well that way, override `version_is_newer`.
+默认情况下，如果 [AwesomeVersion](https://github.com/ludeeus/awesomeversion) 判定一个版本更新，它就会被视为更新。如果你的版本不适合用这种方式进行比较，请重写 `version_is_newer`。
 
 ```python
 def version_is_newer(
@@ -93,9 +93,9 @@ def version_is_newer(
     """Return True if latest_version is newer than installed_version."""
 ```
 
-### Decide whether an update is available
+### 判断是否有可用更新
 
-Some devices or services tell you directly whether an update is available, instead of giving versions Home Assistant can compare. Override the `has_update` property for those.
+有些设备或服务会直接告知是否有可用更新，而不是提供 Home Assistant 可以比较的版本。对于这些情况，请重写 `has_update` 属性。
 
 ```python
 @property
@@ -104,20 +104,20 @@ def has_update(self) -> bool:
     return self.device.update_available
 ```
 
-Home Assistant only reads `has_update` when both `installed_version` and `latest_version` are known and differ, and the user has not skipped the latest version. By default, it calls `version_is_newer`.
+只有当 `installed_version` 和 `latest_version` 均已知且不相同，并且用户没有跳过最新版本时，Home Assistant 才会读取 `has_update`。默认情况下，它会调用 `version_is_newer`。
 
-## States
+## 状态
 
-The state is `on` when an update is available and `off` when the installed version is the latest. Home Assistant works this out from `installed_version` and `latest_version`; the `state` property is final.
+当有可用更新时，状态为 `on`；当已安装的版本就是最新版本时，状态为 `off`。Home Assistant 会根据 `installed_version` 和 `latest_version` 得出这一结果；`state` 属性是最终结果。
 
-- When either version is `None`, the state is `unknown`.
-- When both versions are the same, the state is `off`.
-- When the user skipped the latest version, the state is `off` until a newer one comes out.
-- Otherwise, the state follows `has_update`. By default, that is `on` when the latest version is newer, and also when the versions can't be compared.
+- 当任一版本为 `None` 时，状态为 `unknown`。
+- 当两个版本相同时，状态为 `off`。
+- 当用户跳过了最新版本时，状态为 `off`，直到出现更新的版本。
+- 否则，状态取决于 `has_update`。默认情况下，当最新版本更新时状态为 `on`，当版本无法比较时也是如此。
 
-Skipping and clearing a skipped version are handled by Home Assistant. You don't implement them.
+跳过版本以及清除已跳过的版本都由 Home Assistant 处理，你无需实现这些功能。
 
-## Example
+## 示例
 
 ```python
 from typing import Any
@@ -170,4 +170,4 @@ class MyFirmwareUpdate(MyEntity, UpdateEntity):
         await self.coordinator.async_request_refresh()
 ```
 
-`MyEntity` is the shared base entity of the integration, a `CoordinatorEntity` that sets `_attr_has_entity_name = True` and the device info. The entity has no name of its own, so it is named **Firmware** after its device class.
+`MyEntity` 是该集成的共享基础实体，它是一个 `CoordinatorEntity`，设置了 `_attr_has_entity_name = True` 和设备信息。该实体没有自己的名称，因此根据其设备类别被命名为**固件**（Firmware）。

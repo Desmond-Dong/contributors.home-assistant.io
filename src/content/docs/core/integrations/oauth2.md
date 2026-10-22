@@ -1,33 +1,33 @@
 ---
-title: OAuth 2.0 and application credentials
-description: Link a user's account at a cloud service with OAuth 2.0, and let Home Assistant handle the tokens for you.
+title: OAuth 2.0 和应用凭据
+description: 通过 OAuth 2.0 链接用户在云服务上的帐户，并让 Home Assistant 为您处理令牌。
 sidebarLabel: OAuth 2.0
 sidebarGroup: Setup and configuration
 order: 7
 ---
 
-Many cloud services let users link their account with OAuth 2.0: the user logs in on the website of the service, and Home Assistant gets a token. Home Assistant has helpers for the whole thing, in `homeassistant.helpers.config_entry_oauth2_flow`: the config flow, storing the token, refreshing it, and handling errors. You do not implement any of that yourself.
+许多云服务允许用户使用 OAuth 2.0 链接其帐户：用户在该服务的网站上登录，Home Assistant 获得一个令牌（token）。Home Assistant 在 `homeassistant.helpers.config_entry_oauth2_flow` 中为这一切提供了辅助工具（helper）：配置流程、存储令牌、刷新令牌以及处理错误。您无需自己实现其中任何一部分。
 
-The quickest start is the scaffold script:
+最快的入门方式是脚手架脚本：
 
 ```shell
 python3 -m script.scaffold config_flow_oauth2
 ```
 
-## How it fits together
+## 整体运作方式
 
-OAuth 2.0 needs a client ID and a client secret: the credentials of an application registered at the service. There are two ways a user gets those:
+OAuth 2.0 需要客户端 ID（client ID）和客户端密钥（client secret）：即在该服务注册的应用程序的凭据。用户获取它们有两种方式：
 
-- **Application credentials**: the user registers their own application at the service, and enters its client ID and secret in Home Assistant. Every integration that supports OAuth 2.0 must support this.
-- **Home Assistant Link account linking**: Nabu Casa registered an application with the service, so users with a subscription can link their account without registering anything. This gives the best experience. To add your integration to it, contact [partner@openhomefoundation.org](mailto:partner@openhomefoundation.org).
+- **应用凭据（application credentials）**：用户在该服务上注册自己的应用程序，并在 Home Assistant 中输入其客户端 ID 和密钥。每个支持 OAuth 2.0 的集成都必须支持这种方式。
+- **Home Assistant Link 帐户链接**：Nabu Casa 已在该服务上注册了一个应用程序，因此拥有订阅的用户无需注册任何内容即可链接其帐户。这能提供最佳体验。要将您的集成添加到其中，请联系 [partner@openhomefoundation.org](mailto:partner@openhomefoundation.org)。
 
-Both end up as an implementation, a subclass of `AbstractOAuth2Implementation`. The config flow lets the user pick one if there are several, and uses it to log in.
+两者最终都会成为一个实现（implementation），即 `AbstractOAuth2Implementation` 的子类。如果存在多个实现，配置流程会让用户选择其中一个，并使用它进行登录。
 
-Your library has to be built so that Home Assistant can refresh tokens for it: it asks for a valid token before each request, instead of handling the refresh itself. See [OAuth 2 in your API library](/core/integrations/api-library/#oauth-2) for how to build that.
+您的库必须构建为让 Home Assistant 能够为其刷新令牌：它在每次请求之前请求一个有效的令牌，而不是自己处理刷新。有关如何构建，请参阅[API 库中的 OAuth 2](/core/integrations/api-library/#oauth-2)。
 
-## Application credentials
+## 应用凭据
 
-Add `application_credentials` to the `dependencies` in your [manifest](/core/integrations/manifest/#dependencies), and create `application_credentials.py` with the URLs of the authorization server of the service:
+在您的[清单（manifest）](/core/integrations/manifest/#dependencies)的 `dependencies` 中添加 `application_credentials`，并创建 `application_credentials.py`，其中包含该服务授权服务器的 URL：
 
 ```python
 from homeassistant.components.application_credentials import (
@@ -46,11 +46,11 @@ async def async_get_authorization_server(
     )
 ```
 
-`authorize_url` is where the user logs in. `token_url` is where Home Assistant gets and refreshes tokens.
+`authorize_url` 是用户登录的地方。`token_url` 是 Home Assistant 获取和刷新令牌的地方。
 
-### A custom implementation
+### 自定义实现
 
-If the service does something special, return your own implementation instead, from `async_get_auth_implementation`. For example, for a service that requires [PKCE](https://www.rfc-editor.org/rfc/rfc7636):
+如果该服务有特殊之处，请在 `async_get_auth_implementation` 中返回您自己的实现。例如，对于需要 [PKCE](https://www.rfc-editor.org/rfc/rfc7636) 的服务：
 
 ```python
 from homeassistant.components.application_credentials import (
@@ -79,11 +79,11 @@ async def async_get_auth_implementation(
     )
 ```
 
-For other changes, subclass `AuthImplementation` from the application credentials integration, and override what you need.
+对于其他改动，请继承应用凭据集成中的 `AuthImplementation`，并重写您需要的部分。
 
-### Help users create credentials
+### 帮助用户创建凭据
 
-Explain where users create their credentials in `strings.json`, under `application_credentials`:
+在 `strings.json` 的 `application_credentials` 下说明用户在哪里创建其凭据：
 
 ```json
 {
@@ -93,7 +93,7 @@ Explain where users create their credentials in `strings.json`, under `applicati
 }
 ```
 
-Fill placeholders like `console_url` with `async_get_description_placeholders` in `application_credentials.py`, so URLs stay out of the translations:
+在 `application_credentials.py` 中使用 `async_get_description_placeholders` 填充诸如 `console_url` 之类的占位符，这样 URL 就不会出现在翻译中：
 
 ```python
 async def async_get_description_placeholders(
@@ -103,9 +103,9 @@ async def async_get_description_placeholders(
     return {"console_url": "https://example.com/developers"}
 ```
 
-### Credentials from YAML
+### 来自 YAML 的凭据
 
-New integrations must not accept credentials in `configuration.yaml`: users enter them in the UI. Integrations that used to accept them can move them over with `async_import_client_credential`:
+新集成不得接受 `configuration.yaml` 中的凭据：用户应在 UI 中输入。以前接受凭据的集成可以使用 `async_import_client_credential` 将其迁移过来：
 
 ```python
 from homeassistant.components.application_credentials import (
@@ -129,9 +129,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     return True
 ```
 
-## The config flow
+## 配置流程
 
-Extend `AbstractOAuth2FlowHandler`. It already has the `user` step, picks the implementation, sends the user to the service, and receives the token. You set the domain and a logger, and add the scopes and other parameters the service needs in `extra_authorize_data`:
+继承 `AbstractOAuth2FlowHandler`。它已经包含了 `user` 步骤，会选择实现、将用户发送到该服务并接收令牌。您只需设置域名（domain）和日志记录器（logger），并在 `extra_authorize_data` 中添加该服务所需的作用域（scope）和其他参数：
 
 ```python
 import logging
@@ -158,11 +158,11 @@ class OAuth2FlowHandler(
         return {"scope": "read write offline_access"}
 ```
 
-When the login succeeds, the helper calls `async_oauth_create_entry` with the data, including the token. By default it creates an entry with the name of the implementation as title. Override it to set a unique ID, a better title, or to [handle reauthentication](#reauthentication).
+登录成功后，辅助工具会调用 `async_oauth_create_entry` 并传入数据（包括令牌）。默认情况下，它会创建一个条目，并以实现的名称作为标题。您可以重写它来设置唯一 ID、更好的标题，或者[处理重新认证](#reauthentication)。
 
-### Reauthentication
+### 重新认证
 
-Tokens can become invalid for good, for example when the user revokes access at the service. Home Assistant then starts a [reauthentication flow](/core/integrations/reauth-reconfigure/#reauthentication). For OAuth 2.0, that means logging in again:
+令牌可能会永久失效，例如用户在服务端撤销了访问权限。此时 Home Assistant 会启动一个[重新认证流程](/core/integrations/reauth-reconfigure/#reauthentication)。对于 OAuth 2.0，这意味着重新登录：
 
 ```python
 from collections.abc import Mapping
@@ -205,11 +205,11 @@ async def async_oauth_create_entry(
     return self.async_create_entry(title=account.name, data=data)
 ```
 
-Always implement reauthentication, so users can link their account again without removing the integration.
+请务必实现重新认证，这样用户无需删除集成即可重新链接其帐户。
 
-## Make authenticated requests
+## 发起经过身份验证的请求
 
-Create an `OAuth2Session` in `async_setup_entry`. It keeps the token valid, and stores refreshed tokens in the config entry:
+在 `async_setup_entry` 中创建一个 `OAuth2Session`。它会保持令牌有效，并将刷新后的令牌存储在配置条目（config entry）中：
 
 ```python
 from homeassistant.helpers.config_entry_oauth2_flow import (
@@ -239,24 +239,24 @@ async def async_setup_entry(
     return True
 ```
 
-Before every request, the library calls `await session.async_ensure_token_valid()`, which refreshes the token if needed, and then reads the token from `session.token["access_token"]`. Keep token handling in the library, the setup, or the coordinator, never in entity code.
+在每次请求之前，库会调用 `await session.async_ensure_token_valid()`，它会在需要时刷新令牌，然后从 `session.token["access_token"]` 读取令牌。请将令牌处理保留在库、安装过程或协调器（coordinator）中，绝不要放在实体（entity）代码中。
 
-## Errors
+## 错误
 
-When a token request fails, the helper raises one of these exceptions from `homeassistant.exceptions`. Each one is also a config entry exception that says what should happen, with a translated message, so you do not have to map them or add them to `strings.json`.
+当令牌请求失败时，辅助工具会抛出来自 `homeassistant.exceptions` 的以下异常之一。每个异常同时也是配置条目异常，会说明接下来应该发生什么，并带有已翻译的消息，因此您无需映射它们或将它们添加到 `strings.json` 中。
 
-| Exception | Cause | Also a |
+| 异常 | 原因 | 同时也是 |
 | --- | --- | --- |
-| `OAuth2TokenRequestReauthError` | HTTP status 400 to 499, except 429 | `ConfigEntryAuthFailed` |
-| `OAuth2TokenRequestTransientError` | HTTP status 429, or 500 to 599 | `ConfigEntryNotReady` |
-| `OAuth2TokenRequestError` | Any other HTTP status. Base class of the two above. | `ConfigEntryNotReady` |
-| `OAuth2TokenRequestConnectionError` | No response, or a response without a usable token | `ConfigEntryNotReady` |
+| `OAuth2TokenRequestReauthError` | HTTP 状态 400 到 499（429 除外） | `ConfigEntryAuthFailed` |
+| `OAuth2TokenRequestTransientError` | HTTP 状态 429，或 500 到 599 | `ConfigEntryNotReady` |
+| `OAuth2TokenRequestError` | 任何其他 HTTP 状态。是上述两个异常的基类。 | `ConfigEntryNotReady` |
+| `OAuth2TokenRequestConnectionError` | 无响应，或响应中没有可用的令牌 | `ConfigEntryNotReady` |
 
-`async_get_config_entry_implementation` works the same way: it raises `ImplementationUnavailableError` (a `ConfigEntryNotReady`) or `UnknownImplementationError` (a `ConfigEntryAuthFailed`). For backward compatibility, the token request exceptions also inherit from `aiohttp.ClientResponseError`, and `OAuth2TokenRequestConnectionError` from `aiohttp.ClientError`. When `async_ensure_token_valid` raises `OAuth2TokenRequestReauthError`, it has already started the reauthentication flow.
+`async_get_config_entry_implementation` 的工作方式相同：它会抛出 `ImplementationUnavailableError`（一个 `ConfigEntryNotReady`）或 `UnknownImplementationError`（一个 `ConfigEntryAuthFailed`）。为了向后兼容，这些令牌请求异常还继承自 `aiohttp.ClientResponseError`，而 `OAuth2TokenRequestConnectionError` 继承自 `aiohttp.ClientError`。当 `async_ensure_token_valid` 抛出 `OAuth2TokenRequestReauthError` 时，它已经启动了重新认证流程。
 
-So let these exceptions propagate:
+因此，请让这些异常继续传播：
 
-- **With a coordinator**, you do not need any error handling for them. `OAuth2TokenRequestReauthError` starts reauthentication, and the others count as a failed update that is retried. Do the first refresh in `async_setup_entry`, as in the example above, so the token is checked before the entities are set up.
-- **Without a coordinator**, call `await session.async_ensure_token_valid()` in `async_setup_entry`. Home Assistant then retries the setup, or starts reauthentication.
+- **使用协调器时**，您无需为它们编写任何错误处理。`OAuth2TokenRequestReauthError` 会启动重新认证，其他异常则被视为一次会重试的失败更新。请像上面的示例那样，在 `async_setup_entry` 中执行首次刷新，以便在设置实体之前检查令牌。
+- **不使用协调器时**，请在 `async_setup_entry` 中调用 `await session.async_ensure_token_valid()`。然后 Home Assistant 会重试安装，或启动重新认证。
 
-Only catch one of them when your integration needs different behavior, like raising `ConfigEntryError` for a status that is permanent for this service. Catch the most specific exception, and let the rest through.
+只有当您的集成需要不同的行为时才捕获其中某个异常，例如针对对该服务而言属于永久性的状态抛出 `ConfigEntryError`。请捕获最具体的异常，并让其余异常继续传播。

@@ -1,58 +1,58 @@
 ---
-title: Lawn mower entity
-description: Build a lawn mower entity for a robot mower that mows, pauses, and returns to its dock.
+title: 割草机实体
+description: 为能割草、暂停并返回基座的机器人割草机构建割草机实体。
 sidebarLabel: Lawn mower
 sidebarGroup: Appliances
 ---
 
-A lawn mower entity controls a robotic lawn mower: start mowing, pause, stop, and send it back to its dock. Inherit from `LawnMowerEntity` in `homeassistant.components.lawn_mower`. The entity only covers these commands. Settings like the cutting height go in other entities of the same device, such as a [number](/core/entities/number/) or a [select](/core/entities/select/).
+割草机实体（lawn mower entity）用于控制机器人割草机：开始割草、暂停、停止，并让它返回基座（dock）。继承 `homeassistant.components.lawn_mower` 中的 `LawnMowerEntity`。该实体仅涵盖这些命令。像切割高度这样的设置应放在同一设备的其他实体中，例如 [number](/core/entities/number/)（数字）或 [select](/core/entities/select/)（选择）。
 
-For how the frontend shows a lawn mower, see the [lawn mower more-info view](/design/more-info/lawn-mower/).
+有关前端如何展示割草机，请参阅[割草机更多信息视图](/design/more-info/lawn-mower/)。
 
-## Properties
+## 属性
 
-Lawn mower entities have this property on top of the [generic entity properties](/core/entities/entity-class/). Set it with `_attr_activity`, or override the property.
+除了[通用实体属性](/core/entities/entity-class/)之外，割草机实体还具有以下属性。使用 `_attr_activity` 设置它，或者重写该属性。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `activity` | `LawnMowerActivity \| None` | `None` | What the mower is doing right now. See [States](#states). |
+| `activity` | `LawnMowerActivity \| None` | `None` | 割草机当前正在执行的操作。参见[状态](#states)。 |
 
-## Supported features
+## 支持的功能
 
-Combine the values of `LawnMowerEntityFeature` with the bitwise or (`|`) operator. Home Assistant only offers the actions of the features you set.
+使用按位或（`|`）运算符组合 `LawnMowerEntityFeature` 的各值。Home Assistant 只提供你所设置的功能对应的操作。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `START_MOWING` | The mower can start or resume mowing. Implement `start_mowing`. |
-| `PAUSE` | The mower can pause. Implement `pause`. |
-| `STOP` | The mower can stop where it is. Implement `stop`. |
-| `DOCK` | The mower can return to its dock. Implement `dock`. |
+| `START_MOWING` | 割草机可以开始或继续割草。实现 `start_mowing`。 |
+| `PAUSE` | 割草机可以暂停。实现 `pause`。 |
+| `STOP` | 割草机可以在原地停止。实现 `stop`。 |
+| `DOCK` | 割草机可以返回基座。实现 `dock`。 |
 
-## Methods
+## 方法
 
-Each method has a sync variant and an `async_` variant. Implement one of them.
+每个方法都有一个同步变体和一个 `async_` 变体。实现其中之一即可。
 
-| Method | Async variant | Feature |
+| 方法 | 异步变体 | 功能 |
 | ------ | ------------- | ------- |
 | `start_mowing()` | `async_start_mowing()` | `START_MOWING` |
 | `pause()` | `async_pause()` | `PAUSE` |
 | `stop()` | `async_stop()` | `STOP` |
 | `dock()` | `async_dock()` | `DOCK` |
 
-## States
+## 状态
 
-The state is the `activity` of the mower, a value of `LawnMowerActivity`. The `state` property is final: set `activity` instead.
+状态是割草机的 `activity`，即 `LawnMowerActivity` 中的一个值。`state` 属性是最终结果：请改为设置 `activity`。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `MOWING` | The mower is mowing. |
-| `PAUSED` | The mower was mowing and is paused. |
-| `RETURNING` | The mower is on its way back to the dock. |
-| `DOCKED` | The mower is in its dock. |
-| `IDLE` | The mower is stopped, but not docked and not paused. |
-| `ERROR` | The mower ran into a problem and needs help. |
+| `MOWING` | 割草机正在割草。 |
+| `PAUSED` | 割草机之前在割草，现已暂停。 |
+| `RETURNING` | 割草机正在返回基座的途中。 |
+| `DOCKED` | 割草机在基座中。 |
+| `IDLE` | 割草机已停止，但既不在基座中，也未暂停。 |
+| `ERROR` | 割草机遇到问题，需要帮助。 |
 
-## Example
+## 示例
 
 ```python
 from homeassistant.components.lawn_mower import (
@@ -104,4 +104,4 @@ class MyLawnMower(MyEntity, LawnMowerEntity):
         await self.coordinator.async_request_refresh()
 ```
 
-`MyEntity` is the shared base entity of the integration, a `CoordinatorEntity` that sets `_attr_has_entity_name = True` and the device info.
+`MyEntity` 是该集成共享的基础实体，它是一个 `CoordinatorEntity`，会设置 `_attr_has_entity_name = True` 以及设备信息。

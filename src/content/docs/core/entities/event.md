@@ -1,59 +1,59 @@
 ---
-title: Event entity
-description: Turn things that happen in the physical world, like a button press or a doorbell ring, into an entity you can automate on.
+title: 事件实体
+description: 将物理世界中发生的事情（如按下按钮或门铃响起）转化为可用于自动化的实体。
 sidebarLabel: Event
 sidebarGroup: Sensors and status
 ---
 
-An event entity captures something that happens at a moment in time: a button on a remote is pressed, a doorbell rings, a motion sensor fires. It has no lasting state of its own. You fire events, and Home Assistant keeps track of the last one. Inherit from `EventEntity`, imported from `homeassistant.components.event`.
+事件实体（event entity）捕获在某一时刻发生的事情：遥控器上的按钮被按下、门铃响起、运动传感器触发。它没有自己的持久状态。由您触发事件，Home Assistant 会记录最近一次事件。请继承 `EventEntity`，该类从 `homeassistant.components.event` 导入。
 
-Use an event entity for momentary signals that have no on or off state. If the thing stays on for a while, like detected motion that clears after a minute, a [binary sensor](/core/entities/binary-sensor/) fits better.
+事件实体适用于没有开或关状态的瞬时信号。如果某事物会保持一段时间的状态，比如检测到的运动在一分钟后清除，那么[二进制传感器](/core/entities/binary-sensor/)更合适。
 
-## Properties
+## 属性
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `event_types` | `list[str]` | Required | The event types this entity can fire. |
-| `device_class` | `EventDeviceClass \| None` | `None` | What kind of events these are. See [device classes](#device-classes). |
+| `event_types` | `list[str]` | 必需 | 该实体可以触发的事件类型。 |
+| `device_class` | `EventDeviceClass \| None` | `None` | 这些事件属于什么类型。参见[设备类](#device-classes)。 |
 
-The generic properties every entity has, like `name` or `available`, are on [the entity class](/core/entities/entity-class/). The `event_types` list is a capability attribute and is not recorded in history.
+每个实体都具有的通用属性（如 `name` 或 `available`）位于[实体类](/core/entities/entity-class/)中。`event_types` 列表是一个能力属性，不会被记录到历史中。
 
-## Supported features
+## 支持的功能
 
-This entity has no supported features.
+此实体没有支持的功能。
 
-## Device classes
+## 设备类
 
-| Device class | Use it for |
+| 设备类 | 用途 |
 | --- | --- |
-| `EventDeviceClass.BUTTON` | A button on a remote or a wall switch was pressed. |
-| `EventDeviceClass.DOORBELL` | A button that is a doorbell. |
-| `EventDeviceClass.MOTION` | A motion sensor detected motion. |
+| `EventDeviceClass.BUTTON` | 遥控器或墙壁开关上的按钮被按下。 |
+| `EventDeviceClass.DOORBELL` | 作为门铃使用的按钮。 |
+| `EventDeviceClass.MOTION` | 运动传感器检测到运动。 |
 
-An event entity with a device class and no name is named after its device class. See [naming](/core/entities/naming/).
+设置了设备类且没有名称的事件实体将以它的设备类命名。参见[命名](/core/entities/naming/)。
 
-### Standard event types
+### 标准事件类型
 
-Some device classes have standard event types, so one automation works no matter which integration provides the entity. They are enums in `homeassistant.components.event`.
+一些设备类具有标准事件类型，因此无论由哪个集成提供该实体，同一个自动化都能正常工作。它们是 `homeassistant.components.event` 中的枚举。
 
-A `DOORBELL` entity must support `DoorbellEventType.RING`. Home Assistant logs a warning when it does not, and from Home Assistant 2027.4 that will stop working.
+`DOORBELL` 实体必须支持 `DoorbellEventType.RING`。如果不支持，Home Assistant 会记录一条警告，并且从 Home Assistant 2027.4 开始，这将停止工作。
 
-A `BUTTON` entity can use these `ButtonEventType` values. None of them are mandatory: only use the ones your hardware can produce.
+`BUTTON` 实体可以使用这些 `ButtonEventType` 值。它们都不是强制性的：只使用您的硬件能够产生的那些。
 
-| Event type | Meaning |
+| 事件类型 | 含义 |
 | --- | --- |
-| `PRESS_START` | The button was pressed down. |
-| `PRESS_END` | The button was released after a short press. |
-| `LONG_PRESS_START` | The button was held past a threshold. |
-| `LONG_PRESS_END` | The button was released after a long press. |
-| `MULTI_PRESS_ONGOING` | A press in a series of presses was detected, and the series is not done. |
-| `MULTI_PRESS_END` | A series of presses is done. |
+| `PRESS_START` | 按钮被按下。 |
+| `PRESS_END` | 按钮在短按后松开。 |
+| `LONG_PRESS_START` | 按钮被按住超过阈值。 |
+| `LONG_PRESS_END` | 按钮在长按后松开。 |
+| `MULTI_PRESS_ONGOING` | 检测到一系列按压中的一次按压，且该系列尚未结束。 |
+| `MULTI_PRESS_END` | 一系列按压结束。 |
 
-Both multi press types include a `multi_press_count` attribute (the `ATTR_MULTI_PRESS_COUNT` constant) with the number of presses. If a device sends only one event per interaction, without a separate press and release, use the matching end type, like `PRESS_END` for a short press. For a button that reports a direction from one source, like an up and down rocker, prefer one entity per direction. A non-standard `direction` attribute is acceptable when separate entities are not practical. Other, non-standard event types are allowed too.
+两种多次按压类型都包含一个带有按压次数的 `multi_press_count` 属性（即 `ATTR_MULTI_PRESS_COUNT` 常量）。如果设备每次交互只发送一个事件，没有单独的按下和松开，请使用匹配的结束类型，例如短按使用 `PRESS_END`。对于从单一来源报告方向的按钮，例如上下翘板开关，最好为每个方向使用一个实体。当无法使用单独的实体时，可以使用非标准的 `direction` 属性。也允许使用其他非标准的事件类型。
 
-## Methods
+## 方法
 
-You do not implement any methods. You fire events by calling `_trigger_event`, and then write the state.
+您不需要实现任何方法。您通过调用 `_trigger_event` 来触发事件，然后写入状态。
 
 ### `_trigger_event`
 
@@ -63,19 +63,19 @@ def _trigger_event(
 ) -> None:
 ```
 
-`event_type` must be in `event_types`, or the call raises a `ValueError`. The optional `event_attributes` are added to the state attributes, next to `event_type`. Call `self.async_write_ha_state()` right after to publish the event.
+`event_type` 必须在 `event_types` 中，否则调用将引发 `ValueError`。可选的 `event_attributes` 会被添加到状态属性中，与 `event_type` 并列。之后请立即调用 `self.async_write_ha_state()` 以发布该事件。
 
-The event entity restores its last event after a restart by itself: it is a `RestoreEntity`.
+事件实体会自行在重启后恢复其最近一次事件：它是一个 `RestoreEntity`。
 
-## States
+## 状态
 
-The state is the time the last event fired, as an ISO 8601 timestamp with milliseconds. Before the first event, it is `unknown`. The `event_type` attribute holds the type of the last event, along with any attributes you passed.
+状态是最近一次事件触发的时间，以带毫秒的 ISO 8601 时间戳表示。在第一个事件之前，状态为 `unknown`。`event_type` 属性保存最近一次事件的类型，以及您传递的任何属性。
 
-When two events fire in the same millisecond, the base class moves the second one forward by a millisecond, so each event is its own state change.
+当两个事件在同一毫秒内触发时，基类会将第二个事件向前移动一毫秒，因此每个事件都是其自己的状态变化。
 
-## Example
+## 示例
 
-A doorbell button that listens to a device:
+一个监听设备的门铃按钮：
 
 ```python
 from homeassistant.components.event import (
@@ -109,4 +109,4 @@ class ExampleDoorbell(EventEntity):
         self.async_write_ha_state()
 ```
 
-Registering the listener with `async_on_remove` makes sure it is removed again with the entity. See [the entity lifecycle](/core/entities/lifecycle/).
+通过 `async_on_remove` 注册监听器可确保它在实体移除时被一并移除。参见[实体生命周期](/core/entities/lifecycle/)。

@@ -1,22 +1,22 @@
 ---
-title: Document known limitations
-description: "Gold rule docs-known-limitations: the documentation lists the known limitations."
+title: 记录已知限制
+description: "黄金规则 docs-known-limitations：文档中列出已知限制。"
 sidebarLabel: docs-known-limitations
 sidebarGroup: Gold
 order: 7
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `docs-known-limitations`.
+这是一条黄金规则。在 `quality_scale.yaml` 中，它被称为 `docs-known-limitations`。
 
-The integration page on [home-assistant.io](https://www.home-assistant.io/) lists what the integration cannot do, or cannot do well, by design or because of the device or service. Limitations are not bugs: bugs belong in the issue tracker on GitHub, not in the documentation.
+[home-assistant.io](https://www.home-assistant.io/) 上的集成页面列出了集成无法做到或无法做好的事项，无论是设计使然，还是由于设备或服务的原因。限制不是缺陷（bug）：缺陷应提交到 GitHub 上的问题跟踪器（issue tracker）中，而不是写在文档里。
 
-## Why it matters
+## 为什么这很重要
 
-Users find out about a limitation sooner or later. Finding out from the documentation, before they buy a device or spend an evening on an automation, is a lot better than finding out from a failed attempt and an issue that gets closed as "works as intended".
+用户迟早会发现某项限制。在购买设备或花一晚上折腾自动化之前，就从文档中了解到限制，远比在尝试失败、问题被以“符合预期”（works as intended）为由关闭后才发现要好得多。
 
-Being upfront about limits also saves you support questions.
+坦诚说明限制还能为你省去支持方面的提问。
 
-## Example
+## 示例
 
 ```markdown
 ## Known limitations
@@ -27,12 +27,12 @@ Being upfront about limits also saves you support questions.
   sensors lag up to an hour behind.
 ```
 
-See [Write integration documentation](/writing/guides/integration/) and the [integration page structure](/writing/reference/integration-page/) for where this section goes.
+有关此章节应放置的位置，请参阅[编写集成文档](/writing/guides/integration/)和[集成页面结构](/writing/reference/integration-page/)。
 
-## How it is checked
+## 如何检查
 
-Checked in review, usually on the documentation pull request.
+在审查时检查，通常是在文档的拉取请求（pull request）上进行。
 
-## Exceptions
+## 例外情况
 
-If the integration has no known limitations, this rule does not apply.
+如果集成没有已知限制，则此规则不适用。

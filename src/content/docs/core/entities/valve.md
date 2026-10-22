@@ -1,78 +1,78 @@
 ---
-title: Valve entity
-description: Build a valve entity for devices that control the flow of water or gas.
+title: 阀门实体
+description: 为控制水或气体流动的设备构建阀门实体。
 sidebarLabel: Valve
 sidebarGroup: Openings and security
 ---
 
-A valve entity controls the flow of a fluid or gas through a pipe: a water main shutoff, an irrigation valve, or a gas valve. Some valves only open and close, others can be set to a position in between. Inherit from `ValveEntity` in `homeassistant.components.valve`.
+阀门（valve）实体控制流体或气体通过管道的流动：例如自来水总阀、灌溉阀门或燃气阀门。有些阀门只能打开和关闭，有些则可以设置到介于两者之间的某个位置。请继承 `homeassistant.components.valve` 中的 `ValveEntity`。
 
-Something that opens and closes over an opening, like a blind or a garage door, is a [cover](/core/entities/cover/).
+在开口上打开和关闭的东西，比如百叶窗或车库门，属于[盖板（cover）](/core/entities/cover/)。
 
-For how the frontend shows a valve, see the [valve more-info view](/design/more-info/valve/).
+有关前端如何显示阀门，请参阅[阀门更多信息视图（more-info view）](/design/more-info/valve/)。
 
-## Properties
+## 属性
 
-Valve entities have these properties on top of the [generic entity properties](/core/entities/entity-class/). Every property can be set with its `_attr_` attribute, like `_attr_is_closed`.
+阀门实体除了[通用实体属性](/core/entities/entity-class/)之外，还具有以下属性。每个属性都可以通过其 `_attr_` 属性设置，例如 `_attr_is_closed`。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `reports_position` | `bool` | Required | Whether the valve reports a position. It decides whether the state comes from `current_valve_position` or from `is_closed`. Can also be set on the entity description, where it defaults to `False`. |
-| `current_valve_position` | `int \| None` | `None` | The position, from 0 (closed) to 100 (fully open). Used when `reports_position` is `True`. |
-| `is_closed` | `bool \| None` | `None` | Whether the valve is closed. Used when `reports_position` is `False`. |
-| `is_opening` | `bool \| None` | `None` | Whether the valve is opening. |
-| `is_closing` | `bool \| None` | `None` | Whether the valve is closing. |
-| `device_class` | `ValveDeviceClass \| None` | `None` | What the valve controls. See [Device classes](#device-classes). |
+| `reports_position` | `bool` | 必需 | 阀门是否报告位置。它决定状态来自 `current_valve_position` 还是 `is_closed`。也可以在实体描述（entity description）中设置，在那里默认为 `False`。 |
+| `current_valve_position` | `int \| None` | `None` | 位置，从 0（关闭）到 100（完全打开）。当 `reports_position` 为 `True` 时使用。 |
+| `is_closed` | `bool \| None` | `None` | 阀门是否已关闭。当 `reports_position` 为 `False` 时使用。 |
+| `is_opening` | `bool \| None` | `None` | 阀门是否正在打开。 |
+| `is_closing` | `bool \| None` | `None` | 阀门是否正在关闭。 |
+| `device_class` | `ValveDeviceClass \| None` | `None` | 阀门所控制的对象。请参阅[设备类别](#device-classes)。 |
 
-If you forget to set `reports_position`, and the entity has no entity description, writing the state raises an error.
+如果忘记设置 `reports_position`，并且该实体没有实体描述，则写入状态时会引发错误。
 
-## Device classes
+## 设备类别
 
-Set a [device class](/glossary/device-class/) from `ValveDeviceClass` when it fits.
+如果合适，请从 `ValveDeviceClass` 中设置一个[设备类别（device class）](/glossary/device-class/)。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `WATER` | The valve controls the flow of water. |
-| `GAS` | The valve controls the flow of gas. |
+| `WATER` | 阀门控制水的流动。 |
+| `GAS` | 阀门控制气体的流动。 |
 
-## Supported features
+## 支持的功能
 
-Combine the `ValveEntityFeature` flags with `|` and set them as `supported_features`. See [supported features](/glossary/supported-features/).
+将 `ValveEntityFeature` 标志用 `|` 组合起来，并将其设置为 `supported_features`。请参阅[支持的功能（supported features）](/glossary/supported-features/)。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `OPEN` | The valve can open. Implement `open_valve`. |
-| `CLOSE` | The valve can close. Implement `close_valve`. |
-| `SET_POSITION` | The valve can move to a position. Implement `set_valve_position`. |
-| `STOP` | The valve can stop while it moves. Implement `stop_valve`. |
+| `OPEN` | 阀门可以打开。实现 `open_valve`。 |
+| `CLOSE` | 阀门可以关闭。实现 `close_valve`。 |
+| `SET_POSITION` | 阀门可以移动到某个位置。实现 `set_valve_position`。 |
+| `STOP` | 阀门在移动过程中可以停止。实现 `stop_valve`。 |
 
-## Methods
+## 方法
 
-Implement the sync or the async variant of each method, not both.
+实现每个方法的同步或异步变体之一，不要两者都实现。
 
-| Method | Async variant | Feature |
+| 方法 | 异步变体 | 功能 |
 | ------ | ------------- | ------- |
 | `open_valve()` | `async_open_valve` | `OPEN` |
 | `close_valve()` | `async_close_valve` | `CLOSE` |
 | `set_valve_position(position: int)` | `async_set_valve_position` | `SET_POSITION` |
 | `stop_valve()` | `async_stop_valve` | `STOP` |
 
-A valve with `SET_POSITION` does not need `open_valve` and `close_valve`: the open and close actions then call `set_valve_position` with 100 and 0. Still set `OPEN` and `CLOSE`, the actions are only available with those flags. Toggling is handled for you. It stops a moving valve when it supports `STOP`, opens a closed valve, and otherwise moves the other way from the last direction.
+具有 `SET_POSITION` 的阀门不需要 `open_valve` 和 `close_valve`：此时打开和关闭操作会分别以 100 和 0 调用 `set_valve_position`。但仍要设置 `OPEN` 和 `CLOSE`，因为只有设置了这些标志，相应操作才可用。切换（toggle）会自动为你处理：当阀门支持 `STOP` 时，它会停止正在移动的阀门；会打开已关闭的阀门；否则会从上一次的方向反向移动。
 
-## States
+## 状态
 
-The state is a `ValveState`. A moving valve reports `opening` or `closing`, from `is_opening` and `is_closing`. Otherwise the state is `closed` or `open`, from the position (0 is closed) when `reports_position` is `True`, or from `is_closed` when it is `False`.
+状态是一个 `ValveState`。正在移动的阀门会根据 `is_opening` 和 `is_closing` 报告 `opening` 或 `closing`。否则，状态为 `closed` 或 `open`：当 `reports_position` 为 `True` 时，状态来自位置（0 为关闭）；当其为 `False` 时，状态来自 `is_closed`。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `ValveState.OPENING` | The valve is opening. |
-| `ValveState.CLOSING` | The valve is closing. |
-| `ValveState.CLOSED` | The valve is closed. |
-| `ValveState.OPEN` | The valve is open, fully or partly. |
+| `ValveState.OPENING` | 阀门正在打开。 |
+| `ValveState.CLOSING` | 阀门正在关闭。 |
+| `ValveState.CLOSED` | 阀门已关闭。 |
+| `ValveState.OPEN` | 阀门处于打开状态，完全或部分打开。 |
 
-When the value it depends on is `None`, the state is `unknown`.
+当其所依赖的值为 `None` 时，状态为 `unknown`。
 
-## Example
+## 示例
 
 ```python
 from homeassistant.components.valve import (

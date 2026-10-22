@@ -1,47 +1,47 @@
 ---
-title: Button entity
-description: Build a button entity that triggers a single action on a device or service, like a restart.
-sidebarLabel: Button
-sidebarGroup: Inputs and helpers
+title: 按钮实体
+description: 构建一个按钮实体，用于触发设备或服务上的单个操作，例如重启。
+sidebarLabel: 按钮
+sidebarGroup: 输入与辅助元素
 ---
 
-A button entity triggers one action on a device or service: restart a device, identify it by blinking a light, reset a filter counter, or brew a cup of coffee. It has no on or off state of its own. Inherit from `ButtonEntity` in `homeassistant.components.button`.
+按钮实体（button entity）会触发设备或服务上的一个操作：重启设备、通过闪烁灯光来识别设备、重置滤芯计数器，或者煮一杯咖啡。它自身没有开或关的状态。请继承 `homeassistant.components.button` 中的 `ButtonEntity`。
 
-A button is a virtual button inside Home Assistant. It is not the right fit for everything that looks like a button:
+按钮是 Home Assistant 中的一个虚拟按钮。它并不适合所有看起来像按钮的东西：
 
-- Something that stays on or off after you press it is a [switch](/core/entities/switch/).
-- A physical button that people press on a device is an [event](/core/entities/event/) entity. A button entity can't report presses that happen outside Home Assistant.
-- Installing firmware belongs in an [update](/core/entities/update/) entity.
+- 按下后会保持开启或关闭状态的东西是[开关（switch）](/core/entities/switch/)。
+- 人们按下的设备上的物理按钮是[事件（event）](/core/entities/event/)实体。按钮实体无法报告发生在 Home Assistant 之外的按压操作。
+- 安装固件应属于[更新（update）](/core/entities/update/)实体。
 
-## Properties
+## 属性
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `device_class` | `ButtonDeviceClass \| None` | `None` | What the button does. See [device classes](#device-classes). |
+| `device_class` | `ButtonDeviceClass \| None` | `None` | 按钮的功能。参见[设备类](#device-classes)。 |
 
-A button has no platform specific state properties. The generic properties every entity has, like `name`, `available`, and `unique_id`, are on [the entity class](/core/entities/entity-class/). A button doesn't poll: `should_poll` is `False` by default.
+按钮没有特定平台的状态属性。每个实体都具有的通用属性，例如 `name`、`available` 和 `unique_id`，位于[实体类](/core/entities/entity-class/)上。按钮不会轮询：`should_poll` 默认为 `False`。
 
-## Supported features
+## 支持的功能
 
-This entity has no supported features.
+此实体没有支持的功能。
 
-## Device classes
+## 设备类
 
-| Constant | Description |
+| 常量 | 描述 |
 | --- | --- |
-| `ButtonDeviceClass.IDENTIFY` | Identifies the device, for example by blinking a light or making a sound. |
-| `ButtonDeviceClass.RESTART` | Restarts the device. |
-| `ButtonDeviceClass.UPDATE` | Updates the software of the device. Avoid it: use an [update](/core/entities/update/) entity instead. |
+| `ButtonDeviceClass.IDENTIFY` | 识别设备，例如通过闪烁灯光或发出声音。 |
+| `ButtonDeviceClass.RESTART` | 重启设备。 |
+| `ButtonDeviceClass.UPDATE` | 更新设备的软件。请避免使用：应改用[更新（update）](/core/entities/update/)实体。 |
 
-A button with a device class and no name of its own gets the translated name of its device class, like "Restart". See [naming entities](/core/entities/naming/).
+带有设备类且没有自己名称的按钮会获得其设备类的翻译名称，例如“重启”。参见[实体命名](/core/entities/naming/)。
 
-An identify button is usually not the main feature of a device. Give it the `EntityCategory.DIAGNOSTIC` [entity category](/glossary/entity-category/).
+识别按钮通常不是设备的主要功能。请为它设置 `EntityCategory.DIAGNOSTIC` [实体类别](/glossary/entity-category/)。
 
-## Methods
+## 方法
 
-### Press
+### 按下
 
-Called when someone presses the button in the UI, or an automation or script calls the `button.press` action. Implement one of the two.
+当有人在 UI 中按下按钮，或者自动化或脚本调用 `button.press` 动作时被调用。请实现两者之一。
 
 ```python
 class MyButton(ButtonEntity):
@@ -54,11 +54,11 @@ class MyButton(ButtonEntity):
         """Handle the button press."""
 ```
 
-## States
+## 状态
 
-The state of a button is the timestamp of the last time it was pressed from Home Assistant, as an ISO 8601 string in UTC. It is `unknown` until the first press. The base class sets it right before it calls your press method, and restores it after a restart. You can't set it yourself: `state` is final.
+按钮的状态是从 Home Assistant 中最后一次按下它的时间戳，以 UTC 的 ISO 8601 字符串表示。在第一次按下之前，它为 `unknown`。基类会在调用你的按下方法之前设置它，并在重启后恢复它。你不能自己设置它：`state` 是 final 的。
 
-## Example
+## 示例
 
 ```python
 from homeassistant.components.button import (
@@ -85,4 +85,4 @@ class ExampleRestartButton(ButtonEntity):
         await self._device.restart()
 ```
 
-Because of the device class, this button is named "Restart" without you giving it a name or a translation key.
+由于设置了设备类，这个按钮会被命名为“Restart”，而无需你提供名称或翻译键。

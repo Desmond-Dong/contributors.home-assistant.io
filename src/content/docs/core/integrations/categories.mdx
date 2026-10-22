@@ -1,35 +1,35 @@
 ---
-title: Integration categories
-description: The categories people browse integrations by, and how to pick the right ones for your integration.
+title: 集成分类
+description: 用户浏览集成时依据的分类，以及如何为你的集成选择合适的分类。
 sidebarGroup: Reference
 order: 4
 ---
 
 import IntegrationCategories from "../../../../components/docs/IntegrationCategories.astro";
 
-Integration categories say what an integration is for, so people can find it by what it does, like on the integrations page of the website. An integration lists one to three of them in the `categories` key of its [manifest](/core/integrations/manifest/#categories). Every integration in core needs them, except entity, system, and virtual integrations. For a custom integration they are optional, and the Marketplace catalog includes them in its data.
+集成（integration）分类表明一个集成的用途，使人们能够根据其功能找到它，例如在网站的集成页面上。集成会在其[清单（manifest）](/core/integrations/manifest/#categories)的 `categories` 键中列出一到三个分类。核心（core）中的每个集成都需要分类，但实体（entity）、系统和虚拟集成除外。对于自定义集成，分类是可选的，Marketplace 目录会在其数据中收录这些分类。
 
-## How to choose
+## 如何选择
 
-Ask yourself one question: what is this, and where would someone look for it? A category describes the product or service, not the entities Home Assistant creates for it.
+问自己一个问题：这是什么，人们会在哪里寻找它？分类描述的是产品或服务，而不是 Home Assistant 为其创建的实体。
 
-1. Pick the primary category: the one that says what your integration is for. A thermostat brand is Climate, even when it also creates sensors and switches.
-2. Use a subcategory when one clearly fits, like `climate.thermostats_heating`. Otherwise, use the category on its own.
-3. Add a second or third category only when your integration really is that too, in a way people would browse for. Shelly makes smart plugs and switches, but also bulbs and energy meters, so it lists all three.
+1. 选择主要分类：即表明你的集成用途的分类。一个恒温器品牌应归入 Climate（气候），即使它同时也会创建传感器和开关。
+2. 当某个子分类（subcategory）明显合适时使用它，例如 `climate.thermostats_heating`。否则，单独使用该分类。
+3. 只有当你的集成确实也属于另一个分类，且人们会据此浏览查找时，才添加第二个或第三个分类。Shelly 生产智能插头和开关，但也生产灯泡和电能表，因此它列出了全部三个分类。
 
-Most integrations need one category. Some guidance for the cases that come up often:
+大多数集成只需要一个分类。以下是一些常见情况的指南：
 
-- A hub or bridge that brings in many kinds of devices, like Zigbee or a multi-purpose vendor bridge, goes in Hubs & protocols. A bridge for one kind of product goes in that product's category: Philips Hue is Lighting.
-- Generic building blocks, like MQTT, RESTful, or Modbus, go in DIY & makers.
-- Helpers go in Helpers first. Add a real-world category only when the helper is clearly about one, like the utility meter, which is also Energy.
-- A weather station measures the weather, it doesn't forecast it. Use Weather & alerts on its own, and keep Forecasts for services that actually forecast.
+- 接入多种类型设备的网关（hub）或桥接器（bridge），例如 Zigbee 或多用途厂商桥接器，应归入 Hubs & protocols（网关与协议）。仅针对某一种产品的桥接器则归入该产品的分类：Philips Hue 属于 Lighting（照明）。
+- 通用构建模块，例如 MQTT、RESTful 或 Modbus，应归入 DIY & makers（DIY 与创客）。
+- 辅助元素（helper）首先应归入 Helpers（辅助元素）。只有当辅助元素明显属于某个现实领域时，才添加该领域的分类，例如公用事业仪表（utility meter），它同时也属于 Energy（能源）。
+- 气象站测量天气，而不是预报天气。单独使用 Weather & alerts（天气与警报），将 Forecasts（预报）留给真正提供预报的服务。
 
-Entity and system integrations, like `light` or `recorder`, are not something people browse for and have no categories. Neither do virtual integrations: they show the categories of the integration they point to.
+实体和系统集成，例如 `light` 或 `recorder`，并不是人们会浏览查找的对象，因此没有分类。虚拟集成同样没有分类：它们显示其所指向集成的分类。
 
-## All categories
+## 所有分类
 
-Every category below lists the values you can put in `categories`. Some categories have subcategories, to narrow it down: use the category on its own when your integration covers more of it, and the subcategory when one fits. A smart thermostat is `climate.thermostats_heating`. A brand that makes thermostats, air conditioners, and fans is `climate`.
+下面每个分类都列出了你可以填入 `categories` 的值。一些分类包含子分类，用于进一步细分：当你的集成覆盖该分类的多个方面时，单独使用该分类；当某个子分类合适时，使用该子分类。智能恒温器应使用 `climate.thermostats_heating`。而生产恒温器、空调和风扇的品牌则应使用 `climate`。
 
-Find a category by what your integration is for, like "thermostat" or "pool", or jump to one.
+根据集成的用途查找分类，例如“thermostat”（恒温器）或“pool”（泳池），或者直接跳转到某个分类。
 
 <IntegrationCategories />

@@ -1,37 +1,37 @@
 ---
-title: Use strict typing
-description: "Platinum rule strict-typing: the integration is fully typed and checked with strict mypy settings."
+title: 使用严格类型检查
+description: "白金级规则 strict-typing：集成（integration）已完全类型化，并使用严格的 mypy 设置进行检查。"
 sidebarLabel: strict-typing
 sidebarGroup: Platinum
 order: 3
 ---
 
-This is a Platinum rule. In `quality_scale.yaml`, it is called `strict-typing`.
+这是一条白金级规则。在 `quality_scale.yaml` 中，它被称为 `strict-typing`。
 
-The integration must be fully typed, and listed in the `.strict-typing` file of core, so mypy checks it with strict settings. Its library must be typed as well, and ship a `py.typed` file as described in [PEP 561](https://peps.python.org/pep-0561/).
+集成必须完全类型化，并被列在 core 的 `.strict-typing` 文件中，这样 mypy 才会以严格设置对其进行检查。其依赖库也必须类型化，并按照 [PEP 561](https://peps.python.org/pep-0561/) 中的说明附带一个 `py.typed` 文件。
 
-## Why it matters
+## 为什么它很重要
 
-Python does not check types at runtime, so a wrong type shows up as a bug in front of a user. Type hints let mypy find those bugs before the code is merged. Strict mode makes mypy fail on missing hints, so nothing slips through untyped.
+Python 不会在运行时检查类型，因此错误的类型会以缺陷的形式出现在用户面前。类型提示（type hints）让 mypy 能在代码合并之前发现这些缺陷。严格模式使 mypy 在缺少类型提示时直接失败，因此不会漏过任何未类型化的代码。
 
-The library matters too. Without a `py.typed` file, mypy treats everything from the library as `Any`, and all the hints in the integration that touch the library check nothing.
+依赖库也很重要。如果没有 `py.typed` 文件，mypy 会将来自该库的所有内容都视为 `Any`，集成中所有涉及该库的类型提示都将起不到任何检查作用。
 
-## Example
+## 示例
 
-Add the integration to `.strict-typing` in the root of the [core repository](https://github.com/home-assistant/core), in alphabetical order:
+将集成按字母顺序添加到 [core 仓库](https://github.com/home-assistant/core) 根目录下的 `.strict-typing` 文件中：
 
 ```text
 homeassistant.components.my_integration.*
 ```
 
-Then let hassfest update `mypy.ini`, and run mypy on the integration:
+然后让 hassfest 更新 `mypy.ini`，并对该集成运行 mypy：
 
 ```shell
 python3 -m script.hassfest -p mypy_config
 mypy homeassistant/components/my_integration
 ```
 
-With strict typing, use a typed config entry everywhere you get one: in `async_setup_entry`, `async_unload_entry`, the platforms, diagnostics, and the options flow. See [runtime-data](/core/quality-scale/runtime-data/) for how to define it:
+使用严格类型时，在所有会获取配置条目（config entry）的地方都要使用类型化的配置条目：包括 `async_setup_entry`、`async_unload_entry`、各平台、诊断以及选项流程。有关如何定义它，请参阅 [runtime-data](/core/quality-scale/runtime-data/)：
 
 ```python
 type MyConfigEntry = ConfigEntry[MyClient]
@@ -43,19 +43,19 @@ async def async_setup_entry(
     """Set up My integration from a config entry."""
 ```
 
-See [Typing](/core/development/typing/) for how core uses type hints and mypy.
+请参阅 [Typing](/core/development/typing/)，了解 core 如何使用类型提示和 mypy。
 
-## How it is checked
+## 如何检查
 
-- Hassfest, when the rule is `done`: the integration must be in `.strict-typing`, and every requirement in its manifest must ship a `py.typed` file, or have a separate `types-` stubs package. Hassfest can only check the requirements that are installed in your environment, in the version the manifest asks for.
-- Hassfest, when the rule is `done` together with [runtime-data](/core/quality-scale/runtime-data/): `async_setup_entry`, `async_unload_entry`, and the other entry points in `__init__.py`, the platforms, `diagnostics.py`, and the options flow must use a typed config entry, named like `MyConfigEntry`.
-- Pylint warns when a coordinator does not use the typed config entry of the integration (`home-assistant-coordinator-untyped-config-entry`).
-- Mypy runs in CI and in the Git hooks, and fails on type errors.
+- Hassfest，当该规则为 `done` 时：集成必须列在 `.strict-typing` 中，并且其清单（manifest）中的每一项依赖要求都必须附带 `py.typed` 文件，或者有单独的 `types-` 存根（stubs）包。Hassfest 只能检查你环境中已安装的、且版本符合清单要求的依赖。
+- Hassfest，当该规则与 [runtime-data](/core/quality-scale/runtime-data/) 一起被标记为 `done` 时：`async_setup_entry`、`async_unload_entry` 以及 `__init__.py` 中的其他入口点、各平台、`diagnostics.py` 和选项流程都必须使用类型化的配置条目，名称形如 `MyConfigEntry`。
+- 当协调器（coordinator）未使用集成的类型化配置条目时，Pylint 会发出警告（`home-assistant-coordinator-untyped-config-entry`）。
+- Mypy 在 CI 和 Git 钩子中运行，遇到类型错误时会失败。
 
-## Exceptions
+## 例外情况
 
-There are no exceptions to this rule.
+此规则没有任何例外。
 
-## Related rules
+## 相关规则
 
-- [runtime-data](/core/quality-scale/runtime-data/): store runtime data in runtime_data.
+- [runtime-data](/core/quality-scale/runtime-data/)：将运行时数据存储在 runtime_data 中。

@@ -1,17 +1,17 @@
 ---
-title: Network discovery
-description: Use the zeroconf, SSDP, DHCP, USB, MQTT, and network APIs of Home Assistant to find devices while your integration runs.
+title: 网络发现
+description: 在您的集成运行时，使用 Home Assistant 的 zeroconf、SSDP、DHCP、USB、MQTT 和网络 API 来查找设备。
 sidebarGroup: Discovery
 order: 2
 ---
 
-[Discovery through the manifest](/core/integrations/discovery/) starts a config flow for new devices. Some integrations need more: a hub that adds devices as they appear, or an integration that looks up where a known device is now. Home Assistant shares its discovery integrations through the APIs on this page, so your integration does not need to run its own scanner.
+[通过清单（manifest）进行发现](/core/integrations/discovery/) 会为新设备启动配置流程（config flow）。有些集成需要更多功能：一个在设备出现时将其添加的集线器（hub），或者一个查询已知设备当前位置的集成。Home Assistant 通过本页上的 API 共享其发现集成，因此您的集成无需运行自己的扫描器。
 
-Add the integration you use, like `zeroconf` or `ssdp`, to the `dependencies` in your [manifest](/core/integrations/manifest/#dependencies).
+将您使用的集成（例如 `zeroconf` 或 `ssdp`）添加到[清单](/core/integrations/manifest/#dependencies)的 `dependencies` 中。
 
 ## Zeroconf
 
-Home Assistant runs one mDNS implementation, [python-zeroconf](https://github.com/python-zeroconf/python-zeroconf), and shares it. Running several mDNS implementations on one host is not recommended, so never start your own. Get the shared instance instead, and pass it to your library:
+Home Assistant 运行一个 mDNS 实现 [python-zeroconf](https://github.com/python-zeroconf/python-zeroconf)，并将其共享。不建议在一台主机上运行多个 mDNS 实现，因此请不要启动自己的实现。请获取共享实例，并将其传递给您的库：
 
 ```python
 from homeassistant.components import zeroconf
@@ -19,17 +19,17 @@ from homeassistant.components import zeroconf
 aiozc = await zeroconf.async_get_async_instance(hass)
 ```
 
-Use `zeroconf.async_get_instance(hass)` for the synchronous `Zeroconf` object. The examples of python-zeroconf show what you can do with both.
+使用 `zeroconf.async_get_instance(hass)` 获取同步的 `Zeroconf` 对象。python-zeroconf 的示例展示了这两者的用法。
 
 ## SSDP
 
-The SSDP integration keeps a cache of the devices it found. Look them up with:
+SSDP 集成会缓存其发现的设备。可通过以下方式查询：
 
-| Function | Returns |
+| 函数 | 返回值 |
 | --- | --- |
-| `ssdp.async_get_discovery_info_by_udn_st(hass, udn, st)` | The discovery info for one UDN and ST, or `None` |
-| `ssdp.async_get_discovery_info_by_st(hass, st)` | A list of everything found with this ST |
-| `ssdp.async_get_discovery_info_by_udn(hass, udn)` | A list of all services of one device |
+| `ssdp.async_get_discovery_info_by_udn_st(hass, udn, st)` | 一个 UDN 和 ST 的发现信息，或 `None` |
+| `ssdp.async_get_discovery_info_by_st(hass, st)` | 通过此 ST 发现的所有内容的列表 |
+| `ssdp.async_get_discovery_info_by_udn(hass, udn)` | 一个设备的所有服务的列表 |
 
 ```python
 from homeassistant.components import ssdp
@@ -39,7 +39,7 @@ discovery_infos = await ssdp.async_get_discovery_info_by_st(
 )
 ```
 
-To hear about new devices right away, register a callback with `ssdp.async_register_callback`. It matches with the same format as `ssdp` in the manifest, and `MATCH_ALL` from `homeassistant.const` matches any value of a header:
+要立即获知新设备，请通过 `ssdp.async_register_callback` 注册回调。它使用与清单中 `ssdp` 相同的格式进行匹配，并且来自 `homeassistant.const` 的 `MATCH_ALL` 可匹配标头的任意值：
 
 ```python
 from homeassistant.components import ssdp
@@ -55,7 +55,7 @@ entry.async_on_unload(
 
 ## DHCP
 
-`dhcp.async_discovered_service_info` returns the devices that are still in the DHCP cache, as `DhcpServiceInfo` objects with `ip`, `hostname`, and `macaddress`. The hostname is lowercase, and the MAC address is lowercase without colons: `AA:BB:CC:12:34:56` becomes `aabbcc123456`.
+`dhcp.async_discovered_service_info` 返回仍位于 DHCP 缓存中的设备，它们是包含 `ip`、`hostname` 和 `macaddress` 的 `DhcpServiceInfo` 对象。主机名为小写，MAC 地址为小写且不带冒号：`AA:BB:CC:12:34:56` 会变成 `aabbcc123456`。
 
 ```python
 from homeassistant.components import dhcp
@@ -66,7 +66,7 @@ for service_info in dhcp.async_discovered_service_info(hass):
 
 ## USB
 
-The USB integration looks for new devices when Home Assistant starts, when the user opens the integrations page, and when a device is plugged in, if the system supports that. To check for new compatible devices at the same moments, register a callback:
+USB 集成会在 Home Assistant 启动时、用户打开集成页面时以及设备插入时（如果系统支持）查找新设备。要在相同的时刻检查新的兼容设备，请注册回调：
 
 ```python
 from homeassistant.components import usb
@@ -85,7 +85,7 @@ entry.async_on_unload(
 
 ## MQTT
 
-Integrations that use MQTT have to wait until the MQTT client is available before they subscribe. `async_wait_for_mqtt_client` waits while MQTT is being set up. It returns `True` when the client is available, and `False` when MQTT is not set up, or not available within a timeout. The client does not have to be connected yet.
+使用 MQTT 的集成必须等到 MQTT 客户端可用后才能进行订阅。`async_wait_for_mqtt_client` 会在 MQTT 正在设置期间等待。当客户端可用时，它返回 `True`；当 MQTT 未设置，或在超时时间内不可用时，返回 `False`。客户端尚不必已连接。
 
 ```python
 from homeassistant.components import mqtt
@@ -94,9 +94,9 @@ if not await mqtt.async_wait_for_mqtt_client(hass):
     raise ConfigEntryNotReady("MQTT is not available")
 ```
 
-## Network adapters
+## 网络适配器
 
-If your integration uses its own discovery method, it needs to know which network interfaces to use. The [Network integration](https://www.home-assistant.io/integrations/network/) holds the preferences of the user. Ask it, instead of looking at the interfaces yourself:
+如果您的集成使用自己的发现方法，它需要知道应使用哪些网络接口。[Network 集成](https://www.home-assistant.io/integrations/network/) 保存着用户的偏好设置。请向它查询，而不要自己查看接口：
 
 ```python
 from homeassistant.components import network
@@ -104,7 +104,7 @@ from homeassistant.components import network
 adapters = await network.async_get_adapters(hass)
 ```
 
-Each adapter is a dictionary like this:
+每个适配器都是一个如下所示的字典：
 
 ```python
 {
@@ -117,7 +117,7 @@ Each adapter is a dictionary like this:
 }
 ```
 
-Only use adapters that are `enabled`. To get the network of an address:
+只使用 `enabled`（已启用）的适配器。要获取某个地址所在的网络：
 
 ```python
 from ipaddress import ip_network

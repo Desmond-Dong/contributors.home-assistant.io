@@ -1,17 +1,17 @@
 ---
-title: Conversation API
-description: Send text to a conversation agent over the REST or WebSocket API, and read the response it gives back.
+title: 对话 API
+description: 通过 REST 或 WebSocket API 向对话代理发送文本，并读取其返回的响应。
 sidebarGroup: Voice and AI
 order: 52
 ---
 
-The `conversation` integration takes a sentence, hands it to a [conversation agent](/glossary/conversation-agent/), and returns the agent's response. The built-in agent matches the sentence to an [intent](/core/internals/intents/) and handles it. Other agents, like those backed by a large language model, do it their own way. The response looks the same either way.
+`conversation` 集成（integration）接收一句话，将其交给[对话代理（conversation agent）](/glossary/conversation-agent/)，并返回该代理的响应。内置代理会将这句话匹配到一个[意图（intent）](/core/internals/intents/)并进行处理。其他代理，比如由大语言模型支持的代理，则以各自的方式处理。无论采用哪种方式，响应看起来都是一样的。
 
-To build an agent yourself, see the [conversation entity](/core/entities/conversation/). This page is about calling one.
+要自己构建一个代理，请参见[对话实体（conversation entity）](/core/entities/conversation/)。本页面介绍的是如何调用代理。
 
-## Send a sentence
+## 发送一句话
 
-Over the REST API, POST to `/api/conversation/process`:
+通过 REST API，向 `/api/conversation/process` 发送 POST 请求：
 
 ```json
 {
@@ -20,7 +20,7 @@ Over the REST API, POST to `/api/conversation/process`:
 }
 ```
 
-Over the WebSocket API, send `conversation/process` with the same fields:
+通过 WebSocket API，使用相同的字段发送 `conversation/process`：
 
 ```json
 {
@@ -31,16 +31,16 @@ Over the WebSocket API, send `conversation/process` with the same fields:
 }
 ```
 
-| Field | Description |
+| 字段 | 描述 |
 | --- | --- |
-| `text` | Required. The sentence. |
-| `language` | The language of the sentence. Defaults to the language of the instance. |
-| `agent_id` | The agent to use. Defaults to the built-in agent, `conversation.home_assistant`. |
-| `conversation_id` | Continues an earlier conversation. See [conversations](#conversations). |
-| `device_id` | The device the sentence came from, like a voice satellite. |
-| `satellite_id` | The entity ID of the satellite the sentence came from. |
+| `text` | 必填。这句话。 |
+| `language` | 这句话的语言。默认为实例的语言。 |
+| `agent_id` | 要使用的代理。默认为内置代理 `conversation.home_assistant`。 |
+| `conversation_id` | 继续先前的对话。参见[对话](#conversations)。 |
+| `device_id` | 这句话所来自的设备（device），例如语音卫星。 |
+| `satellite_id` | 这句话所来自的卫星的实体（entity）ID。 |
 
-## The response
+## 响应
 
 ```json
 {
@@ -67,34 +67,34 @@ Over the WebSocket API, send `conversation/process` with the same fields:
 }
 ```
 
-- `response_type`: what happened. See below.
-- `data`: depends on the response type.
-- `speech`: what to say to the user. Under `plain` for plain text, or `ssml` for [SSML](https://www.w3.org/TR/speech-synthesis11/).
-- `conversation_id`: pass it with the next sentence to continue the conversation.
-- `continue_conversation`: `true` if the agent expects an answer from the user, like after asking a question.
+- `response_type`：发生了什么。见下文。
+- `data`：取决于响应类型。
+- `speech`：要对用户说的话。纯文本位于 `plain` 下，[SSML](https://www.w3.org/TR/speech-synthesis11/) 位于 `ssml` 下。
+- `conversation_id`：随下一句话一起传递，以继续对话。
+- `continue_conversation`：如果代理期望用户作出回答（比如在提问之后），则为 `true`。
 
-### Action done
+### 操作已完成
 
-The intent did something, like turning on a light. `data.success` lists the targets that were acted on, and `data.failed` the ones that failed. Each target has a `name`, a `type`, and an optional `id`. The type is one of `floor`, `area`, `domain`, `device_class`, `device`, `entity`, or `custom`.
+该意图执行了某个操作，比如打开了一盏灯。`data.success` 列出了被操作的目标，`data.failed` 列出了失败的目标。每个目标都有一个 `name`、一个 `type`，以及一个可选的 `id`。类型是 `floor`、`area`、`domain`、`device_class`、`device`、`entity` 或 `custom` 之一。
 
-Targets build on each other, from general to specific. "Turn off all lights" has one target, `domain` light. "Turn on the kitchen lights" has two: `area` kitchen and `domain` light. "Open the kitchen blinds" has three: `area` kitchen, `domain` cover, and `device_class` blind.
+目标层层递进，从一般到具体。“关闭所有灯”有一个目标：`domain` light。“打开厨房的灯”有两个：`area` kitchen 和 `domain` light。“打开厨房的百叶窗”有三个：`area` kitchen、`domain` cover 和 `device_class` blind。
 
-### Query answer
+### 查询回答
 
-The response answers a question, like "what is the temperature?". The answer is in `speech`, and `data.success` lists what was asked about.
+响应回答了一个问题，比如“温度是多少？”。答案在 `speech` 中，`data.success` 列出了被询问的对象。
 
-### Error
+### 错误
 
-Something went wrong. `data.code` says what, and `speech` has a message for the user:
+出了点问题。`data.code` 说明了原因，`speech` 中则有一条给用户的消息：
 
-- `no_intent_match`: the sentence did not match any intent.
-- `no_valid_targets`: the area, device, or entity does not exist, or is not exposed.
-- `failed_to_handle`: an error while handling the intent.
-- `unknown`: an error outside intent handling.
+- `no_intent_match`：这句话没有匹配到任何意图。
+- `no_valid_targets`：区域（area）、设备或实体不存在，或未被公开。
+- `failed_to_handle`：在处理意图时发生错误。
+- `unknown`：意图处理之外的错误。
 
-## Conversations
+## 对话
 
-An agent that supports it keeps track of a conversation, so "and in the kitchen?" makes sense after "turn on the lights in the living room". Every response has a `conversation_id`. Send it along with the next sentence to continue:
+支持该功能的代理会跟踪一段对话，因此在“打开客厅的灯”之后说“那厨房呢？”也能被理解。每个响应都有一个 `conversation_id`。将其随下一句话一起发送，即可继续对话：
 
 ```json
 {
@@ -103,9 +103,9 @@ An agent that supports it keeps track of a conversation, so "and in the kitchen?
 }
 ```
 
-## Preload sentences
+## 预加载句子
 
-Loading the sentences of a language takes a moment. To have them ready before the first request, send `conversation/prepare` over the WebSocket API, with an optional `language` and `agent_id`:
+加载一种语言的句子需要一点时间。要在第一个请求到来之前就准备好它们，请通过 WebSocket API 发送 `conversation/prepare`，并可选择带上 `language` 和 `agent_id`：
 
 ```json
 {
@@ -115,9 +115,9 @@ Loading the sentences of a language takes a moment. To have them ready before th
 }
 ```
 
-## Other WebSocket commands
+## 其他 WebSocket 命令
 
-- `conversation/agent/list`: the available agents, optionally filtered by `language` and `country`.
-- `conversation/sentences/list` (admin): the sentences registered by sentence triggers in automations.
-- `conversation/agent/homeassistant/language_scores`: how well the built-in agent supports each language, and the preferred language for the given `language` and `country`.
-- `conversation/agent/homeassistant/debug`: shows how the built-in agent matches a list of `sentences`, without acting on them. Useful while writing sentences.
+- `conversation/agent/list`：可用的代理，可选择按 `language` 和 `country` 过滤。
+- `conversation/sentences/list`（管理员）：由自动化中的句子触发器注册的句子。
+- `conversation/agent/homeassistant/language_scores`：内置代理对每种语言的支持程度，以及给定 `language` 和 `country` 时的首选语言。
+- `conversation/agent/homeassistant/debug`：显示内置代理如何匹配一个 `sentences` 列表，而不会对其执行操作。在编写句子时很有用。

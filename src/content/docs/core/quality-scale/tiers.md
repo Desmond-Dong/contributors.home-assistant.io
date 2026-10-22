@@ -1,14 +1,14 @@
 ---
-title: Tiers
-description: What Bronze, Silver, Gold, and Platinum mean, and the tiers outside the scale, like internal and legacy.
+title: 等级
+description: 铜牌（Bronze）、银牌（Silver）、金牌（Gold）和白金（Platinum）的含义，以及质量等级之外的等级，如 internal 和 legacy。
 order: -5
 ---
 
-The quality scale has four scaled tiers: Bronze, Silver, Gold, and Platinum. Each tier builds on the one below: to reach a tier, an integration follows every rule of that tier and of every tier below it. A Gold integration follows all Bronze, Silver, and Gold rules.
+质量等级（quality scale）包含四个正式等级：铜牌（Bronze）、银牌（Silver）、金牌（Gold）和白金（Platinum）。每个等级都建立在其下一级的基础之上：要达到某个等级，集成（integration）必须遵循该等级及其以下所有等级的每一项规则。金牌集成遵循所有铜牌、银牌和金牌规则。
 
-Next to the scale, there are tiers for integrations that do not fit on it: internal building blocks of core, old YAML-only integrations, and integrations outside core.
+除质量等级之外，还有一些适用于不适合纳入其中的集成的等级：核心（core）的内部构建模块、仅支持 YAML 的旧式集成，以及核心之外的集成。
 
-The tier lives in the `quality_scale` key of the `manifest.json` of the integration:
+该等级保存在集成 `manifest.json` 文件的 `quality_scale` 键中：
 
 ```json
 {
@@ -18,81 +18,81 @@ The tier lives in the `quality_scale` key of the `manifest.json` of the integrat
 }
 ```
 
-Hassfest accepts these values: `bronze`, `silver`, `gold`, `platinum`, `internal`, `legacy`, `custom`, and `no_score`.
+Hassfest 接受以下值：`bronze`、`silver`、`gold`、`platinum`、`internal`、`legacy`、`custom` 和 `no_score`。
 
-## Bronze
+## 铜牌（Bronze）
 
-Bronze is the baseline, and the minimum for every new integration. A Bronze integration:
+铜牌是基线，也是每个新集成的最低要求。铜牌集成：
 
-- Can be set up from the UI, with a config flow that tests the connection.
-- Follows the basic coding standards, like unique IDs for entities and the common file layout.
-- Has automated tests for its config flow.
-- Has documentation that is enough to get a user started, step by step.
+- 可以通过 UI 进行设置，其配置流程（config flow）会测试连接。
+- 遵循基本的编码规范，例如实体（entity）的唯一 ID 和通用的文件布局。
+- 为其配置流程提供自动化测试。
+- 拥有足以让用户循序渐进地上手的文档。
 
-See the [Bronze rules](/core/quality-scale/rules/#bronze).
+参见[铜牌规则](/core/quality-scale/rules/#bronze)。
 
-## Silver
+## 银牌（Silver）
 
-Silver is about reliability. A Silver integration keeps working, or recovers by itself, when the world around it does not cooperate. On top of Bronze, it:
+银牌关乎可靠性。当周围环境不配合时，银牌集成仍能持续运行，或者能够自行恢复。在铜牌的基础上，银牌集成还要：
 
-- Has one or more active integration owners.
-- Recovers from connection errors and offline devices by itself, without filling the logs.
-- Starts reauthentication by itself when the credentials stop working.
-- Raises clear errors when an action fails.
-- Has tests that cover more than 95% of its code.
-- Documents everything a user fills in during setup and in the options.
+- 拥有一名或多名活跃的集成负责人（integration owner）。
+- 能够自行从连接错误和设备离线中恢复，而不会刷满日志。
+- 在凭据失效时自行启动重新认证（reauthentication）。
+- 在操作失败时抛出清晰的错误。
+- 拥有代码覆盖率超过 95% 的测试。
+- 对用户在设置过程和选项中填写的所有内容提供文档说明。
 
-See the [Silver rules](/core/quality-scale/rules/#silver).
+参见[银牌规则](/core/quality-scale/rules/#silver)。
 
-## Gold
+## 金牌（Gold）
 
-Gold is the best user experience an integration can offer. On top of Silver, a Gold integration:
+金牌是集成所能提供的最佳用户体验。在银牌的基础上，金牌集成还要：
 
-- Is discovered automatically, where the device supports that.
-- Lets you update the firmware or software of devices from Home Assistant, where the device supports that.
-- Creates devices, and adds and removes them as they come and go.
-- Can be reconfigured from the UI.
-- Has translated entity names, icons, and error messages.
-- Offers diagnostics and raises repair issues when the user needs to act.
-- Has entities with fitting device classes and categories, and disables noisy ones by default.
-- Has extensive documentation for users: supported devices and functions, examples, use cases, known limitations, and troubleshooting.
+- 在设备支持的情况下可被自动发现。
+- 在设备支持的情况下，让你可以从 Home Assistant 更新设备的固件或软件。
+- 会创建设备，并随设备的接入和移除而添加或删除它们。
+- 可以通过 UI 重新配置。
+- 拥有经过翻译的实体名称、图标和错误消息。
+- 提供诊断功能，并在用户需要采取行动时提出修复（repair）问题。
+- 其实体拥有合适的设备类别（device class）和分类（category），并默认禁用会产生大量噪音的实体。
+- 为用户提供详尽的文档：支持的设备和功能、示例、使用场景、已知限制以及故障排除。
 
-Integrations for devices in the [Works with Home Assistant](/glossary/works-with-home-assistant/) program need at least Gold.
+属于 [Works with Home Assistant](/glossary/works-with-home-assistant/) 计划的设备，其集成至少需要达到金牌。
 
-See the [Gold rules](/core/quality-scale/rules/#gold).
+参见[金牌规则](/core/quality-scale/rules/#gold)。
 
-## Platinum
+## 白金（Platinum）
 
-Platinum is the top of the scale: technical excellence on top of the best user experience. On top of Gold, a Platinum integration:
+白金是质量等级的顶端：在最佳用户体验之上追求技术卓越。在金牌的基础上，白金集成还要：
 
-- Is fully typed, and checked with strict type checking.
-- Uses an async library, so it does not need threads for its I/O.
-- Shares the web session of Home Assistant, instead of opening its own.
-- Handles data efficiently, keeping network and CPU usage low.
-- Has clear code comments, so the code is easy to maintain.
+- 完全使用类型注解，并经过严格的类型检查。
+- 使用异步（async）库，因此其 I/O 不需要线程。
+- 共享 Home Assistant 的 Web 会话，而不是自行开启会话。
+- 高效处理数据，保持较低的网络和 CPU 占用。
+- 拥有清晰的代码注释，使代码易于维护。
 
-See the [Platinum rules](/core/quality-scale/rules/#platinum).
+参见[白金规则](/core/quality-scale/rules/#platinum)。
 
-## Tiers outside the scale
+## 质量等级之外的等级
 
-### Internal
+### 内部（internal）
 
-`internal` is for integrations that are part of Home Assistant itself, like building blocks of core, or platforms that other integrations build on, such as `sensor` or `light`. They are maintained by the Home Assistant project and follow its architecture decisions. Internal integrations are not graded. Hassfest keeps a list of them in `script/hassfest/quality_scale.py`, and a new internal integration has to be added there: to `NO_QUALITY_SCALE` when it has no `quality_scale.yaml`, or to `INTEGRATIONS_WITHOUT_SCALE` when it uses the file only to track rules.
+`internal` 用于作为 Home Assistant 自身组成部分的集成，例如核心的构建模块，或者供其他集成在其之上构建的平台，如 `sensor` 或 `light`。它们由 Home Assistant 项目维护，并遵循其架构决策。内部集成不参与评级。Hassfest 在 `script/hassfest/quality_scale.py` 中保存了这些集成的列表，新的内部集成必须添加到其中：如果它没有 `quality_scale.yaml` 文件，则添加到 `NO_QUALITY_SCALE`；如果它仅使用该文件来跟踪规则，则添加到 `INTEGRATIONS_WITHOUT_SCALE`。
 
-### Legacy
+### 旧式（legacy）
 
-`legacy` is for older integrations, some of them as old as Home Assistant itself, that can only be set up with YAML. Many of them lack an active integration owner, and they do not meet today's expectations for setup and features. They still work, and you can help bring them to Bronze by adding a config flow and the other Bronze rules.
+`legacy` 用于只能通过 YAML 设置的旧式集成，其中一些集成与 Home Assistant 本身一样历史悠久。它们中许多缺少活跃的集成负责人，也无法满足如今对设置和功能的期望。它们仍然可以正常工作，你可以通过添加配置流程和其他铜牌规则，帮助它们达到铜牌。
 
-### No score
+### 无评分（no_score）
 
-`no_score` means the integration has not been graded against the scale. It is not a judgment on its quality. No integration in core uses it at the moment, and a new integration cannot start without a score: it needs Bronze.
+`no_score` 表示该集成尚未根据质量等级进行评级。这并不是对其质量的评判。目前核心中没有任何集成使用它，而且新集成不能在没有评分的情况下起步：它需要达到铜牌。
 
-### Custom
+### 自定义（custom）
 
-`custom` is for custom integrations: integrations that are not part of core and are installed by hand or through the [Marketplace](/marketplace/). The Home Assistant project does not review, maintain, or support them. If you maintain a custom integration, the rules of the scale are still a good guide, and they are what you need to follow when you want to contribute it to core.
+`custom` 用于自定义集成：不属于核心、通过手动安装或通过 [Marketplace](/marketplace/) 安装的集成。Home Assistant 项目不审查、维护或支持它们。如果你维护一个自定义集成，质量等级的规则仍然是很好的指导，而且当你想将它贡献到核心时，就需要遵循这些规则。
 
-## A tier can go down
+## 等级可能会下降
 
-A tier is not forever. An integration can be moved down when it no longer follows the rules of its tier. A common reason is losing its last active integration owner: without an owner, an integration cannot stay Silver or higher, even when its code would be good enough for Platinum.
+等级并非永远不变。当集成不再遵循其等级的规则时，它可以被降级。一个常见的原因是失去了最后一名活跃的集成负责人：没有负责人，集成就无法保持银牌或更高等级，即使其代码足以达到白金水平。
 
-Rules also change over time, as Home Assistant and best practices move on. When a rule is added to a tier, the integrations on that tier need to follow it too. Integrations with devices in the Works with Home Assistant program keep their tier when that happens.
+规则也会随着 Home Assistant 和最佳实践的发展而随时间变化。当某项规则被添加到某个等级时，处于该等级的集成也需要遵循它。当这种情况发生时，设备属于 Works with Home Assistant 计划的集成仍可保留其等级。

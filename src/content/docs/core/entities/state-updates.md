@@ -1,18 +1,18 @@
 ---
-title: Updating state
-description: Keep an entity in sync with its device by polling or by push, write the state at the right moment, and report availability honestly.
+title: 更新状态
+description: 通过轮询或推送让实体与其设备保持同步，在恰当的时机写入状态，并如实报告可用性。
 sidebarLabel: Updating state
 sidebarGroup: Basics
 order: 3
 ---
 
-An entity mirrors something outside Home Assistant: a device, a cloud service, a file. Something has to keep the two in sync. There are two ways to do that: Home Assistant asks the entity for news on a schedule (polling), or the entity tells Home Assistant when something changed (push).
+实体（entity）映射的是 Home Assistant 之外的东西：一台设备、一个云服务或一个文件。需要有某种机制让两者保持同步。有两种方式可以做到：Home Assistant 按计划定期向实体询问最新消息（轮询，polling），或者实体在发生变化时告知 Home Assistant（推送，push）。
 
-Push is better when the device supports it. Changes show up right away, and nobody sends requests for nothing. Poll when the device or service only answers questions.
+如果设备支持，推送是更好的选择。变化能够立即显现，也不会白白发送请求。当设备或服务只能回答问题时，就使用轮询。
 
-## Polling
+## 轮询
 
-[Polling](/glossary/polling/) is the default: `should_poll` is `True`. Home Assistant calls the update method of the entity at a fixed interval, and writes the state afterwards. Implement one of them:
+[轮询（polling）](/glossary/polling/)是默认方式：`should_poll` 为 `True`。Home Assistant 以固定间隔调用实体的更新方法，然后写入状态。实现其中之一：
 
 ```python
 class ExampleSensor(SensorEntity):
@@ -21,11 +21,11 @@ class ExampleSensor(SensorEntity):
         self._attr_native_value = await self._device.read_temperature()
 ```
 
-Use `update()` instead when your library is synchronous. Home Assistant then runs it in a thread for you. Like every property, the state properties should only return what the update method stored.
+如果你的库是同步的，请改用 `update()`。此时 Home Assistant 会替你在线程中运行它。与所有属性一样，状态属性应当只返回更新方法所存储的内容。
 
-### Polling interval
+### 轮询间隔
 
-The interval comes from `SCAN_INTERVAL` in the platform module of your integration, like `sensor.py`:
+轮询间隔来自集成（integration）平台模块中的 `SCAN_INTERVAL`，例如 `sensor.py`：
 
 ```python
 from datetime import timedelta
@@ -33,26 +33,26 @@ from datetime import timedelta
 SCAN_INTERVAL = timedelta(minutes=5)
 ```
 
-Without it, the default of the domain is used, like 30 seconds for sensors and switches, or 15 seconds for domains that don't set one. When an update takes longer than 10 seconds, Home Assistant logs a warning. Pick an interval the device or the API can handle comfortably.
+如果没有设置，则使用该域（domain）的默认值：例如传感器和开关为 30 秒，而未设置默认值的域则为 15 秒。当一次更新耗时超过 10 秒时，Home Assistant 会记录一条警告。请选择设备或 API 能轻松承受的间隔。
 
-### Parallel updates
+### 并行更新
 
-`PARALLEL_UPDATES` in the platform module limits how many entities of that platform update or run an action at the same time:
+平台模块中的 `PARALLEL_UPDATES` 限制该平台有多少个实体可以同时更新或执行操作：
 
 ```python
 # One request at a time: the device can't handle more
 PARALLEL_UPDATES = 1
 ```
 
-Without it, the first entity of the platform that is added decides the limit for the whole platform: 1 when it has a synchronous `update()` method, and no limit otherwise. `0` also means no limit.
+如果没有设置，则由平台中第一个被添加的实体决定整个平台的限制：如果它拥有同步的 `update()` 方法，则为 1；否则不限制。`0` 同样表示不限制。
 
-### Polling through a coordinator
+### 通过协调器轮询
 
-When one request returns the data of many entities, polling each entity separately is wasteful. Use a [coordinator](/glossary/coordinator/) instead: it fetches the data once per interval, and its entities (based on `CoordinatorEntity`) are push entities that write their state when the coordinator has new data. Most integrations with more than a handful of polled entities work this way.
+当一次请求就能返回多个实体的数据时，对每个实体分别轮询是一种浪费。请改用[协调器（coordinator）](/glossary/coordinator/)：它每个间隔获取一次数据，其下的实体（基于 `CoordinatorEntity`）是推送实体，会在协调器有新数据时写入各自的状态。大多数拥有较多轮询实体的集成都采用这种方式。
 
-## Push
+## 推送
 
-For push, set `should_poll` to `False`, subscribe to the updates of your device or library when the entity is added, and write the state when a message arrives.
+要使用推送，请将 `should_poll` 设置为 `False`，在实体被添加时订阅设备或库的更新，并在消息到达时写入状态。
 
 ```python
 class ExampleSensor(SensorEntity):
@@ -71,39 +71,39 @@ class ExampleSensor(SensorEntity):
         self.async_write_ha_state()
 ```
 
-`async_on_remove` makes sure the subscription is cleaned up when the entity goes away. See [the entity lifecycle](/core/entities/lifecycle/).
+`async_on_remove` 确保实体被移除时订阅会被清理。参见[实体生命周期](/core/entities/lifecycle/)。
 
-## Writing the state
+## 写入状态
 
-These methods write the state of the entity to the state machine. Pick the one that fits the thread you are in.
+这些方法将实体的状态写入状态机。请根据你所在的线程选择合适的方法。
 
-| Method | Use it |
+| 方法 | 用途 |
 | --- | --- |
-| `async_write_ha_state()` | From the event loop, after you changed the `_attr_` values. This is the one you use most. It doesn't fetch anything. |
-| `schedule_update_ha_state()` | From another thread, like a callback of a synchronous library. It schedules the write on the event loop. |
-| `async_schedule_update_ha_state(force_refresh=True)` | From the event loop, when Home Assistant should call your update method first. |
-| `schedule_update_ha_state(force_refresh=True)` | The same, from another thread. |
+| `async_write_ha_state()` | 在事件循环（event loop）中、修改完 `_attr_` 值之后使用。这是你最常用的一个。它不会获取任何数据。 |
+| `schedule_update_ha_state()` | 在其他线程中使用，例如同步库的回调。它会把写入操作调度到事件循环上执行。 |
+| `async_schedule_update_ha_state(force_refresh=True)` | 在事件循环中使用，适用于需要 Home Assistant 先调用你的更新方法的情况。 |
+| `schedule_update_ha_state(force_refresh=True)` | 同上，但在其他线程中使用。 |
 
-Calling `async_write_ha_state()` from outside the event loop is not thread safe, and Home Assistant reports it. With `force_refresh=False`, the `async_schedule_update_ha_state` method just calls `async_write_ha_state`.
+在事件循环之外调用 `async_write_ha_state()` 不是线程安全的，Home Assistant 会对这种情况进行报告。当 `force_refresh=False` 时，`async_schedule_update_ha_state` 方法只是调用 `async_write_ha_state`。
 
-What to write after an action, like turning on a light, has its own section: [after a command](#after-a-command).
+执行某个操作（例如开灯）之后该写入什么状态，有专门的章节介绍：[命令之后](#after-a-command)。
 
-### Update before add
+### 添加前更新
 
-Pass `update_before_add=True` to `async_add_entities` to call the update method once before the entity is added, so it starts with real data instead of `unknown`. The first state is then delayed until that update finishes, which slows down the setup of your integration. With a coordinator, fetch the first data during setup instead.
+将 `update_before_add=True` 传递给 `async_add_entities`，可以在实体被添加之前先调用一次更新方法，使其以真实数据而非 `unknown` 开始。这样首个状态会延迟到该更新完成之后，从而拖慢集成的设置过程。如果使用协调器，则应改为在设置阶段获取首批数据。
 
-## After a command
+## 命令之后
 
-When a user turns on a light, your entity sends a command to the device. Then you have a choice: show the new state right away, or wait until the device confirms it. Writing the expected state right away is called an _optimistic update_.
+当用户打开一盏灯时，你的实体会向设备发送一条命令。此时你面临一个选择：立即显示新状态，还是等待设备确认。立即写入预期状态的做法称为_乐观更新（optimistic update）_。
 
-There is no universal right answer. It depends on how the device behaves:
+没有放之四海而皆准的正确答案。这取决于设备的行为：
 
-- **The device pushes its new state back.** Wait for it. Local devices with push updates confirm a change within moments, and the state you then write is the real one. Don't write anything after the command.
-- **You poll a device that reports its state.** Don't wait for the next interval: ask for a refresh right after the command. With a coordinator, call `await self.coordinator.async_request_refresh()`. The first request refreshes right away, and more requests within 10 seconds are batched into one refresh. The switches of the AirGradient integration (`airgradient/switch.py`) work this way.
-- **The device is slow to confirm.** A cloud service that takes a while to reflect a change, or an API you can only poll every few minutes, leaves the user looking at the old state for too long. An optimistic update makes sense here. The next poll corrects the state if the command didn't stick.
-- **The device can't report its state at all.** Think of a device controlled with infrared or radio frequency, or an MQTT switch without a state topic. Optimistic is the only option, and the entity also sets `assumed_state`, see below.
+- **设备会推送其新状态。** 那就等它。支持推送更新的本地设备会在片刻之内确认变化，此时你写入的状态才是真实状态。命令之后不要写入任何内容。
+- **你轮询的是一台会上报状态的设备。** 不要等到下一个间隔：在发出命令后立即请求刷新。如果使用协调器，请调用 `await self.coordinator.async_request_refresh()`。第一次请求会立即刷新，10 秒内的后续请求会被合并为一次刷新。AirGradient 集成的开关（`airgradient/switch.py`）就是这样工作的。
+- **设备确认得很慢。** 需要一段时间才能反映变化的云服务，或只能每隔几分钟轮询一次的 API，会让用户长时间面对旧状态。在这种情况下，乐观更新是合理的选择。如果命令没有生效，下一次轮询会纠正状态。
+- **设备完全无法上报其状态。** 想想通过红外或射频控制的设备，或者没有状态主题（state topic）的 MQTT 开关。乐观更新是唯一的选择，并且实体还应设置 `assumed_state`，见下文。
 
-An optimistic update looks like this. Write the state only after the command succeeded: when sending fails, raise an error and leave the state alone. Don't show a state the device never accepted.
+乐观更新看起来像这样。只在命令成功后才写入状态：如果发送失败，就抛出错误，并且不要改动状态。不要显示设备从未接受过的状态。
 
 ```python
 async def async_turn_on(self, **kwargs: Any) -> None:
@@ -113,18 +113,18 @@ async def async_turn_on(self, **kwargs: Any) -> None:
     self.async_write_ha_state()
 ```
 
-### Assumed state
+### 假定状态
 
-Set `_attr_assumed_state = True` when the state is a guess, because the device can't report it. The frontend then shows separate on and off buttons instead of a toggle, and keeps both open and close available for a cover, so the user can always send the command they need, even when the guess is wrong.
+当状态只是猜测、因为设备无法上报时，请设置 `_attr_assumed_state = True`。此时前端会显示分开的"开"和"关"按钮，而不是一个切换开关；对于卷帘（cover），则会同时保留打开和关闭两个操作，这样即使猜测有误，用户也总能发送所需的命令。
 
-Entities like this can restore their last state after a restart with `RestoreEntity`, because there is nothing to ask. Two examples in Core:
+这类实体可以在重启后借助 `RestoreEntity` 恢复其上一次的状态，因为没有什么可询问的。Core 中有两个例子：
 
-- The fan of the Dyson infrared integration (`dyson_infrared/fan.py`) always assumes its state. It writes the new state right after sending each infrared command.
-- An MQTT switch (`mqtt/switch.py`) without a state topic, or with `optimistic` set by the user, is optimistic. It sets `assumed_state`, writes the state after publishing a command, and restores its last state on startup.
+- Dyson 红外集成的风扇（`dyson_infrared/fan.py`）总是假定自己的状态。它在发送每条红外命令后立即写入新状态。
+- 没有状态主题、或被用户设置了 `optimistic` 的 MQTT 开关（`mqtt/switch.py`）采用乐观方式。它会设置 `assumed_state`，在发布命令后写入状态，并在启动时恢复其上一次的状态。
 
-## Availability
+## 可用性
 
-The `available` property tells Home Assistant if it can reach the device. When it returns `False`, the state becomes [`unavailable`](/glossary/unavailable/), the state attributes and extra state attributes are left out (capability attributes, the unit, and the device class stay), and the frontend shows the entity as unavailable.
+`available` 属性告诉 Home Assistant 它能否连接到设备。当它返回 `False` 时，状态变为 [`unavailable`](/glossary/unavailable/)，状态属性和额外状态属性会被省略（能力属性、单位和设备类别仍然保留），并且前端会将实体显示为不可用。
 
 ```python
 async def async_update(self) -> None:
@@ -138,12 +138,12 @@ async def async_update(self) -> None:
     self._attr_native_value = value
 ```
 
-Mark an entity unavailable when you can't get data, not when the data is just missing: a sensor that has no value right now should report `None`, which becomes `unknown`. Log the first failure, and log once when the device is back, instead of on every update.
+当你无法获取数据时，才应将实体标记为不可用，而不是数据恰好缺失的时候：当前没有数值的传感器应报告 `None`，它会变成 `unknown`。记录第一次失败，并在设备恢复时记录一次，而不是每次更新都记录。
 
-## Force update
+## 强制更新
 
-By default, Home Assistant only writes a new state when the state or the attributes changed. Writing the same value again just updates the `last_reported` timestamp. Set `force_update` to `True` when every reading should count as an update, like for a sensor that reads directly from hardware. Use it sparingly: every forced update is a state change event that automations and the recorder process.
+默认情况下，只有当状态或属性发生变化时，Home Assistant 才会写入新状态。再次写入相同的值只会更新 `last_reported` 时间戳。当每次读数都应算作一次更新时，请将 `force_update` 设置为 `True`，例如直接从硬件读取数据的传感器。请谨慎使用：每次强制更新都是一个状态变化事件，自动化（automation）和记录器（recorder）都会处理它。
 
-## Keep the database small
+## 保持数据库精简
 
-Every state change ends up in the database. An entity that changes often, with attributes that change often, quickly fills it. Keep extra attributes few and stable, and move fast changing values into their own sensor entities. See [state and attributes](/core/entities/state-attributes/).
+每次状态变化最终都会进入数据库。一个变化频繁、属性也频繁变化的实体会很快把数据库填满。保持额外属性少而稳定，并把快速变化的值移到它们各自的传感器实体中。参见[状态与属性](/core/entities/state-attributes/)。

@@ -1,36 +1,36 @@
 ---
-title: AI task entity
-description: Build an AI task entity that lets automations ask a model to generate data or images, or to evaluate questions.
-sidebarLabel: AI task
-sidebarGroup: Voice and AI
+title: AI 任务实体
+description: 构建一个 AI 任务实体，让自动化可以请求模型生成数据或图像，或评估问题。
+sidebarLabel: AI 任务
+sidebarGroup: 语音与 AI
 ---
 
-An AI task entity gives automations and scripts access to a model for one-off jobs, without a conversation around it: summarize these sensor readings, describe what the camera sees, write a fitting notification, or draw an image. People use it through the `ai_task.generate_data`, `ai_task.generate_image`, and `ai_task.evaluate` actions. Inherit from `AITaskEntity` in `homeassistant.components.ai_task`.
+AI 任务（AI task）实体让自动化和脚本可以使用模型执行一次性任务，而无需围绕它进行对话：总结这些传感器读数、描述摄像头看到的内容、撰写一条合适的通知，或绘制一幅图像。用户通过 `ai_task.generate_data`、`ai_task.generate_image` 和 `ai_task.evaluate` 这些动作来使用它。请继承 `homeassistant.components.ai_task` 中的 `AITaskEntity`。
 
-Integrations that offer a [conversation entity](/core/entities/conversation/) for a model usually offer an AI task entity as well, and share the code that sends a chat log to the model between the two.
+为模型提供[对话实体](/core/entities/conversation/)的集成通常也会提供 AI 任务实体，并在两者之间共享向模型发送聊天记录（chat log）的代码。
 
-## Properties
+## 属性
 
-AI task entities have no properties of their own. The [generic entity properties](/core/entities/entity-class/) apply.
+AI 任务实体没有自己的属性。适用[通用实体属性](/core/entities/entity-class/)。
 
-## Supported features
+## 支持的功能
 
-Combine the values of `AITaskEntityFeature` with the bitwise or (`|`) operator. Home Assistant checks them before it calls your entity, and refuses tasks the entity does not support.
+将 `AITaskEntityFeature` 的值与按位或（`|`）运算符组合使用。Home Assistant 会在调用你的实体之前检查这些值，并拒绝实体不支持的任务。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `GENERATE_DATA` | The entity generates text or structured data. Implement `_async_generate_data`. |
-| `SUPPORT_ATTACHMENTS` | The entity accepts attachments, like camera snapshots or files, with a task. |
-| `GENERATE_IMAGE` | The entity generates images. Implement `_async_generate_image`. |
-| `EVALUATE` | The entity answers evaluation questions. Implement `_async_evaluate`. |
+| `GENERATE_DATA` | 实体生成文本或结构化数据。实现 `_async_generate_data`。 |
+| `SUPPORT_ATTACHMENTS` | 实体接受随任务一起提供的附件，例如摄像头快照或文件。 |
+| `GENERATE_IMAGE` | 实体生成图像。实现 `_async_generate_image`。 |
+| `EVALUATE` | 实体回答评估问题。实现 `_async_evaluate`。 |
 
-## The chat log
+## 聊天记录
 
-Every data and image task arrives with a `ChatLog`, the same one a conversation entity gets. Home Assistant has already filled it: a system prompt for task work, the LLM API if the caller asked for one, and the instructions of the task as a user message, with its attachments. You send the chat log to the model, add the answer to it, and build the result from it. See [the chat log](/core/entities/conversation/#the-chat-log) on the conversation entity page for the API.
+每个数据和图像任务都会附带一个 `ChatLog`，与对话实体获得的相同。Home Assistant 已经填充了它：用于任务工作的系统提示词、调用方请求的 LLM API，以及作为用户消息的任务指令及其附件。你将聊天记录发送给模型，把回答添加到其中，并据此构建结果。API 详情请参阅对话实体页面上的[聊天记录](/core/entities/conversation/#the-chat-log)。
 
-## Methods
+## 方法
 
-### Generate data
+### 生成数据
 
 ```python
 async def _async_generate_data(
@@ -39,19 +39,19 @@ async def _async_generate_data(
     """Handle a generate data task."""
 ```
 
-`GenDataTask` has these fields:
+`GenDataTask` 包含以下字段：
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 | ---- | ---- | ----------- |
-| `name` | `str` | The name of the task, for logs and traces. |
-| `instructions` | `str` | What the model should do. Already in the chat log. |
-| `structure` | `probatio.Schema \| None` | The shape the data must have, or `None` for plain text. |
-| `attachments` | `list[conversation.Attachment] \| None` | Files that go with the instructions. Already in the chat log. |
-| `llm_api` | `llm.API \| None` | The LLM API the caller asked for. Already attached to the chat log. |
+| `name` | `str` | 任务的名称，用于日志和追踪。 |
+| `instructions` | `str` | 模型应该做什么。已在聊天记录中。 |
+| `structure` | `probatio.Schema \| None` | 数据必须符合的结构，纯文本则为 `None`。 |
+| `attachments` | `list[conversation.Attachment] \| None` | 随指令一起提供的文件。已在聊天记录中。 |
+| `llm_api` | `llm.API \| None` | 调用方请求的 LLM API。已附加到聊天记录。 |
 
-Return a `GenDataTaskResult` with the `conversation_id` of the chat log and the generated `data`: a string without a structure, or a dictionary that matches the structure.
+返回一个 `GenDataTaskResult`，其中包含聊天记录的 `conversation_id` 和生成的 `data`：无结构时为字符串，有结构时为符合该结构的字典。
 
-### Generate image
+### 生成图像
 
 ```python
 async def _async_generate_image(
@@ -60,19 +60,19 @@ async def _async_generate_image(
     """Handle a generate image task."""
 ```
 
-`GenImageTask` has a `name`, `instructions`, and optional `attachments`. Return a `GenImageTaskResult`:
+`GenImageTask` 包含 `name`、`instructions` 和可选的 `attachments`。返回一个 `GenImageTaskResult`：
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 | ---- | ---- | ----------- |
-| `image_data` | `bytes` | The raw image. |
-| `conversation_id` | `str` | The ID of the chat log. |
-| `mime_type` | `str` | The type of the image, like `image/png`. |
-| `width` | `int \| None` | The width in pixels, if known. |
-| `height` | `int \| None` | The height in pixels, if known. |
-| `model` | `str \| None` | The model that made the image, if known. |
-| `revised_prompt` | `str \| None` | The prompt the model actually used, if it rewrote it. |
+| `image_data` | `bytes` | 原始图像。 |
+| `conversation_id` | `str` | 聊天记录的 ID。 |
+| `mime_type` | `str` | 图像的类型，例如 `image/png`。 |
+| `width` | `int \| None` | 宽度（像素），如果已知。 |
+| `height` | `int \| None` | 高度（像素），如果已知。 |
+| `model` | `str \| None` | 生成图像的模型，如果已知。 |
+| `revised_prompt` | `str \| None` | 模型实际使用的提示词（如果它重写了提示词）。 |
 
-### Evaluate
+### 评估
 
 ```python
 async def _async_evaluate(
@@ -81,26 +81,26 @@ async def _async_evaluate(
     """Handle an evaluation task."""
 ```
 
-An evaluation task asks the model to judge a set of questions against some state, attachments, or both, and answer with probabilities instead of free text. It gets no chat log. `EvaluationTask` has these fields:
+评估任务要求模型根据某些状态、附件或两者对一组问题进行判断，并以概率而非自由文本的形式回答。它不会获得聊天记录。`EvaluationTask` 包含以下字段：
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 | ---- | ---- | ----------- |
-| `name` | `str` | The name of the task, for logs and traces. |
-| `questions` | `dict[str, EvaluationQuestion]` | The questions, keyed by an ID. |
-| `state` | JSON value | The data to judge, or `None`. |
-| `attachments` | `list[conversation.Attachment] \| None` | Files to judge. |
+| `name` | `str` | 任务的名称，用于日志和追踪。 |
+| `questions` | `dict[str, EvaluationQuestion]` | 问题，以 ID 为键。 |
+| `state` | JSON 值 | 要判断的数据，或 `None`。 |
+| `attachments` | `list[conversation.Attachment] \| None` | 要判断的文件。 |
 
-Home Assistant refuses a task that has neither `state` nor attachments. Every question has a `type` and `instructions`:
+Home Assistant 会拒绝既没有 `state` 也没有附件的任务。每个问题都有一个 `type` 和 `instructions`：
 
-- `noul`: a yes or no question. Answer with a `NoulAnswer`, the probability of yes.
-- `choice`: pick one of at least two named alternatives in `criteria`. Answer with a `ChoiceAnswer`: the chosen key and a probability per key.
-- `score`: pick a level from the ordered list in `criteria`. Answer with a `ScoreAnswer`: the expected level index and a probability per level.
+- `noul`：是非题。用 `NoulAnswer` 回答，即“是”的概率。
+- `choice`：从 `criteria` 中至少两个命名选项中选择一个。用 `ChoiceAnswer` 回答：所选的键以及每个键的概率。
+- `score`：从 `criteria` 的有序列表中选择一个等级。用 `ScoreAnswer` 回答：期望的等级索引以及每个等级的概率。
 
-Return an `EvaluationTaskResult` with the `answers`, keyed by the same IDs as the questions.
+返回一个 `EvaluationTaskResult`，其中包含 `answers`，以与问题相同的 ID 为键。
 
-## Structured output
+## 结构化输出
 
-In the action, users describe the structure with [selectors](/glossary/selector/): every field has a selector, and optionally a `description` and `required`. Fields are optional unless `required` is `true`, and the data may not contain fields outside the structure.
+在动作中，用户使用[选择器（selector）](/glossary/selector/)描述结构：每个字段都有一个选择器，还可以有 `description` 和 `required`。除非 `required` 为 `true`，否则字段都是可选的，并且数据不能包含结构之外的字段。
 
 ```yaml
 structure:
@@ -114,13 +114,13 @@ structure:
       number:
 ```
 
-Home Assistant turns that into a `probatio.Schema` before it reaches your entity, with the descriptions kept on the keys. Convert it to the schema format of your model, usually JSON schema, and ask the model for output in that format. Then parse the answer and return the dictionary. If the model returns something that does not parse, raise a `HomeAssistantError`.
+Home Assistant 会在其到达你的实体之前将其转换为 `probatio.Schema`，并将描述保留在键上。将其转换为你的模型的架构格式（通常是 JSON schema），并要求模型以该格式输出。然后解析答案并返回字典。如果模型返回的内容无法解析，则抛出 `HomeAssistantError`。
 
-## States
+## 状态
 
-The state is the timestamp of the last task the entity handled, or `unknown` before the first one. Home Assistant sets and restores it; the `state` property is final.
+状态是实体处理的最后一个任务的时间戳，在第一个任务之前为 `unknown`。Home Assistant 会设置并恢复它；`state` 属性是最终值。
 
-## Example
+## 示例
 
 ```python
 import json
@@ -171,4 +171,4 @@ class MyAITask(ai_task.AITaskEntity):
         )
 ```
 
-`client.complete` stands in for your client library, which converts the chat log and the structure to the format of the model.
+`client.complete` 代表你的客户端库，它将聊天记录和结构转换为模型的格式。

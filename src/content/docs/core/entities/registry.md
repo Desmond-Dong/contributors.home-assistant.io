@@ -1,39 +1,39 @@
 ---
-title: The entity registry
-description: Give entities a unique ID so the entity registry can remember them, link them to a device, and decide whether they start enabled, visible, or categorized.
+title: 实体注册表
+description: 为实体提供一个唯一 ID，让实体注册表能够记住它们、将它们关联到设备，并决定它们初始时是否启用、是否可见或是否分类。
 sidebarLabel: Entity registry
 sidebarGroup: Basics
 order: 7
 ---
 
-This page is about how your entities get into the entity registry, from the side of the entity. To look up or migrate registry entries from the code of your integration, see [entity registry](/core/integrations/entity-registry/) in building integrations.
+本页从实体这一侧介绍实体是如何进入实体注册表的。若要在您的集成代码中查找或迁移注册表条目，请参阅构建集成文档中的[实体注册表](/core/integrations/entity-registry/)。
 
-The entity [registry](/glossary/registry/) is where Home Assistant remembers every entity it has seen. It keeps the entity ID, the device and area it belongs to, and everything the user changed: the name, the icon, the entity ID, whether it is enabled, and options like a preferred unit. Those settings survive restarts, reinstalls of the device, and updates of your integration.
+实体[注册表](/glossary/registry/)（registry）是 Home Assistant 记住它见过的每个实体的地方。它保存实体 ID、实体所属的设备和区域，以及用户更改过的所有内容：名称、图标、实体 ID、是否启用，以及首选单位等选项。这些设置能够在重启、重新安装设备以及集成更新后保留下来。
 
-An entity only gets a registry entry when it has a [unique ID](/glossary/unique-id/). Without one, users can't rename it, change its icon, put it in an area, or disable it from the interface. So give every entity a unique ID.
+实体只有拥有[唯一 ID](/glossary/unique-id/)（unique ID）时才会获得注册表条目。如果没有唯一 ID，用户就无法在界面上重命名它、更改它的图标、把它放进某个区域或禁用它。因此，请为每个实体提供唯一 ID。
 
-## Unique ID
+## 唯一 ID
 
-The registry finds an entity by three things together: its domain (like `sensor`), the integration that provides it (like `hue`), and its unique ID. The unique ID only has to be unique within that combination. Don't put your integration domain or the entity domain in it, Home Assistant already keeps track of those.
+注册表通过三样东西的组合来查找实体：它的域（domain，如 `sensor`）、提供它的集成（如 `hue`），以及它的唯一 ID。唯一 ID 只需在该组合内唯一即可。不要把您的集成域或实体域包含进去，Home Assistant 已经会跟踪这些信息。
 
-The unique ID must never change, and users must not be able to change it. When it changes, Home Assistant sees a brand new entity, and everything the user set up for the old one is gone.
+唯一 ID 绝不能改变，用户也不能更改它。一旦改变，Home Assistant 会把它当作一个全新的实体，用户为旧实体所做的一切设置都会丢失。
 
-Good sources for a unique ID:
+适合作为唯一 ID 的来源：
 
-- The serial number of the device
-- The MAC address of the device, formatted with `format_mac` from `homeassistant.helpers.device_registry`. Read it from the device API or from discovery, never from the ARP table of the network
-- A unique identifier printed on the device or stored in its firmware
-- A fixed location, like latitude and longitude, for entities that describe a place
+- 设备的序列号
+- 设备的 MAC 地址，使用 `homeassistant.helpers.device_registry` 中的 `format_mac` 进行格式化。请从设备 API 或发现（discovery）过程中读取，绝不要从网络的 ARP 表中读取
+- 印在设备上或存储在其固件中的唯一标识符
+- 对于描述某个地点的实体，可以使用固定位置，例如经纬度
 
-As a last resort, for entities set up from a [config entry](/glossary/config-entry/), use the config entry ID.
+作为最后手段，对于由[配置条目](/glossary/config-entry/)（config entry）设置的实体，可以使用配置条目 ID。
 
-Never use these: the IP address, the hostname, a URL, the name of the device, an email address, or a username. They all change.
+绝不要使用这些：IP 地址、主机名、URL、设备名称、电子邮件地址或用户名。它们都会改变。
 
-When a device has several entities, combine the unique ID of the device with something that tells the entities apart, like the key of the [entity description](/glossary/entity-description/): `f"{serial}_{description.key}"`.
+当一个设备有多个实体时，将设备的唯一 ID 与能够区分这些实体的信息组合起来，例如[实体描述](/glossary/entity-description/)（entity description）的键：`f"{serial}_{description.key}"`。
 
-## Linking to a device
+## 关联到设备
 
-Set `device_info` to link an entity to a [device](/glossary/device/). Home Assistant creates the device in the device registry the first time it sees it, and updates it when the information changes. All entities with the same identifiers end up on the same device.
+设置 `device_info` 可以将实体关联到[设备](/glossary/device/)。Home Assistant 第一次看到该设备时会在设备注册表中创建它，并在信息发生变化时更新它。所有具有相同标识符（identifiers）的实体最终都会归属于同一台设备。
 
 ```python
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -47,67 +47,67 @@ self._attr_device_info = DeviceInfo(
 )
 ```
 
-Only entities that have a unique ID and belong to a config entry can link to a device. Other entities that try get a warning, and the link will stop working in Home Assistant 2027.8.
+只有拥有唯一 ID 且属于某个配置条目的实体才能关联到设备。其他尝试这样做的实体会收到警告，并且该关联将在 Home Assistant 2027.8 中停止工作。
 
-The fields of `DeviceInfo` are all optional, but a device needs at least `identifiers` or `connections`:
+`DeviceInfo` 的字段都是可选的，但设备至少需要 `identifiers` 或 `connections` 中的一项：
 
-| Field | Description |
+| 字段 | 描述 |
 | --- | --- |
-| `identifiers` | Set of `(domain, id)` tuples that identify the device in your integration. |
-| `connections` | Set of `(type, id)` tuples, like a MAC address, that other integrations can match on. |
-| `name` | The name of the device. |
-| `manufacturer`, `model`, `model_id` | Who made it, and the model name and model number. |
-| `serial_number` | The serial number. |
-| `sw_version`, `hw_version` | Firmware and hardware version. |
-| `configuration_url` | A URL to configure the device, like its web interface. |
-| `suggested_area` | The area the device should land in when it is first created. |
-| `entry_type` | `DeviceEntryType.SERVICE` for something that is not a physical device, like a web service. |
-| `via_device_id` | The device registry ID of the device this one is connected through, like a hub. |
-| `translation_key`, `translation_placeholders` | A translated device name, from the `device` section of `strings.json`. |
+| `identifiers` | 在您的集成中标识该设备的 `(domain, id)` 元组集合。 |
+| `connections` | `(type, id)` 元组的集合，例如 MAC 地址，其他集成可以据此进行匹配。 |
+| `name` | 设备的名称。 |
+| `manufacturer`, `model`, `model_id` | 制造商，以及型号名称和型号编号。 |
+| `serial_number` | 序列号。 |
+| `sw_version`, `hw_version` | 固件和硬件版本。 |
+| `configuration_url` | 用于配置设备的 URL，例如它的 Web 界面。 |
+| `suggested_area` | 设备首次创建时应归入的区域。 |
+| `entry_type` | `DeviceEntryType.SERVICE`，用于非物理设备的事物，例如 Web 服务。 |
+| `via_device_id` | 本设备所经由连接的设备的设备注册表 ID，例如集线器。 |
+| `translation_key`, `translation_placeholders` | 翻译后的设备名称，来自 `strings.json` 的 `device` 部分。 |
 
-`via_device_id` replaces the older `via_device` field, which took an identifier tuple and is removed in Home Assistant 2027.8.
+`via_device_id` 取代了旧的 `via_device` 字段，后者接受一个标识符元组，并将在 Home Assistant 2027.8 中被移除。
 
-### Child devices
+### 子设备
 
-Some devices are made of logical parts, like the outlets of a power strip. Use `ChildDeviceInfo` to register such a part as a child of a device you already registered. It takes the `identifiers` of the child, the `parent_device_id` (the device registry ID of the parent), and optionally `name`, `suggested_area`, and a translation key with placeholders. The parent must be registered by the same config entry and belong to the same config subentry.
+有些设备由逻辑部件组成，例如插线板上的插座。使用 `ChildDeviceInfo` 可以把这样的部件注册为您已注册设备的子设备。它接受子设备的 `identifiers`、`parent_device_id`（父设备的设备注册表 ID），以及可选的 `name`、`suggested_area` 和带占位符的翻译键。父设备必须由同一个配置条目注册，并属于同一个配置子条目（config subentry）。
 
-## Entity categories
+## 实体类别
 
-Not every entity is a main feature of its device. Mark the others with an [entity category](/glossary/entity-category/) from `homeassistant.const`:
+并非每个实体都是其设备的主要功能。请使用 `homeassistant.const` 中的[实体类别](/glossary/entity-category/)（entity category）来标记其他实体：
 
-- `EntityCategory.CONFIG`: the entity changes a setting of the device, like a switch for the status LED, or a number for the sensitivity of a motion sensor.
-- `EntityCategory.DIAGNOSTIC`: the entity shows information about the device without changing it, like the signal strength or the IP address. Also use it for a button that makes a device identify itself.
+- `EntityCategory.CONFIG`：该实体更改设备的某项设置，例如状态 LED 的开关，或移动传感器灵敏度的数值。
+- `EntityCategory.DIAGNOSTIC`：该实体显示有关设备的信息而不更改设备，例如信号强度或 IP 地址。对于让设备标识自身的按钮，也使用此类别。
 
-Categorized entities are shown in their own sections on the device page, aren't added to auto-generated dashboards, aren't exposed to voice assistants by default, and aren't targeted when an action targets a whole device or area. Sensors and binary sensors can't use the `CONFIG` category.
+已分类的实体会显示在设备页面各自的分区中，不会被添加到自动生成的仪表盘，默认不会暴露给语音助手，并且当操作面向整个设备或区域时也不会成为目标。传感器和二进制传感器不能使用 `CONFIG` 类别。
 
-## Enabled and visible by default
+## 默认启用和可见
 
-Some entities are useful for a few people and noise for everyone else, like a signal strength sensor or a sensor that changes every second. Set `entity_registry_enabled_default` to `False` for those. The entity is registered disabled: it doesn't run, doesn't write states, and doesn't fill the database, until a user enables it.
+有些实体只对少数人有用，而对其他人来说只是干扰，例如信号强度传感器或每秒都在变化的传感器。对于这些实体，请将 `entity_registry_enabled_default` 设置为 `False`。该实体注册时即为禁用状态：在用户启用它之前，它不会运行、不会写入状态，也不会填充数据库。
 
-`entity_registry_visible_default` set to `False` registers the entity as hidden instead. It still runs, but it is left out of auto-generated dashboards, isn't exposed to voice assistants by default, and isn't targeted when an action targets a whole device or area. Use it for entities that are part of something bigger, like the members of a group.
+将 `entity_registry_visible_default` 设置为 `False` 则会将实体注册为隐藏。它仍然会运行，但不会出现在自动生成的仪表盘中，默认不会暴露给语音助手，并且当操作面向整个设备或区域时也不会成为目标。对于作为某个更大整体一部分的实体，例如分组的成员，可以使用此选项。
 
-Both only apply when the entity is registered for the first time. After that, the user decides.
+这两个选项都只在实体首次注册时应用。之后，由用户决定。
 
-## Disabled entities
+## 已禁用的实体
 
-The `disabled_by` field of a registry entry says why an entity is disabled. A disabled entity is not added to Home Assistant when your integration passes it to `async_add_entities`.
+注册表条目的 `disabled_by` 字段说明了实体被禁用的原因。当您的集成把已禁用的实体传递给 `async_add_entities` 时，该实体不会被添加到 Home Assistant。
 
-| Value | Meaning |
+| 值 | 含义 |
 | --- | --- |
-| `user` | The user disabled it in the interface. |
-| `integration` | The integration registered it disabled with `entity_registry_enabled_default`, or the user turned off **Enable newly added entities** for the config entry. |
-| `config_entry` | The config entry is disabled. |
-| `device` | The device of the entity is disabled. |
-| `hass` | Home Assistant disabled it. |
+| `user` | 用户在界面中禁用了它。 |
+| `integration` | 集成通过 `entity_registry_enabled_default` 将其注册为禁用，或者用户为该配置条目关闭了**启用新添加的实体**。 |
+| `config_entry` | 配置条目被禁用。 |
+| `device` | 实体所属的设备被禁用。 |
+| `hass` | Home Assistant 禁用了它。 |
 
-When the user disables an entity, Home Assistant removes it right away. When the user enables an entity of a config entry, Home Assistant reloads the config entry to add it. It waits until 30 seconds after the last entity was enabled, so a user who enables several entities causes one reload. Your integration must support unloading for that to work without a restart.
+当用户禁用实体时，Home Assistant 会立即将其移除。当用户启用某个配置条目的实体时，Home Assistant 会重新加载该配置条目来添加它。它会等待到最后一个实体启用后 30 秒，这样启用多个实体的用户只会触发一次重新加载。您的集成必须支持卸载，这样才能在无需重启的情况下正常工作。
 
-Make sure your integration copes with entities that are never added. If you keep references to entity objects, register them in `async_added_to_hass`, which only runs for entities that are actually added. See [the entity lifecycle](/core/entities/lifecycle/).
+请确保您的集成能够应对从未被添加的实体。如果您保留了对实体对象的引用，请在 `async_added_to_hass` 中注册它们，该回调只会在实体实际被添加时运行。请参阅[实体生命周期](/core/entities/lifecycle/)。
 
-If your integration lets users choose which entities to create, like in an [options flow](/glossary/options-flow/), don't use `disabled_by` for it. Don't create the entities the user deselected, and remove them from the entity and device registries.
+如果您的集成允许用户选择要创建哪些实体，例如在[选项流程](/glossary/options-flow/)（options flow）中，请不要为此使用 `disabled_by`。不要创建用户未选择的实体，并将其从实体注册表和设备注册表中移除。
 
-A single config entry can have at most 10,000 enabled entities. Beyond that, Home Assistant doesn't add new ones and logs a warning, so a misbehaving integration can't take the whole system down. A few integrations that manage large networks, like Z-Wave and Matter, are exempt.
+单个配置条目最多可拥有 10,000 个已启用的实体。超过该数量后，Home Assistant 不会添加新实体并会记录警告，因此行为异常的集成无法拖垮整个系统。少数管理大型网络的集成（例如 Z-Wave 和 Matter）可豁免此限制。
 
-## Entity options
+## 实体选项
 
-The registry also stores options per entity, grouped by domain. The user sets most of them in the entity settings, like the display precision or the unit of a sensor, or the color of a calendar. The platform base class reads them from `self.registry_entry.options` and handles them for you. Your integration normally doesn't need to read or write them.
+注册表还会按实体存储选项，并按域分组。用户大多在实体设置中设置它们，例如传感器的显示精度或单位，或者日历的颜色。平台基类会从 `self.registry_entry.options` 读取这些选项并为您处理。您的集成通常不需要读取或写入这些选项。

@@ -1,26 +1,26 @@
 ---
-title: Prevent duplicate config entries
-description: "Bronze rule unique-config-entry: the same device or service cannot be set up twice."
+title: 防止重复的配置条目
+description: "铜级规则 unique-config-entry：同一设备或服务不能被设置两次。"
 sidebarLabel: unique-config-entry
 sidebarGroup: Bronze
 order: 20
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `unique-config-entry`.
+这是一条铜级（Bronze）规则。在 `quality_scale.yaml` 中，它被称为 `unique-config-entry`。
 
-The config flow must stop the user from setting up the same device or service twice. Every flow, including discovery flows, aborts when the device or service already has a config entry.
+配置流程（config flow）必须阻止用户将同一设备或服务设置两次。当设备或服务已经拥有配置条目（config entry）时，每个流程（包括发现流程）都会中止。
 
-## Why it matters
+## 为什么重要
 
-Setting up an integration from the UI is easy, so setting it up twice by accident is easy too. Two entries for the same device mean duplicate devices and entities, and unique IDs that collide. Discovery makes it worse: without a way to recognize a known device, Home Assistant keeps offering to set it up again.
+通过用户界面（UI）设置集成（integration）非常容易，因此不小心把它设置两次同样容易。同一设备的两个条目意味着重复的设备和实体（entity），以及相互冲突的唯一 ID（unique ID）。发现（discovery）功能会让情况更糟：如果没有办法识别已知设备，Home Assistant 会不断提示再次设置它。
 
-## Example
+## 示例
 
-There are two ways to do this.
+有两种方法可以实现。
 
-### With a unique ID
+### 使用唯一 ID
 
-Give the config entry a [unique ID](/glossary/unique-id/), like the serial number of the device, and abort when an entry with that ID exists. This is the preferred way, because it also lets discovery recognize the device:
+为配置条目提供一个[唯一 ID](/glossary/unique-id/)，例如设备的序列号，并在具有该 ID 的条目已存在时中止。这是首选方式，因为它还能让发现功能识别该设备：
 
 ```python
 async def async_step_user(
@@ -46,35 +46,35 @@ async def async_step_user(
     )
 ```
 
-The unique ID only has to be unique within your integration. Use a stable hardware identifier, like a serial number or a MAC address formatted with `format_mac`. Do not use an IP address or hostname: those change.
+唯一 ID 只需要在你的集成内部保持唯一即可。请使用稳定的硬件标识符，例如序列号或使用 `format_mac` 格式化的 MAC 地址。不要使用 IP 地址或主机名：它们会变化。
 
-### With unique data
+### 使用唯一数据
 
-When the device has no identifier to use, compare the data of the existing entries instead:
+当设备没有可用的标识符时，改为比较现有条目的数据：
 
 ```python
 if user_input is not None:
     self._async_abort_entries_match({CONF_HOST: user_input[CONF_HOST]})
 ```
 
-The flow aborts with `already_configured` when an entry with the same host exists.
+当存在具有相同主机的条目时，流程会以 `already_configured` 中止。
 
-## How it is checked
+## 如何检查
 
-- Hassfest, when the rule is `done`: the config flow must call `_async_abort_entries_match`, or both `async_set_unique_id` and `_abort_if_unique_id_configured`. Integrations with `single_config_entry` in their manifest pass this check.
-- Pylint, for every integration: `home-assistant-unique-id-ip-based` warns when `async_set_unique_id` gets an IP address or hostname.
-- Pylint: `home-assistant-tests-config-flow-unique-id` warns when a config flow test creates an entry without checking its unique ID.
-- The test of the duplicate case is part of [config-flow-test-coverage](/core/quality-scale/config-flow-test-coverage/).
+- Hassfest，当该规则为 `done` 时：配置流程必须调用 `_async_abort_entries_match`，或者同时调用 `async_set_unique_id` 和 `_abort_if_unique_id_configured`。在清单（manifest）中包含 `single_config_entry` 的集成可通过此检查。
+- Pylint，针对每个集成：当 `async_set_unique_id` 收到 IP 地址或主机名时，`home-assistant-unique-id-ip-based` 会发出警告。
+- Pylint：当配置流程测试在创建条目时未检查其唯一 ID，`home-assistant-tests-config-flow-unique-id` 会发出警告。
+- 对重复情况的测试是 [config-flow-test-coverage](/core/quality-scale/config-flow-test-coverage/) 的一部分。
 
-## Exceptions
+## 例外情况
 
-Integrations that only support a single config entry are exempt from this rule. Usually, that is set with `"single_config_entry": true` in `manifest.json`.
+仅支持单个配置条目的集成可免于此规则。通常，这是通过在 `manifest.json` 中设置 `"single_config_entry": true` 来实现的。
 
-## Related rules
+## 相关规则
 
-- [config-flow](/core/quality-scale/config-flow/): set up from the UI with a config flow.
-- [test-before-configure](/core/quality-scale/test-before-configure/): test the connection in the config flow.
-- [config-flow-test-coverage](/core/quality-scale/config-flow-test-coverage/): test the config flow fully.
-- [discovery](/core/quality-scale/discovery/): support discovery.
-- [reauthentication-flow](/core/quality-scale/reauthentication-flow/): reauthenticate from the UI.
-- [reconfiguration-flow](/core/quality-scale/reconfiguration-flow/): reconfigure from the UI.
+- [config-flow](/core/quality-scale/config-flow/)：通过配置流程从用户界面进行设置。
+- [test-before-configure](/core/quality-scale/test-before-configure/)：在配置流程中测试连接。
+- [config-flow-test-coverage](/core/quality-scale/config-flow-test-coverage/)：全面测试配置流程。
+- [discovery](/core/quality-scale/discovery/)：支持发现功能。
+- [reauthentication-flow](/core/quality-scale/reauthentication-flow/)：从用户界面重新进行身份验证。
+- [reconfiguration-flow](/core/quality-scale/reconfiguration-flow/)：从用户界面重新配置。

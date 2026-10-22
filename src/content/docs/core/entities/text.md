@@ -1,38 +1,38 @@
 ---
-title: Text entity
-description: Build a text entity that lets people set a short text value on a device, like a display message or a network name.
+title: 文本实体
+description: 构建一个文本实体，让人们能够在设备上设置简短的文本值，例如显示屏上的消息或网络名称。
 sidebarLabel: Text
 sidebarGroup: Inputs and helpers
 ---
 
-A text entity lets people set a text value on a device or service, like the message on a display, a network name, or a PIN code. Inherit from `TextEntity` in `homeassistant.components.text`.
+文本实体（text entity）让人们能够在设备或服务上设置文本值，例如显示屏上的消息、网络名称或 PIN 码。请继承 `homeassistant.components.text` 中的 `TextEntity`。
 
-A text entity has a value that stays. If you want to send a message that is gone once it is delivered, like a push notification, use a [notify](/core/entities/notify/) entity instead.
+文本实体具有一个会一直保持的值。如果您想发送一条送达后即消失的消息（例如推送通知），请改用[通知（notify）](/core/entities/notify/)实体。
 
-## Properties
+## 属性
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `native_value` | `str \| None` | Required | The current text. |
-| `native_min` | `int` | `0` | The minimum number of characters, inclusive. |
-| `native_max` | `int` | `255` | The maximum number of characters, inclusive. Values above 255 are capped at 255, the longest state Home Assistant can store. |
-| `pattern` | `str \| None` | `None` | A regular expression that the value must match. It is checked with `re.match`, so it only anchors at the start: end it with `$` to match the whole value. |
-| `mode` | `TextMode` | `TextMode.TEXT` | How the frontend shows the field: `TextMode.TEXT` for plain text, or `TextMode.PASSWORD` to hide what you type. |
+| `native_value` | `str \| None` | 必填 | 当前的文本。 |
+| `native_min` | `int` | `0` | 最小字符数（含）。 |
+| `native_max` | `int` | `255` | 最大字符数（含）。大于 255 的值将被限制为 255，即 Home Assistant 能够存储的最长状态。 |
+| `pattern` | `str \| None` | `None` | 值必须匹配的正则表达式。它通过 `re.match` 进行检查，因此只锚定在开头：若要匹配整个值，请在结尾加上 `$`。 |
+| `mode` | `TextMode` | `TextMode.TEXT` | 前端显示该字段的方式：`TextMode.TEXT` 表示普通文本，`TextMode.PASSWORD` 表示隐藏输入内容。 |
 
-The generic properties every entity has, like `name`, `available`, and `unique_id`, are on [the entity class](/core/entities/entity-class/).
+每个实体都具有的通用属性，例如 `name`、`available` 和 `unique_id`，请参见[实体类（entity class）](/core/entities/entity-class/)。
 
 > [!NOTE]
-> `TextMode.PASSWORD` only hides the input in the frontend. The value is still the state of the entity, readable by anyone who can see the entity and stored in the history. Don't use a text entity for real secrets.
+> `TextMode.PASSWORD` 只是在前端隐藏输入内容。该值仍然是实体的状态，任何能看到该实体的人都可以读取它，并且它会被存储在历史记录中。不要使用文本实体存储真正的机密信息。
 
-## Supported features
+## 支持的功能
 
-This entity has no supported features.
+此实体不支持任何功能。
 
-## Methods
+## 方法
 
-### Set value
+### 设置值
 
-Called when someone changes the text in the UI, or an automation or script calls the `text.set_value` action. Implement one of the two.
+当有人在 UI 中更改文本，或者自动化（automation）或脚本调用 `text.set_value` 动作（action）时被调用。请实现两者之一。
 
 ```python
 class MyText(TextEntity):
@@ -45,21 +45,21 @@ class MyText(TextEntity):
         """Set the text value."""
 ```
 
-The action checks the value against `native_min`, `native_max`, and `pattern` before it calls your method. A value that doesn't fit raises a `ServiceValidationError`, and your method is not called.
+该动作会在调用您的方法之前，根据 `native_min`、`native_max` 和 `pattern` 对该值进行检查。不符合要求的值会引发 `ServiceValidationError`，并且您的方法不会被调用。
 
-## States
+## 状态
 
-The state is `native_value`. It is `unknown` when `native_value` is `None`.
+状态为 `native_value`。当 `native_value` 为 `None` 时，状态为 `unknown`。
 
-The same checks run on your own value when the state is written: a `native_value` that is too short, too long, or doesn't match `pattern` raises a `ValueError`. Make sure what the device reports fits the limits you set.
+当状态被写入时，同样的检查也会对您自己的值运行：过短、过长或不匹配 `pattern` 的 `native_value` 会引发 `ValueError`。请确保设备上报的内容符合您设置的限制。
 
-The mode, minimum, maximum, and pattern are capability attributes: they are written to the [entity registry](/core/entities/registry/) and left out of the recorder history.
+模式、最小值、最大值和正则表达式（pattern）是能力属性（capability attribute）：它们会被写入[实体注册表（entity registry）](/core/entities/registry/)，并且不会包含在记录器（recorder）历史中。
 
-## Restoring the value
+## 恢复值
 
-If the text lives in Home Assistant and not on a device, inherit from `RestoreText`. Call `await self.async_get_last_text_data()` in `async_added_to_hass` to get the last `native_value`, `native_min`, and `native_max` back after a restart. It returns `None` when there is nothing to restore.
+如果文本存储在 Home Assistant 中而不是设备上，请继承 `RestoreText`。在 `async_added_to_hass` 中调用 `await self.async_get_last_text_data()`，以便在重启后恢复上一次的 `native_value`、`native_min` 和 `native_max`。当没有可恢复的内容时，它返回 `None`。
 
-## Example
+## 示例
 
 ```python
 from homeassistant.components.text import TextEntity

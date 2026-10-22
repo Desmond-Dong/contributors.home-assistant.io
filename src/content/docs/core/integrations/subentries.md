@@ -1,18 +1,18 @@
 ---
-title: Config subentries
-description: Split a config entry into parts users add one by one, like the locations of a weather service.
+title: 配置子条目
+description: 将配置条目拆分为用户逐个添加的部分，例如天气服务的各个位置。
 sidebarLabel: Subentries
 sidebarGroup: Setup and configuration
 order: 5
 ---
 
-A [config subentry](/glossary/config-subentry/) is a part of a config entry that users add, change, and remove on its own. Think of a weather service: the config entry holds the account, and each location you want a forecast for is a subentry. Users add subentries from the page of the config entry, without setting up the account again.
+[配置子条目（config subentry）](/glossary/config-subentry/)是配置条目（config entry）的一个组成部分，用户可以单独添加、更改和删除它。以天气服务为例：配置条目保存账户信息，而每个您想要获取天气预报的位置都是一个子条目。用户从配置条目的页面添加子条目，无需再次设置账户。
 
-Subentries have their own flows. A subentry flow works like a [config flow](/core/integrations/config-flow/), with two differences: it only starts with the `user` or `reconfigure` step, and it supports no discovery and no reauthentication.
+子条目拥有自己的流程。子条目流程的工作方式类似于[配置流程（config flow）](/core/integrations/config-flow/)，但有两点不同：它只能以 `user` 或 `reconfigure` 步骤开始，并且不支持发现和重新身份验证。
 
-## Add a subentry type
+## 添加子条目类型
 
-Tell Home Assistant which types of subentries your config entry supports, and which flow handles each type:
+告诉 Home Assistant 您的配置条目支持哪些类型的子条目，以及每种类型由哪个流程处理：
 
 ```python
 from homeassistant.config_entries import (
@@ -56,15 +56,15 @@ class LocationSubentryFlow(ConfigSubentryFlow):
         )
 ```
 
-In a subentry flow, `self._get_entry()` returns the parent config entry. A config flow can also create subentries right away, by passing `subentries` to its own `async_create_entry`.
+在子条目流程中，`self._get_entry()` 返回父配置条目。配置流程也可以直接创建子条目，方法是将 `subentries` 传递给它自己的 `async_create_entry`。
 
-## Unique IDs
+## 唯一 ID
 
-A subentry can have a unique ID. The same [rules as for config entries](/core/integrations/config-flow/#what-makes-a-good-unique-id) apply, except that it only needs to be unique within its config entry.
+子条目可以拥有唯一 ID。[与配置条目相同的规则](/core/integrations/config-flow/#what-makes-a-good-unique-id)同样适用，唯一的不同是它只需在其所属的配置条目内保持唯一。
 
-## Reconfigure a subentry
+## 重新配置子条目
 
-Add a `reconfigure` step to let users change an existing subentry. Home Assistant shows the option as soon as the step exists. Get the subentry with `self._get_reconfigure_subentry()`, and finish with `async_update_and_abort` or `async_update_reload_and_abort`:
+添加 `reconfigure` 步骤，让用户能够更改现有的子条目。只要该步骤存在，Home Assistant 就会显示此选项。使用 `self._get_reconfigure_subentry()` 获取子条目，并以 `async_update_and_abort` 或 `async_update_reload_and_abort` 结束：
 
 ```python
 async def async_step_reconfigure(
@@ -87,13 +87,13 @@ async def async_step_reconfigure(
     )
 ```
 
-`async_update_reload_and_abort` reloads the parent config entry. It raises an error if the entry has an update listener.
+`async_update_reload_and_abort` 会重新加载父配置条目。如果该条目具有更新监听器（update listener），它将引发错误。
 
-## Use subentries when setting up
+## 在设置时使用子条目
 
-Subentries are in `entry.subentries`, a mapping from subentry ID to `ConfigSubentry`, with its `subentry_type`, `title`, `data`, and `unique_id`. To get all subentries of one type, call `entry.get_subentries_of_type("location")`.
+子条目位于 `entry.subentries` 中，这是一个从子条目 ID 到 `ConfigSubentry` 的映射，包含其 `subentry_type`、`title`、`data` 和 `unique_id`。要获取某一类型的所有子条目，请调用 `entry.get_subentries_of_type("location")`。
 
-Entities and devices can belong to a subentry. Pass `config_subentry_id` when you add the entities, so they are grouped under the right subentry and removed with it:
+实体（entity）和设备（device）可以属于一个子条目。添加实体时请传入 `config_subentry_id`，这样它们会被归组到正确的子条目下，并随其一起移除：
 
 ```python
 async def async_setup_entry(
@@ -109,12 +109,12 @@ async def async_setup_entry(
         )
 ```
 
-## Texts and translations
+## 文本和翻译
 
-The texts of a subentry flow go in `strings.json` under `config_subentries`, with one key per subentry type. Next to the usual `step`, `error`, and `abort` sections, each type needs:
+子条目流程的文本放在 `strings.json` 的 `config_subentries` 下，每个子条目类型对应一个键。除了常见的 `step`、`error` 和 `abort` 部分之外，每种类型还需要：
 
-- `entry_type`: what one subentry of this type is called, like "Location".
-- `initiate_flow`: the labels of the buttons that start the flows. `user` is required, `reconfigure` is optional.
+- `entry_type`：该类型单个子条目的名称，例如 “Location”。
+- `initiate_flow`：启动流程的按钮标签。`user` 为必需，`reconfigure` 为可选。
 
 ```json
 {

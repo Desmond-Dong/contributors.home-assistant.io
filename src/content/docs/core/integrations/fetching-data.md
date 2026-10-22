@@ -1,26 +1,26 @@
 ---
-title: Fetching data
-description: Get data from your device or service with polling or push, and share it between entities with the data update coordinator.
+title: 获取数据
+description: 通过轮询（poll）或推送（push）从您的设备或服务获取数据，并使用数据更新协调器（data update coordinator）在实体（entity）之间共享数据。
 sidebarGroup: Data and updates
 order: 1
 ---
 
-Your integration needs data from somewhere: an API on the local network, a cloud service, a socket, or a serial port on a USB stick. How you fetch it depends on what the API offers. This page helps you pick the right approach.
+您的集成（integration）需要从某处获取数据：本地网络上的 API、云服务、套接字（socket），或 USB 设备上的串口。如何获取数据取决于 API 提供了什么。本页面帮助您选择合适的方法。
 
-## Push or poll
+## 推送还是轮询
 
-APIs come in two kinds:
+API 分为两类：
 
-- **Push**: you subscribe, and the API tells you when something changes. This uses the fewest resources, and updates show up right away.
-- **Poll**: you ask the API for the latest data at an interval. Changes show up at the next poll.
+- **推送（push）**：您进行订阅，当有变化时 API 会通知您。这种方式使用的资源最少，更新会立即显示。
+- **轮询（poll）**：您按一定间隔向 API 请求最新数据。变化会在下一次轮询时显示。
 
-Use push when the API supports it. Set the [IoT class](/core/integrations/manifest/#iot_class) in your manifest to match.
+如果 API 支持推送，请使用推送。在清单（manifest）中设置相应的 [IoT class](/core/integrations/manifest/#iot_class)。
 
-## Poll once for all entities: the coordinator
+## 为所有实体只轮询一次：协调器
 
-Most APIs return data for many entities in one request. Then you want one poll for the whole integration, and all entities updated from its result. The `DataUpdateCoordinator` in `homeassistant.helpers.update_coordinator` does exactly that. It also handles errors, retries, and backing off, and makes your entities unavailable when updates fail.
+大多数 API 在一次请求中就会返回多个实体的数据。这时您希望整个集成只进行一次轮询，然后所有实体都从其结果中更新。`homeassistant.helpers.update_coordinator` 中的 `DataUpdateCoordinator` 正是为此而设计的。它还会处理错误、重试和退避（back off），并在更新失败时将您的实体标记为不可用。
 
-Put the coordinator in `coordinator.py`:
+将协调器放在 `coordinator.py` 中：
 
 ```python
 from datetime import timedelta
@@ -82,22 +82,22 @@ class ExampleCoordinator(DataUpdateCoordinator[ExampleData]):
             ) from err
 ```
 
-What the parts do:
+各部分的作用：
 
-- `config_entry`: always pass it. Integrations in core must.
-- `update_interval`: how often to poll. The coordinator only polls while at least one entity listens.
-- `_async_setup`: optional. Runs once, during the first refresh, for data you only need to load once.
-- `_async_update_data`: fetches the data. Whatever it returns ends up in `coordinator.data`.
+- `config_entry`：始终传入它。核心（core）中的集成必须这样做。
+- `update_interval`：轮询的频率。只有当至少有一个实体在监听时，协调器才会进行轮询。
+- `_async_setup`：可选。在首次刷新期间运行一次，用于只需加载一次的数据。
+- `_async_update_data`：获取数据。它返回的任何内容最终都会存入 `coordinator.data`。
 
-And what the exceptions do:
+以及各异常的作用：
 
-- `UpdateFailed`: the update failed. The coordinator logs it once (not on every failed poll), marks the entities unavailable, and tries again at the next interval. With `retry_after`, it waits that many seconds instead. During the first refresh, `retry_after` is passed on to the `ConfigEntryNotReady` that fails the setup, so the [setup retry](/core/integrations/setup-failures/) honors it.
-- `ConfigEntryAuthFailed`: the credentials no longer work. The coordinator stops polling and starts [reauthentication](/core/integrations/reauth-reconfigure/#reauthentication).
-- Timeouts and `aiohttp` client errors are handled by the coordinator itself, and so are the [OAuth 2.0 token errors](/core/integrations/oauth2/#errors).
+- `UpdateFailed`：更新失败。协调器只记录一次日志（而不是每次轮询失败都记录），将实体标记为不可用，并在下一个间隔再次尝试。如果设置了 `retry_after`，它会改为等待相应的秒数。在首次刷新期间，`retry_after` 会被传递给导致设置失败的 `ConfigEntryNotReady`，因此[设置重试](/core/integrations/setup-failures/)会遵循该值。
+- `ConfigEntryAuthFailed`：凭据不再有效。协调器停止轮询并开始[重新认证](/core/integrations/reauth-reconfigure/#reauthentication)。
+- 超时和 `aiohttp` 客户端错误由协调器自行处理，[OAuth 2.0 令牌错误](/core/integrations/oauth2/#errors)也是如此。
 
-### Do the first refresh during setup
+### 在设置期间进行首次刷新
 
-Create the coordinator in `async_setup_entry`, and do the first refresh before you set up the platforms:
+在 `async_setup_entry` 中创建协调器，并在设置平台之前进行首次刷新：
 
 ```python
 coordinator = ExampleCoordinator(hass, entry, client)
@@ -106,11 +106,11 @@ await coordinator.async_config_entry_first_refresh()
 entry.runtime_data = coordinator
 ```
 
-If the first refresh fails, `async_config_entry_first_refresh` raises `ConfigEntryNotReady`, and Home Assistant [retries the setup](/core/integrations/setup-failures/). Your entities then always start with data. Call it only from `async_setup_entry`: in any other config entry state, it raises an error. If a failed first update should not stop the setup, call `await coordinator.async_refresh()` instead.
+如果首次刷新失败，`async_config_entry_first_refresh` 会抛出 `ConfigEntryNotReady`，Home Assistant 将[重试设置](/core/integrations/setup-failures/)。这样您的实体启动时就总是带有数据。只能从 `async_setup_entry` 中调用它：在任何其他配置条目（config entry）状态下调用都会抛出错误。如果首次更新失败不应阻止设置，请改为调用 `await coordinator.async_refresh()`。
 
-### Entities that use the coordinator
+### 使用协调器的实体
 
-Extend `CoordinatorEntity`. It handles polling, availability, and listening to the coordinator for you. Read the values from `self.coordinator.data` in a property, like `native_value`:
+继承 `CoordinatorEntity`。它会为您处理轮询、可用性以及监听协调器的工作。在属性（例如 `native_value`）中从 `self.coordinator.data` 读取值：
 
 ```python
 from homeassistant.components.sensor import SensorEntity
@@ -126,21 +126,21 @@ class ExampleSensor(CoordinatorEntity[ExampleCoordinator], SensorEntity):
         return self.coordinator.data.temperature
 ```
 
-When new data arrives, the coordinator calls `_handle_coordinator_update`, which writes the state, and the property reads the new value. You can also override `_handle_coordinator_update` and set `_attr_native_value` there. If you do, set it in `__init__` from `coordinator.data` as well. The entity starts listening only after it is added, so the first refresh, which already happened during setup, never reaches `_handle_coordinator_update`. Without that, the sensor stays `unknown` until the next update. With `always_update=False` and data that does not change, that can take a long time.
+当新数据到达时，协调器会调用 `_handle_coordinator_update`，该方法会写入状态，属性随之读取新值。您也可以重写 `_handle_coordinator_update` 并在其中设置 `_attr_native_value`。如果这样做，还需要在 `__init__` 中从 `coordinator.data` 设置它。实体只有在被添加之后才开始监听，因此在设置期间已经完成的首次刷新永远不会触发 `_handle_coordinator_update`。如果不这样做，传感器将保持 `unknown` 状态直到下一次更新。在 `always_update=False` 且数据不变的情况下，这可能需要很长时间。
 
-After a command, ask for fresh data with `await self.coordinator.async_request_refresh()`. Requests are debounced, so many calls in a row lead to one update.
+执行命令后，使用 `await self.coordinator.async_request_refresh()` 请求最新数据。请求会进行去抖（debounce）处理，因此连续多次调用只会导致一次更新。
 
-### Skip updates that change nothing
+### 跳过没有变化的更新
 
-By default, the coordinator calls its listeners after every update, even if the data did not change. If your data can be compared with `==`, like a dataclass, pass `always_update=False`. The coordinator then only calls listeners when the data changed, which saves state writes.
+默认情况下，协调器在每次更新后都会调用其监听器，即使数据没有变化。如果您的数据可以用 `==` 进行比较（例如 dataclass），请传入 `always_update=False`。这样协调器只会在数据发生变化时才调用监听器，从而减少状态写入。
 
-### Only fetch what is used
+### 只获取用到的数据
 
-Some APIs let you ask for less data. Pass a `context` to `CoordinatorEntity`, like a device ID, and use `self.async_contexts()` in the coordinator to see which contexts have listeners. Disabled entities do not listen, so you do not fetch their data.
+有些 API 允许您请求更少的数据。向 `CoordinatorEntity` 传入一个 `context`（例如设备 ID），并在协调器中使用 `self.async_contexts()` 查看哪些 context 拥有监听器。已禁用的实体不会监听，因此您不会获取它们的数据。
 
-## Push with a coordinator
+## 使用协调器的推送
 
-A coordinator also works for push APIs. Leave out `update_interval`, so it never polls, and call `async_set_updated_data` when new data arrives:
+协调器也适用于推送式 API。省略 `update_interval`，使其永不轮询，并在新数据到达时调用 `async_set_updated_data`：
 
 ```python
 @callback
@@ -149,11 +149,11 @@ def _handle_push(self, data: ExampleData) -> None:
     self.async_set_updated_data(data)
 ```
 
-If the coordinator also polls, this resets the time until the next poll.
+如果协调器同时也会轮询，此调用会重置距离下一次轮询的时间。
 
-## Push without a coordinator
+## 不使用协调器的推送
 
-When each entity has its own subscription, subscribe in `async_added_to_hass` and unsubscribe when the entity is removed. Entities can be disabled, so do not subscribe before they are added. Set `_attr_should_poll = False`, and write the state yourself when data arrives:
+当每个实体都有自己的订阅时，在 `async_added_to_hass` 中订阅，并在实体被移除时取消订阅。实体可能会被禁用，因此不要在实体被添加之前订阅。设置 `_attr_should_poll = False`，并在数据到达时自行写入状态：
 
 ```python
 class ExampleSwitch(SwitchEntity):
@@ -173,26 +173,26 @@ class ExampleSwitch(SwitchEntity):
         self.async_write_ha_state()
 ```
 
-`async_write_ha_state()` writes the current state right away. `async_schedule_update_ha_state(force_refresh=True)` calls your `async_update` first, then writes the state.
+`async_write_ha_state()` 会立即写入当前状态。`async_schedule_update_ha_state(force_refresh=True)` 会先调用您的 `async_update`，然后再写入状态。
 
-## Poll per entity
+## 按实体轮询
 
-If each entity has its own endpoint, and one request maps to exactly one entity, you can fetch the data in the `async_update` method of the entity. Home Assistant calls it at an interval, as long as `should_poll` is `True` (the default).
+如果每个实体都有自己的端点，并且一次请求恰好对应一个实体，您可以在实体的 `async_update` 方法中获取数据。只要 `should_poll` 为 `True`（默认值），Home Assistant 就会按一定间隔调用它。
 
-- Pass `update_before_add=True` to `async_add_entities` if the entity needs data before it is added.
-- Set the interval with a `SCAN_INTERVAL` constant in the platform, like `SCAN_INTERVAL = timedelta(seconds=30)`. Do not set it too low: it costs resources in Home Assistant, can overload the device, and can get users blocked by cloud APIs.
+- 如果实体在被添加之前需要数据，请向 `async_add_entities` 传入 `update_before_add=True`。
+- 在平台中使用 `SCAN_INTERVAL` 常量设置间隔，例如 `SCAN_INTERVAL = timedelta(seconds=30)`。不要设置得太低：这会消耗 Home Assistant 的资源，可能使设备过载，还可能导致用户被云 API 封禁。
 
-If several entities share one endpoint, use a coordinator instead.
+如果多个实体共享一个端点，请改用协调器。
 
-## Parallel requests
+## 并行请求
 
-Home Assistant limits how many updates and action calls run at the same time per platform, so integrations do not overload a device or API. Most integrations do not need to change anything here.
+Home Assistant 限制每个平台同时运行的更新和动作（action）调用数量，以免集成使设备或 API 过载。大多数集成无需在此处进行任何更改。
 
-The limit is a semaphore per platform, and it applies to both entity updates and action calls. By default it is `1` when your entities have a synchronous `update` method, and `0` (no limit) otherwise, like for entities with an `async_update` method or no update method at all. Home Assistant decides this on the first entity the platform adds. Override it with a `PARALLEL_UPDATES` constant in the platform file:
+该限制是每个平台一个信号量（semaphore），同时适用于实体更新和动作调用。默认情况下，如果您的实体具有同步的 `update` 方法，该值为 `1`；否则为 `0`（无限制），例如具有 `async_update` 方法或完全没有更新方法的实体。Home Assistant 会根据平台添加的第一个实体来决定该值。可以通过平台文件中的 `PARALLEL_UPDATES` 常量覆盖它：
 
 ```python
 # Only one update or action call at a time on this device
 PARALLEL_UPDATES = 1
 ```
 
-Set it explicitly in every platform: that is a rule of the Silver tier of the [quality scale](/core/quality-scale/). A coordinator already centralizes the updates, so integrations that use one can set `PARALLEL_UPDATES = 0` for read-only platforms like `sensor` and `binary_sensor`. Then only action calls matter for the limit.
+请在每个平台中显式设置它：这是[质量分级](/core/quality-scale/)白银（Silver）级别的一项规则。协调器已经集中处理了更新，因此使用协调器的集成可以为 `sensor` 和 `binary_sensor` 等只读平台设置 `PARALLEL_UPDATES = 0`。此时该限制只与动作调用有关。

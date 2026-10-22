@@ -1,22 +1,22 @@
 ---
-title: Translate exception messages
-description: "Gold rule exception-translations: errors shown to users come from strings.json, so they can be translated."
+title: 翻译异常消息
+description: "黄金级规则 exception-translations：向用户显示的错误来自 strings.json，因此可以被翻译。"
 sidebarLabel: exception-translations
 sidebarGroup: Gold
 order: 17
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `exception-translations`.
+这是一条黄金级（Gold）规则。在 `quality_scale.yaml` 中，它被称为 `exception-translations`。
 
-Exceptions that reach the user are translatable. Raise `HomeAssistantError`, or a subclass like `ServiceValidationError`, with a `translation_domain` and a `translation_key` instead of a hardcoded English message, and put the message in the `exceptions` section of `strings.json`.
+到达用户的异常应该是可翻译的。抛出 `HomeAssistantError` 或其子类（如 `ServiceValidationError`）时，应附带 `translation_domain` 和 `translation_key`，而不是硬编码的英文消息，并将该消息放入 `strings.json` 的 `exceptions` 部分。
 
-## Why it matters
+## 为什么重要
 
-When an action fails, the user sees the error message in the interface. For a user who runs Home Assistant in their own language, an English error in the middle of a translated interface is harder to understand, exactly at the moment they need to understand what went wrong.
+当操作（action）失败时，用户会在界面中看到错误消息。对于以自己的母语运行 Home Assistant 的用户来说，在已翻译的界面中夹杂一条英文错误会更难以理解，而恰恰在此时，他们最需要明白到底哪里出了问题。
 
-Exceptions that inherit from `HomeAssistantError` support translations out of the box, so all it takes is a key and a string.
+继承自 `HomeAssistantError` 的异常开箱即支持翻译，因此只需一个键和一个字符串即可。
 
-## Example
+## 示例
 
 ```python
 async def async_set_schedule(call: ServiceCall) -> None:
@@ -54,19 +54,19 @@ async def async_set_schedule(call: ServiceCall) -> None:
 }
 ```
 
-Don't pass a message as well: with a translation key, the message comes from `strings.json`.
+不要同时传入消息：使用翻译键时，消息来自 `strings.json`。
 
-## How it is checked
+## 检查方式
 
-- Pylint, when the rule is `done`: raising a `HomeAssistantError` or a subclass with a hardcoded message is flagged (`home-assistant-exception-not-translated`).
-- Pylint, for every integration: the translation key must exist in the `exceptions` section of `strings.json` (`home-assistant-exception-translation-key-missing`), `translation_domain` and `translation_key` must be set together (`home-assistant-exception-translation-key-domain-mismatch`), the placeholders must match the message (`home-assistant-exception-placeholder-mismatch`), and there must be no message next to a translation key (`home-assistant-exception-message-with-translation`).
-- The tests fail when an action raises an exception whose translation is missing.
+- Pylint，当规则状态为 `done` 时：抛出带有硬编码消息的 `HomeAssistantError` 或其子类会被标记（`home-assistant-exception-not-translated`）。
+- Pylint，针对每个集成：翻译键必须存在于 `strings.json` 的 `exceptions` 部分中（`home-assistant-exception-translation-key-missing`），`translation_domain` 和 `translation_key` 必须一起设置（`home-assistant-exception-translation-key-domain-mismatch`），占位符必须与消息匹配（`home-assistant-exception-placeholder-mismatch`），并且翻译键旁不能再有消息（`home-assistant-exception-message-with-translation`）。
+- 当操作抛出的异常缺少翻译时，测试将失败。
 
-## Exceptions
+## 例外情况
 
-If the integration does not raise any exceptions of its own, this rule does not apply.
+如果集成不会自行抛出任何异常，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [entity-translations](/core/quality-scale/entity-translations/): translate entity names.
-- [action-exceptions](/core/quality-scale/action-exceptions/): raise exceptions when actions fail.
+- [entity-translations](/core/quality-scale/entity-translations/)：翻译实体名称。
+- [action-exceptions](/core/quality-scale/action-exceptions/)：在操作失败时抛出异常。

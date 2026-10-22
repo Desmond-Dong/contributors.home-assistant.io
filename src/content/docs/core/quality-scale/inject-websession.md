@@ -1,22 +1,22 @@
 ---
-title: Pass in the web session
-description: "Platinum rule inject-websession: the library accepts the web session of Home Assistant."
+title: 传入 Web 会话
+description: "铂金规则 inject-websession：库接受 Home Assistant 的 Web 会话。"
 sidebarLabel: inject-websession
 sidebarGroup: Platinum
 order: 2
 ---
 
-This is a Platinum rule. In `quality_scale.yaml`, it is called `inject-websession`.
+这是一条铂金（Platinum）规则。在 `quality_scale.yaml` 中，它被称为 `inject-websession`。
 
-The library of the integration must accept an HTTP session from the outside, and the integration must pass in the session that Home Assistant provides. Home Assistant has shared sessions for [aiohttp](https://docs.aiohttp.org/) and [HTTPX](https://www.python-httpx.org/), so the library uses one of those two.
+集成的库必须从外部接受一个 HTTP 会话，并且集成必须传入 Home Assistant 提供的会话。Home Assistant 为 [aiohttp](https://docs.aiohttp.org/) 和 [HTTPX](https://www.python-httpx.org/) 提供了共享会话，因此库会使用其中之一。
 
-## Why it matters
+## 为什么重要
 
-Many integrations talk HTTP. If each library opens its own session, Home Assistant ends up with many connection pools, each with their own connections and SSL setup. A shared session reuses connections between integrations, and uses less memory and fewer sockets.
+许多集成都会进行 HTTP 通信。如果每个库都打开自己的会话，Home Assistant 最终会拥有许多连接池，每个连接池都有自己的连接和 SSL 配置。共享会话可以在集成之间复用连接，并使用更少的内存和套接字。
 
-## Example
+## 示例
 
-Pass the shared aiohttp session to the client in `async_setup_entry`:
+在 `async_setup_entry` 中将共享的 aiohttp 会话传递给客户端：
 
 ```python
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -31,18 +31,18 @@ async def async_setup_entry(
     ...
 ```
 
-For HTTPX, use `get_async_client` from `homeassistant.helpers.httpx_client`.
+对于 HTTPX，请使用 `homeassistant.helpers.httpx_client` 中的 `get_async_client`。
 
-Sometimes a shared session is not what you want, for example when the library uses cookies that should not leak to other integrations. Then create a session of your own that Home Assistant still manages: `async_create_clientsession` for aiohttp, or `create_async_httpx_client` for HTTPX.
+有时共享会话并不是你想要的，例如当库使用的 cookie 不应泄露给其他集成时。这时可以创建一个自己的会话，但仍由 Home Assistant 管理：aiohttp 使用 `async_create_clientsession`，HTTPX 使用 `create_async_httpx_client`。
 
-## How it is checked
+## 如何检查
 
-This rule is checked in review.
+此规则通过人工审查进行检查。
 
-## Exceptions
+## 例外情况
 
-If the integration makes no HTTP requests, for example because it talks over Modbus, Bluetooth, or a raw TCP socket, this rule does not apply.
+如果集成不发出 HTTP 请求，例如它通过 Modbus、蓝牙（Bluetooth）或原始 TCP 套接字进行通信，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [async-dependency](/core/quality-scale/async-dependency/): use an async dependency.
+- [async-dependency](/core/quality-scale/async-dependency/)：使用异步依赖项。

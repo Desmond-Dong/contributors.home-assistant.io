@@ -1,24 +1,24 @@
 ---
-title: Document how data is updated
-description: "Gold rule docs-data-update: the documentation explains how and how often data is updated."
+title: 记录数据更新方式
+description: "Gold 规则 docs-data-update：文档说明数据如何更新以及更新的频率。"
 sidebarLabel: docs-data-update
 sidebarGroup: Gold
 order: 5
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `docs-data-update`.
+这是一条 Gold 规则。在 `quality_scale.yaml` 中，它被称为 `docs-data-update`。
 
-The integration page on [home-assistant.io](https://www.home-assistant.io/) explains how the integration gets its data: whether it polls the device or service, and how often, or whether the device pushes updates. If there are limits, like an API that allows only a number of requests per day, or a device that struggles with frequent requests, the page says so.
+[home-assistant.io](https://www.home-assistant.io/) 上的集成（integration）页面会说明该集成如何获取数据：是由集成轮询（polling）设备或服务（service）以及轮询频率如何，还是由设备推送更新。如果存在限制，例如某个 API 每天只允许一定数量的请求，或者某个设备难以应对频繁的请求，页面上也会予以说明。
 
-## Why it matters
+## 为什么这很重要
 
-How data is updated decides what a user can do with an integration. A motion sensor that is polled every 5 minutes is useless to turn on a light when someone walks in. A sensor that pushes its state is perfect for it. Users need to know this before they buy a device or build automations on it.
+数据如何更新决定了用户能用集成做什么。一个每 5 分钟才被轮询一次的移动传感器，无法在人走进房间时用来开灯；而一个主动推送状态（state）的传感器则非常适合这种场景。用户在购买设备或基于设备构建自动化（automation）之前，需要了解这些信息。
 
-Users can set their own polling interval, so they also need to know the default, and the reasons not to go lower.
+用户可以自行设置轮询间隔，因此他们也需要了解默认值，以及不宜设置得更低的原因。
 
-## Example
+## 示例
 
-Add a "Data updates" section to the integration page:
+在集成页面中添加一个"Data updates"（数据更新）章节：
 
 ```markdown
 ## Data updates
@@ -32,12 +32,12 @@ The cloud API allows 1,000 requests per day. Polling more often than every
 2 minutes can get your account blocked for the rest of the day.
 ```
 
-See [Write integration documentation](/writing/guides/integration/) and the [integration page structure](/writing/reference/integration-page/) for where this section goes.
+关于该章节应放置的位置，请参阅[编写集成文档](/writing/guides/integration/)和[集成页面结构](/writing/reference/integration-page/)。
 
-## How it is checked
+## 如何检查
 
-Checked in review, usually on the documentation pull request.
+在审查过程中进行检查，通常是在文档的 pull request 中进行。
 
-## Exceptions
+## 例外
 
-If the integration does not get data from a device or service, because it neither polls nor receives updates, this rule does not apply.
+如果集成不从设备或服务获取数据，即它既不进行轮询也不接收更新，则此规则不适用。

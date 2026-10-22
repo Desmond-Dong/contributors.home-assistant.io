@@ -1,17 +1,17 @@
 ---
-title: Options flow
-description: Let users change how your integration behaves after setup, and reload it when they do.
+title: 选项流程
+description: 让用户在设置完成后更改集成的行为方式，并在更改时重新加载集成。
 sidebarGroup: Setup and configuration
 order: 4
 ---
 
-An [options flow](/glossary/options-flow/) lets users change settings of a config entry after setup, like which devices to include or whether to show guests. Users open it with the **Configure** button of the entry. The options end up in `entry.options`.
+[选项流程（options flow）](/glossary/options-flow/)让用户可以在设置完成后更改配置项（config entry）的设置，例如要包含哪些设备或是否显示访客。用户通过该配置项的 **Configure** 按钮打开它。这些选项最终会存放在 `entry.options` 中。
 
-Options are for how the integration behaves. Changing how it connects, like a new host, is [reconfiguration](/core/integrations/reauth-reconfigure/), and changing credentials is [reauthentication](/core/integrations/reauth-reconfigure/#reauthentication). The polling interval is not an option either: you pick it for your users, see [appropriate polling](/core/quality-scale/appropriate-polling/).
+选项用于描述集成如何运行。更改连接方式（例如新的主机地址）属于[重新配置（reconfiguration）](/core/integrations/reauth-reconfigure/)，更改凭据则属于[重新认证（reauthentication）](/core/integrations/reauth-reconfigure/#reauthentication)。轮询间隔也不是一个选项：你需要为用户选择它，参见[适当的轮询（appropriate polling）](/core/quality-scale/appropriate-polling/)。
 
-## Add an options flow
+## 添加选项流程
 
-Return your options flow from `async_get_options_flow` on the config flow. The options flow starts at `async_step_init`, and reaches the config entry through `self.config_entry`.
+在配置流程（config flow）中通过 `async_get_options_flow` 返回你的选项流程。选项流程从 `async_step_init` 开始，并通过 `self.config_entry` 访问该配置项。
 
 ```python
 from homeassistant.config_entries import (
@@ -57,15 +57,15 @@ class ExampleOptionsFlow(OptionsFlowWithReload):
         )
 ```
 
-`async_create_entry` in an options flow does not create a new entry: it stores `data` as the new options of the existing one. `add_suggested_values_to_schema` fills the form with the current options. The texts go in `strings.json` under the `options` key, the same way as the [config flow texts](/core/integrations/flow-steps/#labels-and-descriptions).
+选项流程中的 `async_create_entry` 并不会创建新的配置项：它将 `data` 存储为现有配置项的新选项。`add_suggested_values_to_schema` 会用当前选项填充表单。文本应放在 `strings.json` 的 `options` 键下，方式与[配置流程文本](/core/integrations/flow-steps/#labels-and-descriptions)相同。
 
-The config entry is not available in the `__init__` of the options flow. Use `self.config_entry` in the steps.
+在选项流程的 `__init__` 中无法使用配置项。请在各个步骤中使用 `self.config_entry`。
 
-## Act on new options
+## 对新选项做出响应
 
-Most integrations need to reload to use new options. Extend `OptionsFlowWithReload` instead of `OptionsFlow`, as in the example above, and Home Assistant reloads the config entry when the options change.
+大多数集成需要重新加载才能使用新选项。像上面的示例那样，继承 `OptionsFlowWithReload` 而不是 `OptionsFlow`，这样当选项更改时，Home Assistant 就会重新加载该配置项。
 
-If your integration can apply new options without a reload, extend `OptionsFlow`, and register an update listener when you set up the entry. It runs when the entry is updated, and stops when the entry unloads:
+如果你的集成无需重新加载即可应用新选项，请继承 `OptionsFlow`，并在设置该配置项时注册一个更新监听器（update listener）。它会在配置项被更新时运行，并在配置项卸载时停止：
 
 ```python
 async def async_setup_entry(
@@ -85,4 +85,4 @@ async def async_update_options(
     entry.runtime_data.show_guests = entry.options[CONF_SHOW_GUESTS]
 ```
 
-Do not combine the two: an `OptionsFlowWithReload` raises an error when the entry has an update listener. An update listener is also called on every other update of the entry, so if you have one, it is in charge of reloading. Home Assistant logs a warning when a reconfigure or reauthentication flow, or a discovery that updates the entry, reloads an entry that has an update listener. That warning is planned to become an error in Home Assistant 2026.12. A subentry reconfigure flow that reloads an entry with an update listener already raises an error.
+不要将两者结合使用：当配置项已有更新监听器时，`OptionsFlowWithReload` 会引发错误。更新监听器也会在配置项的其他每次更新时被调用，因此如果你使用更新监听器，就由它负责重新加载。当重新配置或重新认证流程、或会更新配置项的发现（discovery）重新加载一个带有更新监听器的配置项时，Home Assistant 会记录一条警告。该警告计划在 Home Assistant 2026.12 中变为错误。子配置项（subentry）重新配置流程若重新加载带有更新监听器的配置项，已经会引发错误。

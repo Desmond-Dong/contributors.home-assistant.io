@@ -1,15 +1,15 @@
 ---
-title: Entity registry
-description: Look up the entities of your integration in the entity registry, and migrate them when their unique IDs change.
+title: 实体注册表
+description: 在实体注册表中查找集成的实体，并在其唯一 ID 发生变化时对它们进行迁移。
 sidebarGroup: Devices and registries
 order: 2
 ---
 
-This page is about working with the entity registry from the code of your integration: looking up entries, and migrating them. How entities get into the registry, and what decides whether they start enabled, visible, or categorized, is on [the entity registry](/core/entities/registry/) in entities and platforms.
+本页介绍如何在集成的代码中使用实体注册表（entity registry）：查找条目以及迁移它们。关于实体如何进入注册表，以及决定实体初始是否启用、可见或分类的因素，请参阅实体与平台部分的[实体注册表](/core/entities/registry/)。
 
-The entity registry remembers every entity that has a [unique ID](/glossary/unique-id/): its entity ID, the name and icon the user gave it, its area, whether it is disabled, and which config entry and device it belongs to. Your entities end up in it by themselves, as long as they have a unique ID.
+实体注册表会记录每个具有[唯一 ID（unique ID）](/glossary/unique-id/)的实体：其实体 ID、用户为其指定的名称和图标、所属区域（area）、是否被禁用，以及它所属的配置条目（config entry）和设备（device）。只要实体具有唯一 ID，它们就会自动进入注册表。
 
-## Get the registry
+## 获取注册表
 
 ```python
 from homeassistant.helpers import entity_registry as er
@@ -17,7 +17,7 @@ from homeassistant.helpers import entity_registry as er
 entity_registry = er.async_get(hass)
 ```
 
-## Look up entities
+## 查找实体
 
 ```python
 # The entity ID for a unique ID of your integration, or None
@@ -37,11 +37,11 @@ entries = er.async_entries_for_config_entry(
 entries = er.async_entries_for_device(entity_registry, device_id)
 ```
 
-`async_get_entity_id` takes the entity domain (like `sensor`), the platform (your integration domain), and the unique ID. Use the entity ID it returns: never build an entity ID yourself, users can change them.
+`async_get_entity_id` 接受实体域（如 `sensor`）、平台（即你的集成域）和唯一 ID。请使用它返回的实体 ID：切勿自行构造实体 ID，因为用户可以更改它们。
 
-## Migrate unique IDs
+## 迁移唯一 ID
 
-Unique IDs must not change. When they have to anyway, for example because the old ones were not unique enough, migrate the registry entries, so users keep their entity IDs, names, and automations. Do it in `async_migrate_entry`, together with a [config entry version](/core/integrations/config-entries/#migrate-a-config-entry) bump:
+唯一 ID 不应更改。如果不得不更改，例如因为旧的 ID 唯一性不够，请迁移注册表条目，以便用户保留其实体 ID、名称和自动化（automation）。请在 `async_migrate_entry` 中进行迁移，同时提升[配置条目版本（config entry version）](/core/integrations/config-entries/#migrate-a-config-entry)：
 
 ```python
 from typing import Any
@@ -79,10 +79,10 @@ async def async_migrate_entry(
     return True
 ```
 
-This is a major version bump, so set `VERSION = 2` on your config flow. Older code that does not know the new unique IDs would not find its entities after a downgrade, and create them again. The example builds on the unique ID of the config entry, so it assumes every entry has one.
+这是一次主版本升级，因此请在你的配置流程（config flow）中设置 `VERSION = 2`。不了解新唯一 ID 的旧代码在降级后将找不到其实体，并会重新创建它们。此示例基于配置条目的唯一 ID，因此它假设每个条目都有一个唯一 ID。
 
-`async_migrate_entries` calls your function for every registry entry of the config entry. Return a dictionary of changes for `async_update_entity`, or `None` to leave the entry alone.
+`async_migrate_entries` 会为配置条目的每个注册表条目调用你的函数。返回一个供 `async_update_entity` 使用的更改字典，或返回 `None` 以保持该条目不变。
 
-## Update or remove entries
+## 更新或移除条目
 
-`entity_registry.async_update_entity(entity_id, ...)` changes a registry entry, and `entity_registry.async_remove(entity_id)` removes it. Integrations rarely need them. Use them for cleanup, like removing entities of a feature your integration no longer offers. Settings that belong to the user, like names, areas, and whether an entity is disabled or hidden, are not yours to change.
+`entity_registry.async_update_entity(entity_id, ...)` 用于更改注册表条目，`entity_registry.async_remove(entity_id)` 用于移除条目。集成很少需要使用它们。可将它们用于清理工作，例如移除集成不再提供的功能所对应的实体。属于用户的设置，例如名称、区域以及实体是否被禁用或隐藏，不属于你可以更改的范围。

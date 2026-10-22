@@ -1,151 +1,151 @@
 ---
-title: Climate entity
-description: Build a climate entity for thermostats, air conditioners, and heat pumps that control temperature, humidity, and fans.
+title: 气候实体（climate entity）
+description: 为控制温度、湿度和风扇的恒温器、空调和热泵构建气候实体。
 sidebarLabel: Climate
 sidebarGroup: Lights and climate
 ---
 
-A climate entity controls the climate of a space: a thermostat, an air conditioner, a heat pump, or a radiator valve with a target temperature. It can also control humidity and the fan of the unit. Inherit from `ClimateEntity` in `homeassistant.components.climate`.
+气候实体（climate entity）用于控制一个空间的气候：恒温器、空调、热泵，或带有目标温度的散热器阀门。它还可以控制设备的湿度和风扇。请继承 `homeassistant.components.climate` 中的 `ClimateEntity`。
 
-If the device only dries or humidifies the air, use a [humidifier](/core/entities/humidifier/). If it heats water, use a [water heater](/core/entities/water-heater/). A standalone fan is a [fan](/core/entities/fan/).
+如果设备只进行除湿或加湿，请使用[加湿器](/core/entities/humidifier/)。如果它加热水，请使用[热水器](/core/entities/water-heater/)。独立的风扇则是[风扇](/core/entities/fan/)。
 
-For how the frontend shows a climate entity, see the [climate more-info view](/design/more-info/climate/).
+关于前端如何展示气候实体，请参阅[气候更多信息视图](/design/more-info/climate/)。
 
-## Properties
+## 属性
 
-Climate entities have these properties on top of the [generic entity properties](/core/entities/entity-class/). Every property can be set with its `_attr_` attribute, like `_attr_hvac_mode`.
+气候实体在[通用实体属性](/core/entities/entity-class/)的基础上还具有以下属性。每个属性都可以通过其 `_attr_` 属性来设置，例如 `_attr_hvac_mode`。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `hvac_mode` | `HVACMode \| None` | Required | The operation mode the device is set to. It is the state of the entity. |
-| `hvac_modes` | `list[HVACMode]` | Required | The operation modes the device supports. |
-| `native_temperature_unit` | `str` | Required | The unit the device reports temperatures in: `UnitOfTemperature.CELSIUS` or `UnitOfTemperature.FAHRENHEIT`. |
-| `hvac_action` | `HVACAction \| None` | `None` | What the device is doing right now. See [HVAC actions](#hvac-actions). |
-| `native_current_temperature` | `float \| None` | `None` | The measured temperature, in `native_temperature_unit`. |
-| `native_target_temperature` | `float \| None` | `None` | The temperature to reach, in `native_temperature_unit`. Requires `TARGET_TEMPERATURE`. |
-| `native_target_temperature_high` | `float \| None` | Required with `TARGET_TEMPERATURE_RANGE` | The upper bound of the target range, in `native_temperature_unit`. |
-| `native_target_temperature_low` | `float \| None` | Required with `TARGET_TEMPERATURE_RANGE` | The lower bound of the target range, in `native_temperature_unit`. |
-| `target_temperature_step` | `float \| None` | `None` | The step size for the target temperature, in `native_temperature_unit`. |
-| `min_temp` | `float` | 7 °C | The lowest target temperature, in `native_temperature_unit`. The default is converted to your unit. |
-| `max_temp` | `float` | 35 °C | The highest target temperature, in `native_temperature_unit`. The default is converted to your unit. |
-| `precision` | `float` | Tenths for Celsius, whole numbers otherwise | The precision temperatures are shown with: `PRECISION_TENTHS`, `PRECISION_HALVES`, or `PRECISION_WHOLE`. Without a value, it follows the unit system of the installation. |
-| `current_humidity` | `float \| None` | `None` | The measured humidity. |
-| `target_humidity` | `float \| None` | `None` | The humidity to reach. Requires `TARGET_HUMIDITY`. |
-| `target_humidity_step` | `int \| None` | `None` | The step size for the target humidity. |
-| `min_humidity` | `float` | `30` | The lowest target humidity. |
-| `max_humidity` | `float` | `99` | The highest target humidity. |
-| `preset_mode` | `str \| None` | Required with `PRESET_MODE` | The active preset. |
-| `preset_modes` | `list[str] \| None` | Required with `PRESET_MODE` | The available presets. |
-| `fan_mode` | `str \| None` | Required with `FAN_MODE` | The current fan mode. |
-| `fan_modes` | `list[str] \| None` | Required with `FAN_MODE` | The available fan modes. |
-| `swing_mode` | `str \| None` | Required with `SWING_MODE` | The current swing mode. |
-| `swing_modes` | `list[str] \| None` | Required with `SWING_MODE` | The available swing modes. |
-| `swing_horizontal_mode` | `str \| None` | Required with `SWING_HORIZONTAL_MODE` | The current horizontal swing mode. |
-| `swing_horizontal_modes` | `list[str] \| None` | Required with `SWING_HORIZONTAL_MODE` | The available horizontal swing modes. |
+| `hvac_mode` | `HVACMode \| None` | 必需 | 设备当前设置的操作模式。它是实体的状态。 |
+| `hvac_modes` | `list[HVACMode]` | 必需 | 设备支持的操作模式。 |
+| `native_temperature_unit` | `str` | 必需 | 设备报告温度所用的单位：`UnitOfTemperature.CELSIUS` 或 `UnitOfTemperature.FAHRENHEIT`。 |
+| `hvac_action` | `HVACAction \| None` | `None` | 设备当前正在执行的操作。参见 [HVAC 动作](#hvac-actions)。 |
+| `native_current_temperature` | `float \| None` | `None` | 测得的温度，单位为 `native_temperature_unit`。 |
+| `native_target_temperature` | `float \| None` | `None` | 要达到的温度，单位为 `native_temperature_unit`。需要 `TARGET_TEMPERATURE`。 |
+| `native_target_temperature_high` | `float \| None` | 使用 `TARGET_TEMPERATURE_RANGE` 时必需 | 目标范围的上限，单位为 `native_temperature_unit`。 |
+| `native_target_temperature_low` | `float \| None` | 使用 `TARGET_TEMPERATURE_RANGE` 时必需 | 目标范围的下限，单位为 `native_temperature_unit`。 |
+| `target_temperature_step` | `float \| None` | `None` | 目标温度的步长，单位为 `native_temperature_unit`。 |
+| `min_temp` | `float` | 7 °C | 最低目标温度，单位为 `native_temperature_unit`。默认值会转换为您所用的单位。 |
+| `max_temp` | `float` | 35 °C | 最高目标温度，单位为 `native_temperature_unit`。默认值会转换为您所用的单位。 |
+| `precision` | `float` | 摄氏度为十分位，其他为整数 | 温度显示的精度：`PRECISION_TENTHS`、`PRECISION_HALVES` 或 `PRECISION_WHOLE`。未设置时，将遵循安装的单位系统。 |
+| `current_humidity` | `float \| None` | `None` | 测得的湿度。 |
+| `target_humidity` | `float \| None` | `None` | 要达到的湿度。需要 `TARGET_HUMIDITY`。 |
+| `target_humidity_step` | `int \| None` | `None` | 目标湿度的步长。 |
+| `min_humidity` | `float` | `30` | 最低目标湿度。 |
+| `max_humidity` | `float` | `99` | 最高目标湿度。 |
+| `preset_mode` | `str \| None` | 使用 `PRESET_MODE` 时必需 | 当前激活的预设。 |
+| `preset_modes` | `list[str] \| None` | 使用 `PRESET_MODE` 时必需 | 可用的预设。 |
+| `fan_mode` | `str \| None` | 使用 `FAN_MODE` 时必需 | 当前的风扇模式。 |
+| `fan_modes` | `list[str] \| None` | 使用 `FAN_MODE` 时必需 | 可用的风扇模式。 |
+| `swing_mode` | `str \| None` | 使用 `SWING_MODE` 时必需 | 当前的摆风模式。 |
+| `swing_modes` | `list[str] \| None` | 使用 `SWING_MODE` 时必需 | 可用的摆风模式。 |
+| `swing_horizontal_mode` | `str \| None` | 使用 `SWING_HORIZONTAL_MODE` 时必需 | 当前的水平摆风模式。 |
+| `swing_horizontal_modes` | `list[str] \| None` | 使用 `SWING_HORIZONTAL_MODE` 时必需 | 可用的水平摆风模式。 |
 
-### Temperature units
+### 温度单位
 
-Report every temperature in the unit of the device, and set `native_temperature_unit` to match. The climate entity converts the temperatures to the unit system of the installation before it writes the state, and adds a `temperature_unit` state attribute with the unit of the converted values. You cannot override that attribute.
+以设备所用的单位报告所有温度，并将 `native_temperature_unit` 设置为相应的值。气候实体在写入状态之前，会将温度转换为安装的单位系统，并添加一个包含转换后数值单位的 `temperature_unit` 状态属性。您无法覆盖该属性。
 
-It works the other way too: temperatures passed to `set_temperature` are converted to `native_temperature_unit` and checked against `min_temp` and `max_temp` before your method is called.
+反过来也一样：传递给 `set_temperature` 的温度会在调用您的方法之前被转换为 `native_temperature_unit`，并根据 `min_temp` 和 `max_temp` 进行校验。
 
 > [!WARNING]
-> The old names without `native_`, like `current_temperature`, `target_temperature`, and `temperature_unit` (and their `_attr_` attributes), are deprecated and stop working in Home Assistant 2027.11. Use the `native_` names in new code.
+> 不带 `native_` 的旧名称，例如 `current_temperature`、`target_temperature` 和 `temperature_unit`（及其 `_attr_` 属性），已被弃用，并将在 Home Assistant 2027.11 中停止工作。请在新代码中使用 `native_` 名称。
 
-## HVAC modes
+## HVAC 模式
 
-The HVAC mode is what the device is asked to do. Only use the modes of the `HVACMode` enum. When a device has an option that changes how a mode behaves, make it a preset instead of a new mode.
+HVAC 模式是要求设备执行的操作。只使用 `HVACMode` 枚举中的模式。当设备有一个会改变某个模式行为的选项时，请将其作为预设，而不是新模式。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `HVACMode.OFF` | The device is off. |
-| `HVACMode.HEAT` | The device heats to a target temperature. |
-| `HVACMode.COOL` | The device cools to a target temperature. |
-| `HVACMode.HEAT_COOL` | The device heats or cools to stay within a target range. |
-| `HVACMode.AUTO` | The device follows a schedule, learned behavior, or its own logic. You cannot set a temperature in this mode. |
-| `HVACMode.DRY` | The device dries the air. |
-| `HVACMode.FAN_ONLY` | Only the fan runs, without heating or cooling. |
+| `HVACMode.OFF` | 设备已关闭。 |
+| `HVACMode.HEAT` | 设备加热至目标温度。 |
+| `HVACMode.COOL` | 设备制冷至目标温度。 |
+| `HVACMode.HEAT_COOL` | 设备加热或制冷，以保持在目标范围内。 |
+| `HVACMode.AUTO` | 设备遵循日程、学习到的行为或其自身逻辑。在此模式下您无法设置温度。 |
+| `HVACMode.DRY` | 设备对空气进行除湿。 |
+| `HVACMode.FAN_ONLY` | 仅风扇运行，不加热也不制冷。 |
 
-## HVAC actions
+## HVAC 动作
 
-The HVAC action is what the device is doing right now to reach its mode and preset, as decided by its own control logic. Only use the actions of the `HVACAction` enum.
+HVAC 动作是设备当前为达到其模式和预设而正在执行的操作，由其自身的控制逻辑决定。只使用 `HVACAction` 枚举中的动作。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `HVACAction.OFF` | The device is off and does nothing until its mode changes. |
-| `HVACAction.IDLE` | The device does nothing right now, but can start when conditions change. |
-| `HVACAction.HEATING` | The device adds heat. |
-| `HVACAction.PREHEATING` | The heat source runs, but is not at operating temperature yet. |
-| `HVACAction.COOLING` | The device removes heat. |
-| `HVACAction.DRYING` | The device removes moisture from the air. |
-| `HVACAction.FAN` | Only the fan runs, to circulate or ventilate air. |
-| `HVACAction.DEFROSTING` | The device removes built up ice. |
+| `HVACAction.OFF` | 设备已关闭，在其模式改变之前不会执行任何操作。 |
+| `HVACAction.IDLE` | 设备当前未执行任何操作，但条件变化时可以启动。 |
+| `HVACAction.HEATING` | 设备正在加热。 |
+| `HVACAction.PREHEATING` | 热源正在运行，但尚未达到工作温度。 |
+| `HVACAction.COOLING` | 设备正在制冷。 |
+| `HVACAction.DRYING` | 设备正在从空气中去除水分。 |
+| `HVACAction.FAN` | 仅风扇运行，用于循环或通风空气。 |
+| `HVACAction.DEFROSTING` | 设备正在清除积冰。 |
 
-Be honest with `hvac_action`. A thermostat with hysteresis, or a variable power device that keeps running at low power after it reached its target, does not always know whether it is heating or idle. If the device cannot tell you what it is doing, leave `hvac_action` out.
+请如实报告 `hvac_action`。带有滞回特性的恒温器，或在达到目标后仍以低功率持续运行的变频设备，并不总是知道自己是在加热还是处于空闲状态。如果设备无法告诉您它在做什么，请省略 `hvac_action`。
 
-## Presets, fan modes, and swing modes
+## 预设、风扇模式和摆风模式
 
-Presets, fan modes, and swing modes are lists of strings. Home Assistant has constants with built-in translations for common values, and you can add your own values. Give custom values a translation and an icon with the [translation key](/core/entities/naming/) of the entity, under `state_attributes` (see [icons](/core/entities/icons/)).
+预设、风扇模式和摆风模式是字符串列表。Home Assistant 为常见值提供了带有内置翻译的常量，您也可以添加自己的值。通过实体的[翻译键（translation key）](/core/entities/naming/)，在 `state_attributes` 下为自定义值提供翻译和图标（参见[图标](/core/entities/icons/)）。
 
-- **Presets**: `PRESET_NONE`, `PRESET_ECO`, `PRESET_AWAY`, `PRESET_BOOST`, `PRESET_COMFORT`, `PRESET_HOME`, `PRESET_SLEEP`, and `PRESET_ACTIVITY`.
-- **Fan modes**: `FAN_ON`, `FAN_OFF`, `FAN_AUTO`, `FAN_LOW`, `FAN_MEDIUM`, `FAN_HIGH`, `FAN_TOP`, `FAN_MIDDLE`, `FAN_FOCUS`, and `FAN_DIFFUSE`.
-- **Swing modes**: `SWING_ON`, `SWING_OFF`, `SWING_BOTH`, `SWING_VERTICAL`, and `SWING_HORIZONTAL`.
-- **Horizontal swing modes**: `SWING_HORIZONTAL_ON` and `SWING_HORIZONTAL_OFF`.
+- **预设**：`PRESET_NONE`、`PRESET_ECO`、`PRESET_AWAY`、`PRESET_BOOST`、`PRESET_COMFORT`、`PRESET_HOME`、`PRESET_SLEEP` 和 `PRESET_ACTIVITY`。
+- **风扇模式**：`FAN_ON`、`FAN_OFF`、`FAN_AUTO`、`FAN_LOW`、`FAN_MEDIUM`、`FAN_HIGH`、`FAN_TOP`、`FAN_MIDDLE`、`FAN_FOCUS` 和 `FAN_DIFFUSE`。
+- **摆风模式**：`SWING_ON`、`SWING_OFF`、`SWING_BOTH`、`SWING_VERTICAL` 和 `SWING_HORIZONTAL`。
+- **水平摆风模式**：`SWING_HORIZONTAL_ON` 和 `SWING_HORIZONTAL_OFF`。
 
-Only implement horizontal swing when the device controls vertical and horizontal swing separately. Then `swing_modes` covers the vertical direction and `swing_horizontal_modes` the horizontal one. Otherwise, put every option in `swing_modes`.
+仅当设备分别控制垂直和水平摆风时，才实现水平摆风。此时 `swing_modes` 涵盖垂直方向，`swing_horizontal_modes` 涵盖水平方向。否则，请将所有选项放入 `swing_modes` 中。
 
-Home Assistant checks the mode in an action against your list before it calls you, and raises a validation error when it is not in there.
+Home Assistant 在调用您之前，会先检查动作中的模式是否在您的列表中，如果不在，则会引发验证错误。
 
-## Supported features
+## 支持的功能
 
-Combine the `ClimateEntityFeature` flags with `|` and set them as `supported_features`. See [supported features](/glossary/supported-features/).
+将 `ClimateEntityFeature` 标志用 `|` 组合起来，并设置为 `supported_features`。参见[支持的功能](/glossary/supported-features/)。
 
-| Value | Description |
+| 值 | 描述 |
 | ----- | ----------- |
-| `TARGET_TEMPERATURE` | The device has a single target temperature. Implement `set_temperature`. |
-| `TARGET_TEMPERATURE_RANGE` | The device has a target range, used by `HVACMode.HEAT_COOL`. Implement `set_temperature`. |
-| `TARGET_HUMIDITY` | The device has a target humidity. Implement `set_humidity`. |
-| `FAN_MODE` | The device has fan modes. Implement `set_fan_mode`. |
-| `PRESET_MODE` | The device has presets. Implement `set_preset_mode`. |
-| `SWING_MODE` | The device has swing modes. Implement `set_swing_mode`. |
-| `SWING_HORIZONTAL_MODE` | The device has separate horizontal swing modes. Implement `set_swing_horizontal_mode`. |
-| `TURN_ON` | The device can be turned on. Implement `turn_on`, or rely on the default (see below). |
-| `TURN_OFF` | The device can be turned off. Implement `turn_off`, or rely on the default (see below). |
+| `TARGET_TEMPERATURE` | 设备具有单一目标温度。实现 `set_temperature`。 |
+| `TARGET_TEMPERATURE_RANGE` | 设备具有目标范围，由 `HVACMode.HEAT_COOL` 使用。实现 `set_temperature`。 |
+| `TARGET_HUMIDITY` | 设备具有目标湿度。实现 `set_humidity`。 |
+| `FAN_MODE` | 设备具有风扇模式。实现 `set_fan_mode`。 |
+| `PRESET_MODE` | 设备具有预设。实现 `set_preset_mode`。 |
+| `SWING_MODE` | 设备具有摆风模式。实现 `set_swing_mode`。 |
+| `SWING_HORIZONTAL_MODE` | 设备具有独立的水平摆风模式。实现 `set_swing_horizontal_mode`。 |
+| `TURN_ON` | 设备可以开启。实现 `turn_on`，或依赖默认行为（见下文）。 |
+| `TURN_OFF` | 设备可以关闭。实现 `turn_off`，或依赖默认行为（见下文）。 |
 
-Actions for a feature you did not set are rejected before they reach your entity.
+您未设置的功能所对应的操作，会在到达您的实体之前被拒绝。
 
-## Methods
+## 方法
 
-Implement the sync or the async variant of each method, not both.
+为每个方法实现同步或异步变体之一，不要两者都实现。
 
-| Method | Async variant | Called for |
+| 方法 | 异步变体 | 调用场景 |
 | ------ | ------------- | ---------- |
-| `set_hvac_mode(hvac_mode: HVACMode)` | `async_set_hvac_mode` | Changing the HVAC mode. Always available. |
-| `set_temperature(**kwargs: Any)` | `async_set_temperature` | `TARGET_TEMPERATURE` or `TARGET_TEMPERATURE_RANGE`. |
-| `set_humidity(humidity: int)` | `async_set_humidity` | `TARGET_HUMIDITY`. |
-| `set_fan_mode(fan_mode: str)` | `async_set_fan_mode` | `FAN_MODE`. |
-| `set_preset_mode(preset_mode: str)` | `async_set_preset_mode` | `PRESET_MODE`. |
-| `set_swing_mode(swing_mode: str)` | `async_set_swing_mode` | `SWING_MODE`. |
-| `set_swing_horizontal_mode(swing_horizontal_mode: str)` | `async_set_swing_horizontal_mode` | `SWING_HORIZONTAL_MODE`. |
-| `turn_on()` | `async_turn_on` | `TURN_ON`. |
-| `turn_off()` | `async_turn_off` | `TURN_OFF`. |
-| `toggle()` | `async_toggle` | `TURN_ON` and `TURN_OFF`. |
+| `set_hvac_mode(hvac_mode: HVACMode)` | `async_set_hvac_mode` | 更改 HVAC 模式。始终可用。 |
+| `set_temperature(**kwargs: Any)` | `async_set_temperature` | `TARGET_TEMPERATURE` 或 `TARGET_TEMPERATURE_RANGE`。 |
+| `set_humidity(humidity: int)` | `async_set_humidity` | `TARGET_HUMIDITY`。 |
+| `set_fan_mode(fan_mode: str)` | `async_set_fan_mode` | `FAN_MODE`。 |
+| `set_preset_mode(preset_mode: str)` | `async_set_preset_mode` | `PRESET_MODE`。 |
+| `set_swing_mode(swing_mode: str)` | `async_set_swing_mode` | `SWING_MODE`。 |
+| `set_swing_horizontal_mode(swing_horizontal_mode: str)` | `async_set_swing_horizontal_mode` | `SWING_HORIZONTAL_MODE`。 |
+| `turn_on()` | `async_turn_on` | `TURN_ON`。 |
+| `turn_off()` | `async_turn_off` | `TURN_OFF`。 |
+| `toggle()` | `async_toggle` | `TURN_ON` 和 `TURN_OFF`。 |
 
-`set_temperature` receives `ATTR_TEMPERATURE` for a single target, or `ATTR_TARGET_TEMP_LOW` and `ATTR_TARGET_TEMP_HIGH` for a range, all in `native_temperature_unit`. It can also receive `ATTR_HVAC_MODE`, when the action sets the mode at the same time.
+`set_temperature` 会接收单一目标的 `ATTR_TEMPERATURE`，或范围目标的 `ATTR_TARGET_TEMP_LOW` 和 `ATTR_TARGET_TEMP_HIGH`，单位均为 `native_temperature_unit`。当操作同时设置模式时，它还可以接收 `ATTR_HVAC_MODE`。
 
-You do not always have to implement `turn_on` and `turn_off`. Without them, `turn_off` sets `HVACMode.OFF` when the device supports it. `turn_on` picks the only other mode when the device has two modes and one is `OFF`, and otherwise the first of `HEAT_COOL`, `HEAT`, and `COOL` the device supports. If the device has its own on and off, implement them, and set `hvac_mode` to the mode it lands in. `toggle` calls `turn_on` or `turn_off` based on whether `hvac_mode` is `OFF`.
+您并不总是需要实现 `turn_on` 和 `turn_off`。没有它们时，如果设备支持，`turn_off` 会将模式设置为 `HVACMode.OFF`。当设备只有两种模式且其中一种是 `OFF` 时，`turn_on` 会选择另一种模式；否则，它会选择设备支持的 `HEAT_COOL`、`HEAT` 和 `COOL` 中的第一个。如果设备有自己的开和关，请实现它们，并将 `hvac_mode` 设置为最终落入的模式。`toggle` 会根据 `hvac_mode` 是否为 `OFF` 来调用 `turn_on` 或 `turn_off`。
 
-## States
+## 状态
 
-The state is the value of `hvac_mode`: `off`, `heat`, `cool`, `heat_cool`, `auto`, `dry`, or `fan_only`. When `hvac_mode` is `None`, the state is `unknown`.
+状态是 `hvac_mode` 的值：`off`、`heat`、`cool`、`heat_cool`、`auto`、`dry` 或 `fan_only`。当 `hvac_mode` 为 `None` 时，状态为 `unknown`。
 
-## Restoring temperatures
+## 恢复温度
 
-If your entity restores its temperatures after a restart, don't read them from the attributes of the last state that `RestoreEntity` gives you. Those are converted to the unit system of the installation and rounded for display. Inherit from `RestoreClimate` instead, and call `async_get_last_climate_data()` in `async_added_to_hass`.
+如果您的实体在重启后恢复其温度，请不要从 `RestoreEntity` 提供的最后一个状态的属性中读取它们。那些值已被转换为安装的单位系统，并为了显示而进行了四舍五入。请改为继承 `RestoreClimate`，并在 `async_added_to_hass` 中调用 `async_get_last_climate_data()`。
 
-It returns the stored `native_current_temperature`, `native_target_temperature`, `native_target_temperature_high`, and `native_target_temperature_low`, converted to your current `native_temperature_unit`, or `None` when there is nothing to restore. A temperature that is not a valid number comes back as `None`.
+它会返回存储的 `native_current_temperature`、`native_target_temperature`、`native_target_temperature_high` 和 `native_target_temperature_low`，并转换为您当前的 `native_temperature_unit`；如果没有可恢复的内容，则返回 `None`。不是有效数字的温度会以 `None` 返回。
 
-Pass `validate_range=True` when you send the restored targets to the device, like when the device can't report its own state. A target outside `min_temp` and `max_temp` then comes back as `None`, and you fall back to a default. A target at most half a degree outside the range, which rounding can cause, is clamped to the range instead. That half degree is in the unit the temperature was stored in, so a value stored in °F gets about 0.28 °C of room on an entity that now uses °C.
+当您将恢复的目标发送给设备时（例如设备无法报告自身状态时），请传入 `validate_range=True`。这样，超出 `min_temp` 和 `max_temp` 的目标会以 `None` 返回，您可以回退到默认值。最多超出范围半度的目标（四舍五入可能导致的情况）则会被限制在范围内。这半度是以温度存储时所用的单位计算的，因此以 °F 存储的值，在现在使用 °C 的实体上会获得约 0.28 °C 的余量。
 
 ```python
 from homeassistant.components.climate import RestoreClimate
@@ -163,7 +163,7 @@ class MyThermostat(RestoreClimate):
             )
 ```
 
-## Example
+## 示例
 
 ```python
 from typing import Any
@@ -219,4 +219,4 @@ class MyThermostat(ClimateEntity):
         await self._device.set_setpoint(kwargs[ATTR_TEMPERATURE])
 ```
 
-With `TURN_ON` and `TURN_OFF` set and only `OFF` and `HEAT` as modes, the default `turn_on` and `turn_off` call `async_set_hvac_mode` for you.
+在设置了 `TURN_ON` 和 `TURN_OFF` 且模式只有 `OFF` 和 `HEAT` 的情况下，默认的 `turn_on` 和 `turn_off` 会为您调用 `async_set_hvac_mode`。

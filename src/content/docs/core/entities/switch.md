@@ -1,48 +1,48 @@
 ---
-title: Switch entity
-description: Build a switch entity for something you can turn on and off, like a relay or a smart plug.
+title: 开关实体
+description: 为您可以打开和关闭的东西（如继电器或智能插座）构建开关实体。
 sidebarLabel: Switch
 sidebarGroup: Inputs and helpers
 ---
 
-A switch entity turns something on or off: a relay, a smart plug, or a setting on a device like "child lock" or "LED indicator". Inherit from `SwitchEntity` in `homeassistant.components.switch`.
+开关实体（switch entity）用于打开或关闭某个东西：继电器、智能插座，或设备上的某个设置（如“童锁”或“LED 指示灯”）。请继承 `homeassistant.components.switch` 中的 `SwitchEntity`。
 
-Pick the platform that matches what the thing really is:
+选择与该东西实际类型相匹配的平台：
 
-- It has an on and off state, but Home Assistant can't change it, like a wall switch that only reports: use a [binary sensor](/core/entities/binary-sensor/).
-- It has no state and only triggers something, like restarting a device: use a [button](/core/entities/button/).
-- It is a physical push button that people press: use an [event](/core/entities/event/) entity.
-- It is a light, a fan, or a valve: use that platform. It gives users the right controls, voice assistants the right device type, and you the right features.
+- 它有开和关的状态，但 Home Assistant 无法改变它，比如只上报状态的墙壁开关：请使用[二进制传感器（binary sensor）](/core/entities/binary-sensor/)。
+- 它没有状态，只是触发某个操作，比如重启设备：请使用[按钮（button）](/core/entities/button/)。
+- 它是供人按下的物理按键：请使用[事件（event）](/core/entities/event/)实体。
+- 它是灯、风扇或阀门：请使用对应的平台。这样可以为用户提供正确的控制方式，为语音助手提供正确的设备类型，并为您提供正确的功能。
 
-For how the frontend shows a switch, see the [switch more-info view](/design/more-info/switch/).
+关于前端如何显示开关，请参见[开关更多信息视图](/design/more-info/switch/)。
 
-## Properties
+## 属性
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `is_on` | `bool \| None` | `None` | Whether the switch is on. `None` means the state is unknown. |
-| `device_class` | `SwitchDeviceClass \| None` | `None` | What kind of switch this is. See [device classes](#device-classes). |
+| `is_on` | `bool \| None` | `None` | 开关是否处于打开状态。`None` 表示状态未知。 |
+| `device_class` | `SwitchDeviceClass \| None` | `None` | 此开关属于哪种类型。参见[设备类](#device-classes)。 |
 
-The generic properties every entity has, like `name`, `available`, and `unique_id`, are on [the entity class](/core/entities/entity-class/).
+每个实体都具有的通用属性（如 `name`、`available` 和 `unique_id`）记录在[实体类](/core/entities/entity-class/)中。
 
-## Supported features
+## 支持的功能
 
-This entity has no supported features.
+此实体没有支持的功能。
 
-## Device classes
+## 设备类
 
-| Constant | Description |
+| 常量 | 描述 |
 | --- | --- |
-| `SwitchDeviceClass.OUTLET` | A power outlet, like a smart plug or a socket on a power strip. |
-| `SwitchDeviceClass.SWITCH` | A generic switch. |
+| `SwitchDeviceClass.OUTLET` | 电源插座，如智能插座或插排上的插孔。 |
+| `SwitchDeviceClass.SWITCH` | 通用开关。 |
 
-Voice assistants use the device class to pick the matching device type.
+语音助手使用设备类（device class）来选择匹配的设备类型。
 
-## Methods
+## 方法
 
-### Turn on and off
+### 打开和关闭
 
-Implement both, either the sync or the async variant. Home Assistant passes extra arguments as keyword arguments, so keep `**kwargs` in the signature.
+两者都需要实现，同步或异步版本任选其一。Home Assistant 会将额外参数作为关键字参数传递，因此请在函数签名中保留 `**kwargs`。
 
 ```python
 class MySwitch(SwitchEntity):
@@ -61,23 +61,23 @@ class MySwitch(SwitchEntity):
         """Turn the switch off."""
 ```
 
-### Toggle
+### 切换
 
-You usually don't need this. The base class already implements `async_toggle`: it calls your turn off method when `is_on` is true, and your turn on method otherwise. Only override `async_toggle` when the device has a native toggle command. The sync `toggle` is final: Home Assistant never calls it, so don't implement it.
+您通常不需要实现此方法。基类已经实现了 `async_toggle`：当 `is_on` 为 true 时，它会调用您的关闭方法，否则会调用您的打开方法。只有当设备具有原生的切换命令时，才需要重写 `async_toggle`。同步的 `toggle` 是最终方法（final）：Home Assistant 从不调用它，因此请不要实现它。
 
-## States
+## 状态
 
-The base class builds the state from `is_on`:
+基类根据 `is_on` 构建状态：
 
-| State | When |
+| 状态 | 时机 |
 | --- | --- |
-| `on` | `is_on` is `True` |
-| `off` | `is_on` is `False` |
-| `unknown` | `is_on` is `None` |
+| `on` | `is_on` 为 `True` |
+| `off` | `is_on` 为 `False` |
+| `unknown` | `is_on` 为 `None` |
 
-You don't set the state yourself. `unavailable` comes from the `available` property, like for every entity.
+您无需自行设置状态。`unavailable` 来自 `available` 属性，所有实体都是如此。
 
-## Example
+## 示例
 
 ```python
 from typing import Any
@@ -114,4 +114,4 @@ class ExampleOutlet(SwitchEntity):
         self.async_write_ha_state()
 ```
 
-The plug is the main feature of its device, so `_attr_name = None` gives the entity the name of the device. See [naming entities](/core/entities/naming/).
+插座是其设备的主要功能，因此 `_attr_name = None` 会让实体使用设备的名称。参见[实体命名](/core/entities/naming/)。

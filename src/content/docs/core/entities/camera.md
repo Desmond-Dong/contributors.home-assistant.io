@@ -1,109 +1,109 @@
 ---
-title: Camera entity
-description: Show still images from a camera, and optionally a live stream over HLS or WebRTC.
+title: 摄像头实体
+description: 显示摄像头的静态图像，以及可选的通过 HLS 或 WebRTC 传输的实时视频流。
 sidebarLabel: Camera
 sidebarGroup: Media
 ---
 
-A camera entity serves images from a camera: a still image on request, and, if the camera can, a live video stream. It is what powers the camera feeds on dashboards, the snapshots in notifications, and the recordings made with the `camera.record` action.
+摄像头实体（camera entity）提供来自摄像头的图像：按需提供静态图像，并且在摄像头支持的情况下提供实时视频流。它支撑着仪表盘（dashboard）上的摄像头画面、通知中的快照，以及通过 `camera.record` 动作进行的录制。
 
-Inherit from `Camera`, imported from `homeassistant.components.camera`. Use it for anything that shows a live or near-live picture. If your device only has a still image that changes now and then, like a map or a QR code, the [image entity](/core/entities/image/) is simpler.
+继承自 `Camera`，从 `homeassistant.components.camera` 导入。任何显示实时或准实时画面的场景都可以使用它。如果你的设备只有一张会不时更新的静态图像，例如地图或二维码，那么[图像实体](/core/entities/image/)（image entity）会更简单。
 
-## Properties
+## 属性
 
-These properties are specific to camera entities. The generic properties every entity has are on [the entity class](/core/entities/entity-class/).
+这些属性是摄像头实体特有的。每个实体都具有的通用属性请参见[实体类](/core/entities/entity-class/)（entity class）。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `brand` | `str \| None` | `None` | The brand of the camera. |
-| `model` | `str \| None` | `None` | The model of the camera. |
-| `frame_interval` | `float` | `0.5` | Seconds between frames of the MJPEG stream that Home Assistant builds from still images. |
-| `is_on` | `bool` | `True` | Whether the camera is on. When it is off, image requests fail with a "service unavailable" response. |
-| `is_recording` | `bool` | `False` | Whether the camera is recording. Sets the state. |
-| `is_streaming` | `bool` | `False` | Whether the camera is streaming. Sets the state. |
-| `motion_detection_enabled` | `bool` | `False` | Whether motion detection is on. |
-| `use_stream_for_stills` | `bool` | `False` | Take still images from the stream instead of calling `async_camera_image`. Only a property: there is no `_attr_` for it. |
-| `content_type` | `str` | `"image/jpeg"` | The MIME type of the images you return. A plain instance attribute set in `__init__`, not a property. |
-| `stream_options` | `dict` | `{}` | Options passed to the stream integration when it opens your stream source. A plain instance attribute. |
+| `brand` | `str \| None` | `None` | 摄像头的品牌。 |
+| `model` | `str \| None` | `None` | 摄像头的型号。 |
+| `frame_interval` | `float` | `0.5` | Home Assistant 由静态图像构建 MJPEG 流时，帧与帧之间的间隔秒数。 |
+| `is_on` | `bool` | `True` | 摄像头是否开启。当摄像头关闭时，图像请求会失败并返回“服务不可用”（service unavailable）响应。 |
+| `is_recording` | `bool` | `False` | 摄像头是否正在录制。用于设置状态。 |
+| `is_streaming` | `bool` | `False` | 摄像头是否正在推流（streaming）。用于设置状态。 |
+| `motion_detection_enabled` | `bool` | `False` | 是否启用了移动侦测。 |
+| `use_stream_for_stills` | `bool` | `False` | 从视频流中获取静态图像，而不是调用 `async_camera_image`。它只是一个属性（property）：没有对应的 `_attr_`。 |
+| `content_type` | `str` | `"image/jpeg"` | 你返回的图像的 MIME 类型。它是在 `__init__` 中设置的普通实例属性，而不是属性（property）。 |
+| `stream_options` | `dict` | `{}` | stream 集成（integration）打开你的流源时传递给它的选项。它是一个普通实例属性。 |
 
-Cameras do not poll by default (`should_poll` is `False`). When you override `__init__`, call `super().__init__()`: it sets up the access tokens, the stream, and the WebRTC bookkeeping.
+摄像头默认不进行轮询（`should_poll` 为 `False`）。当你重写 `__init__` 时，请调用 `super().__init__()`：它会完成访问令牌、视频流以及 WebRTC 内部记录的设置。
 
-## Supported features
+## 支持的功能
 
-Combine the flags of `CameraEntityFeature` with the bitwise or (`|`) operator.
+使用按位或（`|`）运算符组合 `CameraEntityFeature` 的各个标志。
 
-| Flag | Description |
+| 标志 | 描述 |
 | --- | --- |
-| `ON_OFF` | The camera can be turned on and off. Implement `turn_on` and `turn_off`. |
-| `STREAM` | The camera has a live stream. Implement `stream_source` for HLS, or the native WebRTC methods. |
+| `ON_OFF` | 摄像头可以开启和关闭。需实现 `turn_on` 和 `turn_off`。 |
+| `STREAM` | 摄像头具有实时视频流。需实现用于 HLS 的 `stream_source`，或原生 WebRTC 方法。 |
 
-## Still images
+## 静态图像
 
-Every camera returns still images through `async_camera_image` (or `camera_image`). The frontend calls it for thumbnails and dashboards, and the `camera.snapshot` action saves its result to disk.
+每个摄像头都通过 `async_camera_image`（或 `camera_image`）返回静态图像。前端会为缩略图和仪表盘调用它，`camera.snapshot` 动作会将其结果保存到磁盘。
 
-The frontend can ask for a `width` and a `height`. Scaling is best effort:
+前端可以请求 `width` 和 `height`。缩放是尽力而为的：
 
-- If your camera can scale, pass the size on and return the smallest image that is at least that large.
-- Keep the aspect ratio. When it does not match, the returned image can be wider or taller than asked.
-- If you cannot scale and return a JPEG, Home Assistant scales it for you.
+- 如果你的摄像头能够缩放，请传递该尺寸，并返回不小于该尺寸的最小图像。
+- 保持宽高比。当宽高比不匹配时，返回的图像可能比请求的更宽或更高。
+- 如果你无法缩放且返回的是 JPEG，Home Assistant 会代你进行缩放。
 
-If the camera has a stream and no separate snapshot endpoint, set `use_stream_for_stills` to `True`, and Home Assistant grabs stills from the stream. Another common way is to pass the stream source to `async_get_image` of the FFmpeg integration (`homeassistant.components.ffmpeg`), which grabs a frame from it.
+如果摄像头有视频流但没有单独的快照端点，请将 `use_stream_for_stills` 设置为 `True`，Home Assistant 将从视频流中抓取静态图像。另一种常见方法是将流源传递给 FFmpeg 集成（`homeassistant.components.ffmpeg`）的 `async_get_image`，它会从中抓取一帧。
 
-## Streams
+## 视频流
 
-A camera with `CameraEntityFeature.STREAM` offers a live stream in one of two ways. The frontend picks a player based on what the camera offers.
+具有 `CameraEntityFeature.STREAM` 的摄像头通过以下两种方式之一提供实时视频流。前端会根据摄像头提供的内容选择播放器。
 
-### HLS through the stream integration
+### 通过 stream 集成的 HLS
 
-Implement `stream_source` and return a URL that FFmpeg can open, usually an RTSP URL. Home Assistant's stream integration turns it into HLS for the frontend, and uses it for `camera.record` and `camera.play_stream` too.
+实现 `stream_source` 并返回一个 FFmpeg 可以打开的 URL，通常是 RTSP URL。Home Assistant 的 stream 集成会将其转换为 HLS 供前端使用，同时也将其用于 `camera.record` 和 `camera.play_stream`。
 
-When another integration has registered a WebRTC provider that can handle your stream source, like the go2rtc integration, the frontend also gets WebRTC for your camera. You do not have to do anything for that.
+当另一个集成（例如 go2rtc 集成）注册了能够处理你的流源的 WebRTC 提供程序（provider）时，前端也会为你的摄像头使用 WebRTC。你无需为此执行任何操作。
 
-### Native WebRTC
+### 原生 WebRTC
 
-If your camera or cloud speaks WebRTC itself, implement these methods instead:
+如果你的摄像头或云端本身支持 WebRTC，请改为实现以下方法：
 
-- `async_handle_async_webrtc_offer(offer_sdp, session_id, send_message)`: start a session for the SDP offer of the frontend. Send the answer, candidates, and errors back with the `send_message` callback, as `WebRTCAnswer`, `WebRTCCandidate`, and `WebRTCError`.
-- `async_on_webrtc_candidate(session_id, candidate)`: handle an ICE candidate that the frontend sends after the offer. Required when you implement the offer method.
-- `close_webrtc_session(session_id)`: optional. Clean up when the frontend closes the stream.
+- `async_handle_async_webrtc_offer(offer_sdp, session_id, send_message)`：为前端的 SDP offer 启动一个会话。通过 `send_message` 回调发回应答、候选（candidate）和错误，对应 `WebRTCAnswer`、`WebRTCCandidate` 和 `WebRTCError`。
+- `async_on_webrtc_candidate(session_id, candidate)`：处理前端在 offer 之后发送的 ICE candidate。实现 offer 方法时必须实现此方法。
+- `close_webrtc_session(session_id)`：可选。当前端关闭视频流时进行清理。
 
-Once you override `async_handle_async_webrtc_offer`, the frontend uses WebRTC only and never falls back to HLS. Native WebRTC streams do not go through the stream integration, so recording is not available. To pass extra settings to the WebRTC client, like a data channel, override `_async_get_webrtc_client_configuration` and return a `WebRTCClientConfiguration`.
+一旦重写了 `async_handle_async_webrtc_offer`，前端将仅使用 WebRTC，永远不会回退到 HLS。原生 WebRTC 流不经过 stream 集成，因此无法使用录制功能。要向 WebRTC 客户端传递额外设置（例如数据通道），请重写 `_async_get_webrtc_client_configuration` 并返回一个 `WebRTCClientConfiguration`。
 
-### WebRTC providers
+### WebRTC 提供程序
 
-An integration can also offer WebRTC for cameras of other integrations, based on their stream source. Implement `CameraWebRTCProvider` and register it with `async_register_webrtc_provider(hass, provider)`. The provider tells Home Assistant which stream sources it supports with `async_is_supported`, and handles the offers and candidates for those cameras. This is how go2rtc works, and you will rarely need it.
+集成也可以基于其他集成的摄像头的流源，为这些摄像头提供 WebRTC。实现 `CameraWebRTCProvider`，并通过 `async_register_webrtc_provider(hass, provider)` 注册它。提供程序通过 `async_is_supported` 告诉 Home Assistant 它支持哪些流源，并为这些摄像头处理 offer 和 candidate。go2rtc 就是这样工作的，你很少会需要用到它。
 
-## Methods
+## 方法
 
-Each method has a sync and an async variant. Implement one of them.
+每个方法都有一个同步（sync）和一个异步（async）变体。实现其中之一即可。
 
-| Method | Sync variant | Description |
+| 方法 | 同步变体 | 描述 |
 | --- | --- | --- |
-| `async_camera_image(width=None, height=None)` | `camera_image` | Return the bytes of a still image, or `None`. |
-| `stream_source()` | none | Async only. Return the stream URL, or `None`. Needs `STREAM`. |
-| `async_turn_on()` | `turn_on` | Turn the camera on. Needs `ON_OFF`. |
-| `async_turn_off()` | `turn_off` | Turn the camera off. Needs `ON_OFF`. |
-| `async_enable_motion_detection()` | `enable_motion_detection` | Turn motion detection on. |
-| `async_disable_motion_detection()` | `disable_motion_detection` | Turn motion detection off. |
-| `handle_async_mjpeg_stream(request)` | none | Optional. Proxy an MJPEG stream from the camera directly. By default, Home Assistant builds one from still images every `frame_interval` seconds. |
+| `async_camera_image(width=None, height=None)` | `camera_image` | 返回静态图像的字节，或 `None`。 |
+| `stream_source()` | 无 | 仅异步。返回流 URL，或 `None`。需要 `STREAM`。 |
+| `async_turn_on()` | `turn_on` | 开启摄像头。需要 `ON_OFF`。 |
+| `async_turn_off()` | `turn_off` | 关闭摄像头。需要 `ON_OFF`。 |
+| `async_enable_motion_detection()` | `enable_motion_detection` | 开启移动侦测。 |
+| `async_disable_motion_detection()` | `disable_motion_detection` | 关闭移动侦测。 |
+| `handle_async_mjpeg_stream(request)` | 无 | 可选。直接代理来自摄像头的 MJPEG 流。默认情况下，Home Assistant 每隔 `frame_interval` 秒从静态图像构建一个流。 |
 
-The native WebRTC methods are listed in [Native WebRTC](#native-webrtc).
+原生 WebRTC 方法列在[原生 WebRTC](#native-webrtc)部分中。
 
-## States
+## 状态
 
-The state is final, and comes from `is_recording` and `is_streaming`, in that order. The values are in the `CameraState` enum.
+状态是最终确定的，依次取决于 `is_recording` 和 `is_streaming`。这些值定义在 `CameraState` 枚举中。
 
-| State | When |
+| 状态 | 何时 |
 | --- | --- |
-| `recording` | `is_recording` is `True`. |
-| `streaming` | `is_streaming` is `True`, and the camera is not recording. |
-| `idle` | Neither. |
+| `recording` | `is_recording` 为 `True`。 |
+| `streaming` | `is_streaming` 为 `True`，且摄像头未在录制。 |
+| `idle` | 两者皆非。 |
 
-The camera adds `access_token`, and, when set, `model_name`, `brand`, and `motion_detection` as attributes. The access token and the entity picture are excluded from the [recorder](/glossary/recorder/), because the tokens rotate every five minutes.
+摄像头会将 `access_token` 添加为属性，并且在设置了相应值时，还会添加 `model_name`、`brand` 和 `motion_detection`。访问令牌和实体图片被排除在[记录器](/glossary/recorder/)（recorder）之外，因为令牌每五分钟轮换一次。
 
-## Example
+## 示例
 
-A network camera with an RTSP stream and a snapshot URL.
+一个带有 RTSP 流和快照 URL 的网络摄像头。
 
 ```python
 from homeassistant.components.camera import Camera, CameraEntityFeature

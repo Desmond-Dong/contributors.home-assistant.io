@@ -1,22 +1,22 @@
 ---
-title: Test the connection in the config flow
-description: "Bronze rule test-before-configure: the config flow tests the connection before it creates the entry."
+title: 在配置流程中测试连接
+description: "青铜规则 test-before-configure：配置流程在创建条目之前测试连接。"
 sidebarLabel: test-before-configure
 sidebarGroup: Bronze
 order: 18
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `test-before-configure`.
+这是一条青铜（Bronze）规则。在 `quality_scale.yaml` 中，它被称为 `test-before-configure`。
 
-Before the [config flow](/glossary/config-flow/) creates the config entry, it must test that the integration can connect with what the user entered. When the test fails, the flow shows the form again with an error that tells the user what went wrong.
+在[配置流程](/glossary/config-flow/)（config flow）创建配置条目（config entry）之前，它必须测试该集成（integration）能否使用用户输入的内容进行连接。当测试失败时，流程会再次显示表单，并显示一个错误，告诉用户哪里出了问题。
 
-## Why it matters
+## 为什么重要
 
-A config flow that accepts anything leaves the user with an integration that does not work, and no clue why. Many problems are easy to catch at this point: a typo in the IP address, a wrong port, a firewall in the way, a DNS problem, wrong credentials, or a device that is not supported. Catching them here, while the user is still looking at the form, is far friendlier than an error in the logs later.
+一个什么都接受的配置流程，会让用户得到一个无法工作的集成，却不知道原因。许多问题在这一步很容易被发现：IP 地址中的拼写错误、错误的端口、防火墙的阻挡、DNS 问题、错误的凭据，或者设备不受支持。在用户仍盯着表单时就在这里发现这些问题，远比之后在日志中出现错误要友好得多。
 
-## Example
+## 示例
 
-Make a real call with the library, like fetching the device information, and map the exceptions of the library to errors on the form:
+使用该库进行一次真实的调用，例如获取设备信息，并将该库抛出的异常映射为表单上的错误：
 
 ```python
 async def async_step_user(
@@ -49,23 +49,23 @@ async def async_step_user(
     )
 ```
 
-The error keys go in `strings.json`, under `config.error`. Common errors like `cannot_connect`, `invalid_auth`, and `unknown` have shared translations you can reference with `[%key:common::config_flow::error::cannot_connect%]`.
+错误键放在 `strings.json` 中的 `config.error` 之下。像 `cannot_connect`、`invalid_auth` 和 `unknown` 这样的常见错误有共享的翻译，你可以通过 `[%key:common::config_flow::error::cannot_connect%]` 来引用它们。
 
-## How it is checked
+## 如何检查
 
-- Pylint, when the rule is `done`: `home-assistant-missing-test-before-configure` warns when a config flow creates entries but shows no sign of reporting a failure: no `errors=` passed to a form, and no abort inside an `except`. OAuth2 flows are skipped, because the token exchange is the connection test.
-- Whether the test makes sense for the device is checked in review.
+- Pylint（当规则为 `done` 时）：当配置流程创建了条目，却没有任何报告失败的迹象时，`home-assistant-missing-test-before-configure` 会发出警告：没有向表单传递 `errors=`，也没有在 `except` 中中止。OAuth2 流程会被跳过，因为令牌交换本身就是连接测试。
+- 该测试对设备来说是否有意义，会在审查中进行检查。
 
-## Exceptions
+## 例外情况
 
-- Integrations that do not connect to a device or service, like [helpers](/glossary/helper/), have nothing to test and are exempt.
-- Integrations that discover their devices at runtime, without connection details from the user (like Google Cast), are exempt.
+- 不连接设备或服务的集成，例如[辅助元素](/glossary/helper/)（helper），没有可测试的内容，可以豁免。
+- 在运行时发现其设备、无需用户提供连接详细信息的集成（如 Google Cast），可以豁免。
 
-## Related rules
+## 相关规则
 
-- [config-flow](/core/quality-scale/config-flow/): set up from the UI with a config flow.
-- [unique-config-entry](/core/quality-scale/unique-config-entry/): prevent duplicate config entries.
-- [config-flow-test-coverage](/core/quality-scale/config-flow-test-coverage/): test the config flow fully.
-- [discovery](/core/quality-scale/discovery/): support discovery.
-- [reauthentication-flow](/core/quality-scale/reauthentication-flow/): reauthenticate from the UI.
-- [reconfiguration-flow](/core/quality-scale/reconfiguration-flow/): reconfigure from the UI.
+- [config-flow](/core/quality-scale/config-flow/)：通过 UI 使用配置流程进行设置。
+- [unique-config-entry](/core/quality-scale/unique-config-entry/)：防止重复的配置条目。
+- [config-flow-test-coverage](/core/quality-scale/config-flow-test-coverage/)：完整地测试配置流程。
+- [discovery](/core/quality-scale/discovery/)：支持发现功能。
+- [reauthentication-flow](/core/quality-scale/reauthentication-flow/)：从 UI 重新进行身份验证。
+- [reconfiguration-flow](/core/quality-scale/reconfiguration-flow/)：从 UI 重新配置。

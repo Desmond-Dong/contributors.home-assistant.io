@@ -1,85 +1,85 @@
 ---
-title: To-do list entity
-description: Build a to-do list entity for a shopping list, a task list, or any other ordered list of items with a status.
+title: 待办事项列表实体
+description: 为购物清单、任务列表或任何其他带有状态的有序项目列表构建待办事项列表实体。
 sidebarLabel: To-do list
 sidebarGroup: Inputs and helpers
 ---
 
-A to-do list entity represents a list of items, each with a status: open or done. Think of a shopping list, the tasks in a task manager, or the chores a robot vacuum app keeps track of. Inherit from `TodoListEntity` in `homeassistant.components.todo`.
+待办事项列表（to-do list）实体表示一个项目列表，每个项目都有一个状态：未完成或已完成。可以是购物清单、任务管理器中的任务，或者扫地机器人应用所追踪的家务。请继承 `homeassistant.components.todo` 中的 `TodoListEntity`。
 
-People see the list in the to-do panel, and automations, scripts, and Assist can read it and add to it. What they can change depends on the [supported features](#supported-features) you set.
+用户可以在待办事项面板中查看该列表，自动化、脚本和 Assist 可以读取它并向其中添加内容。它们能修改什么取决于您设置的[支持的功能](#supported-features)。
 
-## Properties
+## 属性
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `todo_items` | `list[TodoItem] \| None` | `None` | The items on the list, in order. `None` means the list is not known. |
+| `todo_items` | `list[TodoItem] \| None` | `None` | 列表中的项目，按顺序排列。`None` 表示列表未知。 |
 
-The generic properties every entity has, like `name`, `available`, and `unique_id`, are on [the entity class](/core/entities/entity-class/).
+每个实体都具有的通用属性（如 `name`、`available` 和 `unique_id`）位于[实体类](/core/entities/entity-class/)中。
 
-## Supported features
+## 支持的功能
 
-Combine the flags of `TodoListEntityFeature` with `|`, and set them with `_attr_supported_features`. Without any, the list is read only. See [supported features](/glossary/supported-features/).
+将 `TodoListEntityFeature` 的标志用 `|` 组合起来，并通过 `_attr_supported_features` 进行设置。如果不设置任何标志，列表将为只读。请参阅[支持的功能](/glossary/supported-features/)。
 
-| Constant | What it enables |
+| 常量 | 启用的功能 |
 | --- | --- |
-| `CREATE_TODO_ITEM` | Adding items. Implement `async_create_todo_item`. |
-| `DELETE_TODO_ITEM` | Removing items, and removing all completed items at once. Implement `async_delete_todo_items`. |
-| `UPDATE_TODO_ITEM` | Changing items, like renaming them or marking them as done. Implement `async_update_todo_item`. |
-| `MOVE_TODO_ITEM` | Reordering items. Implement `async_move_todo_item`. |
-| `SET_DUE_DATE_ON_ITEM` | Setting `due` to a date when an item is created or updated. |
-| `SET_DUE_DATETIME_ON_ITEM` | Setting `due` to a date and time when an item is created or updated. |
-| `SET_DESCRIPTION_ON_ITEM` | Setting `description` when an item is created or updated. |
+| `CREATE_TODO_ITEM` | 添加项目。需实现 `async_create_todo_item`。 |
+| `DELETE_TODO_ITEM` | 删除项目，以及一次性删除所有已完成的项目。需实现 `async_delete_todo_items`。 |
+| `UPDATE_TODO_ITEM` | 修改项目，例如重命名或将其标记为已完成。需实现 `async_update_todo_item`。 |
+| `MOVE_TODO_ITEM` | 重新排列项目顺序。需实现 `async_move_todo_item`。 |
+| `SET_DUE_DATE_ON_ITEM` | 在创建或更新项目时将 `due` 设置为日期。 |
+| `SET_DUE_DATETIME_ON_ITEM` | 在创建或更新项目时将 `due` 设置为日期和时间。 |
+| `SET_DESCRIPTION_ON_ITEM` | 在创建或更新项目时设置 `description`。 |
 
-When an action uses a field that you don't support, like a due date, the action fails with a validation error before your method is called.
+当操作使用了您不支持的字段（例如截止日期）时，该操作会在您的方法被调用之前因验证错误而失败。
 
-## To-do items
+## 待办事项项目
 
-Each item is a `TodoItem`, a dataclass from `homeassistant.components.todo`.
+每个项目都是一个 `TodoItem`，它是 `homeassistant.components.todo` 中的一个数据类（dataclass）。
 
-| Field | Type | Default | Description |
+| 字段 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `uid` | `str \| None` | `None` | A unique ID for the item. Needed to update, delete, or move it. |
-| `summary` | `str \| None` | `None` | The text of the item. |
-| `status` | `TodoItemStatus \| None` | `None` | `TodoItemStatus.NEEDS_ACTION` or `TodoItemStatus.COMPLETED`. |
-| `due` | `datetime.date \| datetime.datetime \| None` | `None` | When the item is due. A `datetime` must have a time zone. |
-| `description` | `str \| None` | `None` | A longer description than the summary. |
-| `completed` | `datetime.datetime \| None` | `None` | When the item was last marked as completed. |
+| `uid` | `str \| None` | `None` | 项目的唯一 ID。更新、删除或移动项目时需要用到。 |
+| `summary` | `str \| None` | `None` | 项目的文本内容。 |
+| `status` | `TodoItemStatus \| None` | `None` | `TodoItemStatus.NEEDS_ACTION` 或 `TodoItemStatus.COMPLETED`。 |
+| `due` | `datetime.date \| datetime.datetime \| None` | `None` | 项目的截止时间。`datetime` 必须包含时区信息。 |
+| `description` | `str \| None` | `None` | 比摘要更详细的描述。 |
+| `completed` | `datetime.datetime \| None` | `None` | 项目最近一次被标记为已完成的时间。 |
 
-Every item that you return needs a `uid`, a `summary`, and a `status`.
+您返回的每个项目都必须包含 `uid`、`summary` 和 `status`。
 
-## Methods
+## 方法
 
-All methods are async only. Each one is needed only for the matching feature.
+所有方法均为仅异步方法。每种方法只需在实现了对应功能时才需要提供。
 
-### Create an item
+### 创建项目
 
 ```python
 async def async_create_todo_item(self, item: TodoItem) -> None:
     """Add an item to the list."""
 ```
 
-The new item has a `summary` and the status `NEEDS_ACTION`, plus the optional fields you support. It has no `uid` yet: your service or your integration gives it one.
+新项目具有 `summary` 和状态 `NEEDS_ACTION`，以及您支持的任何可选字段。它还没有 `uid`：需要由您的服务或集成（integration）为其分配。
 
-### Update an item
+### 更新项目
 
 ```python
 async def async_update_todo_item(self, item: TodoItem) -> None:
     """Update an item on the list."""
 ```
 
-The item always has its `uid`. It is a copy of the item as you last returned it, with the changed fields filled in. A field set to `None` was cleared on purpose, so clear it on your side too.
+该项目始终带有其 `uid`。它是您上次返回的项目的副本，其中已更改的字段会被填入。设置为 `None` 的字段表示被有意清除，因此您也需要在自己的数据中将其清除。
 
-### Delete items
+### 删除项目
 
 ```python
 async def async_delete_todo_items(self, uids: list[str]) -> None:
     """Delete items from the list."""
 ```
 
-You get a list of IDs. Delete all of them, not only the first.
+您会收到一个 ID 列表。请删除所有项目，而不仅仅是第一个。
 
-### Move an item
+### 移动项目
 
 ```python
 async def async_move_todo_item(
@@ -88,15 +88,15 @@ async def async_move_todo_item(
     """Move an item on the list."""
 ```
 
-Move the item with `uid` so it comes right after the item with `previous_uid`. When `previous_uid` is `None`, move it to the top of the list.
+将具有 `uid` 的项目移动到紧随具有 `previous_uid` 的项目之后。当 `previous_uid` 为 `None` 时，将其移动到列表顶部。
 
-After any change, update `todo_items` and write the state, or refresh it from your service. The base class sends the new items to the frontend each time the state is written.
+在任何更改之后，更新 `todo_items` 并写入状态（state），或者从您的服务中刷新它。基类会在每次写入状态时将新项目发送到前端。
 
-## States
+## 状态
 
-The state is the number of items with the status `NEEDS_ACTION`. It is `unknown` when `todo_items` is `None`.
+状态是具有 `NEEDS_ACTION` 状态的项目数量。当 `todo_items` 为 `None` 时，状态为 `unknown`。
 
-## Example
+## 示例
 
 ```python
 from homeassistant.components.todo import (
@@ -155,4 +155,4 @@ class ExampleShoppingList(TodoListEntity):
         await self.async_update_ha_state(force_refresh=True)
 ```
 
-This example polls. When your service pushes changes, or you use a [coordinator](/glossary/coordinator/), refresh through that instead. See [updating state](/core/entities/state-updates/).
+此示例采用轮询方式。当您的服务会推送更改，或者您使用了[协调器（coordinator）](/glossary/coordinator/)时，请改用这种方式进行刷新。请参阅[更新状态](/core/entities/state-updates/)。

@@ -1,42 +1,42 @@
 ---
-title: Intents
-description: What an intent is, how an integration handles intents, and how to fire one from code or over HTTP.
+title: 意图
+description: 什么是意图（intent）、集成如何处理意图，以及如何从代码或通过 HTTP 触发一个意图。
 sidebarGroup: Voice and AI
 order: 50
 ---
 
-An [intent](/glossary/intent/) describes what someone wants, separate from how they said it. "Turn on the kitchen lights", "kitchen lights on", and a button on a voice assistant all become the same intent: `HassTurnOn`, with the slots `area` set to kitchen and `domain` set to light.
+[意图](/glossary/intent/)描述了某人想要做什么，而不关心他们是如何表达的。“打开厨房的灯”、“厨房灯打开”以及语音助手上的一个按钮，最终都会变成同一个意图：`HassTurnOn`，其中槽位（slot）`area` 被设置为 kitchen，`domain` 被设置为 light。
 
-That split is the point. The thing that understands the user (Assist, a large language model, or an external voice assistant) produces an intent. The thing that acts on it, an intent handler, does not care where it came from. Write a handler once, and it works from every source.
+这种分离正是关键所在。理解用户的部分（Assist、大语言模型或外部语音助手）产生意图。执行意图的部分，即意图处理器（intent handler），并不关心它来自哪里。处理器只需编写一次，即可用于所有来源。
 
-In Home Assistant:
+在 Home Assistant 中：
 
-- The `conversation` integration turns text into intents, with the sentences from the [intents repository](https://github.com/OHF-Voice/intents). See the [conversation API](/core/internals/conversation-api/).
-- The [LLM API](/core/internals/llm-api/) offers intents to large language models as tools. Not every intent: an integration picks which of its intents to offer.
-- The `intent` integration registers the [built-in intents](/core/internals/built-in-intents/) and offers an HTTP endpoint to fire them. It is loaded with `conversation`, which is part of the default configuration.
-- Any integration can register handlers for its own intents.
+- `conversation` 集成将文本转换为意图，使用来自[意图仓库（intents repository）](https://github.com/OHF-Voice/intents)的句子。参见 [conversation API](/core/internals/conversation-api/)。
+- [LLM API](/core/internals/llm-api/) 将意图作为工具提供给大语言模型。但并非所有意图：集成会选择提供其自身的哪些意图。
+- `intent` 集成注册[内置意图（built-in intents）](/core/internals/built-in-intents/)，并提供一个 HTTP 端点来触发它们。它与 `conversation` 一起加载，后者是默认配置的一部分。
+- 任何集成都可以为自己的意图注册处理器。
 
-## The intent object
+## 意图对象
 
-`Intent` from `homeassistant.helpers.intent` holds:
+来自 `homeassistant.helpers.intent` 的 `Intent` 包含：
 
-| Attribute | Description |
+| 属性 | 描述 |
 | --- | --- |
-| `hass` | The Home Assistant instance. |
-| `platform` | The integration that fired the intent. |
-| `intent_type` | The name of the intent, like `HassTurnOn`. |
-| `slots` | The slot values, by slot name. Each slot is a dictionary with a `value`. |
-| `text_input` | The text that led to this intent, if any. |
-| `context` | The `Context`, with the user. |
-| `language` | The language, which defaults to the language of the instance. |
-| `assistant` | The assistant that is handling the request, like `conversation`. Used to only act on entities exposed to it. |
-| `device_id` | The device the request came from, like a voice satellite. |
-| `satellite_id` | The entity ID of the satellite the request came from. |
-| `conversation_agent_id` | The conversation agent that is handling the request. |
+| `hass` | Home Assistant 实例。 |
+| `platform` | 触发该意图的集成。 |
+| `intent_type` | 意图的名称，例如 `HassTurnOn`。 |
+| `slots` | 槽位值，按槽位名称索引。每个槽位是一个包含 `value` 的字典。 |
+| `text_input` | 产生此意图的文本（如果有）。 |
+| `context` | `Context`，包含用户信息。 |
+| `language` | 语言，默认为实例的语言。 |
+| `assistant` | 处理请求的助手（assistant），例如 `conversation`。用于仅对向其公开的实体进行操作。 |
+| `device_id` | 请求来源的设备，例如语音卫星（voice satellite）。 |
+| `satellite_id` | 请求来源的卫星的实体 ID。 |
+| `conversation_agent_id` | 处理请求的对话代理（conversation agent）。 |
 
-## Handle an intent
+## 处理意图
 
-Subclass `IntentHandler` and register an instance with `intent.async_register`. An integration with intents usually does this in an `intent.py` platform, with an `async_setup_intents` function that the `intent` integration calls:
+继承 `IntentHandler` 并通过 `intent.async_register` 注册一个实例。带有意图的集成通常在 `intent.py` 平台中完成此操作，提供一个 `async_setup_intents` 函数，由 `intent` 集成调用：
 
 ```python
 import probatio
@@ -72,31 +72,31 @@ class AddCoffeeHandler(intent.IntentHandler):
         return response
 ```
 
-- `intent_type` is the name. Prefix your own intents to avoid clashes. Names starting with `Hass` belong to Home Assistant.
-- `description` explains the intent. When the intent is offered to language models as a tool, they read it, so write it for them.
-- `slot_schema` describes the slots. `async_validate_slots` validates them, and raises when they do not fit.
-- `platforms` optionally limits which integrations may fire the intent.
+- `intent_type` 是名称。为你自己的意图添加前缀以避免冲突。以 `Hass` 开头的名称属于 Home Assistant。
+- `description` 描述该意图。当意图作为工具提供给语言模型时，它们会阅读这段描述，所以要为它们编写。
+- `slot_schema` 描述槽位。`async_validate_slots` 会对槽位进行验证，当它们不符合要求时会抛出异常。
+- `platforms` 可选择性地限制哪些集成可以触发该意图。
 
-Speech you set in a handler is spoken as is, it is not translated. The built-in intents get their response sentences, in every language, from the intents repository instead.
+你在处理器中设置的语音（speech）会按原样朗读，不会被翻译。内置意图的回复语句则针对每种语言都从意图仓库获取。
 
-For the common case of an intent that calls an action on matching entities, `ServiceIntentHandler` from `homeassistant.helpers.intent` does the matching, the calling, and the response for you.
+对于在匹配实体上调用动作（action）这一常见意图场景，来自 `homeassistant.helpers.intent` 的 `ServiceIntentHandler` 会为你完成匹配、调用和响应。
 
-### The response
+### 响应
 
-`intent_obj.create_response()` returns an `IntentResponse`:
+`intent_obj.create_response()` 返回一个 `IntentResponse`：
 
-- `async_set_speech(text)`: what to say back. Plain text by default, or SSML with `speech_type="ssml"`.
-- `async_set_reprompt(text)`: what to say if the user does not answer in time, for a response that asks a question.
-- `async_set_card(title, content)`: a card for assistants that can show one.
-- `async_set_results(success_results, failed_results)`: the targets that were acted on, as `IntentResponseTarget` objects.
-- `async_set_error(code, message)`: turn the response into an error.
-- `response_type`: `IntentResponseType.ACTION_DONE` by default. Set it to `QUERY_ANSWER` for an answer to a question.
+- `async_set_speech(text)`：要回复的语音内容。默认为纯文本，或通过 `speech_type="ssml"` 使用 SSML。
+- `async_set_reprompt(text)`：如果用户未及时回答时要说的内容，用于提出问题的响应。
+- `async_set_card(title, content)`：供能够显示卡片的助手使用的卡片。
+- `async_set_results(success_results, failed_results)`：被操作的目标，以 `IntentResponseTarget` 对象表示。
+- `async_set_error(code, message)`：将响应转换为错误。
+- `response_type`：默认为 `IntentResponseType.ACTION_DONE`。对于问题的答案，将其设置为 `QUERY_ANSWER`。
 
-Raise `intent.IntentHandleError` when the intent cannot be handled, with a message for the user.
+当意图无法被处理时，抛出 `intent.IntentHandleError`，并附带给用户的消息。
 
-## Fire an intent
+## 触发意图
 
-If your code understands the user itself, like an integration for an external voice assistant, let Home Assistant handle the result:
+如果你的代码自己理解用户，例如面向外部语音助手的集成，就让 Home Assistant 处理结果：
 
 ```python
 from homeassistant.helpers import intent
@@ -118,11 +118,11 @@ except intent.IntentError:
     _LOGGER.exception("Error handling the intent")
 ```
 
-It is up to you to bring the response back to the user. `response.speech` holds the speech by type, like `response.speech["plain"]["speech"]`. `response.as_dict()` gives the whole response, in the same shape as the [conversation API](/core/internals/conversation-api/#the-response).
+将响应返回给用户由你负责。`response.speech` 按类型保存语音内容，例如 `response.speech["plain"]["speech"]`。`response.as_dict()` 返回完整的响应，其结构与 [conversation API](/core/internals/conversation-api/#the-response) 相同。
 
-### Over HTTP
+### 通过 HTTP
 
-The `intent` integration offers `POST /api/intent/handle`, with the intent `name` and its slot values in `data`:
+`intent` 集成提供 `POST /api/intent/handle`，其中包含意图 `name` 及其在 `data` 中的槽位值：
 
 ```json
 {
@@ -133,6 +133,6 @@ The `intent` integration offers `POST /api/intent/handle`, with the intent `name
 }
 ```
 
-Optional fields are `language`, `assistant`, `device_id`, and `satellite_id`. The response is the intent response as JSON.
+可选字段有 `language`、`assistant`、`device_id` 和 `satellite_id`。响应是以 JSON 格式表示的意图响应。
 
-To send text instead of an intent, and let Home Assistant work out the intent, use the [conversation API](/core/internals/conversation-api/).
+要发送文本而非意图，并让 Home Assistant 自行推断意图，请使用 [conversation API](/core/internals/conversation-api/)。

@@ -1,38 +1,38 @@
 ---
-title: Fetching Bluetooth data
-description: Pick the right coordinator for a Bluetooth device, and turn its advertisements into entities.
+title: 获取蓝牙数据
+description: 为蓝牙设备选择合适的协调器，并将其广播数据转换为实体。
 sidebarGroup: Discovery
 order: 4
 ---
 
-Many Bluetooth devices send their data in advertisements: small packets they broadcast over and over, without anyone connecting to them. Home Assistant has coordinators that are driven by those advertisements instead of by polling. They work like the [data update coordinator](/core/integrations/fetching-data/), and take care of availability for you.
+许多蓝牙设备通过广播（advertisement）发送数据：这些反复播发的小数据包，无需任何人与其建立连接即可收到。Home Assistant 提供了由这些广播数据（而非轮询）驱动的协调器（coordinator）。它们的工作方式与[数据更新协调器](/core/integrations/fetching-data/)类似，并会替你处理好可用性（availability）问题。
 
-## Pick a coordinator
+## 选择协调器
 
-| Your device | Use |
+| 你的设备 | 使用 |
 | --- | --- |
-| Mainly a sensor, binary sensor, or source of events, with all data in advertisements | `PassiveBluetoothProcessorCoordinator` |
-| Mainly a sensor, binary sensor, or source of events, but some data needs a connection | `ActiveBluetoothProcessorCoordinator` |
-| Something else, with all data in advertisements | `PassiveBluetoothDataUpdateCoordinator` |
-| Something else, and some data needs a connection | `ActiveBluetoothDataUpdateCoordinator` |
-| Only works with a connection, does not use advertisements | The normal [`DataUpdateCoordinator`](/core/integrations/fetching-data/) |
+| 主要是传感器、二进制传感器或事件来源，且所有数据都在广播中 | `PassiveBluetoothProcessorCoordinator` |
+| 主要是传感器、二进制传感器或事件来源，但部分数据需要连接 | `ActiveBluetoothProcessorCoordinator` |
+| 其他类型的设备，且所有数据都在广播中 | `PassiveBluetoothDataUpdateCoordinator` |
+| 其他类型的设备，且部分数据需要连接 | `ActiveBluetoothDataUpdateCoordinator` |
+| 仅在有连接时才能工作，不使用广播 | 普通的 [`DataUpdateCoordinator`](/core/integrations/fetching-data/) |
 
-## Processor coordinators
+## 处理器协调器
 
-The processor coordinators cut the code of sensor-like integrations down to almost nothing. Your library parses an advertisement, you turn the result into a `PassiveBluetoothDataUpdate`, and the framework creates and updates the entities when they show up.
+处理器协调器能将类传感器集成的代码缩减到几乎为零。由你的库解析广播数据，你将解析结果转换为 `PassiveBluetoothDataUpdate`，随后框架会在实体（entity）出现时创建并更新它们。
 
-A `PassiveBluetoothDataUpdate` has four mappings. The keys are `PassiveBluetoothEntityKey(key, device_id)`, like `PassiveBluetoothEntityKey("temperature", None)`:
+`PassiveBluetoothDataUpdate` 包含四个映射。键为 `PassiveBluetoothEntityKey(key, device_id)`，例如 `PassiveBluetoothEntityKey("temperature", None)`：
 
-| Field | What it holds |
+| 字段 | 存放的内容 |
 | --- | --- |
-| `devices` | The `DeviceInfo` per device ID. `None` is the main device. |
-| `entity_descriptions` | The [entity description](/glossary/entity-description/) per entity key |
-| `entity_names` | The name per entity key |
-| `entity_data` | The value per entity key |
+| `devices` | 每个设备 ID 对应的 `DeviceInfo`。`None` 表示主设备。 |
+| `entity_descriptions` | 每个实体键对应的[实体描述](/glossary/entity-description/) |
+| `entity_names` | 每个实体键对应的名称 |
+| `entity_data` | 每个实体键对应的值 |
 
-### Set up the coordinator
+### 设置协调器
 
-In `__init__.py`, create the coordinator with the address of the device and the parse method of your library. Start it after the platforms are set up, so they can subscribe first:
+在 `__init__.py` 中，使用设备的地址和你的库的解析方法创建协调器。在平台设置完成之后再启动它，以便平台可以先订阅：
 
 ```python
 from homeassistant.components.bluetooth import BluetoothScanningMode
@@ -67,11 +67,11 @@ async def async_setup_entry(
     return True
 ```
 
-`connectable` defaults to `False` here, so you get advertisements from every adapter.
+`connectable` 在此处默认为 `False`，因此你可以从所有适配器接收广播数据。
 
-### The sensor platform
+### 传感器平台
 
-Each platform registers a processor that turns the parsed data into a `PassiveBluetoothDataUpdate`, and an entity class:
+每个平台注册一个将解析后的数据转换为 `PassiveBluetoothDataUpdate` 的处理器，以及一个实体类：
 
 ```python
 from homeassistant.components.bluetooth.passive_update_processor import (
@@ -122,12 +122,12 @@ class ExampleBluetoothSensor(PassiveBluetoothProcessorEntity, SensorEntity):
         return self.processor.entity_data.get(self.entity_key)
 ```
 
-### Connect when needed
+### 按需连接
 
-`ActiveBluetoothProcessorCoordinator` works the same way, and the platforms do not change. It adds two functions that run when an advertisement changes:
+`ActiveBluetoothProcessorCoordinator` 的工作方式相同，平台无需更改。它添加了两个在广播数据变化时运行的函数：
 
-- `needs_poll_method(service_info, last_poll)`: returns whether a connection is needed now. `last_poll` is the number of seconds since the last poll, or `None`.
-- `poll_method(service_info)`: connects to the device and returns the data.
+- `needs_poll_method(service_info, last_poll)`：返回当前是否需要建立连接。`last_poll` 是自上次轮询以来的秒数，或为 `None`。
+- `poll_method(service_info)`：连接到设备并返回数据。
 
 ```python
 def _needs_poll(
@@ -177,11 +177,11 @@ coordinator = ActiveBluetoothProcessorCoordinator(
 )
 ```
 
-Import it from `homeassistant.components.bluetooth.active_update_processor`.
+请从 `homeassistant.components.bluetooth.active_update_processor` 导入它。
 
-### Ask for active scans
+### 请求主动扫描
 
-Both processor coordinators accept `scan_interval` and `scan_duration`. They ask scanners in `AUTO` mode to scan this address actively for `scan_duration` seconds, every `scan_interval` seconds. Some devices only send their full data when they are scanned actively, and fall back to needing a connection when they have not been for a while. Pick a `scan_interval` shorter than that, and a `scan_duration` long enough to catch the next advertisement:
+两种处理器协调器都接受 `scan_interval` 和 `scan_duration` 参数。它们会请求处于 `AUTO` 模式的扫描器每隔 `scan_interval` 秒对该地址进行一次持续 `scan_duration` 秒的主动扫描。有些设备只有在被主动扫描时才会发送完整数据，而当一段时间未被主动扫描后，就会退回到需要连接的状态。请选择一个比该时长更短的 `scan_interval`，以及一个足以捕获下一条广播数据的 `scan_duration`：
 
 ```python
 coordinator = ActiveBluetoothProcessorCoordinator(
@@ -191,11 +191,11 @@ coordinator = ActiveBluetoothProcessorCoordinator(
 )
 ```
 
-Both default to `None`, which keeps the normal pace. Scanners the user set to `PASSIVE` or `ACTIVE` are not affected.
+两者默认均为 `None`，这会保持正常的节奏。用户设置为 `PASSIVE` 或 `ACTIVE` 的扫描器不受影响。
 
-## Data update coordinators
+## 数据更新协调器
 
-For devices that are not mainly sensors, like a lock or a light, use `PassiveBluetoothDataUpdateCoordinator` (from `passive_update_coordinator`) or `ActiveBluetoothDataUpdateCoordinator` (from `active_update_coordinator`). Subclass them, and handle the advertisements in `_async_handle_bluetooth_event`:
+对于并非以传感器为主的设备，例如锁或灯，请使用 `PassiveBluetoothDataUpdateCoordinator`（来自 `passive_update_coordinator`）或 `ActiveBluetoothDataUpdateCoordinator`（来自 `active_update_coordinator`）。继承它们，并在 `_async_handle_bluetooth_event` 中处理广播数据：
 
 ```python
 from homeassistant.components import bluetooth
@@ -259,9 +259,9 @@ class ExampleCoordinator(ActiveBluetoothDataUpdateCoordinator[None]):
         super()._async_handle_bluetooth_event(service_info, change)
 ```
 
-Call the parent `_async_handle_bluetooth_event` from yours: it marks the device available, updates the listeners, and in the active version, schedules a poll when one is needed.
+在你的实现中调用父类的 `_async_handle_bluetooth_event`：它会把设备标记为可用、更新监听器，并且在主动版本中，会在需要时安排一次轮询。
 
-The passive version has no `needs_poll_method` and `poll_method`, and `connectable` defaults to `False`. Override `_async_handle_unavailable` to act when the device stops advertising.
+被动版本没有 `needs_poll_method` 和 `poll_method`，且 `connectable` 默认为 `False`。重写 `_async_handle_unavailable`，以便在设备停止广播时执行相应操作。
 
 > [!NOTE]
-> Unavailability depends on the Bluetooth stack noticing that a device stopped advertising. On macOS, CoreBluetooth caches advertisements and may never report that, so `_async_handle_unavailable` might not be called.
+> 不可用状态依赖于蓝牙协议栈检测到设备已停止广播。在 macOS 上，CoreBluetooth 会缓存广播数据，且可能永远不会报告这一情况，因此 `_async_handle_unavailable` 可能不会被调用。

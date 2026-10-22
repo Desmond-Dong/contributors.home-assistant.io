@@ -1,26 +1,26 @@
 ---
-title: Raise exceptions when actions fail
-description: "Silver rule action-exceptions: actions raise ServiceValidationError or HomeAssistantError when they fail."
+title: 操作失败时抛出异常
+description: "Silver 级规则 action-exceptions：操作失败时抛出 ServiceValidationError 或 HomeAssistantError。"
 sidebarLabel: action-exceptions
 sidebarGroup: Silver
 order: 1
 ---
 
-This is a Silver rule. In `quality_scale.yaml`, it is called `action-exceptions`.
+这是一条 Silver 级规则。在 `quality_scale.yaml` 中，它被称为 `action-exceptions`。
 
-When an [action](/glossary/action/) fails, the integration must raise an exception, instead of failing silently or only writing to the log. Raise `ServiceValidationError` when the user did something wrong, like passing invalid input or pointing at something that does not exist. Raise `HomeAssistantError` when the action itself fails, like a network error or an error reported by the device.
+当[操作（action）](/glossary/action/)失败时，集成（integration）必须抛出异常，而不是静默失败或仅写入日志。当用户做错了什么，例如传入无效输入或指向不存在的内容时，应抛出 `ServiceValidationError`。当操作本身失败时，例如网络错误或设备报告的错误，应抛出 `HomeAssistantError`。
 
-This is not only about the actions your integration registers. Entity actions count too: when turning on a `light` or pressing a `button` fails, the entity raises an exception.
+这不仅针对你的集成注册的操作。实体（entity）操作同样适用：当开启 `light` 或按下 `button` 失败时，实体会抛出异常。
 
-## Why it matters
+## 为什么它很重要
 
-An exception is the only way the user learns that something went wrong. Home Assistant shows its message in the UI, and an automation or script that runs the action stops with an error instead of carrying on as if all went well.
+异常是用户得知出了问题的唯一途径。Home Assistant 会在 UI 中显示异常消息，运行该操作的自动化（automation）或脚本会带着错误停止，而不是像一切正常那样继续执行。
 
-The two exception types tell who caused the problem. A `ServiceValidationError` says the user can fix it by changing the input. A `HomeAssistantError` says the action failed on the side of the integration or the device. The UI reports them as different errors, so the user knows where to look.
+这两种异常类型能够说明是谁导致了问题。`ServiceValidationError` 表示用户可以通过修改输入来解决问题。`HomeAssistantError` 表示操作在集成或设备一侧失败。UI 会将它们报告为不同的错误，因此用户知道该从哪里入手排查。
 
-## Example
+## 示例
 
-This action sets a schedule. The end date before the start date is a user error. A connection error is a failure of the action:
+这个操作用于设置日程计划。结束日期早于开始日期是用户错误，而连接错误则是操作本身的失败：
 
 ```python
 from homeassistant.exceptions import (
@@ -51,7 +51,7 @@ async def async_set_schedule(call: ServiceCall) -> None:
         ) from err
 ```
 
-The same goes for an entity action:
+实体操作也是一样：
 
 ```python
 async def async_turn_on(self, **kwargs: Any) -> None:
@@ -65,21 +65,21 @@ async def async_turn_on(self, **kwargs: Any) -> None:
         ) from err
 ```
 
-Plain messages, like `HomeAssistantError("Cannot connect")`, are enough for this rule. Translated messages, as in the examples, are what the Gold rule [exception-translations](/core/quality-scale/exception-translations/) asks for.
+像 `HomeAssistantError("Cannot connect")` 这样简单直白的消息，对于这条规则来说已经足够。而像示例中那样经过翻译的消息，则是 Gold 级规则 [exception-translations](/core/quality-scale/exception-translations/) 的要求。
 
-Do not log the error before you raise it. Home Assistant already reports the exception, so logging it as well reports it twice.
+不要在抛出错误之前先记录日志。Home Assistant 本身已经会报告该异常，如果再记录日志，就会导致它被报告两次。
 
-## How it is checked
+## 如何检查
 
-- Pylint flags action handlers that catch an exception and do not raise again, like an empty `except` block, a block that only logs, or `contextlib.suppress` (`home-assistant-action-swallowed-exception`).
-- Pylint warns when an error is logged at warning level or higher earlier in the same block that raises it (`home-assistant-log-and-raise`).
-- Whether the right exception type is raised is checked in review.
+- Pylint 会标记捕获异常后未重新抛出的操作处理程序，例如空的 `except` 块、仅记录日志的块，或 `contextlib.suppress`（`home-assistant-action-swallowed-exception`）。
+- 当在抛出错误的同一代码块中更早的位置以 warning 或更高日志级别记录了错误时，Pylint 会发出警告（`home-assistant-log-and-raise`）。
+- 是否抛出了正确的异常类型会在代码审查（review）时检查。
 
-## Exceptions
+## 例外情况
 
-If the integration registers no actions of its own and only has read-only platforms, like `sensor` and `binary_sensor`, this rule does not apply.
+如果集成没有注册自己的操作，且只包含只读平台，例如 `sensor` 和 `binary_sensor`，则此规则不适用。
 
-## Related rules
+## 相关规则
 
-- [exception-translations](/core/quality-scale/exception-translations/): translate exception messages.
-- [action-setup](/core/quality-scale/action-setup/): register actions in async_setup.
+- [exception-translations](/core/quality-scale/exception-translations/)：翻译异常消息。
+- [action-setup](/core/quality-scale/action-setup/)：在 async_setup 中注册操作。

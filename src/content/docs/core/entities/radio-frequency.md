@@ -1,18 +1,18 @@
 ---
-title: Radio frequency entity
-description: Share RF transmitters between integrations, so one integration owns the radio and another one knows the codes of a device.
+title: 射频实体
+description: 在集成（integration）之间共享射频（RF）发射器，让一个集成拥有无线电，而另一个集成知道设备的编码。
 sidebarLabel: Radio frequency
 sidebarGroup: Remotes and signals
 ---
 
-The radio frequency domain sits between RF hardware and the devices it controls. Plenty of cheap devices listen to simple radio codes on 433 MHz or 868 MHz: garage doors, wireless sockets, string lights, cooker hoods. One integration owns the radio, like an ESPHome board or a Broadlink hub. Another integration knows a device and the codes it listens to. The radio frequency domain lets them work together without knowing about each other.
+射频（radio frequency）域位于射频硬件与其控制的设备之间。许多廉价设备会监听 433 MHz 或 868 MHz 上的简单无线电编码：车库门、无线插座、灯串、抽油烟机。一个集成拥有无线电，例如 ESPHome 板或 Broadlink 网关。另一个集成则了解某个设备及其监听的编码。射频域让它们无需彼此了解即可协同工作。
 
-There are two roles:
+有两种角色：
 
-- **Transmitter integrations** own hardware that sends RF signals. They provide an entity based on `RadioFrequencyTransmitterEntity`.
-- **Consumer integrations** know a device and its codes. They do not create radio frequency entities. They create regular entities, like a [switch](/core/entities/switch/) or a [light](/core/entities/light/), and send through a transmitter the user picked, usually in the config flow.
+- **发射器集成（transmitter integrations）**拥有发送射频信号的硬件。它们提供基于 `RadioFrequencyTransmitterEntity` 的实体（entity）。
+- **消费方集成（consumer integrations）**了解某个设备及其编码。它们不创建射频实体，而是创建常规实体，例如[开关（switch）](/core/entities/switch/)或[灯（light）](/core/entities/light/)，并通过用户选择的发射器发送，通常是在配置流程（config flow）中选择。
 
-How the roles connect through the radio frequency domain:
+各角色如何通过射频域进行连接：
 
 ```mermaid
 flowchart TB
@@ -30,59 +30,59 @@ flowchart TB
     Hardware -->|"implement"| Base
 ```
 
-Everything lives in `homeassistant.components.radio_frequency`. The commands come from the [`rf-protocols`](https://github.com/home-assistant-libs/rf-protocols) library, and the domain re-exports its `RadioFrequencyCommand` and `ModulationType`. Unlike the [infrared entity](/core/entities/infrared/), there is no receiver role: radio frequency entities only transmit.
+所有内容都位于 `homeassistant.components.radio_frequency` 中。命令来自 [`rf-protocols`](https://github.com/home-assistant-libs/rf-protocols) 库，该域重新导出了其中的 `RadioFrequencyCommand` 和 `ModulationType`。与[红外实体（infrared entity）](/core/entities/infrared/)不同，这里没有接收方角色：射频实体只负责发送。
 
-## Properties
+## 属性
 
-These properties are specific to radio frequency entities. The generic properties every entity has are on [the entity class](/core/entities/entity-class/).
+这些属性是射频实体特有的。每个实体都具有的通用属性请参见[实体类（entity class）](/core/entities/entity-class/)。
 
-| Name | Type | Default | Description |
+| 名称 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `supported_frequency_ranges` | `list[tuple[int, int]]` | Required | The frequency ranges the hardware can transmit on, as `(min_hz, max_hz)` tuples. It is an abstract property: implement it as a property, not as an `_attr_` attribute. |
+| `supported_frequency_ranges` | `list[tuple[int, int]]` | 必需 | 硬件可以发送的频率范围，以 `(min_hz, max_hz)` 元组表示。它是一个抽象的 property：请将其实现为 property，而不要实现为 `_attr_` 属性。 |
 
-The base class sets `should_poll` to `False` and manages the state. It extends `RestoreEntity`, so the time of the last command survives a restart.
+基类将 `should_poll` 设置为 `False` 并管理状态。它扩展了 `RestoreEntity`，因此最后一次命令的时间能够在重启后保留。
 
-## Supported features
+## 支持的功能
 
-Radio frequency entities have no supported features. What a transmitter can do is described by its frequency ranges and its modulation. Right now, the only modulation is `ModulationType.OOK` (on-off keying), and every transmitter is assumed to support it.
+射频实体没有支持的功能。发射器能够做什么由其频率范围和调制方式描述。目前，唯一的调制方式是 `ModulationType.OOK`（通断键控，on-off keying），并且假定每个发射器都支持它。
 
-## Transmitter
+## 发射器
 
-A transmitter implements two things: the frequency ranges, and sending a command.
+发射器需要实现两件事：频率范围，以及发送命令。
 
-`async_send_command` receives a `RadioFrequencyCommand`. Read what you need from it: `frequency` in Hz, `modulation`, `repeat_count`, the optional `symbol_rate` and `output_power`, and `get_raw_timings()`, which returns the signal as alternating pulses (positive) and spaces (negative) in microseconds. Raise `HomeAssistantError` when sending fails.
+`async_send_command` 接收一个 `RadioFrequencyCommand`。从中读取你需要的内容：以赫兹为单位的 `frequency`、`modulation`、`repeat_count`、可选的 `symbol_rate` 和 `output_power`，以及 `get_raw_timings()`，它以微秒为单位将信号返回为交替的脉冲（正值）和间隔（负值）。发送失败时抛出 `HomeAssistantError`。
 
-Do not call `async_send_command` on the entity from other code. Consumers go through the `async_send_command` helper, which checks the frequency and modulation, passes the context, and updates the state after a successful send.
+不要从其他代码中调用实体上的 `async_send_command`。消费方应通过 `async_send_command` 辅助函数，它会检查频率和调制方式、传递上下文，并在成功发送后更新状态。
 
-## Consumer helpers
+## 消费方辅助函数
 
-Consumers never hold a reference to the transmitter entity. They work with an entity ID (or its registry ID) and these helpers:
+消费方从不持有对发射器实体的引用。它们使用实体 ID（或其注册表 ID）以及这些辅助函数：
 
-| Helper | Description |
+| 辅助函数 | 描述 |
 | --- | --- |
-| `async_get_transmitters(hass, frequency, modulation)` | The entity IDs of all transmitters that support the frequency and modulation. An empty list means none of them fit. Raises `HomeAssistantError` when the domain is not loaded or there are no transmitters at all. |
-| `async_send_command(hass, entity_id_or_uuid, command, context=None)` | Sends a command through a transmitter. Raises `HomeAssistantError` when the domain is not loaded, the transmitter does not exist, or it does not support the frequency or modulation of the command. |
+| `async_get_transmitters(hass, frequency, modulation)` | 支持该频率和调制方式的所有发射器的实体 ID。空列表表示没有发射器符合条件。当该域未加载或完全没有任何发射器时，抛出 `HomeAssistantError`。 |
+| `async_send_command(hass, entity_id_or_uuid, command, context=None)` | 通过发射器发送命令。当该域未加载、发射器不存在，或发射器不支持该命令的频率或调制方式时，抛出 `HomeAssistantError`。 |
 
-The `RadioFrequencyTransmitterConsumerEntity` base class does the bookkeeping for you. Set `_rf_transmitter_entity_id` to the entity ID of the transmitter and call `await self._send_command(command)`. The base class keeps your entity available only while the transmitter is available, and passes on the context of the action. Mix it in before the entity class of your platform.
+`RadioFrequencyTransmitterConsumerEntity` 基类会为你完成相关的簿记工作。将 `_rf_transmitter_entity_id` 设置为发射器的实体 ID，然后调用 `await self._send_command(command)`。基类会让你的实体仅在发射器可用时才保持可用，并传递该操作的上下文。将其作为混入（mixin）放在你的平台实体类之前。
 
-For config flows and the frontend, there is also a `radio_frequency/list` WebSocket command (admin only). It lists every transmitter with its device, config entry, frequency ranges, and supported modulations.
+对于配置流程和前端，还有一个 `radio_frequency/list` WebSocket 命令（仅限管理员）。它列出每个发射器及其设备、配置条目（config entry）、频率范围和支持的调制方式。
 
-## Methods
+## 方法
 
-| Method | Description |
+| 方法 | 描述 |
 | --- | --- |
-| `async_send_command(command)` | Required. Send the command over the air. There is no sync variant. |
-| `supported_frequency_ranges` | Required property. Return the `(min_hz, max_hz)` ranges. |
+| `async_send_command(command)` | 必需。以无线方式发送该命令。没有同步版本。 |
+| `supported_frequency_ranges` | 必需的 property。返回 `(min_hz, max_hz)` 范围。 |
 
-`supports_frequency` and `supports_modulation` are final: the base class implements them from the frequency ranges and the modulation.
+`supports_frequency` 和 `supports_modulation` 是 final 的：基类根据频率范围和调制方式来实现它们。
 
-## States
+## 状态
 
-The state is the time the last command was sent, as an ISO 8601 timestamp with milliseconds, like `2026-10-10T08:15:00.123+00:00`, or `unknown` before the first one. It is final: the base class manages it.
+状态为最后一次发送命令的时间，是一个带毫秒的 ISO 8601 时间戳，例如 `2026-10-10T08:15:00.123+00:00`，在发送第一条命令之前则为 `unknown`。它是 final 的：由基类进行管理。
 
-## Example
+## 示例
 
-A transmitter for a 433 MHz radio on a network hub.
+网络集线器上一个 433 MHz 无线电的发射器。
 
 ```python
 from homeassistant.components.radio_frequency import (
@@ -122,7 +122,7 @@ class MyRfTransmitter(RadioFrequencyTransmitterEntity):
             raise HomeAssistantError(f"Sending failed: {err}") from err
 ```
 
-On the consumer side, a switch for a wireless socket is a few lines on top of `RadioFrequencyTransmitterConsumerEntity`:
+在消费方一侧，无线插座的开关只需在 `RadioFrequencyTransmitterConsumerEntity` 之上再写几行代码：
 
 ```python
 from typing import Any

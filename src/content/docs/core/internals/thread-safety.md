@@ -1,22 +1,22 @@
 ---
-title: Thread safety
-description: Which API to call when your code runs outside the event loop, and how to fix the thread safety errors Home Assistant reports.
+title: 线程安全
+description: 当代码在事件循环（event loop）之外运行时应调用哪个 API，以及如何修复 Home Assistant 报告的线程安全错误。
 sidebarGroup: Async
 order: 11
 ---
 
-Nearly everything in asyncio is not thread safe, and neither are the core objects of Home Assistant. Calling an `async_` method from another thread can corrupt the internal state of the event loop. The result is not a clean error, but random misbehavior and restarts that are very hard to trace back.
+asyncio 中的几乎所有内容都不是线程安全的，Home Assistant 的核心对象也是如此。从另一个线程调用 `async_` 方法可能会破坏事件循环的内部状态。其结果并不是一个清晰的错误，而是难以追溯的随机异常行为和重启。
 
-So Home Assistant checks. Many `async_` APIs verify they are called from the event loop thread. If not, Home Assistant reports the call with a stack trace, and blocks it to keep the system stable. If you got here from such a report: the stack trace points at the code that made the call.
+因此 Home Assistant 会进行检查。许多 `async_` API 会验证自己是否是从事件循环线程中调用的。如果不是，Home Assistant 会通过堆栈跟踪报告这次调用，并将其阻止以保持系统稳定。如果您是通过这样的报告来到这里的：堆栈跟踪指向的就是发起调用的代码。
 
-## The rule
+## 规则
 
-- In the event loop, in a coroutine or a `@callback`: call the `async_` version.
-- In another thread, like an executor job or a callback from a sync library: call the version without `async_`, or schedule the work on the event loop.
+- 在事件循环中，位于协程（coroutine）或 `@callback` 函数中：调用 `async_` 版本。
+- 在另一个线程中，例如执行器（executor）任务或来自同步库的回调：调用不带 `async_` 的版本，或者将工作调度到事件循环上执行。
 
-## The usual cause: a missing @callback
+## 常见原因：缺少 @callback
 
-Helpers that take a function decide how to run it by looking at it. A coroutine function or a function decorated with `@callback` runs in the event loop. Anything else is assumed to be blocking and runs in the executor.
+接受函数作为参数的辅助函数（helper）会通过检查该函数来决定如何运行它。协程函数或用 `@callback` 装饰的函数会在事件循环中运行。其他任何函数都被视为阻塞函数，并在执行器中运行。
 
 ```python
 from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
@@ -48,11 +48,11 @@ def _async_light_changed(
     self.async_write_ha_state()
 ```
 
-Without `@callback`, `_async_light_changed` runs in a thread, and `async_write_ha_state` is called from the wrong thread. The fix is one line.
+如果没有 `@callback`，`_async_light_changed` 就会在一个线程中运行，而 `async_write_ha_state` 就会从错误的线程中被调用。修复只需一行代码。
 
-## From a thread: what to call instead
+## 从线程中：应改用什么来调用
 
-| In the event loop | From another thread |
+| 在事件循环中 | 从另一个线程 |
 | --- | --- |
 | `hass.async_create_task` | `hass.create_task` |
 | `hass.bus.async_fire` | `hass.bus.fire` |
@@ -64,14 +64,14 @@ Without `@callback`, `_async_light_changed` runs in a thread, and `async_write_h
 | `issue_registry.async_create_issue` | `issue_registry.create_issue` |
 | `issue_registry.async_delete_issue` | `issue_registry.delete_issue` |
 
-Some APIs have no thread safe version at all:
+有些 API 完全没有线程安全的版本：
 
-- The area, category, device, entity, floor, and label registries, including `async_get_or_create`, `async_update_entity`, `async_update_device`, and `async_remove`.
-- `hass.config_entries.async_update_entry` and `hass.config_entries.async_update_subentry`.
-- Rendering templates, like `async_render_to_info`.
-- Ignoring an issue with `issue_registry.async_ignore_issue`.
+- 区域（area）、类别、设备（device）、实体（entity）、楼层和标签注册表，包括 `async_get_or_create`、`async_update_entity`、`async_update_device` 和 `async_remove`。
+- `hass.config_entries.async_update_entry` 和 `hass.config_entries.async_update_subentry`。
+- 渲染模板，例如 `async_render_to_info`。
+- 通过 `issue_registry.async_ignore_issue` 忽略问题。
 
-For those, schedule a function on the event loop that makes the call. `hass.add_job` does that from any thread:
+对于这些情况，可以将进行调用的函数调度到事件循环上执行。`hass.add_job` 可以从任何线程做到这一点：
 
 ```python
 from homeassistant.core import callback
@@ -87,8 +87,8 @@ def _async_update_title(entry: ConfigEntry, title: str) -> None:
 hass.add_job(_async_update_title, entry, "New title")
 ```
 
-Better still: ask yourself why the code runs in a thread. Often it is a sync library that could be wrapped once, at the edge, so the rest of your integration lives in the event loop.
+更好的做法是：问问自己为什么代码要在某个线程中运行。通常这是因为有一个同步库，它可以在边界处封装一次，这样集成的其余部分就能留在事件循环中。
 
-## Find errors early
+## 尽早发现错误
 
-Turn on debug mode while you develop, with `debug: true` under `homeassistant:` in `configuration.yaml`. Home Assistant then checks more calls, and reports them right away. See [async in Home Assistant](/core/internals/asyncio/#find-mistakes-early).
+在开发时开启调试模式，即在 `configuration.yaml` 的 `homeassistant:` 下设置 `debug: true`。之后 Home Assistant 会检查更多的调用，并立即报告它们。参见[Home Assistant 中的 async](/core/internals/asyncio/#find-mistakes-early)。

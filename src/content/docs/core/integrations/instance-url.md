@@ -1,16 +1,16 @@
 ---
-title: Get the instance URL
-description: Find a URL that a device, a service, or the browser of the user can reach Home Assistant on.
+title: 获取实例 URL
+description: 查找设备、服务或用户浏览器可用来访问 Home Assistant 的 URL。
 sidebarLabel: Instance URL
 sidebarGroup: Data and updates
 order: 3
 ---
 
-Sometimes your integration has to tell something else how to reach Home Assistant. A device sends data back, a cloud service calls a webhook, or a media player fetches a generated image or sound file. For that, you need a URL to this Home Assistant instance.
+有时，您的集成（integration）需要告诉其他事物如何访问 Home Assistant。设备会回传数据，云服务会调用 webhook，或者媒体播放器会获取生成的图像或声音文件。为此，您需要一个指向此 Home Assistant 实例的 URL。
 
-That is harder than it sounds. A user can have several URLs: one set for the home network, one Home Assistant detects by itself, one set for access from the internet, and one from Home Assistant Link. They can use non-standard ports, with or without SSL. The `get_url` helper picks the right one for you.
+这比听起来要难。用户可能拥有多个 URL：一个是为家庭网络设置的，一个是 Home Assistant 自动检测的，一个是为从互联网访问而设置的，还有一个来自 Home Assistant Link。它们可以使用非标准端口，可以带或不带 SSL。`get_url` 辅助元素（helper）会为您挑选合适的那个。
 
-## The get_url helper
+## get_url 辅助元素
 
 ```python
 from homeassistant.helpers.network import NoURLAvailableError, get_url
@@ -24,35 +24,35 @@ except NoURLAvailableError as err:
     ) from err
 ```
 
-If no URL matches your requirements, it raises `NoURLAvailableError`. Catch it, and tell the user what to set up.
+如果没有符合您要求的 URL，它会抛出 `NoURLAvailableError`。请捕获该异常，并告知用户需要进行哪些设置。
 
-| Parameter | Default | What it does |
+| 参数 | 默认值 | 作用 |
 | --- | --- | --- |
-| `require_current_request` | `False` | The URL must match the one the user has open in their browser. Raises if there is no current request. |
-| `require_ssl` | `False` | The URL must use `https` |
-| `require_standard_port` | `False` | The URL must use port 80 for `http`, or 443 for `https` |
-| `require_cloud` | `False` | The URL must be a Home Assistant Link URL |
-| `allow_internal` | `True` | Allow the internal URL set by the user, or one detected on the network. Set to `False` if you need an external URL. |
-| `allow_external` | `True` | Allow the external URL set by the user, or a Home Assistant Link URL. Set to `False` if you need an internal URL. |
-| `allow_cloud` | `True` | Allow a Home Assistant Link URL |
-| `allow_ip` | Depends | Allow an IP address as host. By default allowed, unless Home Assistant itself is served over SSL. |
-| `prefer_external` | Depends | Try external URLs before internal ones. By default only when Home Assistant itself is served over SSL. |
-| `prefer_cloud` | `False` | Prefer the Home Assistant Link URL over the external URL set by the user |
+| `require_current_request` | `False` | URL 必须与用户当前在浏览器中打开的 URL 一致。如果没有当前请求，则会抛出异常。 |
+| `require_ssl` | `False` | URL 必须使用 `https` |
+| `require_standard_port` | `False` | URL 必须对 `http` 使用端口 80，或对 `https` 使用端口 443 |
+| `require_cloud` | `False` | URL 必须是 Home Assistant Link URL |
+| `allow_internal` | `True` | 允许使用用户设置的内部 URL，或网络中检测到的 URL。如果您需要外部 URL，请将其设置为 `False`。 |
+| `allow_external` | `True` | 允许使用用户设置的外部 URL，或 Home Assistant Link URL。如果您需要内部 URL，请将其设置为 `False`。 |
+| `allow_cloud` | `True` | 允许使用 Home Assistant Link URL |
+| `allow_ip` | 视情况而定 | 允许使用 IP 地址作为主机。默认情况下允许，除非 Home Assistant 本身通过 SSL 提供服务。 |
+| `prefer_external` | 视情况而定 | 优先尝试外部 URL，然后再尝试内部 URL。默认情况下，仅当 Home Assistant 本身通过 SSL 提供服务时才如此。 |
+| `prefer_cloud` | `False` | 优先使用 Home Assistant Link URL，而非用户设置的外部 URL |
 
-## What it returns by default
+## 默认情况下返回的内容
 
-Without parameters, `get_url(hass)` allows any URL, and prefers a local one:
+在不带参数的情况下，`get_url(hass)` 允许任何 URL，并优先选择本地 URL：
 
-1. The internal URL set by the user. If there is none, one detected from the network settings.
-2. If there is no internal URL, the external URL set by the user.
-3. If there is none, the Home Assistant Link URL, if the user has a subscription.
+1. 用户设置的内部 URL。如果没有，则使用从网络设置中检测到的 URL。
+2. 如果没有内部 URL，则为用户设置的外部 URL。
+3. 如果两者都没有，则为 Home Assistant Link URL（前提是用户拥有订阅）。
 
-When Home Assistant itself is served over SSL, it tries external URLs first, and does not allow IP addresses.
+当 Home Assistant 本身通过 SSL 提供服务时，它会首先尝试外部 URL，并且不允许使用 IP 地址。
 
-## Pick your requirements
+## 选择您的要求
 
-Ask for what your use case really needs, and nothing more. Every requirement makes it more likely that no URL is available.
+只要求您的使用场景真正需要的内容，不要提出更多要求。每增加一项要求，没有可用 URL 的可能性就越大。
 
-- A device on the local network calls back: the default is fine, or `allow_external=False` if the device cannot reach the internet.
-- A cloud service calls a webhook: `allow_internal=False`. Add `require_ssl=True` if the service only accepts `https`.
-- A device that only accepts `https` on port 443 and checks certificates: `allow_internal=False`, `allow_ip=False`, `require_ssl=True`, and `require_standard_port=True`.
+- 局域网中的设备进行回调：使用默认设置即可；如果设备无法访问互联网，则使用 `allow_external=False`。
+- 云服务调用 webhook：使用 `allow_internal=False`。如果该服务仅接受 `https`，请添加 `require_ssl=True`。
+- 仅在端口 443 上接受 `https` 并会检查证书的设备：使用 `allow_internal=False`、`allow_ip=False`、`require_ssl=True` 和 `require_standard_port=True`。

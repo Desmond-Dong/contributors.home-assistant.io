@@ -1,24 +1,24 @@
 ---
-title: Update network information from discovery
-description: "Gold rule discovery-update-info: discovery updates the address of a known device when it changes."
+title: 通过发现更新网络信息
+description: "Gold 级规则 discovery-update-info：发现（discovery）会在地址变化时更新已知设备的地址。"
 sidebarLabel: discovery-update-info
 sidebarGroup: Gold
 order: 4
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `discovery-update-info`.
+这是一项 Gold 级规则。在 `quality_scale.yaml` 中，它被称为 `discovery-update-info`。
 
-When a device that is already set up is discovered again, the integration uses the discovery information to update the network information of its config entry, like the host or IP address. It only does so when it is sure that it is the same device, so it matches on a stable unique ID, never on the address itself.
+当一个已经完成设置的设备再次被发现时，集成会使用发现（discovery）信息来更新其配置条目（config entry）的网络信息，例如主机名或 IP 地址。只有在确定是同一台设备时它才会这样做，因此它依据的是稳定的唯一 ID，绝不会依据地址本身。
 
-## Why it matters
+## 为什么重要
 
-Most home networks hand out IP addresses dynamically. A device that restarts, or a router that reboots, can give a device a new address, and an integration that only knows the old one stops working. Asking users to set static IP addresses is not a fix: not everyone can, and nobody should have to.
+大多数家庭网络会动态分配 IP 地址。设备重启或路由器重启都可能使设备获得新的地址，而只知道旧地址的集成就会停止工作。要求用户设置静态 IP 地址并不是解决办法：并非人人都会设置，而且也不应该有人必须如此。
 
-Discovery already sees the device at its new address. Using that information makes the integration repair itself.
+发现机制已经能在新地址上看到该设备。利用这些信息可以让集成自行修复。
 
-## Example
+## 示例
 
-In the discovery step, set the unique ID of the flow, and pass the new address to `_abort_if_unique_id_configured`. If an entry with that unique ID exists, Home Assistant updates its data, reloads it when something changed, and aborts the flow:
+在发现步骤中，设置流程的唯一 ID，并将新地址传递给 `_abort_if_unique_id_configured`。如果存在具有该唯一 ID 的条目，Home Assistant 会更新其数据，在内容发生变化时重新加载它，并中止该流程：
 
 ```python
 async def async_step_zeroconf(
@@ -36,7 +36,7 @@ async def async_step_zeroconf(
     return await self.async_step_discovery_confirm()
 ```
 
-DHCP discovery only starts flows for the matchers in `manifest.json`. To also get a flow when a device you already know shows up with a new address, set `registered_devices` to `true` in the DHCP matcher, and register the MAC address of the device in its device information with `connections={(CONNECTION_NETWORK_MAC, mac)}`.
+DHCP 发现只会为 `manifest.json` 中的匹配器（matcher）启动流程。要让已知设备以新地址出现时也能启动流程，请在 DHCP 匹配器中将 `registered_devices` 设置为 `true`，并在设备的设备信息中通过 `connections={(CONNECTION_NETWORK_MAC, mac)}` 注册该设备的 MAC 地址。
 
 ```json
 {
@@ -44,11 +44,10 @@ DHCP discovery only starts flows for the matchers in `manifest.json`. To also ge
 }
 ```
 
-## How it is checked
+## 如何检查
 
-Checked in review. The tests of the config flow should cover a discovery of a known device at a new address.
+在代码审查中检查。配置流程（config flow）的测试应涵盖在新的地址上发现已知设备的情况。
 
-## Exceptions
+## 例外情况
 
-If the devices of the integration cannot be discovered, this rule does not apply.
-
+如果集成的设备无法被发现，则此规则不适用。

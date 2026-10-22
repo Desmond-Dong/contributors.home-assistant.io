@@ -1,25 +1,25 @@
 ---
-title: Assign entity categories
-description: "Gold rule entity-category: configuration and diagnostic entities have an entity category."
+title: 分配实体类别
+description: "金牌（Gold）规则 entity-category：配置类和诊断类实体会拥有实体类别。"
 sidebarLabel: entity-category
 sidebarGroup: Gold
 order: 13
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `entity-category`.
+这是一条金牌（Gold）规则。在 `quality_scale.yaml` 中，它被称为 `entity-category`。
 
-Entities that are not the main purpose of a device get an [entity category](/glossary/entity-category/). There are two:
+不属于设备主要用途的实体（entity）会获得[实体类别（entity category）](/glossary/entity-category/)。共有两种：
 
-- `EntityCategory.CONFIG`: an entity that changes the configuration of a device, like a switch that turns off the status LED.
-- `EntityCategory.DIAGNOSTIC`: an entity that shows information about the device itself, like its signal strength, uptime, or firmware version.
+- `EntityCategory.CONFIG`：更改设备配置的实体，例如用于关闭状态指示灯的开关。
+- `EntityCategory.DIAGNOSTIC`：显示设备本身信息的实体，例如信号强度、运行时间或固件版本。
 
-Entities that are the reason someone has the device, like the temperature of a thermostat, keep the default: no category.
+而作为用户拥有设备之原因的实体（例如温控器的温度）则保持默认设置：无类别。
 
-## Why it matters
+## 为什么重要
 
-Home Assistant uses the category to decide where an entity shows up. Auto-generated dashboards leave configuration and diagnostic entities out, and the device page shows them in their own sections. Without categories, the signal strength of a sensor ends up next to the temperature on the dashboard of every user.
+Home Assistant 使用类别来决定实体显示在哪里。自动生成的仪表盘（dashboard）不会包含配置类和诊断类实体，并且设备页面会将它们显示在各自的独立区域中。如果没有类别，传感器的信号强度就会出现在每个用户仪表盘上温度的旁边。
 
-## Example
+## 示例
 
 ```python
 class MySignalStrengthSensor(SensorEntity):
@@ -29,12 +29,12 @@ class MySignalStrengthSensor(SensorEntity):
     _attr_device_class = SensorDeviceClass.SIGNAL_STRENGTH
 ```
 
-With entity descriptions, set `entity_category` on the description instead.
+如果使用实体描述（entity descriptions），请改为在描述上设置 `entity_category`。
 
-## How it is checked
+## 如何检查
 
-Checked in review.
+在审查（review）中检查。
 
-## Exceptions
+## 例外情况
 
-If the integration has no entities, or all its entities are primary entities for which no category is right, this rule does not apply.
+如果集成（integration）没有实体，或者其所有实体都是不适合设置类别的主要实体，则此规则不适用。

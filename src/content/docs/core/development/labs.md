@@ -1,42 +1,42 @@
 ---
-title: Labs preview features
-description: Ship a finished feature that people can opt into through Home Assistant Labs, collect feedback, and graduate it to standard.
+title: Labs 预览功能
+description: 发布一个已完成的功能，让用户可以通过 Home Assistant Labs 选择启用，收集反馈，并将其转正为标准功能。
 sidebarLabel: Labs
 sidebarGroup: Changing behavior
 order: 3
 ---
 
-Home Assistant Labs lets people opt into a preview feature before it becomes standard. Users find it under **Settings** > **System** > **Labs**, where they can turn each feature on and off.
+Home Assistant Labs 让用户可以在某个预览功能成为标准功能之前选择启用它。用户可以在 **设置** > **系统** > **Labs** 下找到它，并可以在那里开启或关闭每个功能。
 
-A Labs feature is finished and tested. What is still open is its design: how it looks, how it works, and what it should do, shaped by feedback from people using it at home. That makes Labs different from a beta, which tests the stability of a whole release.
+Labs 功能是已完成并经过测试的。尚未确定的只是它的设计：它的外观、工作方式以及它应该做什么，这些都将根据用户在家中实际使用后的反馈来塑造。这使得 Labs 不同于 beta 测试，后者测试的是整个版本的稳定性。
 
-Preview features are:
+预览功能具有以下特点：
 
-- **Off by default**: users turn them on themselves.
-- **Production ready**: fully tested, not an experiment or half done.
-- **Subject to change**: they can change, grow, or be removed based on feedback.
-- **Reversible**: users can turn them off again at any time, without a restart.
+- **默认关闭**：由用户自行开启。
+- **生产可用**：经过充分测试，不是实验性或半成品。
+- **可能变更**：它们可以根据反馈进行更改、扩展或移除。
+- **可逆**：用户可以随时再次关闭它们，无需重启。
 
-## When to use Labs
+## 何时使用 Labs
 
-Labs fits:
+Labs 适用于：
 
-- Big changes or redesigns of the interface
-- Significant changes in architecture
-- Features where feedback from users will shape the final design
+- 界面的重大变更或重新设计
+- 架构上的重大变更
+- 用户反馈将影响最终设计的功能
 
-Labs does not fit:
+Labs 不适用于：
 
-- Settings that should simply be part of the integration. Use the options of the integration for those.
-- Small changes that can go straight into a release
-- Features that cannot be turned on and off while Home Assistant runs
-- Features with known critical bugs, or that are not finished. Those stay in development.
+- 本应作为集成（integration）一部分的设置。这类设置请使用集成的选项。
+- 可以直接进入版本发布的小改动
+- 无法在 Home Assistant 运行期间开启和关闭的功能
+- 存在已知严重缺陷、或尚未完成的功能。这些应留在开发阶段。
 
-## Add a preview feature
+## 添加预览功能
 
-### 1. Declare it in the manifest
+### 1. 在 manifest 中声明
 
-Add the feature to `preview_features` in the `manifest.json` of your integration:
+将该功能添加到集成的 `manifest.json` 中的 `preview_features`：
 
 ```json
 {
@@ -52,21 +52,21 @@ Add the feature to `preview_features` in the `manifest.json` of your integration
 }
 ```
 
-- `feedback_url`: where people give feedback, like a forum topic or a GitHub discussion.
-- `learn_more_url`: the documentation of the feature.
-- `report_issue_url`: where people report bugs.
+- `feedback_url`：用户提交反馈的地方，例如论坛主题或 GitHub 讨论。
+- `learn_more_url`：该功能的文档。
+- `report_issue_url`：用户报告缺陷的地方。
 
-All three are optional, but add them: without them, the feedback you want has nowhere to go.
+这三项都是可选的，但请务必添加：没有它们，你想要的反馈就无处可去。
 
-Then run hassfest, which adds the feature to `homeassistant/generated/labs.py`:
+然后运行 hassfest，它会将该功能添加到 `homeassistant/generated/labs.py`：
 
 ```shell
 python3 -m script.hassfest
 ```
 
-### 2. Add the text
+### 2. 添加文本
 
-Name and describe the feature in `strings.json`:
+在 `strings.json` 中为该功能命名并描述：
 
 ```json
 {
@@ -79,13 +79,13 @@ Name and describe the feature in `strings.json`:
 }
 ```
 
-Say what the feature does, and mention if it may grow based on feedback. You can use Markdown.
+请说明该功能的作用，并提及它可能会根据反馈而扩展。你可以使用 Markdown。
 
-If turning the feature on or off has consequences people should know about, like a migration that stays when they turn it off again, explain that in the description. You can also add `enable_confirmation` and `disable_confirmation`, which replace the standard confirmation messages. Use them to remind people of the consequences at the moment they act. They do not replace the description.
+如果开启或关闭该功能会产生用户应当知晓的后果，例如关闭后仍然保留的迁移，请在描述中说明。你还可以添加 `enable_confirmation` 和 `disable_confirmation`，它们会替换标准的确认消息。在用户执行操作的那一刻，用它们来提醒用户相关后果。它们不能替代描述。
 
-### 3. Check the flag
+### 3. 检查标志
 
-In Python, check whether the feature is on:
+在 Python 中，检查该功能是否已开启：
 
 ```python
 from homeassistant.components.labs import async_is_preview_feature_enabled
@@ -103,13 +103,13 @@ async def async_setup_entry(
     return True
 ```
 
-Keep the preview code and the standard code clearly apart, like this. Passing a `preview=True` flag deep into your code makes it hard to remove either one later.
+请像这样将预览代码和标准代码清晰地分开。将 `preview=True` 标志深入传递到你的代码中，会让以后难以移除其中任何一部分。
 
-In the frontend, `fetchLabFeatures` from `src/data/labs.ts` returns the features and whether they are enabled.
+在前端，`src/data/labs.ts` 中的 `fetchLabFeatures` 会返回这些功能及其启用状态。
 
-### 4. React when it is turned on or off
+### 4. 在功能开启或关闭时作出响应
 
-Preview features turn on and off while Home Assistant runs, without a restart. That is a hard requirement. Subscribe to changes with `async_subscribe_preview_feature`, which only calls your listener for your own feature:
+预览功能可以在 Home Assistant 运行期间开启和关闭，无需重启。这是一项硬性要求。使用 `async_subscribe_preview_feature` 订阅变更，它只会为属于你自己的功能调用你的监听器：
 
 ```python
 from homeassistant.components.labs import (
@@ -139,25 +139,25 @@ async def async_setup_entry(
     return True
 ```
 
-Things that work well at runtime: loading and unloading parts of the interface, creating and removing entities, starting and stopping background tasks, and registering event listeners. Things that do not: changing how Home Assistant starts, changing integrations that only load at startup, and anything that needs a change in `configuration.yaml`.
+在运行时效果良好的做法：加载和卸载界面的一部分、创建和移除实体（entity）、启动和停止后台任务，以及注册事件监听器。效果不佳的做法：更改 Home Assistant 的启动方式、更改仅在启动时加载的集成，以及任何需要修改 `configuration.yaml` 的操作。
 
-For more complex cases, you can listen to the `EVENT_LABS_UPDATED` event directly.
+对于更复杂的情况，你可以直接监听 `EVENT_LABS_UPDATED` 事件。
 
-### 5. Prepare for feedback
+### 5. 为反馈做好准备
 
-Before you release the feature, create the place for feedback: a topic on the [community forum](https://community.home-assistant.io/), or a GitHub discussion or issue. Link it in `feedback_url`. Document the feature on the page of your integration on [home-assistant.io](https://www.home-assistant.io/): what it does, what feedback you are looking for, and how to turn it on.
+在发布该功能之前，先创建反馈的场所：[社区论坛](https://community.home-assistant.io/)上的主题，或 GitHub 讨论或 issue。将其链接到 `feedback_url`。在 [home-assistant.io](https://www.home-assistant.io/) 上你的集成页面中记录该功能：它的作用、你希望获得什么反馈，以及如何开启它。
 
-A [My Home Assistant](/glossary/my-link/) link takes people straight to your feature in Labs, and highlights it. That works well in release notes, documentation, and forum posts:
+[My Home Assistant](/glossary/my-link/) 链接可以直接将用户带到 Labs 中你的功能处，并高亮显示它。这在发布说明、文档和论坛帖子中效果很好：
 
 ```text
 https://my.home-assistant.io/redirect/labs/?domain=example&preview_feature=new_dashboard
 ```
 
-The [Kitchen Sink](https://github.com/home-assistant/core/tree/dev/homeassistant/components/kitchen_sink) integration has a complete example, with a preview feature that creates a repair issue.
+[Kitchen Sink](https://github.com/home-assistant/core/tree/dev/homeassistant/components/kitchen_sink) 集成有一个完整的示例，其中包含一个会创建修复问题（repair issue）的预览功能。
 
-## Test both states
+## 测试两种状态
 
-Test your integration with the feature on and off, and test switching it. To start with the feature on, fill the storage of Labs before you set up the integration:
+在功能开启和关闭两种情况下测试你的集成，并测试切换过程。若要在功能开启的状态下开始测试，请在设置集成之前填充 Labs 的存储：
 
 ```python
 async def test_new_dashboard(
@@ -178,7 +178,7 @@ async def test_new_dashboard(
     await hass.config_entries.async_setup(mock_config_entry.entry_id)
 ```
 
-To switch it in a test, send a `labs/update` message with the `hass_ws_client` fixture:
+若要在测试中切换它，请使用 `hass_ws_client` fixture 发送 `labs/update` 消息：
 
 ```python
 client = await hass_ws_client(hass)
@@ -193,25 +193,25 @@ await client.send_json_auto_id(
 assert (await client.receive_json())["success"]
 ```
 
-## While it is in preview
+## 处于预览阶段时
 
-- Watch the feedback, and act on it. Fix bugs quickly.
-- Changes that break things are allowed in a preview, but avoid them when you can. If you must, migrate the data and settings of users automatically. People rely on this in their homes, preview or not.
-- Keep the description accurate as the feature changes.
-- Do not leave a feature in Labs forever. Plan from the start how it graduates, or how it goes away.
+- 关注反馈并据此行动。快速修复缺陷。
+- 在预览阶段允许进行破坏性变更，但应尽量避免。如果必须进行，请自动迁移用户的数据和设置。无论是否处于预览阶段，人们都在家中依赖它。
+- 随着功能的变更，保持描述的准确性。
+- 不要让功能永远留在 Labs 中。从一开始就规划它如何转正，或者如何移除。
 
-## Graduate or remove
+## 转正或移除
 
-When the feature is ready to become standard:
+当功能准备好成为标准功能时：
 
-1. Remove it from `preview_features` in `manifest.json`.
-2. Remove the checks of the flag, so the feature is always on.
-3. Run `python3 -m script.hassfest`.
-4. Update the documentation, and announce it in the release notes.
+1. 从 `manifest.json` 的 `preview_features` 中移除它。
+2. 移除标志检查，使该功能始终开启。
+3. 运行 `python3 -m script.hassfest`。
+4. 更新文档，并在发布说明中宣布。
 
-When it did not work out:
+当它未能成功时：
 
-1. Remove it from `preview_features` in `manifest.json`.
-2. Remove the code and the text in `strings.json`.
-3. Run `python3 -m script.hassfest`.
-4. Announce the removal in the release notes, and explain why.
+1. 从 `manifest.json` 的 `preview_features` 中移除它。
+2. 移除代码以及 `strings.json` 中的文本。
+3. 运行 `python3 -m script.hassfest`。
+4. 在发布说明中宣布移除，并解释原因。

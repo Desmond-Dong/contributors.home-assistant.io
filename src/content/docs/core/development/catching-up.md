@@ -1,56 +1,56 @@
 ---
-title: Keeping your branch up to date
-description: Bring the latest changes from the dev branch of Home Assistant Core into your branch, and resolve conflicts.
-sidebarLabel: Keeping up to date
+title: 保持分支最新
+description: 将 Home Assistant Core 的 dev 分支的最新更改合并到你的分支，并解决冲突。
+sidebarLabel: 保持最新
 sidebarGroup: Pull requests
 order: 4
 ---
 
-The `dev` branch moves fast. If your work takes a while, or your pull request waits for review, bring in the latest changes now and then. It avoids conflicts, and failures that only show up once your change meets the latest code.
+`dev` 分支更新很快。如果你的工作需要较长时间，或者你的 pull request 正在等待审核，请不时引入最新的更改。这样可以避免冲突，以及只有当你的更改与最新代码相遇时才会出现的问题。
 
-Use `git merge`, not `git rebase`, once your pull request is open. A rebase rewrites the commits reviewers have already seen.
+一旦你的 pull request 已创建，请使用 `git merge`，而不是 `git rebase`。rebase 会重写审核者已经看过的提交。
 
-## Merge the latest dev
+## 合并最新的 dev
 
-Make sure you have the Home Assistant repository as a remote called `upstream`. If you followed the [environment setup](/core/development/environment/), you do. Otherwise, add it:
+确保你已将 Home Assistant 仓库添加为名为 `upstream` 的远程仓库。如果你按照[环境搭建](/core/development/environment/)操作过，就已经有了。否则，请添加它：
 
 ```shell
 git remote add upstream https://github.com/home-assistant/core.git
 ```
 
-Then, from your branch:
+然后，在你的分支上执行：
 
 ```shell
 git fetch upstream dev
 git merge upstream/dev
 ```
 
-## Resolve conflicts
+## 解决冲突
 
-If Git reports conflicts:
+如果 Git 报告了冲突：
 
-1. Run `git status` to see which files conflict.
-2. Edit each file, and resolve the parts between the `<<<<<<<` and `>>>>>>>` markers.
-3. Add the resolved files with `git add`.
-4. Finish the merge with `git commit`. The default message is fine.
+1. 运行 `git status` 查看哪些文件存在冲突。
+2. 编辑每个文件，解决 `<<<<<<<` 和 `>>>>>>>` 标记之间的内容。
+3. 使用 `git add` 添加已解决的文件。
+4. 使用 `git commit` 完成合并。默认的提交信息即可。
 
-Run the tests again: a merge without conflicts can still break your code.
+再次运行测试：没有冲突的合并仍可能破坏你的代码。
 
-## Push
+## 推送
 
 ```shell
 git push
 ```
 
-If Git answers that the upstream branch does not match the name of your branch, your branch still follows `upstream/dev`. Push once with `git push -u origin HEAD`, and a plain `git push` and `git pull` use your fork from then on.
+如果 Git 提示上游分支的名称与你的分支名称不匹配，说明你的分支仍在跟踪 `upstream/dev`。先用 `git push -u origin HEAD` 推送一次，之后普通的 `git push` 和 `git pull` 就会使用你的 fork 了。
 
-If the push is rejected, someone pushed to your branch in the meantime. That can be you from another computer, or a reviewer who applied a suggestion. Pull those changes in, and push again:
+如果推送被拒绝，说明在此期间有人向你的分支推送了内容。可能是你自己在另一台电脑上操作，也可能是审核者应用了某条建议。先拉取这些更改，再推送：
 
 ```shell
 git pull --no-rebase
 git push
 ```
 
-## Make sure the result is clean
+## 确保结果干净
 
-If your pull request suddenly shows commits from other people, the merge went wrong. A pull request with unrelated commits cannot be reviewed. The easiest fix is a fresh branch from the latest `dev`, with only your changes, and a new pull request.
+如果你的 pull request 突然显示了其他人的提交，说明合并出了问题。包含无关提交的 pull request 无法被审核。最简单的解决办法是从最新的 `dev` 创建一个新分支，只包含你的更改，然后创建一个新的 pull request。

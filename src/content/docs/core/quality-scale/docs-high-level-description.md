@@ -1,22 +1,22 @@
 ---
-title: Describe the brand, product, or service
-description: "Bronze rule docs-high-level-description: the documentation describes what the integration connects to."
+title: 描述品牌、产品或服务
+description: "青铜规则 docs-high-level-description：文档描述该集成所连接的对象。"
 sidebarLabel: docs-high-level-description
 sidebarGroup: Bronze
 order: 10
 ---
 
-This is a Bronze rule. In `quality_scale.yaml`, it is called `docs-high-level-description`.
+这是一条青铜（Bronze）规则。在 `quality_scale.yaml` 中，它被称为 `docs-high-level-description`。
 
-The user documentation on [home-assistant.io](https://www.home-assistant.io/) starts with a high-level description of the brand, product, or service the integration connects to. Where possible, it links to the website of the brand, product, or service.
+[home-assistant.io](https://www.home-assistant.io/) 上的用户文档以对该集成（integration）所连接的品牌、产品或服务的高层级描述开头。在可能的情况下，它会链接到该品牌、产品或服务的网站。
 
-## Why it matters
+## 为什么重要
 
-Not everyone who lands on an integration page knows what it is about. A few sentences on what the product or service is help users decide whether the integration fits them, before they spend time on setup. The link gives them a place to learn more.
+并非每一位访问集成页面的用户都知道它是关于什么的。用几句话介绍产品或服务是什么，能帮助用户在花时间进行设置之前，判断该集成是否适合自己。链接则为他们提供了一个可以了解更多信息的地方。
 
-## Example
+## 示例
 
-The description is the introduction of the integration page, right after the front matter, without a heading:
+描述是集成页面的开头介绍部分，紧跟在 front matter 之后，且不设标题：
 
 ```markdown
 The **My integration** {% term integration %} connects Home Assistant
@@ -25,12 +25,12 @@ MyCompany makes energy monitoring devices for the home, and is best
 known for its MyPlug range.
 ```
 
-The introduction also says what you can do with the integration. See the sections of an integration page in [Integration page structure](/writing/reference/integration-page/), and [Document an integration](/writing/guides/integration/) for writing the page.
+介绍部分还应说明你可以使用该集成做什么。请参阅[集成页面结构](/writing/reference/integration-page/)中集成页面的各个章节，以及[为集成编写文档](/writing/guides/integration/)来编写页面。
 
-## How it is checked
+## 如何检查
 
-Checked in review, on the documentation pull request that goes with the integration.
+在审查阶段检查，即在随集成一同提交的文档拉取请求（pull request）中。
 
-## Exceptions
+## 例外情况
 
-Integrations that do not connect to a device or service, like internal integrations, have nothing to describe and are exempt.
+不连接到设备（device）或服务的集成（例如内部集成）没有任何可描述的内容，因此可以豁免。

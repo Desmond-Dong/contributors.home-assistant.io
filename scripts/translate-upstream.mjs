@@ -62,9 +62,31 @@ Strict rules:
 3. Keep Markdown structure identical: same number and order of headings, lists, tables, images, and blank lines. Tables keep their column count.
 4. Use the established Chinese translations of Home Assistant terms: "entity" 实体, "service" 服务, "state" 状态, "automation" 自动化, "device" 设备, "integration" 集成, "helper" 辅助元素, "blueprint" 蓝图, "dashboard" 仪表盘, "area" 区域, "zone" 地理位置区域. On first use of a term that may be ambiguous, add the English in parentheses, e.g. 实体（entity）.
 5. Keep brands, product names, and file names in English: Home Assistant, ESPHome, Zigbee, YAML, Python, etc.
-6. Keep backtick counts identical to the source. Never invent or drop content, never merge or split paragraphs.`;
+6. Keep backtick counts identical to the source. Never invent or drop content, never merge or split paragraphs.
+7. Lines that consist solely of a placeholder token like ZZCODEBLOCK3ZZ stand for whole code blocks. Keep every such line exactly as is, on its own line, in the same position. Never translate, rename, merge, or drop a placeholder line.`;
 
-const RETRY_NOTE = `PREVIOUS ATTEMPT FAILED a structural comparison against the English source. Most likely you changed code blocks, inline code, component code, or Markdown structure. Return the corrected full translation with an EXACTLY preserved structure.`;
+// Replace fenced code blocks with single-line placeholders so the model can
+// neither alter nor drop them. Restored verbatim after translation.
+const CODE_PLACEHOLDER = (n) => `ZZCODEBLOCK${n}ZZ`;
+
+function extractCodeBlocks(text) {
+  const blocks = [];
+  const source = text.replace(
+    /^([`~]{3,})[^\n]*\n([\s\S]*?)^\1[^\n]*$/gm,
+    (fence) => {
+      blocks.push(fence);
+      return CODE_PLACEHOLDER(blocks.length - 1);
+    },
+  );
+  return { source, blocks };
+}
+
+function restoreCodeBlocks(text, blocks) {
+  return text.replace(/^ZZCODEBLOCK(\d+)ZZ$/gm, (_, n) => {
+    const block = blocks[Number(n)];
+    return block ?? "";
+  });
+}
 
 function countOf(text, re) {
   return (text.match(re) || []).length;
@@ -185,30 +207,34 @@ async function translateFile(path) {
     return { path, status: "missing (deleted upstream?)" };
   }
 
-  // The current content on the Chinese branch is the previous translation;
-  // including it keeps terminology consistent across updates.
-  let previous = null;
-  try {
-    previous = await readFile(path, "utf8");
-  } catch {}
-
   const fingerprint = structuralFingerprint(original);
-  const isEnglish = structuralFingerprint(original).join() === structuralFingerprint(previous ?? "").join() && previous === original;
 
+  // Code blocks never reach the model: they leave as placeholders and are
+  // restored verbatim, so they can neither drift nor vanish.
+  const { source: protectedSource, blocks } = extractCodeBlocks(original);
   const parts = [
     `Translate this documentation page (${path}) into Simplified Chinese.`,
-    !isEnglish && previous
-      ? `A previous Simplified Chinese translation of an older version follows after SOURCE. Stay consistent with the terminology already used there: carry over translations of unchanged sentences, and translate the new or changed parts. In case of doubt, translate fresh rather than guessing. --- PREVIOUS TRANSLATION --- ${previous} --- END PREVIOUS TRANSLATION ---`
-      : "",
     "--- SOURCE ---",
-    original,
-  ].filter(Boolean);
+    protectedSource,
+  ];
 
-  let translated = await translateOnce(path, parts.join("\n"));
+  const attemptTranslate = async (extra) =>
+    restoreCodeBlocks(
+      await translateOnce(path, `${parts.join("\n")}${extra ? `\n--- ${extra}` : ""}`),
+      blocks,
+    );
+
+  let translated = await attemptTranslate();
 
   if (!fingerprintsMatch(structuralFingerprint(translated), fingerprint)) {
-    translated = await translateOnce(path, `${parts.join("\n")}\n--- ${RETRY_NOTE}`);
+    console.error(
+      `  fingerprint ${path}\n    source:      ${JSON.stringify(fingerprint)}\n    1st attempt: ${JSON.stringify(structuralFingerprint(translated))}`,
+    );
+    translated = await attemptTranslate(RETRY_NOTE);
     if (!fingerprintsMatch(structuralFingerprint(translated), fingerprint)) {
+      console.error(
+        `    2nd attempt: ${JSON.stringify(structuralFingerprint(translated))}`,
+      );
       // Keep the English source: a partially wrong translation is worse than none.
       return { path, status: "skipped, structure mismatch" };
     }

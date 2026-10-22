@@ -1,22 +1,22 @@
 ---
-title: Document use cases
-description: "Gold rule docs-use-cases: the documentation shows what you can do with the integration."
+title: 记录用例
+description: "金牌规则 docs-use-cases：文档展示了你可以用集成（integration）做什么。"
 sidebarLabel: docs-use-cases
 sidebarGroup: Gold
 order: 11
 ---
 
-This is a Gold rule. In `quality_scale.yaml`, it is called `docs-use-cases`.
+这是一条金牌（Gold）规则。在 `quality_scale.yaml` 中，它被称为 `docs-use-cases`。
 
-The integration page on [home-assistant.io](https://www.home-assistant.io/) describes a few use cases: what you can do with the device or service once it is in Home Assistant, and why you would want it there.
+[home-assistant.io](https://www.home-assistant.io/) 上的集成页面描述了几个用例：当设备（device）或服务（service）进入 Home Assistant 之后，你可以用它做什么，以及为什么你会希望把它添加进来。
 
-## Why it matters
+## 为什么重要
 
-For some integrations, the value is obvious: a smart light is for turning on the light. For others, a user looks at the integration and wonders why they would bother. A few concrete use cases answer that question, and often give people ideas they would not have had themselves.
+对于某些集成来说，价值显而易见：智能灯就是用来开灯的。而对于另一些集成，用户看到集成后会疑惑为什么要费这个功夫。几个具体的用例就能回答这个问题，并且常常能带给人们他们自己想不到的灵感。
 
-Use cases are about the why. [docs-examples](/core/quality-scale/docs-examples/) is about the how, with automations to copy.
+用例关注的是“为什么”。[docs-examples](/core/quality-scale/docs-examples/) 关注的是“怎么做”，其中提供了可供复制的自动化（automation）。
 
-## Example
+## 示例
 
 ```markdown
 ## Use cases
@@ -31,12 +31,12 @@ In Home Assistant, you can:
 - Compare your usage per day, to see what the garden sprinklers cost.
 ```
 
-See [Write integration documentation](/writing/guides/integration/) and the [integration page structure](/writing/reference/integration-page/) for where this section goes.
+请参阅[编写集成文档](/writing/guides/integration/)和[集成页面结构](/writing/reference/integration-page/)，以了解这一章节应放置的位置。
 
-## How it is checked
+## 如何检查
 
-Checked in review, usually on the documentation pull request.
+在审查（review）时进行检查，通常是在文档的拉取请求（pull request）上进行。
 
-## Exceptions
+## 例外情况
 
-There are no exceptions to this rule.
+此规则没有例外。

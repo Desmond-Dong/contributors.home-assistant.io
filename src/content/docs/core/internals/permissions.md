@@ -1,17 +1,17 @@
 ---
-title: Permissions
-description: How permission policies are structured and merged, and how to check them in actions, HTTP views, and WebSocket commands.
+title: 权限
+description: 权限策略的结构与合并方式，以及如何在动作、HTTP 视图和 WebSocket 命令中检查权限。
 sidebarGroup: Authentication
 order: 21
 ---
 
-Permissions limit what a user can see and control. They are attached to groups, and a user gets the combined permissions of all their groups. The owner is the exception: permissions never apply to the owner, who can always do everything.
+权限限制了用户能够查看和控制的内容。权限附加在群组（group）上，用户会获得其所有群组权限的合并结果。所有者（owner）是例外：权限从不适用于所有者，所有者始终可以做任何事情。
 
-Permissions only work if your code checks them, and only if it keeps track of *who* asked. That second part is the one people forget.
+权限只有在你的代码进行检查时才会生效，而且前提是代码能追踪是*谁*发起了请求。人们往往忘记的正是第二点。
 
-## Policies
+## 策略
 
-A policy is a dictionary. Its top level holds categories. Today, policies only use `entities`.
+策略（policy）是一个字典。它的顶层存放类别。目前，策略只使用 `entities`。
 
 ```python
 {
@@ -24,36 +24,36 @@ A policy is a dictionary. Its top level holds categories. Today, policies only u
 }
 ```
 
-Anywhere in a policy, a value can be `True` (allowed) or `None` (use the default, which is deny). A category that is missing is denied.
+在策略的任何位置，值可以是 `True`（允许）或 `None`（使用默认值，即拒绝）。缺失的类别将被拒绝。
 
-The `entities` category has the subcategories `entity_ids`, `device_ids`, `area_ids`, `domains`, and `all`. Home Assistant checks them in that order and uses the first one that matches. Each grants access with `True`, or per permission with the keys `read`, `control`, and `edit`.
+`entities` 类别包含子类别 `entity_ids`、`device_ids`、`area_ids`、`domains` 和 `all`。Home Assistant 按此顺序检查它们，并使用第一个匹配的项。每一项都可以通过 `True` 授予访问权限，或者通过 `read`、`control` 和 `edit` 键按具体权限授予。
 
-The three built-in groups have these policies:
+三个内置群组具有以下策略：
 
-| Group | Policy |
+| 群组 | 策略 |
 | --- | --- |
-| Administrators | `{"entities": True}` |
-| Users | `{"entities": True}` |
-| Read only | `{"entities": {"all": {"read": True}}}` |
+| 管理员 | `{"entities": True}` |
+| 用户 | `{"entities": True}` |
+| 只读 | `{"entities": {"all": {"read": True}}}` |
 
-Users and administrators can control the same entities. What sets administrators apart is `user.is_admin`, which code checks separately for anything that changes configuration.
+用户和管理员可以控制相同的实体（entity）。管理员的特殊之处在于 `user.is_admin`，代码会对任何更改配置的操作单独检查该项。
 
-### Merging policies
+### 合并策略
 
-When a user is in several groups, their policies are merged, level by level:
+当用户属于多个群组时，其策略会逐级合并：
 
-1. If any value is `True`, the result is `True`.
-2. If any value is a dictionary, the result is a dictionary, merged with these same rules.
-3. If all values are `None`, the result is `None`.
+1. 如果任何一个值是 `True`，则结果为 `True`。
+2. 如果任何一个值是字典，则结果为字典，并按同样的规则合并。
+3. 如果所有值都是 `None`，则结果为 `None`。
 
-So `{"entities": {"entity_ids": {"light.kitchen": True}}}` merged with `{"entities": {"entity_ids": True}}` gives `{"entities": {"entity_ids": True}}`.
+因此，`{"entities": {"entity_ids": {"light.kitchen": True}}}` 与 `{"entities": {"entity_ids": True}}` 合并的结果是 `{"entities": {"entity_ids": True}}`。
 
-## The context carries the user
+## 上下文携带用户信息
 
-Every action call, event, and state has a `Context`, and the context has a `user_id`. That is how Home Assistant knows who did something, for the logbook and for permission checks.
+每个动作（action）调用、事件和状态（state）都有一个 `Context`，并且上下文（context）中包含 `user_id`。Home Assistant 就是这样知道是谁做了某件事的，日志簿（logbook）和权限检查都依赖于此。
 
-- In an action handler, pass `call.context` on to whatever you do.
-- In an HTTP view or WebSocket command, create a context for the user of the request. Both have a helper for it: `self.context(request)` in a view, and `connection.context(msg)` in a WebSocket command.
+- 在动作处理函数中，将 `call.context` 传递给你后续执行的任何操作。
+- 在 HTTP 视图或 WebSocket 命令中，为请求的用户创建上下文。两者都有相应的辅助方法：视图中使用 `self.context(request)`，WebSocket 命令中使用 `connection.context(msg)`。
 
 ```python
 await hass.services.async_call(
@@ -64,9 +64,9 @@ await hass.services.async_call(
 )
 ```
 
-## Check a permission
+## 检查权限
 
-With the user object in hand, a check is one line:
+拿到用户对象后，检查只需一行代码：
 
 ```python
 from homeassistant.auth.permissions.const import POLICY_CONTROL
@@ -79,17 +79,17 @@ if not user.permissions.check_entity(entity_id, POLICY_CONTROL):
     raise Unauthorized(entity_id=entity_id, permission=POLICY_CONTROL)
 ```
 
-The permission constants are `POLICY_READ`, `POLICY_CONTROL`, and `POLICY_EDIT`.
+权限常量为 `POLICY_READ`、`POLICY_CONTROL` 和 `POLICY_EDIT`。
 
-When a check fails, raise `Unauthorized` from `homeassistant.exceptions`. It stops what you were doing and tells the user they are not allowed. All of its arguments are optional, and help to say what failed: `context`, `user_id`, `entity_id`, `config_entry_id`, `perm_category` (when there is no object ID, like when creating a config entry), and `permission`.
+当检查失败时，从 `homeassistant.exceptions` 中抛出 `Unauthorized`。它会停止你正在进行的操作，并告知用户其无权执行该操作。它的所有参数都是可选的，用于说明是什么失败了：`context`、`user_id`、`entity_id`、`config_entry_id`、`perm_category`（在没有对象 ID 时使用，例如创建配置条目时）和 `permission`。
 
-Some APIs are open to every user but limit what they return, like `get_states` over the WebSocket API, which only returns the entities the user may read.
+有些 API 对所有用户开放，但会限制其返回的内容，例如 WebSocket API 中的 `get_states`，它只返回用户有权读取的实体。
 
-## In an action
+## 在动作中
 
-Actions registered for entities with `async_register_platform_entity_service`, and the actions of entity components, check entity permissions for you. For an action that only an admin may call, register it with `async_register_admin_service`. See [actions](/core/internals/actions/).
+使用 `async_register_platform_entity_service` 为实体注册的动作，以及实体组件（entity component）的动作，都会为你检查实体权限。对于仅管理员可调用的动作，请使用 `async_register_admin_service` 注册。参见[动作](/core/internals/actions/)。
 
-If you register a plain action that acts on entities, check each one yourself:
+如果你注册的是直接操作实体的普通动作，则需要自己逐一检查：
 
 ```python
 from homeassistant.auth.permissions.const import POLICY_CONTROL
@@ -116,11 +116,11 @@ async def async_handle_reset(call: ServiceCall) -> None:
     ...
 ```
 
-No `user_id` means the call did not come from a user, but from Home Assistant itself, like an automation.
+没有 `user_id` 意味着该调用并非来自用户，而是来自 Home Assistant 本身，例如自动化（automation）。
 
-## In an HTTP view
+## 在 HTTP 视图中
 
-The user of the request is in `request["hass_user"]`:
+请求的用户位于 `request["hass_user"]` 中：
 
 ```python
 from aiohttp import web
@@ -148,6 +148,6 @@ class MyResetView(HomeAssistantView):
         return self.json_message("Done.")
 ```
 
-## In a WebSocket command
+## 在 WebSocket 命令中
 
-The user is `connection.user`. For admin-only commands, use the `require_admin` decorator. See [adding your own commands](/core/internals/websocket-api/#add-your-own-command) in the WebSocket API.
+用户是 `connection.user`。对于仅管理员可用的命令，请使用 `require_admin` 装饰器。参见 WebSocket API 中的[添加你自己的命令](/core/internals/websocket-api/#add-your-own-command)。

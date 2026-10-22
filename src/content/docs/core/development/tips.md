@@ -1,58 +1,58 @@
 ---
-title: Tips and tricks
-description: Smaller things that make working on Home Assistant Core easier, from stacking pull requests to testing a change on your own system.
+title: 技巧与窍门
+description: 一些让 Home Assistant Core 开发更轻松的小技巧，从堆叠拉取请求（pull request）到在自己的系统上测试更改。
 sidebarGroup: Pull requests
 order: 6
 ---
 
-A collection of things that are good to know, but do not need a page of their own. Picked up a trick that is missing here? Add it with the edit link at the bottom of this page.
+这里收集了一些值得了解、但不需要单独成页的内容。发现了这里缺少的技巧？请使用本页底部的编辑链接添加它。
 
-## Split big work into a series of pull requests
+## 将大工作量拆分为一系列拉取请求
 
-Modernizing an old integration can be tempting to do in one go. Don't. Split the work into independent changes, and submit them one after another. Do not mix cleanups and new features in one pull request, and do not solve several issues in one either. Pull requests that dump a lot of code at once are not a priority for review, and may be closed.
+现代化改造一个旧的集成（integration）时，很容易想一次性完成。不要这样做。请将工作拆分为相互独立的更改，并逐个提交。不要在一个拉取请求中混入清理工作和新功能，也不要在一个拉取请求中解决多个问题。一次性提交大量代码的拉取请求不会成为评审的优先事项，甚至可能被关闭。
 
-To keep working while the first one is in review, branch the next one off the first:
+为了在第一个拉取请求处于评审期间时继续工作，请基于第一个分支创建下一个分支：
 
-1. Create the branch for the next pull request from the branch of the current one, and keep writing code there.
-2. When the current pull request gets new commits from review feedback, merge them into the next branch.
-3. Once the current pull request is merged, update the next branch with the latest `dev`, so it only contains its own changes.
-4. Open the next pull request, and repeat.
+1. 从当前拉取请求的分支创建下一个拉取请求的分支，并继续在其中编写代码。
+2. 当当前拉取请求根据评审反馈收到新的提交时，将它们合并到下一个分支中。
+3. 一旦当前拉取请求被合并，用最新的 `dev` 更新下一个分支，使其只包含自己的更改。
+4. 打开下一个拉取请求，然后重复上述步骤。
 
-Do not open the next pull request before the first one is merged. Pull requests that depend on unmerged work are not actionable for reviewers.
+在第一个拉取请求合并之前，不要打开下一个拉取请求。依赖未合并工作的拉取请求对评审者来说无法着手处理。
 
-## Try a change on your production system
+## 在你的生产系统上尝试更改
 
-You can run a changed core integration on your own Home Assistant, by loading it as a custom integration:
+你可以在自己的 Home Assistant 上运行修改过的核心集成，方法是将其作为自定义集成（custom integration）加载：
 
-1. Copy the folder of the integration into `/config/custom_components/`.
-2. Add a `version` to its `manifest.json`, like `"version": "0.0.0"`. Custom integrations need one.
-3. If the integration has a `strings.json`, run `python3 -m script.translations develop --integration example` in your development environment, with your domain instead of `example`. Copy the `translations/en.json` it generates into the copied folder. A plain copy of `strings.json` only works when it has no `[%key:...]` references, because Home Assistant does not resolve those for custom integrations.
-4. Restart Home Assistant.
+1. 将集成的文件夹复制到 `/config/custom_components/`。
+2. 在其 `manifest.json` 中添加一个 `version`，例如 `"version": "0.0.0"`。自定义集成需要这个字段。
+3. 如果集成包含 `strings.json`，请在你的开发环境中运行 `python3 -m script.translations develop --integration example`，并将 `example` 替换为你的域名。将其生成的 `translations/en.json` 复制到已复制的文件夹中。直接复制 `strings.json` 只有在它不包含 `[%key:...]` 引用时才有效，因为 Home Assistant 不会为自定义集成解析这些引用。
+4. 重启 Home Assistant。
 
-A custom integration takes the place of the built-in one with the same domain, except in safe mode and recovery mode, which skip custom integrations. Remove it when you are done, or you are stuck on that version forever.
+自定义集成会取代具有相同域名的内置集成，但在安全模式和恢复模式下除外，这两种模式会跳过自定义集成。完成后请将其移除，否则你会永远停留在那个版本上。
 
-## Try a new version of a library
+## 尝试某个库的新版本
 
-To test a change to a library inside Home Assistant before it is released, see [try your library in Home Assistant](/core/integrations/api-library/#try-your-library-in-home-assistant).
+要在库发布之前在 Home Assistant 中测试对它的更改，请参阅[在 Home Assistant 中试用你的库](/core/integrations/api-library/#try-your-library-in-home-assistant)。
 
-## Your new config flow does not show up
+## 你的新配置流程没有显示
 
-The frontend caches aggressively. When you add a config flow and the integration does not appear in the list, check the logs for errors first. If there are none, do a hard refresh of your browser.
+前端会进行激进的缓存。当你添加了配置流程（config flow）但集成没有出现在列表中时，请先检查日志中是否有错误。如果没有错误，请对浏览器进行强制刷新。
 
-## Ask for help with a link
+## 附上链接寻求帮助
 
-When you ask a question in **#core** on [Discord](https://www.home-assistant.io/join-chat/), push your work to a branch first and share the link. Someone who can see your code can help you much faster. Do not paste large blocks of code into the channel: they are hard to read, and push other questions out of view.
+当你在 [Discord](https://www.home-assistant.io/join-chat/) 的 **#core** 频道提问时，请先将你的工作推送到一个分支并分享链接。能看到你代码的人可以更快地帮助你。不要将大段代码粘贴到频道中：它们难以阅读，还会把其他问题挤出视野。
 
-## Look at good examples
+## 参考优秀的示例
 
-Integrations on the Platinum and Gold tiers of the [integration quality scale](/core/quality-scale/) are well maintained, and a good place to see how something is done. The tier is in the `manifest.json` of the integration.
+[integration quality scale](/core/quality-scale/)（集成质量标准）中 Platinum 和 Gold 等级的集成维护良好，是了解某项功能如何实现的绝佳参考。等级信息位于集成的 `manifest.json` 中。
 
-## Generate a new integration
+## 生成一个新集成
 
-The scaffold script asks you a few questions, and creates the files of a new integration, with a config flow and tests to start from:
+脚手架脚本会问你几个问题，然后创建一个新集成的文件，包含配置流程和测试作为起点：
 
 ```shell
 python3 -m script.scaffold integration
 ```
 
-In Visual Studio Code, that is the **Create new integration** task. [Building integrations](/core/integrations/) explains what it generates.
+在 Visual Studio Code 中，这就是 **Create new integration** 任务。[构建集成](/core/integrations/)解释了它会生成哪些内容。

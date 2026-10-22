@@ -1,27 +1,27 @@
 ---
-title: Authentication API
-description: How an app logs in to a Home Assistant instance with OAuth 2, refreshes and revokes tokens, and makes authenticated requests.
+title: 认证 API
+description: 应用如何使用 OAuth 2 登录 Home Assistant 实例、刷新和撤销令牌，以及发起经过身份验证的请求。
 sidebarGroup: Authentication
 order: 22
 ---
 
-Every Home Assistant instance belongs to someone, so there is no central place to register an app. Instead, Home Assistant uses [OAuth 2](https://datatracker.ietf.org/doc/html/rfc6749) with the [IndieAuth](https://indieauth.spec.indieweb.org/) approach to clients: your app is identified by its own website. This page walks through the flow your app goes through to get tokens for a user's instance.
+每个 Home Assistant 实例都属于某个人，因此没有一个集中注册应用的地方。Home Assistant 采用 [OAuth 2](https://datatracker.ietf.org/doc/html/rfc6749) 以及 [IndieAuth](https://indieauth.spec.indieweb.org/) 对客户端的处理方式：您的应用由其自己的网站来标识。本页将介绍您的应用为用户实例获取令牌（token）所要经历的流程。
 
-If you write JavaScript, the [home-assistant-js-websocket](https://github.com/home-assistant/home-assistant-js-websocket) library implements this flow for you. The frontend uses it too.
+如果您使用 JavaScript 编写代码，[home-assistant-js-websocket](https://github.com/home-assistant/home-assistant-js-websocket) 库已经为您实现了这个流程。前端也在使用它。
 
-## Your client ID
+## 您的客户端 ID
 
-Your client ID is the URL of your app's website, like `https://www.my-application.io/`. The redirect URI you send the user back to must have the same host and port, like `https://www.my-application.io/auth_callback`.
+您的客户端 ID 是应用网站的 URL，例如 `https://www.my-application.io/`。您让用户返回到的重定向 URI（redirect URI）必须具有相同的主机名和端口，例如 `https://www.my-application.io/auth_callback`。
 
-Need a redirect URI on another host, for example a custom scheme for a native app? Declare it on your website, and Home Assistant fetches the page at your client ID to find it. It reads the first 10 KB, and accepts either:
+需要在其他主机上使用重定向 URI，例如原生应用的自定义协议（scheme）？请在您的网站上声明它，Home Assistant 会抓取客户端 ID 处的页面来查找它。它只读取前 10 KB 的内容，并接受以下两种形式之一：
 
-- A link tag in the HTML:
+- HTML 中的 link 标签：
 
   ```html
   <link rel="redirect_uri" href="hass://auth" />
   ```
 
-- A JSON [OAuth client ID metadata document](https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document/) served at the client ID URL, with a `redirect_uris` list:
+- 托管在客户端 ID URL 上的 JSON [OAuth 客户端 ID 元数据文档](https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document/)，其中包含 `redirect_uris` 列表：
 
   ```json
   {
@@ -30,13 +30,13 @@ Need a redirect URI on another host, for example a custom scheme for a native ap
   }
   ```
 
-Home Assistant only reads the metadata document when the page has no link tags. It then only accepts the document when the client ID is an `https` URL with a path, the response is a direct `200 OK` (no redirect), the `client_id` in the document is exactly the URL it was fetched from, and every entry in `redirect_uris` is an absolute URI.
+Home Assistant 只会在页面没有 link 标签时才读取元数据文档。此时，仅当客户端 ID 是带有路径的 `https` URL、响应是直接的 `200 OK`（无重定向）、文档中的 `client_id` 与其被抓取的 URL 完全一致，并且 `redirect_uris` 中的每一项都是绝对 URI 时，它才会接受该文档。
 
-Home Assistant describes what it supports at `/.well-known/oauth-authorization-server`, as defined in [RFC 8414](https://datatracker.ietf.org/doc/html/rfc8414). Clients that discover endpoints dynamically can start there.
+Home Assistant 在 `/.well-known/oauth-authorization-server` 中描述了它所支持的内容，如 [RFC 8414](https://datatracker.ietf.org/doc/html/rfc8414) 所定义。需要动态发现端点的客户端可以从这里开始。
 
-## Step 1: send the user to authorize
+## 第 1 步：将用户引导至授权页面
 
-Send the user to `/auth/authorize` on their instance, with your `client_id` and `redirect_uri` as query parameters:
+将用户发送到其实例上的 `/auth/authorize`，并将您的 `client_id` 和 `redirect_uri` 作为查询参数：
 
 ```text
 https://homeassistant.local:8123/auth/authorize
@@ -45,20 +45,20 @@ https://homeassistant.local:8123/auth/authorize
   &state=abc123
 ```
 
-The line breaks are only for reading. Optional parameters:
+换行只是为了便于阅读。可选参数：
 
-- `state`: comes back unchanged in the redirect. A good place for the URL of the instance the user is logging in to.
-- `code_challenge` and `code_challenge_method`: for PKCE ([RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636)). The only supported method is `S256`. Use PKCE whenever you can, and always in a native app.
+- `state`：会在重定向中原样返回。适合用来存放用户正在登录的实例的 URL。
+- `code_challenge` 和 `code_challenge_method`：用于 PKCE（[RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636)）。唯一支持的方法是 `S256`。只要可行就请使用 PKCE，在原生应用中则务必使用。
 
-The user logs in and approves. Home Assistant then redirects to your redirect URI with a `code` and your `state`:
+用户登录并批准后，Home Assistant 会重定向到您的重定向 URI，并附带一个 `code` 和您的 `state`：
 
 ```text
 https://www.my-application.io/auth_callback?code=12345&state=abc123
 ```
 
-## Step 2: exchange the code for tokens
+## 第 2 步：用授权码换取令牌
 
-POST to `/auth/token`, with the body encoded as `application/x-www-form-urlencoded`. Use the exact same `client_id` as in step 1:
+向 `/auth/token` 发送 POST 请求，请求体使用 `application/x-www-form-urlencoded` 编码。请使用与第 1 步完全相同的 `client_id`：
 
 ```text
 grant_type=authorization_code
@@ -66,7 +66,7 @@ grant_type=authorization_code
 &client_id=https%3A%2F%2Fwww.my-application.io%2F
 ```
 
-With PKCE, add `code_verifier`. The response:
+如果使用 PKCE，请添加 `code_verifier`。响应如下：
 
 ```json
 {
@@ -78,13 +78,13 @@ With PKCE, add `code_verifier`. The response:
 }
 ```
 
-The access token is valid for `expires_in` seconds. Store the refresh token safely: it is what keeps the user logged in.
+访问令牌（access token）的有效期为 `expires_in` 秒。请妥善保存刷新令牌（refresh token）：正是它让用户保持登录状态。
 
-On a bad request, you get status 400 with an error like `{"error": "invalid_request", "error_description": "Invalid code"}`. If the user is not allowed to log in, for example because the user is inactive, you get status 403 with the error `access_denied`.
+如果请求有误，您会收到状态码 400，错误信息类似 `{"error": "invalid_request", "error_description": "Invalid code"}`。如果不允许该用户登录（例如用户处于停用状态），您会收到状态码 403，错误为 `access_denied`。
 
-## Step 3: refresh the access token
+## 第 3 步：刷新访问令牌
 
-When the access token expires, POST to `/auth/token` again:
+当访问令牌过期时，再次向 `/auth/token` 发送 POST 请求：
 
 ```text
 grant_type=refresh_token
@@ -92,23 +92,23 @@ grant_type=refresh_token
 &client_id=https%3A%2F%2Fwww.my-application.io%2F
 ```
 
-You get a new `access_token` with its `expires_in`. If the refresh token no longer works, the user is logged out: clear what you stored and start the flow again.
+您会收到新的 `access_token` 及其对应的 `expires_in`。如果刷新令牌不再有效，则说明用户已注销：请清除您存储的内容，并重新开始整个流程。
 
-A refresh token expires when it has not been used for 90 days.
+刷新令牌在连续 90 天未使用后即会过期。
 
-## Revoke a token
+## 撤销令牌
 
-To log out, POST the refresh token to `/auth/revoke`, encoded as `application/x-www-form-urlencoded`:
+要注销，请将刷新令牌以 `application/x-www-form-urlencoded` 编码 POST 到 `/auth/revoke`：
 
 ```text
 token=IJKLMNOPQRST
 ```
 
-This revokes the refresh token and every access token it ever created. The response is always status 200 with an empty body, whether or not the token existed. The older form, posting `token` and `action=revoke` to `/auth/token`, still works but is deprecated.
+这会撤销该刷新令牌以及由它创建过的所有访问令牌。无论该令牌是否存在，响应始终是状态码 200 和空响应体。旧的方式——将 `token` 和 `action=revoke` POST 到 `/auth/token`——仍然可用，但已被弃用。
 
-## Make authenticated requests
+## 发起经过身份验证的请求
 
-For HTTP, send the access token in the `Authorization` header:
+对于 HTTP，请在 `Authorization` 请求头中发送访问令牌：
 
 ```shell
 curl \
@@ -116,13 +116,13 @@ curl \
   https://homeassistant.local:8123/api/
 ```
 
-For the WebSocket API, send it in the [auth message](/core/internals/websocket-api/#authentication). Over HTTP, an expired or invalid token gets status 401. Over the WebSocket API, you get `auth_invalid` and the server closes the connection. Either way: refresh the token and try again.
+对于 WebSocket API，请在 [auth 消息](/core/internals/websocket-api/#authentication)中发送它。在 HTTP 上，过期或无效的令牌会返回状态码 401。在 WebSocket API 上，您会收到 `auth_invalid`，并且服务器会关闭连接。无论哪种情况：请刷新令牌并重试。
 
-## Long-lived access tokens
+## 长期访问令牌
 
-For scripts and services that cannot go through a login flow, users can create a long-lived access token on their profile, under **Security**. Those are valid for 10 years, and are used exactly like an access token.
+对于无法通过登录流程的脚本和服务，用户可以在其个人资料页面的 **安全**（Security）部分创建长期访问令牌（long-lived access token）。这些令牌的有效期为 10 年，使用方式与访问令牌完全相同。
 
-An app with a WebSocket connection can also create one for the current user with `auth/long_lived_access_token`. The `lifespan` is in days:
+拥有 WebSocket 连接的应用也可以使用 `auth/long_lived_access_token` 为当前用户创建一个长期访问令牌。`lifespan` 以天为单位：
 
 ```json
 {
@@ -133,13 +133,13 @@ An app with a WebSocket connection can also create one for the current user with
 }
 ```
 
-The result is the token. Home Assistant does not store it, so it cannot be shown again.
+结果就是令牌本身。Home Assistant 不会存储它，因此无法再次显示。
 
-## Signed paths
+## 签名路径
 
-Sometimes a user needs to open a URL without the `Authorization` header, like a download link. A signed path is a normal path with a signature added, like `/api/states?authSig=ABCDEFGH`. Whoever opens it is authorized as the refresh token that created it.
+有时用户需要在没有 `Authorization` 请求头的情况下打开 URL，例如下载链接。签名路径（signed path）是添加了签名的普通路径，例如 `/api/states?authSig=ABCDEFGH`。任何打开它的人都会以创建它的刷新令牌的身份获得授权。
 
-Over the WebSocket API, create one with `auth/sign_path`. `expires` is in seconds and defaults to 30:
+通过 WebSocket API，可以使用 `auth/sign_path` 创建签名路径。`expires` 以秒为单位，默认值为 30：
 
 ```json
 {
@@ -150,9 +150,9 @@ Over the WebSocket API, create one with `auth/sign_path`. `expires` is in second
 }
 ```
 
-The result holds the `path` to use. In an integration, use `async_sign_path` from `homeassistant.components.http.auth`. It uses the refresh token of the current HTTP request or WebSocket connection, and falls back to a special content user when there is none, like in an automation.
+结果中包含要使用的 `path`。在集成（integration）中，请使用 `homeassistant.components.http.auth` 中的 `async_sign_path`。它会使用当前 HTTP 请求或 WebSocket 连接的刷新令牌，在没有刷新令牌时（例如在自动化中）则回退到一个特殊的内容用户（content user）。
 
-Keep in mind:
+请记住：
 
-- A signed path stops working when its refresh token is deleted, when the user is deleted, and when Home Assistant restarts.
-- The signature is checked when the request arrives. A download that takes longer than the expiry time still finishes.
+- 当签名路径的刷新令牌被删除、用户被删除，或 Home Assistant 重启时，签名路径将停止工作。
+- 签名会在请求到达时进行检查。即使下载耗时超过过期时间，下载仍会继续完成。
