@@ -22,9 +22,9 @@ areas:
 
 在辅助元素实体的构造函数中，将 `self.device_entry` 设置为源设备
 ```py
-class HelperEntity(Entity)
+class HelperEntity(Entity):
 
-    def __init__(hass: HomeAssistant, source_entity_id: str, ...) -> None:
+    def __init__(self, hass: HomeAssistant, source_entity_id: str, ...) -> None:
         self.device_entry = async_entity_id_to_device(
             hass,
             source_entity_id,

@@ -82,7 +82,7 @@ sidebarGroup: Sensors and status
 
 扫描器默认与家庭区域关联。用户可以在实体设置中选择另一个区域，例如为位于办公室的信标选择办公室。当该区域被删除时，Home Assistant 会引发一个[修复（repair）](/glossary/repair/)问题。
 
-`in_zones` 状态属性按从小到大的顺序列出设备所在的区域。扫描器会列出其关联的区域以及包含它的区域。
+The `in_zones` state attribute lists the zones the device is in, smallest first. When the zones are worked out from coordinates, zones of the same size are sorted by the distance to their center, closest first. A scanner lists its associated zone and the zones that contain it. When the scanner is not connected, `in_zones` is an empty list.
 
 ## 示例
 

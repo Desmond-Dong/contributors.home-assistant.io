@@ -29,7 +29,7 @@ class ExampleSensor(SensorEntity):
 
 ## 翻译名称
 
-不要硬编码英文名称。改为设置 `translation_key`，并将名称放入您的集成的 `strings.json` 的 `entity` 部分：
+Don't hard code an English name. Set a `translation_key` instead, and put the name in the `entity` section of your integration's `strings.json`. Translated names only work for entities that set `has_entity_name` to `True`:
 
 ```json
 {

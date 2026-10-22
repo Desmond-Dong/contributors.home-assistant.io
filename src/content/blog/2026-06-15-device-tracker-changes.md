@@ -56,4 +56,4 @@ areas:
 
 ### 引入 `tracking_type` 能力属性
 
-设备追踪器实体的状态中新增了 `tracking_type` 能力属性。该状态属性由 `BaseScannerEntity` 和 `ScannerEntity` 设置为 `connection`，由 `TrackerEntity` 设置为 `location`。集成不应覆盖此行为。
+A new capability attribute `tracking_type` is present in the state of device tracker entities. The state attribute is set to `connection` by `BaseScannerEntity` and `ScannerEntity` and to `position` by `TrackerEntity`. Integrations should not override this behavior.
