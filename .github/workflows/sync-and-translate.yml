@@ -57,15 +57,19 @@ jobs:
             LAST=""
           fi
           if [ -z "$LAST" ]; then
-            FILES=$(git ls-files -c 'src/content/docs/**/*.md' 'src/content/docs/**/*.mdx' 'src/content/blog/*.md' | grep -v '^src/content/docs/index\.md$')
+            FILES=$(git ls-files -c 'src/content/docs/**/*.md' 'src/content/docs/**/*.mdx' 'src/content/blog/*.md' | grep -v '^src/content/docs/index\.md$' || true)
+          elif [ "$LAST" = "$UP" ]; then
+            echo "No upstream changes since last sync"
+            FILES=""
           else
-            FILES=$(git diff --name-only --diff-filter=ACMRT "$LAST" "$UP" -- 'src/content/**/*.md' 'src/content/**/*.mdx' | grep -v '^src/content/docs/index\.md$')
+            FILES=$(git diff --name-only --diff-filter=ACMRT "$LAST" "$UP" -- 'src/content/**/*.md' 'src/content/**/*.mdx' | grep -v '^src/content/docs/index\.md$' || true)
           fi
           { echo 'files<<EOF'; echo "$FILES"; echo EOF; } >> "$GITHUB_OUTPUT"
           echo "Last sync sha: ${LAST:-<none, full translation>}"
           echo "Files to translate:"; echo "$FILES"
 
       - name: Translate
+        if: steps.files.outputs.files != ''
         run: node scripts/translate-upstream.mjs
         env:
           FILE_LIST: ${{ steps.files.outputs.files }}
