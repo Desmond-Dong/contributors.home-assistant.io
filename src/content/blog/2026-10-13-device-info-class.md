@@ -71,7 +71,7 @@ new_device_info = copy.copy(device_info)
 new_device_info.name = "Other name"
 ```
 
-To register a device in the device registry yourself, pass the device info as it is to `async_get_or_create_device`, instead of unpacking it into `async_get_or_create`:
+要自行在设备注册表中注册设备，请将设备信息原样传递给 `async_get_or_create_device`，而不是将其解包到 `async_get_or_create` 中：
 
 ```python
 # Old
@@ -85,11 +85,11 @@ device_registry.async_get_or_create_device(
 )
 ```
 
-`async_get_or_create` keeps working with the fields as keyword arguments, and builds a `DeviceInfo` for you.
+`async_get_or_create` 继续支持将字段作为关键字参数使用，并会为您构建一个 `DeviceInfo`。
 
-## Unset fields
+## 未设置的字段
 
-A field which has not been set reads as `UNDEFINED`, not as `None`, and `None` is a value like any other. For example, `via_device_id=None` removes the link to a via device. Note that `UNDEFINED` is truthy, so test it explicitly:
+未设置的字段读取为 `UNDEFINED`，而不是 `None`，并且 `None` 与其他值一样是有效值。例如，`via_device_id=None` 会移除与上游设备的链接。请注意，`UNDEFINED` 为真值，因此请显式测试：
 
 ```python
 from homeassistant.helpers.typing import UNDEFINED
@@ -141,7 +141,7 @@ device_info = DeviceInfo(**device_payload)
 device_info["config_entry_id"] = entry.entry_id
 ```
 
-Arguments which are not device info fields, such as `config_entry_id`, `config_subentry_id`, and `disabled_by`, are passed to `async_get_or_create_device` next to the device info.
+非设备信息字段的参数，例如 `config_entry_id`、`config_subentry_id` 和 `disabled_by`，会与设备信息一起传递给 `async_get_or_create_device`。
 
 ### 从映射构建
 
@@ -175,7 +175,7 @@ self._attr_device_info = ChildDeviceInfo(
 )
 ```
 
-To register a child device in the device registry yourself, pass the child device info to `async_get_or_create_child_device`, in the same way:
+要自行在设备注册表中注册子设备，请以相同方式将子设备信息传递给 `async_get_or_create_child_device`：
 
 ```python
 device_registry.async_get_or_create_child_device(
@@ -183,4 +183,4 @@ device_registry.async_get_or_create_child_device(
 )
 ```
 
-`async_get_or_create_child` keeps working with the fields as keyword arguments.
+`async_get_or_create_child` 继续支持将字段作为关键字参数使用。

@@ -1,8 +1,8 @@
 ---
 title: 实体命名
 description: has_entity_name、翻译键和设备类如何为您的实体命名，以及 Home Assistant 如何将其转换为友好名称和实体 ID。
-sidebarLabel: Naming
-sidebarGroup: Basics
+sidebarLabel: 命名
+sidebarGroup: 基础
 order: 2
 ---
 
@@ -29,7 +29,7 @@ class ExampleSensor(SensorEntity):
 
 ## 翻译名称
 
-Don't hard code an English name. Set a `translation_key` instead, and put the name in the `entity` section of your integration's `strings.json`. Translated names only work for entities that set `has_entity_name` to `True`:
+不要硬编码英文名称。请设置 `translation_key`，并将名称放在集成 `strings.json` 文件的 `entity` 部分中。翻译名称仅适用于将 `has_entity_name` 设置为 `True` 的实体：
 
 ```json
 {

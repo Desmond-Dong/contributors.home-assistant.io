@@ -51,7 +51,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: MyConfigEntry) -> bool:
 
 ### 经常离线的设备
 
-Some devices are offline on purpose, like a solar inverter at night or a TV in standby. Raising `ConfigEntryNotReady` and letting Home Assistant retry is usually still the simplest approach. But you can also finish the setup without reaching the device. Refresh the coordinator with `await coordinator.async_refresh()`, which does not raise, and the entities stay unavailable until the device answers. A `ConfigEntryAuthFailed` raised by the update method still starts the reauthentication flow. Until then, `coordinator.data` is still `None`, so code that reads it while setting up the platforms has to handle that. Fetch anything you could not get during setup, like device information, once the device is back. Errors that are not temporary, like wrong credentials or a closed account, must still be reported during setup when they are detected.
+有些设备故意保持离线，例如夜间太阳能逆变器或待机状态的电视。抛出 `ConfigEntryNotReady` 并让 Home Assistant 重试通常仍然是最简单的方法。但你也可以在不连接设备的情况下完成设置。使用 `await coordinator.async_refresh()` 刷新协调器，该方法不会抛出异常，实体（entity）将保持不可用状态，直到设备响应。更新方法抛出的 `ConfigEntryAuthFailed` 仍会启动重新认证流程。在此之前，`coordinator.data` 仍为 `None`，因此在设置平台时读取该数据的代码必须处理这种情况。一旦设备恢复，请获取设置期间无法获取的任何内容，例如设备信息。非临时性错误（如凭证错误或账户已关闭）在检测到时仍必须在设置期间报告。
 
 ## 如何检查
 

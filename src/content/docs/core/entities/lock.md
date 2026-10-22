@@ -15,14 +15,14 @@ sidebarGroup: Openings and security
 
 | 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `is_locked` | `bool \| None` | `None` | Whether the lock is locked. |
-| `is_locking` | `bool \| None` | `None` | Whether the lock is in the process of being locked. |
-| `is_unlocking` | `bool \| None` | `None` | Whether the lock is in the process of being unlocked. |
-| `is_open` | `bool \| None` | `None` | Whether the lock is unlocked and has released its latch. |
-| `is_opening` | `bool \| None` | `None` | Whether the lock is in the process of releasing its latch. |
-| `is_jammed` | `bool \| None` | `None` | Whether the lock tried to move, to lock, unlock, or open, but got stuck before it finished. |
-| `code_format` | `str \| None` | `None` | A regular expression the code must match, like `^\d{4}$`. `None` means the lock needs no code. |
-| `changed_by` | `str \| None` | `None` | Who or what changed the lock last, like a user name or a keypad. |
+| `is_locked` | `bool \| None` | `None` | 锁是否已上锁。 |
+| `is_locking` | `bool \| None` | `None` | 锁是否正在上锁过程中。 |
+| `is_unlocking` | `bool \| None` | `None` | 锁是否正在解锁过程中。 |
+| `is_open` | `bool \| None` | `None` | 锁是否已解锁并释放了锁舌。 |
+| `is_opening` | `bool \| None` | `None` | 锁是否正在释放锁舌过程中。 |
+| `is_jammed` | `bool \| None` | `None` | 锁是否尝试移动（上锁、解锁或打开）但未完成时卡住。 |
+| `code_format` | `str \| None` | `None` | 密码必须匹配的正则表达式，如 `^\d{4}$`。`None` 表示锁不需要密码。 |
+| `changed_by` | `str \| None` | `None` | 最后更改锁的人或物，如用户名或键盘。 |
 
 ## 密码
 
@@ -52,21 +52,21 @@ sidebarGroup: Openings and security
 
 状态是一个 `LockState`，按以下顺序取自第一个为 `True` 的属性：
 
-| Value | From | Description |
+| 值 | 来源 | 描述 |
 | ----- | ---- | ----------- |
-| `LockState.JAMMED` | `is_jammed` | The lock tried to move but got stuck before it finished. |
-| `LockState.OPENING` | `is_opening` | The lock is releasing its latch. |
-| `LockState.LOCKING` | `is_locking` | The lock is being locked. |
-| `LockState.OPEN` | `is_open` | The lock is not secured and has released its latch. |
-| `LockState.UNLOCKING` | `is_unlocking` | The lock is being unlocked. |
-| `LockState.LOCKED` | `is_locked` is `True` | The lock is locked. |
-| `LockState.UNLOCKED` | `is_locked` is `False` | The lock is not locked. |
+| `LockState.JAMMED` | `is_jammed` | 锁尝试移动但未完成时卡住。 |
+| `LockState.OPENING` | `is_opening` | 锁正在释放锁舌。 |
+| `LockState.LOCKING` | `is_locking` | 锁正在上锁。 |
+| `LockState.OPEN` | `is_open` | 锁未锁定且已释放锁舌。 |
+| `LockState.UNLOCKING` | `is_unlocking` | 锁正在解锁。 |
+| `LockState.LOCKED` | `is_locked` 为 `True` | 锁已上锁。 |
+| `LockState.UNLOCKED` | `is_locked` 为 `False` | 锁未上锁。 |
 
 当以上条件都不适用且 `is_locked` 为 `None` 时，状态为 `unknown`。
 
-`OPEN` needs both: the lock is not secured, *and* its latch is released. A released latch while the lock is still secured is not the open state.
+`OPEN` 需要同时满足：锁未锁定，*并且*其锁舌已释放。锁仍锁定时释放锁舌不是打开状态。
 
-## Example
+## 示例
 
 ```python
 from typing import Any

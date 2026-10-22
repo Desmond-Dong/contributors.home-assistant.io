@@ -35,10 +35,11 @@ const imageUrl = new URL(image, Astro.site);
 // Titles of older blog posts put code in backticks. Previews show them as is.
 const shareTitle = title.replace(/`/g, "");
 const imageAlt = title === SITE.title ? SITE.title : `${shareTitle}, on ${SITE.title}`;
+import LaAnalytics from "../components/LaAnalytics.astro";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -117,6 +118,7 @@ const imageAlt = title === SITE.title ? SITE.title : `${shareTitle}, on ${SITE.t
       };
     </script>
     <script is:inline async src="https://www.openhomefoundation.org/plausible.js?site=contributors.home-assistant.io"></script>
+    <LaAnalytics />
   </head>
   <body>
     {/* Every page marks where its reading content starts, with id="main-content". */}

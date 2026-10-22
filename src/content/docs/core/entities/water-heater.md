@@ -17,20 +17,20 @@ sidebarGroup: Lights and climate
 
 | 名称 | 类型 | 默认值 | 描述 |
 | ---- | ---- | ------- | ----------- |
-| `native_temperature_unit` | `str` | Required | The unit the device reports temperatures in: `UnitOfTemperature.CELSIUS`, `UnitOfTemperature.FAHRENHEIT`, or `UnitOfTemperature.KELVIN`. |
-| `current_operation` | `str \| None` | `None` | The current operation mode. It is the state of the entity. |
-| `operation_list` | `list[str] \| None` | `None` | The operation modes the device supports. |
-| `native_current_temperature` | `float \| None` | `None` | The measured water temperature, in `native_temperature_unit`. |
-| `native_target_temperature` | `float \| None` | `None` | The temperature to reach, in `native_temperature_unit`. |
-| `native_target_temperature_high` | `float \| None` | `None` | The upper bound of the target range, in `native_temperature_unit`. |
-| `native_target_temperature_low` | `float \| None` | `None` | The lower bound of the target range, in `native_temperature_unit`. |
-| `target_temperature_step` | `float \| None` | `None` | The step size for the target temperature, in `native_temperature_unit`. |
-| `min_temp` | `float` | 110 °F | The lowest target temperature, in `native_temperature_unit`. The default is converted to your unit. |
-| `max_temp` | `float` | 140 °F | The highest target temperature, in `native_temperature_unit`. The default is converted to your unit. |
-| `precision` | `float` | Tenths for Celsius, whole numbers otherwise | The precision temperatures are shown with. Without a value, it follows the unit system of the installation. |
-| `is_away_mode_on` | `bool \| None` | `None` | Whether away mode is on. Requires `AWAY_MODE`. |
+| `native_temperature_unit` | `str` | 必填 | 设备报告温度所用的单位：`UnitOfTemperature.CELSIUS`、`UnitOfTemperature.FAHRENHEIT` 或 `UnitOfTemperature.KELVIN`。 |
+| `current_operation` | `str \| None` | `None` | 当前运行模式。它是实体的状态。 |
+| `operation_list` | `list[str] \| None` | `None` | 设备支持的运行模式。 |
+| `native_current_temperature` | `float \| None` | `None` | 测得的水温，以 `native_temperature_unit` 为单位。 |
+| `native_target_temperature` | `float \| None` | `None` | 要达到的温度，以 `native_temperature_unit` 为单位。 |
+| `native_target_temperature_high` | `float \| None` | `None` | 目标范围的上限，以 `native_temperature_unit` 为单位。 |
+| `native_target_temperature_low` | `float \| None` | `None` | 目标范围的下限，以 `native_temperature_unit` 为单位。 |
+| `target_temperature_step` | `float \| None` | `None` | 目标温度的步长，以 `native_temperature_unit` 为单位。 |
+| `min_temp` | `float` | 110 °F | 最低目标温度，以 `native_temperature_unit` 为单位。默认值会转换为您的单位。 |
+| `max_temp` | `float` | 140 °F | 最高目标温度，以 `native_temperature_unit` 为单位。默认值会转换为您的单位。 |
+| `precision` | `float` | 摄氏为十分位，其他为整数 | 温度显示的精度。若无值，则遵循安装的单位系统。 |
+| `is_away_mode_on` | `bool \| None` | `None` | 离家模式是否开启。需要 `AWAY_MODE`。 |
 
-Like the climate entity, a water heater reports temperatures in the unit of the device, and Home Assistant converts them to the unit system of the installation. It adds a `temperature_unit` state attribute with the unit of the converted values. You cannot override that attribute. Temperatures passed to `set_temperature` are converted to `native_temperature_unit` before your method is called.
+与气候实体一样，热水器以设备单位报告温度，Home Assistant 会将其转换为安装的单位系统。它会添加一个 `temperature_unit` 状态属性，其值为转换后数值的单位。您不能覆盖该属性。传递给 `set_temperature` 的温度会在调用您的方法之前转换为 `native_temperature_unit`。
 
 > [!WARNING]
 > 不带 `native_` 的旧名称，例如 `current_temperature`、`target_temperature` 和 `temperature_unit`（及其对应的 `_attr_` 属性），已被弃用，并将在 Home Assistant 2027.11 中停止工作。请在新代码中使用 `native_` 名称。

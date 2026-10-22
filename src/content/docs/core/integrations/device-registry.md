@@ -21,27 +21,27 @@ order: 1
 
 | 属性 | 含义 |
 | --- | --- |
-| `id` | The ID Home Assistant generated for the device |
-| `identifiers` | A set of `(DOMAIN, identifier)` tuples, like a serial number. Each one is unique within the config entry. |
-| `connections` | A set of `(connection_type, value)` tuples, like a MAC address. Each one is unique within the config entry. The types are `CONNECTION_NETWORK_MAC`, `CONNECTION_BLUETOOTH`, `CONNECTION_UPNP`, and `CONNECTION_ZIGBEE`. |
-| `config_entry_id` | The config entry the device belongs to |
-| `config_subentry_id` | The [subentry](/core/integrations/subentries/) the device belongs to, or `None` |
-| `name` | The name of the device |
-| `name_by_user` | The name the user gave it |
-| `manufacturer` | The manufacturer |
-| `model` | The model name |
-| `model_id` | The model identifier |
-| `serial_number` | The serial number. Unlike a serial number in `identifiers`, it does not have to be unique. |
-| `sw_version` | The firmware version |
-| `hw_version` | The hardware version |
-| `configuration_url` | Where the device or service can be configured. Use `homeassistant://<path>` to link to a page inside Home Assistant. |
-| `entry_type` | `None`, or `DeviceEntryType.SERVICE` for a service |
-| `via_device_id` | The device Home Assistant reaches this device through, like a hub |
-| `parent_device_id` | For a child device: its parent. Only child devices (`ChildDeviceEntry`) have this attribute. The WebSocket API reports it as `null` for other devices. |
-| `area_id` | The area the device is in |
-| `labels` | The labels of the device |
-| `disabled_by` | Who disabled the device, as a `DeviceEntryDisabler`, or `None` |
-| `created_at`, `modified_at` | When the device was created and last changed. Managed by the registry. |
+| `id` | Home Assistant 为该设备生成的 ID |
+| `identifiers` | 一组 `(DOMAIN, identifier)` 元组，例如序列号。每个元组在配置条目内是唯一的。 |
+| `connections` | 一组 `(connection_type, value)` 元组，例如 MAC 地址。每个元组在配置条目内是唯一的。类型包括 `CONNECTION_NETWORK_MAC`、`CONNECTION_BLUETOOTH`、`CONNECTION_UPNP` 和 `CONNECTION_ZIGBEE`。 |
+| `config_entry_id` | 该设备所属的配置条目 |
+| `config_subentry_id` | 该设备所属的[子条目](/core/integrations/subentries/)，或 `None` |
+| `name` | 设备的名称 |
+| `name_by_user` | 用户为其指定的名称 |
+| `manufacturer` | 制造商 |
+| `model` | 型号名称 |
+| `model_id` | 型号标识符 |
+| `serial_number` | 序列号。与 `identifiers` 中的序列号不同，它不必是唯一的。 |
+| `sw_version` | 固件版本 |
+| `hw_version` | 硬件版本 |
+| `configuration_url` | 设备或服务的配置位置。使用 `homeassistant://<path>` 链接到 Home Assistant 内的页面。 |
+| `entry_type` | `None`，或对于服务为 `DeviceEntryType.SERVICE` |
+| `via_device_id` | Home Assistant 通过该设备访问此设备，例如集线器 |
+| `parent_device_id` | 对于子设备：其父设备。只有子设备（`ChildDeviceEntry`）具有此属性。WebSocket API 对其他设备将其报告为 `null`。 |
+| `area_id` | 设备所在的区域 |
+| `labels` | 设备的标签 |
+| `disabled_by` | 禁用设备的对象，作为 `DeviceEntryDisabler`，或 `None` |
+| `created_at`, `modified_at` | 设备的创建时间和最后更改时间。由注册表管理。 |
 
 ## 通过实体注册设备
 
@@ -76,7 +76,7 @@ class ExampleEntity(CoordinatorEntity[ExampleCoordinator]):
 
 ## 自行注册设备
 
-A device without entities, like a hub, is registered directly. Do this in `async_setup_entry`, with the same `DeviceInfo` an entity would use:
+没有实体的设备，例如集线器，可以直接注册。在 `async_setup_entry` 中执行此操作，使用与实体相同的 `DeviceInfo`：
 
 ```python
 from homeassistant.helpers import device_registry as dr
@@ -97,7 +97,7 @@ hub = device_registry.async_get_or_create_device(
 )
 ```
 
-It returns the `DeviceEntry`, with its `id`. Besides `config_entry_id` and `device_info`, it takes `config_subentry_id`, and `disabled_by` to create the device disabled.
+它返回 `DeviceEntry` 及其 `id`。除了 `config_entry_id` 和 `device_info` 之外，它还接受 `config_subentry_id` 和 `disabled_by` 来创建已禁用的设备。
 
 ## 将设备链接到集线器
 
@@ -157,24 +157,24 @@ outlet = device_registry.async_get_or_create_child_device(
 )
 ```
 
-Besides the required `identifiers` and `parent_device_id`, `ChildDeviceInfo` takes `name`, `suggested_area`, `translation_key`, and `translation_placeholders`. There is deliberately no `via_device_id`, `connections`, `manufacturer`, `model`, or firmware field: a child device doesn't have those. Next to the child device info, `async_get_or_create_child_device` takes `config_entry_id`, `config_subentry_id`, and `disabled_by`.
+除了必需的 `identifiers` 和 `parent_device_id` 之外，`ChildDeviceInfo` 还接受 `name`、`suggested_area`、`translation_key` 和 `translation_placeholders`。故意没有 `via_device_id`、`connections`、`manufacturer`、`model` 或固件字段：子设备没有这些。除了子设备信息之外，`async_get_or_create_child_device` 还接受 `config_entry_id`、`config_subentry_id` 和 `disabled_by`。
 
-If the parent belongs to a subentry, pass its `config_subentry_id` as well. It is not inherited. The registry never creates the parent for you: it raises a `DeviceInfoError` when the parent does not exist, is a child device itself, or belongs to another config entry or subentry.
+如果父设备属于某个子条目，请同时传递其 `config_subentry_id`。它不会被继承。注册表永远不会为你创建父设备：当父设备不存在、本身是子设备，或属于另一个配置条目或子条目时，它会抛出 `DeviceInfoError`。
 
 ### 将现有设备迁移为子设备
 
 如果子设备的标识符与同一配置条目下的某个现有设备匹配，该设备就会变成子设备，并保留其 ID。使用该设备的自动化将继续正常工作。这使得已经把产品拆分为独立设备的集成可以轻松迁移。
 
-The other way around is not supported directly. `async_update_child_device` can't change the parent, and `async_get_or_create_device` with the identifiers of an existing child device raises an error instead of turning it into a normal device. To turn a child device back into a normal device, remove it with `async_remove_device`, then register it again with `async_get_or_create_device`, with the same identifiers. The order matters: the identifiers are only free once the child device is removed.
+反向操作不直接支持。`async_update_child_device` 无法更改父设备，而使用现有子设备的标识符调用 `async_get_or_create_device` 会抛出错误，而不是将其转换为普通设备。要将子设备恢复为普通设备，请使用 `async_remove_device` 将其移除，然后使用相同的标识符通过 `async_get_or_create_device` 重新注册。顺序很重要：只有移除子设备后，标识符才会被释放。
 
 ### 随父设备联动的行为
 
-- Removing a parent removes its children.
-- Disabling a parent disables its children, and enabling the parent enables the children it disabled again. A child of a disabled parent cannot be enabled on its own.
-- A child without an area of its own is in the area of its parent. `dr.async_get_effective_area_id(hass, device)` returns the area that applies.
-- Labels are not inherited.
-- A parent with children cannot move to another config entry or subentry.
-- An action that targets a parent device also targets the entities of its children. An action that targets a child only targets the entities of that child. That way, automations that target a device keep working when an integration moves entities of that device to child devices.
+- 移除父设备会移除其子设备。
+- 禁用父设备会禁用其子设备，启用父设备会再次启用它禁用的子设备。已禁用父设备的子设备不能单独启用。
+- 没有自己区域的子设备位于其父设备的区域中。`dr.async_get_effective_area_id(hass, device)` 返回适用的区域。
+- 标签不会被继承。
+- 有子设备的父设备不能移动到另一个配置条目或子条目。
+- 针对父设备的操作也会针对其子设备的实体。针对子设备的操作只针对该子设备的实体。这样，当集成将设备的实体移动到子设备时，针对设备的自动化仍然可以正常工作。
 
 ## 查找设备
 
@@ -198,9 +198,9 @@ device = device_registry.async_get_device_by_connection(
 devices = dr.async_entries_for_config_entry(device_registry, entry.entry_id)
 ```
 
-`async_get` returns normal devices and child devices. Pass `include_child_devices=False` to only get a normal device. To only get a child device, pass both `include_main_devices=False` and `include_composite_devices=False`: by default, `async_get` also returns a read-only stand-in for the ID of a [device that was split into one device per config entry](/blog/2026/07/21/device-registry-single-config-entry/#backwards-compatibility), and that is not a child device. The other lookups return normal devices, not child devices. For child devices, use `async_get_child_device_by_identifier(identifier, config_entry_id)`, or `dr.async_entries_for_parent_device(device_registry, parent_device_id)` for all children of a device. To get every device with an identifier or connection across config entries, use `device_registry.async_get_devices()`.
+`async_get` 返回普通设备和子设备。传递 `include_child_devices=False` 以仅获取普通设备。要仅获取子设备，请同时传递 `include_main_devices=False` 和 `include_composite_devices=False`：默认情况下，`async_get` 也会为[拆分为每个配置条目一个设备的设备](/blog/2026/07/21/device-registry-single-config-entry/#backwards-compatibility)返回一个只读替身，而该替身不是子设备。其他查找返回普通设备，而不是子设备。对于子设备，请使用 `async_get_child_device_by_identifier(identifier, config_entry_id)`，或使用 `dr.async_entries_for_parent_device(device_registry, parent_device_id)` 获取设备的所有子设备。要获取跨配置条目具有某个标识符或连接的每个设备，请使用 `device_registry.async_get_devices()`。
 
-To get a device together with the config entry of your integration that owns it, for example in an action, use `dr.async_get_device_and_config_entry_for_domain(hass, device_id, domain=DOMAIN)`. It returns `(None, None)` when the device is unknown, and `(device, None)` when no config entry of your domain owns it. It takes the same `include_child_devices` and `include_main_devices` arguments as `async_get`.
+要获取设备及其所属集成配置条目，例如在操作中，请使用 `dr.async_get_device_and_config_entry_for_domain(hass, device_id, domain=DOMAIN)`。当设备未知时，它返回 `(None, None)`；当你的域没有配置条目拥有它时，返回 `(device, None)`。它接受与 `async_get` 相同的 `include_child_devices` 和 `include_main_devices` 参数。
 
 ## 更新设备
 
