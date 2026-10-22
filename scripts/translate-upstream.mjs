@@ -182,7 +182,7 @@ async function translateOnce(path, userPrompt) {
     model: MODEL,
     temperature: 0,
     stream: true,
-    reasoning_effort: "low",  // 关闭思考链
+    reasoning_effort: "none",  // 完全关闭思考链
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userPrompt },
