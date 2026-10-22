@@ -1,6 +1,6 @@
 ---
-title: System Health and Templates
-description: In Home Assistant 0.118, there will be two changes that could impact your custom integration.
+title: 系统健康状况与模板
+description: 在 Home Assistant 0.118 中，将有两项变更可能会影响您的自定义集成。
 date: 2020-11-09
 authors:
   - Paulus Schoutsen
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-In Home Assistant 0.118, there will be two changes that could impact your custom integration.
+在 Home Assistant 0.118 中，将有两项变更可能会影响您的自定义集成（custom integration）。
 
-## Removed deprecated `helpers.template.extract_entities`
+## 移除已弃用的 `helpers.template.extract_entities`
 
-The previously deprecated `extract_entities` method from the Template helper has been removed ([PR 42601](https://github.com/home-assistant/core/pull/42601)). Instead of extracting entities and then manually listen for state changes, use the new `async_track_template_result` from the Event helper. It will dynamically make sure that every touched entity is tracked correctly.
+模板辅助元素（Template helper）中先前已弃用的 `extract_entities` 方法已被移除（[PR 42601](https://github.com/home-assistant/core/pull/42601)）。与其先提取实体（entity）再手动监听状态（state）变化，不如使用事件辅助元素（Event helper）中新增的 `async_track_template_result`。它会动态地确保每个被触及的实体都得到正确跟踪。
 
 ```python
 from homeassistant.helpers.event import async_track_template_result, TrackTemplate
@@ -26,11 +26,11 @@ async_track_template_result(
 )
 ```
 
-## Improved System Health
+## 改进的系统健康状况
 
-Starting with Home Assistant 0.118, we're deprecating the old way of providing system health information for your integration. Instead, create a `system_health.py` file in your integration ([PR 42785](https://github.com/home-assistant/core/pull/42785)).
+从 Home Assistant 0.118 开始，我们将弃用为您的集成提供系统健康状况信息的旧方式。取而代之的是，请在您的集成中创建一个 `system_health.py` 文件（[PR 42785](https://github.com/home-assistant/core/pull/42785)）。
 
-Starting this release, you can also include health checks that take longer to resolve ([PR 42831](https://github.com/home-assistant/core/pull/42831)), like checking if the service is online. The results will be passed to the frontend when they are ready.
+从此版本开始，您还可以包含需要较长时间才能完成的健康检查（[PR 42831](https://github.com/home-assistant/core/pull/42831)），例如检查服务（service）是否在线。结果就绪后将会传递给前端。
 
 ```python
 """Provide info to system health."""

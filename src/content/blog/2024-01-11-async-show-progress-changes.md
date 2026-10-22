@@ -1,6 +1,6 @@
 ---
-title: Changes to FlowManager.async_show_progress
-description: "FlowHandler.async_show_progress has been updated:"
+title: FlowManager.async_show_progress 的变更
+description: "FlowHandler.async_show_progress 已更新："
 date: 2024-01-11
 authors:
   - Erik Montnémery
@@ -8,15 +8,15 @@ areas:
   - core
 ---
 
-`FlowHandler.async_show_progress` has been updated:
-- A new argument `progress_task` has been added, which will be mandatory in Home Assistant core release 2024.8
+`FlowHandler.async_show_progress` 已更新：
+- 新增了一个参数 `progress_task`，该参数在 Home Assistant Core 2024.8 版本中将成为必填项
 
-If `progress_task` is passed, `FlowManager` will:
-- Send an event to fronted once the task has finished
-- Cancel the `progress_task` if the user closes the config flow dialog before the task is done
+如果传入了 `progress_task`，`FlowManager` 将会：
+- 在任务完成后向前端（frontend）发送事件
+- 如果用户在任务完成前关闭了配置流程（config flow）对话框，则取消 `progress_task`
 
-This means derived classes are no longer responsible for interaction between the progress task state and the UI.
+这意味着派生类不再负责进度任务状态与 UI 之间的交互。
 
-`FlowHandler.async_show_progress` will log a warning if it's called without a `progress_task`. In Home Assistant core release 2024.8, the call will instead fail.
+如果在未传入 `progress_task` 的情况下调用 `FlowHandler.async_show_progress`，将会记录一条警告。在 Home Assistant Core 2024.8 版本中，该调用将改为直接失败。
 
-More details can be found in the [documentation](/core/integrations/flow-steps/) and in [core PR #107668](https://github.com/home-assistant/core/pull/107668) and [#107802](https://github.com/home-assistant/core/pull/107802).
+更多详情请参阅[文档](/core/integrations/flow-steps/)以及 [core PR #107668](https://github.com/home-assistant/core/pull/107668) 和 [#107802](https://github.com/home-assistant/core/pull/107802)。

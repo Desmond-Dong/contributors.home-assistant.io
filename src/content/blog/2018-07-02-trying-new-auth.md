@@ -1,6 +1,6 @@
 ---
-title: Trying the new auth system
-description: In Home Assistant 0.69 we introduced the foundation for a new authentication API.
+title: 试用新的身份验证系统
+description: 在 Home Assistant 0.69 中，我们引入了全新身份验证 API 的基础。
 date: 2018-07-02
 authors:
   - Paulus Schoutsen
@@ -8,26 +8,26 @@ areas:
   - core
 ---
 
-In Home Assistant 0.69 we introduced the foundation for a new [authentication API](/core/internals/auth/). We're switching from a single hardcoded API password to a refresh/access token based authentication system (powered by OAuth2).
+在 Home Assistant 0.69 中，我们引入了全新[身份验证 API](/core/internals/auth/) 的基础。我们正在从单一的硬编码 API 密码切换到基于刷新/访问令牌（refresh/access token）的身份验证系统（由 OAuth2 驱动）。
 
-For Home Assistant 0.73, I've sprinted together with [@awarecan] to ensure that we have reached a minimum viable product of the auth system:
+在 Home Assistant 0.73 中，我与 [@awarecan] 一起冲刺，确保身份验证系统达到了最小可行产品（MVP）：
 
-- Users can be managed via a built-in command line script.
-- The frontend will ask for username and password to login
-- If you opt-in for the new system, the API password will no longer work.
-- To not force a hard break with the ecosystem around Home Assistant, a temporary legacy mode has been added to turn API password support back on. This will be removed in the future.
+- 用户可以通过内置的命令行脚本进行管理。
+- 前端将要求输入用户名和密码进行登录
+- 如果您选择使用新系统，API 密码将不再可用。
+- 为了避免对 Home Assistant 周边的生态系统造成硬性中断，我们添加了一个临时的旧版模式（legacy mode）来重新启用 API 密码支持。该功能将在未来被移除。
 
-**The system is not yet ready for mainstream consumption**, we still need to add Hass.io support and a user interface to help guiding the user to create their first user account and to manage users. You can follow (and join!) the work to be done [here](https://github.com/home-assistant/core/issues?q=is%3Aissue+is%3Aopen+label%3Aauth).
+**该系统尚未准备好供大众使用**，我们仍需要添加 Hass.io 支持，以及一个用户界面来引导用户创建他们的第一个用户账户并管理用户。您可以在[这里](https://github.com/home-assistant/core/issues?q=is%3Aissue+is%3Aopen+label%3Aauth)关注（并参与！）待完成的工作。
 
-If you're interested in trying it out, keep on reading.
+如果您有兴趣试用，请继续阅读。
 
 <!--truncate-->
 
-## Trying it out
+## 试用方法
 
-This requires you to be running Home Assistant 0.73 beta or a later version.
+这要求您运行 Home Assistant 0.73 beta 或更高版本。
 
-First step will be to configure an auth provider. We are going to configure the built-in `homeassistant` auth provider. This provider will be the default one and stores users securely in the config directory.
+第一步是配置身份验证提供程序（auth provider）。我们将配置内置的 `homeassistant` 身份验证提供程序。该提供程序将成为默认提供程序，并将用户安全地存储在配置目录中。
 
 ```yaml
 # Example configuration.yaml entry
@@ -42,14 +42,14 @@ auth:
 ```
 
 > [!NOTE]
-> This rest of the instructions are no longer necessary in Home Assistant 0.74 or later.
+> 在 Home Assistant 0.74 或更高版本中，以下其余说明已不再必要。
 
-Next step is to create users. Open a terminal and navigate to your Home Assistant installation. The script for managing users is built into Home Assistant and can be invoked using `hass --script auth --config /path/to/config`.
+下一步是创建用户。打开终端并导航到您的 Home Assistant 安装目录。管理用户的脚本内置于 Home Assistant 中，可以使用 `hass --script auth --config /path/to/config` 来调用。
 
-![Screenshot showing the help output of the auth script](/img/en/blog/2018-07-experimental-auth/cli.png)
+![显示 auth 脚本帮助输出的截图](/img/en/blog/2018-07-experimental-auth/cli.png)
 
-If you restart Home Assistant and navigate to the frontend, you'll be prompted with a new login screen. If you enabled both auth providers, you will first have to pick which auth provider to use for authentication.
+如果您重启 Home Assistant 并进入前端，将会看到一个新的登录界面。如果您启用了两个身份验证提供程序，则需要先选择使用哪个身份验证提供程序进行身份验证。
 
-Once logged in, the frontend will store the access and a refresh token. The access token expires every 30 minutes and whenever Home Assistant restarts. The fronend will automatically fetch a new access token using the stored refresh token. We're using the OAuth2 standard for this. [More info in the docs](/core/internals/auth-api/).
+登录后，前端将存储访问令牌和刷新令牌。访问令牌每 30 分钟过期一次，并且在 Home Assistant 每次重启时也会过期。前端将使用存储的刷新令牌自动获取新的访问令牌。我们为此使用了 OAuth2 标准。[更多信息请参阅文档](/core/internals/auth-api/)。
 
 [@awarecan]: https://github.com/awarecan

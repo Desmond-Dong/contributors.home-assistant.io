@@ -1,6 +1,6 @@
 ---
-title: "Lovelace: Custom View Layouts"
-description: Custom Element developers can now create Custom View Layouts that users can load and use!
+title: "Lovelace：自定义视图布局"
+description: Custom Element 开发者现在可以创建自定义视图布局（Custom View Layouts），供用户加载和使用！
 date: 2020-09-30
 authors:
   - Zack Barett
@@ -8,11 +8,11 @@ areas:
   - frontend
 ---
 
-Custom Element developers can now create Custom View Layouts that users can load and use!
+Custom Element 开发者现在可以创建自定义视图布局（Custom View Layouts），供用户加载和使用！
 
-In 0.116, we will be changing the way that we create Views in Lovelace. In the past, we had 2 views, a default view and a panel view. When talking about adding Drag and Drop to Lovelace, we decided we could do even better and start allowing custom view types.
+在 0.116 中，我们将改变在 Lovelace 中创建视图（View）的方式。过去，我们有 2 种视图：默认视图和面板视图。在讨论为 Lovelace 添加拖放（Drag and Drop）功能时，我们决定可以做得更好，开始允许自定义视图类型。
 
-Custom Developers will now be able to create a view that receives the following properties:
+自定义开发者现在将能够创建一个接收以下属性的视图：
 
 ```ts
 interface LovelaceViewElement {
@@ -25,9 +25,9 @@ interface LovelaceViewElement {
 }
 ```
 
-Cards and Badges will be created and maintained by the core code and given to the custom view. The custom views are meant to load the cards and badges and display them in a customized layout.
+卡片（Card）和徽章（Badge）将由核心代码创建和维护，并交给自定义视图。自定义视图的用途是加载这些卡片和徽章，并以自定义的布局显示它们。
 
-Here is an example below: (note: this example does not have all of the properties but the necessities to show the example)
+下面是一个示例：（注意：此示例并未包含所有属性，仅包含展示该示例所必需的内容）
 
 ```js
 class MyNewView extends LitElement {
@@ -48,15 +48,15 @@ class MyNewView extends LitElement {
 }
 ```
 
-And you can define this element in the Custom Element Registry just as you would with a Custom Card:
+您可以像定义自定义卡片（Custom Card）一样，在 Custom Element 注册表（Custom Element Registry）中定义此元素：
 
 ```js
 customElements.define("my-new-view", MyNewView);
 ```
 
-You can find an example of this in our default view: `Masonry View` Located here: [frontend/src/panels/lovelace/views/hui-masonry-view.ts](https://github.com/home-assistant/frontend/blob/master/src/panels/lovelace/views/hui-masonry-view.ts)
+您可以在我们的默认视图中找到这样的示例：`Masonry View`，位于此处：[frontend/src/panels/lovelace/views/hui-masonry-view.ts](https://github.com/home-assistant/frontend/blob/master/src/panels/lovelace/views/hui-masonry-view.ts)
 
-A user who downloads and installs your new Custom View can then use it via editing the YAML configuration of their view to be:
+下载并安装了您的新自定义视图的用户，随后可以通过将其视图的 YAML 配置编辑为如下内容来使用它：
 
 ```yaml
 - title: Home View
@@ -65,7 +65,7 @@ A user who downloads and installs your new Custom View can then use it via editi
   cards: [...]
 ```
 
-Custom Developers can add a `layout` property to each card that can store a key, position info, width, height, etc:
+自定义开发者可以为每个卡片添加一个 `layout` 属性，用于存储键（key）、位置信息、宽度、高度等：
 
 ```yaml
 - type: weather-card
@@ -75,18 +75,18 @@ Custom Developers can add a `layout` property to each card that can store a key,
   entity: weather.my_weather
 ```
 
-### Breaking Change
+### 破坏性变更
 
-For Custom Card developers that use something like this:
+对于使用类似如下代码的自定义卡片开发者：
 
 ```js
 const LitElement = Object.getPrototypeOf(customElements.get("hui-view"));
 ```
 
-You will no longer be able to use the `hui-view` element to retrieve LitElement as it has been changed to be an `updatingElement`. Instead you can use:
+您将无法再使用 `hui-view` 元素来获取 LitElement，因为它已被更改为 `updatingElement`。作为替代，您可以使用：
 
 ```js
 const LitElement = Object.getPrototypeOf(customElements.get("hui-masonry-view"));
 ```
 
-But Note! This is not supported by HA. In the future, this may not work to import LitElement.
+但请注意！HA 并不支持这种方法。将来，这种导入 LitElement 的方式可能会失效。

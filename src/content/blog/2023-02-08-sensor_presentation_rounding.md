@@ -1,6 +1,6 @@
 ---
-title: The number of decimals used when displaying a sensor state is now configurable
-description: The number of decimal digits shown when displaying a sensor state is now configurable by the user.
+title: 显示传感器状态时使用的小数位数现在可配置
+description: 显示传感器状态时所显示的小数位数现在可由用户配置。
 date: 2023-02-08
 authors:
   - Erik Montnémery
@@ -8,17 +8,16 @@ areas:
   - core
 ---
 
-The number of decimal digits shown when displaying a sensor state is now configurable by the user. Integrations can suggest the number of
-decimal digits by setting the property `suggested_display_precision`. Integrations are encouraged to remove rounding for display and instead set property `suggested_display_precision`.
+显示传感器（sensor）状态时所显示的小数位数现在可由用户配置。集成（integration）可以通过设置属性 `suggested_display_precision` 来建议小数位数。我们鼓励集成移除用于显示的舍入，改为设置属性 `suggested_display_precision`。
 
-Round for presentation is done by the frontend, as well as by new template functions introduced in [core PR #87619](https://github.com/home-assistant/core/pull/87619).
+用于展示的舍入由前端（frontend）完成，同时也由 [core PR #87619](https://github.com/home-assistant/core/pull/87619) 中引入的新模板函数完成。
 
-The number of displayed decimal digits is influenced by unit conversion:
-  - Converting from a smaller to a larger unit increases the display precision
-  - Converting from a larger to a smaller unit decreases the display precision if the integration has set `suggested_display_precision`
-  - Minimum precision when converting from a larger to a smaller unit is 0, i.e. there's no rounding to tens, hundreds etc.
+显示的小数位数受单位转换的影响：
+  - 从较小单位转换为较大单位会增加显示精度
+  - 如果集成已设置 `suggested_display_precision`，从较大单位转换为较小单位会降低显示精度
+  - 从较大单位转换为较小单位时的最小精度为 0，即不会舍入到十位、百位等
 
-The number of displayed decimal digits is not influenced by unit conversion if the user has set the display precision themselves.
+如果用户已自行设置显示精度，则显示的小数位数不受单位转换的影响。
 
-Note:
-A similar concept where the sensor's state was rounded, detailed in [an earlier blog post](/blog/2023/01/25/sensor_rounding), has been reverted.
+注意：
+在[早前的一篇博客文章](/blog/2023/01/25/sensor_rounding)中详述的一个类似概念——对传感器的状态进行舍入——已被回退。

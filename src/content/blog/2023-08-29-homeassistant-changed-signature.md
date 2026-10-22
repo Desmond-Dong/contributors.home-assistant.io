@@ -1,6 +1,6 @@
 ---
-title: HomeAssistant.__init__ requires passing a string to it
-description: The signature of HomeAssistant.init has been changed from no arguments to require the configuration directory as a string to be passed to it.
+title: HomeAssistant.__init__ 需要向其传入一个字符串
+description: HomeAssistant.init 的签名已从无参数更改为要求将配置目录作为字符串传入。
 date: 2023-08-29
 authors:
   - Erik Montnémery
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-The signature of `HomeAssistant.__init__` has been changed from no arguments to require the configuration directory as a string to be passed to it. Scripts, tests etc. outside of the HomeAssistant core repo which create `HomeAssistant` objects will need to be updated.
+`HomeAssistant.__init__` 的签名已从无参数更改为要求将配置目录（configuration directory）作为字符串传入。在 HomeAssistant core 仓库之外创建 `HomeAssistant` 对象的脚本、测试等都需要进行相应更新。
 
-The change was introduced in [core PR#98442](https://github.com/home-assistant/core/pull/98442)
+此更改由 [core PR#98442](https://github.com/home-assistant/core/pull/98442) 引入。
 
-If backwards compatibility is important, this is a way to achieve it:
+如果向后兼容性很重要，可以通过以下方式实现：
 
 ```python
     try:

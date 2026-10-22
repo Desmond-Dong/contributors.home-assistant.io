@@ -1,6 +1,6 @@
 ---
-title: New sensor properties for long-term statistics
-description: The sensor entity model has been updated with two new properties, state_class and last_reset.
+title: 用于长期统计的新传感器属性
+description: 传感器实体模型新增了两个属性：state_class 和 last_reset。
 date: 2021-05-25
 authors:
   - Erik Montnémery
@@ -8,22 +8,22 @@ areas:
   - core
 ---
 
-The sensor entity model has been updated with two new properties, `state_class` and `last_reset`. The driver for both the new properties is to enable automatic generation of long-term statistics.
+传感器实体（entity）模型新增了两个属性：`state_class` 和 `last_reset`。引入这两个新属性的动机都是为了支持自动生成长期统计（long-term statistics）。
 
 ### state_class
 
-Sensor device classes such as `DEVICE_CLASS_TEMPERATURE` are used to represent wildly different types of data, for example:
+诸如 `DEVICE_CLASS_TEMPERATURE` 之类的传感器设备类（device class）被用于表示截然不同的数据类型，例如：
 
-- A regularly updated temperature measurement
-- Historical or statistic data, for example daily average temperature
-- Future data, for example tomorrow's forecast
+- 定期更新的温度测量值
+- 历史或统计数据，例如日平均温度
+- 未来数据，例如明天的天气预报
 
-Differentiating between those sensors which represent a measurement and those which don't is needed in order to automatically make a reasonable selection of sensors to include in long-term statistics.
+为了自动合理地筛选要纳入长期统计的传感器，需要区分表示测量值的传感器与不表示测量值的传感器。
 
-The [`state_class`](/core/entities/sensor/#properties) property classifies the type of state: The state could be a _measurement in present time_ from a temperature sensor or an energy meter_, a _historic value_ such as the average temperature during the last 24 hours or the amount of energy used last month, or a _predicted value_ such as a weather forecast or the next garbage pickup schedule. If `state_class="measurement"`, the state represents a current value, and not a historical aggregation or a prediction of the future. Otherwise, `state_class=None`. There is an [architecture discussion](https://github.com/home-assistant/architecture/discussions/557) with some additional background.
+[`state_class`](/core/entities/sensor/#properties) 属性对状态的类型进行分类：状态可以是_当前时刻的测量值_（来自温度传感器或电表）_、_历史值_（例如过去 24 小时的平均温度或上个月的用电量），也可以是_预测值_（例如天气预报或下次垃圾清运时间）。如果 `state_class="measurement"`，则状态表示当前值，而非历史聚合值或对未来的预测。否则，`state_class=None`。有一个[架构讨论](https://github.com/home-assistant/architecture/discussions/557)提供了更多相关背景信息。
 
-Note that _measurement in present time_ above does not imply that the state has to be updated with a certain frequency, or that the sensor is not allowed to do indirect measurements such as integrating power to calculate energy. To put it in another way, if the sensor represents the latest observation or the newest data point in a time series it qualifies as `state_class="measurement"`.
+请注意，上文的_当前时刻的测量值_并不意味着状态必须以一定的频率更新，也不意味着不允许传感器进行间接测量，例如对功率进行积分以计算能量。换一种说法，如果传感器表示时间序列中的最新观测值或最新数据点，那么它就符合 `state_class="measurement"`。
 
 ### last_reset
 
-The time when an accumulating sensor such as an electricity usage meter, gas meter, water meter etc. was initialized. If the time of initialization is unknown and the meter will never reset, set to UNIX epoch 0: `homeassistant.util.dt.utc_from_timestamp(0)`. Note that the `datetime.datetime` returned by the `last_reset` property will be converted to an ISO 8601-formatted string when the entity's state attributes are updated. When changing `last_reset`, the `state` must be a valid number.
+累积式传感器（例如电表、燃气表、水表等）被初始化的时间。如果初始化时间未知，并且该仪表永远不会重置，请将其设置为 UNIX 纪元 0：`homeassistant.util.dt.utc_from_timestamp(0)`。请注意，`last_reset` 属性返回的 `datetime.datetime` 会在实体的状态属性更新时被转换为 ISO 8601 格式的字符串。更改 `last_reset` 时，`state` 必须是有效的数字。

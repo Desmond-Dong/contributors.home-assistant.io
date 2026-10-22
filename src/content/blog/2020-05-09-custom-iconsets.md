@@ -1,6 +1,6 @@
 ---
-title: Custom icon sets
-description: If you are the maintainer of a custom icon set, you might need to update it.
+title: 自定义图标集
+description: 如果你是某个自定义图标集（custom icon set）的维护者，可能需要对其进行更新。
 date: 2020-05-09
 authors:
   - Bram Kragten
@@ -8,26 +8,26 @@ areas:
   - frontend
 ---
 
-If you are the maintainer of a custom icon set, you might need to update it.
+如果你是某个自定义图标集（custom icon set）的维护者，可能需要对其进行更新。
 
-In Home Assistant core version 0.110 we will change the way our icons are loaded. We no longer load all the `mdi` icons at once, and they will not become DOM elements.
-This will save us almost 5000 DOM elements and will reduce loading time.
+在 Home Assistant core 0.110 版本中，我们将改变图标的加载方式。我们不再一次性加载所有 `mdi` 图标，它们也不会再成为 DOM 元素。
+这将为我们节省近 5000 个 DOM 元素，并缩短加载时间。
 
-This also means we no longer use or load `<ha-iconset-svg>`, if your icon set relied on this element, you will have to change your icon set.
+这也意味着我们不再使用或加载 `<ha-iconset-svg>`，如果你的图标集依赖此元素，你将需要修改你的图标集。
 
-We introduced a new API where you can register your custom icon set with an async function, that we will call with the icon name as parameter.
-We expect a promise with an object of the icon requested. Your icon set can decide on a strategy for loading and caching.
+我们引入了一个新的 API，你可以通过一个异步（async）函数注册你的自定义图标集，我们会以图标名称作为参数来调用该函数。
+我们期望它返回一个 Promise，其中包含所请求图标的对象。你的图标集可以自行决定加载和缓存的策略。
 
-The format of the API is:
+API 的格式为：
 ```ts
 window.customIconsets: {
   [iconset_name: string]: (icon_name: string) => Promise< { path: string; viewBox?: string } > 
 };
 ```
-`path` is the path of the `svg`. This is the string that is in the `d` attribute of the `<path>` element.
-The `viewBox` is optional and will default to `0 0 24 24`.
+`path` 是 `svg` 的路径。也就是 `<path>` 元素 `d` 属性中的那个字符串。
+`viewBox` 是可选的，默认为 `0 0 24 24`。
 
-An very simple example of this for the icon `custom:icon`:
+下面以图标 `custom:icon` 为例，给出一个非常简单的示例：
 
 ```js
 async function getIcon(name) {
@@ -39,4 +39,4 @@ window.customIconsets = window.customIconsets || {};
 window.customIconsets["custom"] = getIcon;
 ```
 
-Home Assistant will call the fuction `getIcon("icon")` when the icon `custom:icon` is set.
+当图标 `custom:icon` 被设置时，Home Assistant 将调用 `getIcon("icon")` 函数。

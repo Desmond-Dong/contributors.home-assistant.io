@@ -1,6 +1,6 @@
 ---
-title: Deprecate use of @bind_hass and hass.components
-description: As of Home Assistant 2024.3, we deprecate the use of the @bind_hass decorator and thus also the use of hass.components.
+title: 弃用 @bind_hass 和 hass.components
+description: 自 Home Assistant 2024.3 起，我们弃用了 @bind_hass 装饰器，因此也弃用了 hass.components。
 date: 2024-02-27
 authors:
   - Jan-Philipp Benecke
@@ -8,20 +8,20 @@ areas:
   - core
 ---
 
-As of Home Assistant 2024.3, we deprecate the use of the `@bind_hass` decorator 
-and thus also the use of `hass.components`.
-Using `hass.components` will issue a warning in the logs.
-Authors of custom integrations are encouraged to update their code 
-to prevent any issues before Home Assistant 2024.9.
+自 Home Assistant 2024.3 起，我们弃用了 `@bind_hass` 装饰器，
+因此也弃用了 `hass.components`。
+使用 `hass.components` 将会在日志中发出警告。
+建议自定义集成（integration）的作者更新其代码，
+以在 Home Assistant 2024.9 之前避免出现任何问题。
 
-Starting from Home Assistant 2024.9, the `@bind_hass` decorator and 
-`hass.components` will be removed and will no longer work.
+从 Home Assistant 2024.9 开始，`@bind_hass` 装饰器和
+`hass.components` 将被移除，并且不再可用。
 
-## Use of `@bind_hass` decorator
+## 使用 `@bind_hass` 装饰器
 
-Integrations that use the `@bind_hass` decorator should be updated to remove them and pass the `hass` object as first parameter to the function instead:
+使用 `@bind_hass` 装饰器的集成应更新为移除该装饰器，并将 `hass` 对象作为第一个参数传递给函数：
 
-### New example
+### 新示例
 
 ```python
 from homeassistant.core import HomeAssistant
@@ -40,7 +40,7 @@ async def async_setup(hass: HomeAssistant, config):
     create_notification(hass, "You're already using the latest version!")
 ```
 
-### Old example
+### 旧示例
 
 ```python
 from homeassistant.core import HomeAssistant
@@ -61,13 +61,13 @@ async def async_setup(hass: HomeAssistant, config):
     create_notification("You're already using the latest version!")
 ```
 
-## Use of `hass.components` 
+## 使用 `hass.components` 
 
-Integrations that use `hass.components` should be updated to import the functions and classes directly
-from the integration package and pass the `hass` object as first parameter.
-Remember to include the imported components under `dependencies` in your `manifest.json`.
+使用 `hass.components` 的集成应更新为直接从集成包中导入函数和类，
+并将 `hass` 对象作为第一个参数传递。
+请记得在 `manifest.json` 的 `dependencies` 中包含所导入的组件。
 
-### New example
+### 新示例
 
 ```python
 from homeassistant.core import HomeAssistant
@@ -82,7 +82,7 @@ async def async_setup(hass: HomeAssistant, config):
     )
 ```
 
-### Old example
+### 旧示例
 
 ```python
 from homeassistant.core import HomeAssistant

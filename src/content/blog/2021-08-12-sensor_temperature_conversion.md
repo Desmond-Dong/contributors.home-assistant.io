@@ -1,6 +1,6 @@
 ---
-title: Temperature conversions moving to SensorEntity
-description: Temperature unit conversions are moving from the Entity base class to the SensorEntity base class.
+title: 温度单位转换迁移至 SensorEntity
+description: 温度单位转换正从 Entity 基类迁移至 SensorEntity 基类。
 date: 2021-08-12
 authors:
   - Erik Montnémery
@@ -8,29 +8,16 @@ areas:
   - core
 ---
 
-Temperature unit conversions are moving from the `Entity` base class to the `SensorEntity` base
-class. Unit conversions will only be done if the sensor's `device_class` attribute is set
-to `DEVICE_CLASS_TEMPERATURE`. If the `device_class` is not set or is not set to
-`DEVICE_CLASS_TEMPERATURE` temperature conversion will take place during a transition
-period and a warning will be logged.
+温度单位转换正从 `Entity` 基类迁移至 `SensorEntity` 基类。只有当传感器的 `device_class` 属性被设置为 `DEVICE_CLASS_TEMPERATURE` 时，才会执行单位转换。如果未设置 `device_class`，或者未将其设置为 `DEVICE_CLASS_TEMPERATURE`，那么在过渡期内仍会进行温度转换，并会记录一条警告日志。
 
-To facilitate this, the sensor entity model has been updated with two new properties, 
-`native_value` and `native_unit_of_measurement`. This allows us to add additional
-unit conversions in the future instead of relying on the integrations to do it themselves.
+为此，传感器实体（entity）模型新增了两个属性：`native_value` 和 `native_unit_of_measurement`。这样我们以后就可以添加更多的单位转换，而不必依赖各个集成（integration）自行实现。
 
-Sensor implementations should no longer implement the `state()` property function or set
-the `_attr_state` attribute. Sensor implementations should also not implement the
-`unit_of_measurement` property function, set the `_attr_unit_of_measurement` attribute
-or set the `unit_of_measurement` member of `EntityDescription`.
+传感器实现不应再实现 `state()` 属性函数，也不应再设置 `_attr_state` 属性。此外，传感器实现也不应实现 `unit_of_measurement` 属性函数，不应设置 `_attr_unit_of_measurement` 属性，也不应设置 `EntityDescription` 的 `unit_of_measurement` 成员。
 
 ### native_value
 
-The value reported by the sensor.
-The actual state written to the state machine may be modified by `SensorEntity` due to
-unit conversions.
+传感器报告的值。由于进行单位转换，写入状态机（state machine）的实际状态可能会被 `SensorEntity` 修改。
 
 ### native_unit_of_measurement
 
-The unit of measurement of the sensor, if any.
-The `unit_of_measurement` written to the state machine may be modified by `SensorEntity`
-due to unit conversions.
+传感器的测量单位（如有）。由于进行单位转换，写入状态机的 `unit_of_measurement` 可能会被 `SensorEntity` 修改。

@@ -1,6 +1,6 @@
 ---
-title: "Lovelace: getCardSize can now be async"
-description: Ever since we introduced lazy loading cards to Lovelace, getting the card size of a lazy loaded card was hard.
+title: "Lovelace：getCardSize 现在支持异步了"
+description: 自从我们在 Lovelace 中引入卡片懒加载（lazy loading）以来，获取懒加载卡片的卡片尺寸一直很困难。
 date: 2020-06-01
 authors:
   - Bram Kragten
@@ -8,19 +8,19 @@ areas:
   - frontend
 ---
 
-Ever since we introduced lazy loading cards to Lovelace, getting the card size of a lazy loaded card was hard.
+自从我们在 Lovelace 中引入卡片懒加载（lazy loading）以来，获取懒加载卡片的卡片尺寸一直很困难。
 
-We used to send out an error element before the element was loaded, which would have a `getCardSize` function. But that would be the wrong size.
-When the element would be defined we would, fire and rebuild the event so the right card would be recreated.
+过去，在元素加载完成之前，我们会发送一个错误元素，该元素会带有 `getCardSize` 函数。但那会是错误的尺寸。
+当元素被定义后，我们会触发并重建事件，以便重新创建正确的卡片。
 
-In 0.110 we stopped doing this, we would give back the correct element, but the element constructor would not be loaded yet, so it doesn't have the `getCardSize`.
-When the constructor is loaded, the element will be upgraded and we set the config. From that moment we can call `getCardSize`.
+在 0.110 中，我们停止了这种做法，我们会返回正确的元素，但此时元素的构造函数尚未加载，因此它没有 `getCardSize`。
+当构造函数加载完成后，元素会被升级，我们会设置配置。从那一刻起，我们就可以调用 `getCardSize`。
 
-In this version, we changed the logic for `getCardSize` so it will wait for this. This means some cards, like stacks, will return a promise because they have to wait for their children to be defined.
+在这个版本中，我们更改了 `getCardSize` 的逻辑，使其会等待这一过程完成。这意味着某些卡片（例如堆叠卡片，stacks）会返回一个 Promise，因为它们必须等待其子元素被定义。
 
-If you are a custom card developer and your custom card uses `getCardSize` to get the size of other cards, you have to adjust it to handle these promises.
+如果你是自定义卡片开发者，并且你的自定义卡片使用 `getCardSize` 来获取其他卡片的尺寸，你必须对其进行调整，以处理这些 Promise。
 
-Our function to get the card size, which you could copy, now looks like this:
+我们获取卡片尺寸的函数（你可以直接复制使用）现在如下所示：
 
 ```ts
 export const computeCardSize = (
@@ -38,8 +38,8 @@ export const computeCardSize = (
 };
 ```
 
-We first have the same check as before, if the element has a `getCardSize` function we will return that value, this should be a `number` or `Promise` that resolves to a `number`.
+首先，我们进行与之前相同的检查：如果元素具有 `getCardSize` 函数，我们将返回该值，它应该是一个 `number` 或解析为 `number` 的 `Promise`。
 
-If the function doesn't exist, we will check if the constructor of the element is registered, if it is, this means the element doesn't have a `getCardSize` and we will return `1` as we did before.
+如果该函数不存在，我们将检查元素的构造函数是否已注册；如果已注册，这意味着该元素没有 `getCardSize`，我们将像以前一样返回 `1`。
 
-If the element isn't registered yet, we will wait until it is and then call the same function again of the now defined card to get the size.
+如果元素尚未注册，我们将等待它注册完成，然后对现已定义的卡片再次调用同一函数以获取尺寸。

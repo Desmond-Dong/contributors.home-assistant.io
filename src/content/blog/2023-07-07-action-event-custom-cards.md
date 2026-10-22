@@ -1,6 +1,6 @@
 ---
-title: Action event for custom cards
-description: In the Home Assistant Core 2023.7 release, we introduced hass-action for custom cards.
+title: 自定义卡片的动作事件
+description: 在 Home Assistant Core 2023.7 版本中，我们为自定义卡片引入了 hass-action。
 date: 2023-07-07
 authors:
   - Paul Bottein
@@ -8,11 +8,11 @@ areas:
   - frontend
 ---
 
-In the Home Assistant Core 2023.7 release, we introduced `hass-action` for custom cards.
+在 Home Assistant Core 2023.7 版本中，我们为自定义卡片引入了 `hass-action`。
 
-If you are a custom cards developer, you can now use any [card action](https://www.home-assistant.io/dashboards/actions/) in your custom card by using the new `hass-action`.
+如果您是自定义卡片的开发者，现在可以通过使用新的 `hass-action`，在您的自定义卡片中使用任何[卡片动作（card action）](https://www.home-assistant.io/dashboards/actions/)。
 
-Example :
+示例：
 
 ```js
 // Define the action config

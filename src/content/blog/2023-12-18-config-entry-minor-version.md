@@ -1,6 +1,6 @@
 ---
-title: Config entry now supports minor versions
-description: Config entry now supports minor versions.
+title: 配置条目现在支持次版本
+description: 配置条目现在支持次版本。
 date: 2023-12-18
 authors:
   - Erik Montnémery
@@ -8,15 +8,15 @@ areas:
   - core
 ---
 
-Config entry now supports minor versions.
+配置条目（config entry）现在支持次版本（minor version）。
 
-If minor versions differ, but major versions are the same, the integration setup will be allowed to continue even if the integration does not implement `async_migrate_entry`. This means a minor version bump is backwards compatible, unlike a major version bump which causes the integration to fail setup if the user downgrades HA Core without restoring configuration from backup.
+如果次版本不同但主版本相同，即使集成未实现 `async_migrate_entry`，集成设置也将被允许继续进行。这意味着提升次版本是向后兼容的，而提升主版本则不然——如果用户在未从备份恢复配置的情况下降级 HA Core，集成将无法完成设置。
 
-### Background
+### 背景
 
-We have been very conservative with versioning config entry data because it breaks downgrading to an older version of Home Assistant Core. This means in most cases, we don't version, and the integrations instead do a kind of soft upgrade where they may, for example, do `dict.get` on config entry data that was not in an initial version, transform the data during setup etc.
+我们对配置条目数据的版本控制一直非常保守，因为这会导致无法降级到旧版本的 Home Assistant Core。这意味着在大多数情况下，我们不进行版本控制，而是让集成采用一种软升级的方式，例如，对初始版本中不存在的配置条目数据使用 `dict.get`，在设置过程中转换数据等。
 
-By introducing minor versions similar to that already offered by the storage helper, this pattern is no longer recommended.
-A bump of the minor version should be done instead whenever the newly added, or otherwise changed, data does not break older versions.
+通过引入类似于存储辅助元素（storage helper）已提供的次版本机制，这种模式不再被推荐。
+相反，只要新增的或其他变更的数据不会破坏旧版本，就应该提升次版本。
 
-More details can be found in the [documentation on config entry migration](/core/integrations/config-entries/#migrate-a-config-entry) and in [core PR #105749](https://github.com/home-assistant/core/pull/105479).
+更多详细信息请参阅[配置条目迁移文档](/core/integrations/config-entries/#migrate-a-config-entry)以及 [core PR #105749](https://github.com/home-assistant/core/pull/105479)。

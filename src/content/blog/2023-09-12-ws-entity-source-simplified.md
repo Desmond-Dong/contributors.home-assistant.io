@@ -1,6 +1,6 @@
 ---
-title: The websocket command entity/source has been modified
-description: "The websocket command entity/source has been greatly simplified:"
+title: WebSocket 命令 entity/source 已被修改
+description: "WebSocket 命令 entity/source 已被大大简化："
 date: 2023-09-12
 authors:
   - Erik Montnémery
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-The websocket command `entity/source` has been greatly simplified:
-- It's no longer possible to get information for a single entity
-- Only the domain of the entities is included in the response, `custom_component`, `config_entry` and `source` are no longer present.
+WebSocket 命令 `entity/source` 已被大大简化：
+- 已无法获取单个实体（entity）的信息
+- 响应中仅包含实体的域（domain），`custom_component`、`config_entry` 和 `source` 不再存在。
 
-### New response example
+### 新的响应示例
 ```json
 {
   "light.entity_1": {
@@ -24,7 +24,7 @@ The websocket command `entity/source` has been greatly simplified:
 }
 ```
 
-### Old response example
+### 旧的响应示例
 ```json
 {
   "light.entity_1": {
@@ -42,4 +42,4 @@ The websocket command `entity/source` has been greatly simplified:
 ```
 
 
-The change was introduced in [core PR#99439](https://github.com/home-assistant/core/pull/99439)
+此更改由 [core PR#99439](https://github.com/home-assistant/core/pull/99439) 引入。

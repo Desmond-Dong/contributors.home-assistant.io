@@ -1,6 +1,6 @@
 ---
-title: Raising exceptions with translations
-description: Translation support applies to HomeAssistantError and subclasses like ServiceValidationError.
+title: 抛出带翻译的异常
+description: 翻译支持适用于 HomeAssistantError 及其诸如 ServiceValidationError 之类的子类。
 date: 2024-03-15
 authors:
   - Jan Bouwhuis
@@ -8,13 +8,13 @@ areas:
   - core
 ---
 
-### Logging exceptions with translation support
+### 记录带翻译支持的异常
 
-Translation support applies to `HomeAssistantError` and subclasses like `ServiceValidationError`. When a `translation_domain` and `translation_key` is set and the error message is added in `strings.json`, it is no longer needed to add the error message string for the local logging. Home Assistant will automatically fetch the English error message from the translation cache.
+翻译支持适用于 `HomeAssistantError` 及其诸如 `ServiceValidationError` 之类的子类。当设置了 `translation_domain` 和 `translation_key`，并且错误消息已添加到 `strings.json` 中时，就不再需要为本地日志记录添加错误消息字符串。Home Assistant 会自动从翻译缓存中获取英文错误消息。
 
-When raising `HomeAssistantError` or a subclass with translation support we should remove the log message from the argument list to enable it to be fetched from the translation cache.
+在抛出 `HomeAssistantError` 或带有翻译支持的子类时，我们应该从参数列表中移除日志消息，以便使其能够从翻译缓存中获取。
 
-For example:
+例如：
 
 ```python
 async def async_select_index(hass: HomeAssistant, index: int) -> None:
@@ -32,7 +32,7 @@ async def async_select_index(hass: HomeAssistant, index: int) -> None:
         ) from exc
 ```
 
-The error message is placed in `strings.json`:
+错误消息放置在 `strings.json` 中：
 
 ```json
 {

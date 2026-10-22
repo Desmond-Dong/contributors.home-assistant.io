@@ -1,6 +1,6 @@
 ---
-title: Entity state formatting
-description: "In the Home Assistant Core 2023.9 release, we introduced 3 new methods to the hass object to allow entity state formatting with localization support for custom cards:"
+title: 实体状态格式化
+description: "在 Home Assistant Core 2023.9 版本中，我们为 hass 对象引入了 3 个新方法，让自定义卡片可以实现支持本地化的实体状态格式化："
 date: 2023-08-29
 authors:
   - Paul Bottein
@@ -8,13 +8,13 @@ areas:
   - core
 ---
 
-In the Home Assistant Core 2023.9 release, we introduced 3 new methods to the `hass` object to allow entity state formatting with localization support for custom cards:
+在 Home Assistant Core 2023.9 版本中，我们为 `hass` 对象引入了 3 个新方法，以便为自定义卡片提供支持本地化的实体（entity）状态格式化：
 
 - `hass.formatEntityState`
 - `hass.formatEntityAttributeValue`
 - `hass.formatEntityAttributeName`
 
-Example:
+示例：
 
 ```js
 hass.formatEntityState(hass.states["cover.living_room_shutter"]); 
@@ -22,4 +22,4 @@ hass.formatEntityState(hass.states["cover.living_room_shutter"]);
 // It will return "Ouvert" if the user language is French.
 ```
 
-For more details, refer to the [entity state formatting documentation](/frontend/reference/hass-object/).
+更多详细信息，请参阅[实体状态格式化文档](/frontend/reference/hass-object/)。

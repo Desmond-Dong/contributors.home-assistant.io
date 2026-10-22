@@ -1,6 +1,6 @@
 ---
-title: The naming of MQTT entities changes to correspond with HA guidelines
-description: The way MQTT entities are named and how device configuration can be shared between discovered entities has changed
+title: MQTT 实体（entity）的命名变更为符合 HA 准则
+description: MQTT 实体的命名方式以及在已发现的实体之间共享设备配置的方式已发生变更
 date: 2023-07-21
 authors:
   - Jan Bouwhuis
@@ -8,17 +8,17 @@ areas:
   - core
 ---
 
-The way MQTT entities are named and how device configuration can be shared between discovered entities has changed
+MQTT 实体的命名方式以及在已发现的实体之间共享设备配置的方式已发生变更
 
-### Sharing of device configuration
+### 共享设备配置
 
-Discovered MQTT entities can share device configuration, meaning one entity can include the full device configuration and other entities can link to that device by only setting mandatory fields.
-The mandatory fields were previously limited to at least one of `connection` and `identifiers`, but has now been extended to at least one of `connection` and `identifiers` as well as the `name`.
+已发现的 MQTT 实体可以共享设备配置，这意味着一个实体可以包含完整的设备配置，而其他实体只需设置必填字段即可关联到该设备。
+必填字段以前仅限于 `connection` 和 `identifiers` 中的至少一个，但现在已扩展为 `connection` 和 `identifiers` 中的至少一个，以及 `name`。
 
-### Naming of MQTT entities
+### MQTT 实体的命名
 
-Naming of MQTT entities has been changed to be aligned with the [entity naming guidelines](/core/entities/naming/):
+MQTT 实体的命名已变更为与[实体命名准则](/core/entities/naming/)保持一致：
 
-- The `has_entity_name` entity will be set to `True` on all MQTT entities
-- Unnamed `binary_sensor`, `button`, `number` and `sensor` entities will now be named by their device class instead of being named `MQTT binary sensor" etc.
-- It's now allowed to set an MQTT entity's name to `None` to mark it as the main feature of a device
+- 所有 MQTT 实体的 `has_entity_name` 实体将被设置为 `True`
+- 未命名的 `binary_sensor`、`button`、`number` 和 `sensor` 实体现在将根据其设备类别（device class）命名，而不再被命名为 `MQTT binary sensor"` 等
+- 现在允许将 MQTT 实体的名称设置为 `None`，以将其标记为设备的主要功能

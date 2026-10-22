@@ -1,6 +1,6 @@
 ---
-title: Introducing drafting of PRs in our review process
-description: Home Assistant gets lots of contributions, which is absolutely amazing! But when having lots of PRs, it becomes harder to keep track of the state of those.
+title: 在审查流程中引入 PR 草稿机制
+description: Home Assistant 收到了大量的贡献，这绝对令人欣喜！但当 PR 数量众多时，就更难追踪它们的状态了。
 date: 2023-02-07
 authors:
   - Franck Nijhof
@@ -8,64 +8,42 @@ areas:
   - core
 ---
 
-Home Assistant gets lots of contributions, which is absolutely amazing! But
-when having lots of PRs, it becomes harder to keep track of the state of those.
+Home Assistant 收到了大量的贡献，这绝对令人欣喜！但当 PR 数量众多时，就更难追踪它们的状态了。
 
-To help with this, we are introducing a new process to our review process that
-automatically drafts PRs when they require more work before they can be reviewed
-again (or merged).
+为了解决这个问题，我们在审查流程中引入了一个新流程：当 PR 需要进一步完善才能再次接受审查（或合并）时，会自动将其置为草稿状态。
 
-We have adjusted our bot to automatically draft PRs if a review has requested
-changes to be made. Once the changes have been made, the author of the PR can
-click the "Ready for review" button to un-draft the PR and make it ready for
-review again.
+我们已调整了机器人，当审查提出需要更改时，会自动将 PR 置为草稿状态。一旦完成这些更改，PR 的作者就可以点击“Ready for review”（准备审查）按钮，取消 PR 的草稿状态，使其再次准备好接受审查。
 
-![The ready for review button in the bottom of a PR in draft mode](/img/en/blog/2023-02-07-introducing-PR-drafting-in-reviews/ready-for-review.png)
+![草稿模式下 PR 底部的“Ready for review”按钮](/img/en/blog/2023-02-07-introducing-PR-drafting-in-reviews/ready-for-review.png)
 
-Before you click the "Ready for review" button, make sure you have addressed
-all requested changes, and all our CI jobs and checks are passing successfully.
+在点击“Ready for review”按钮之前，请确保你已经处理了所有要求的更改，并且我们所有的 CI 任务和检查都已成功通过。
 
-## What is a draft PR?
+## 什么是草稿 PR？
 
-A draft PR is a PR that is not ready for review yet. It is a way to let others
-know that you are working on something, but it is not ready for review and
-merging yet.
+草稿 PR 是指尚未准备好接受审查的 PR。它是一种让他人知道你正在进行某项工作的方式，但它还没有准备好接受审查和合并。
 
-Draft PRs are recognizable by the "Draft" label in the top right of the PR
-and show up with a grey merge icon eveywhere in the GitHub UI.
+草稿 PR 可以通过 PR 右上角的“Draft”（草稿）标签来识别，并且在 GitHub 界面的各处都会显示灰色的合并图标。
 
-![This is what a PR in draft looks like](/img/en/blog/2023-02-07-introducing-PR-drafting-in-reviews/pr-in-draft.png)
+![这就是处于草稿状态的 PR 的样子](/img/en/blog/2023-02-07-introducing-PR-drafting-in-reviews/pr-in-draft.png)
 
-This doesn't mean you should open a PR to start working on something; please
-only open a PR if you think it is ready for review and merging. However,
-after opening a PR, there may be a reason to put it back into draft state.
+这并不意味着你应该先创建 PR 再开始着手工作；请只在你认为 PR 已经准备好接受审查和合并时才创建它。不过，在创建 PR 之后，也可能有理由将其重新置为草稿状态。
 
-For example, opening a PR will automatically trigger our CI jobs
-and checks. These checks can reveal issues in your code that need adjustments,
-or of course, an actual review took place that requested changes.
+例如，创建 PR 会自动触发我们的 CI 任务和检查。这些检查可能会发现你的代码中需要调整的问题，当然，也可能是实际的审查提出了更改要求。
 
-You can put any of your PRs back into draft at any moment, by clicking
-the "Convert to draft" link in the top right of your PR.
+你可以随时通过点击 PR 右上角的“Convert to draft”（转换为草稿）链接，将你的任何 PR 重新置为草稿状态。
 
-![Putting a PR in draft is something you can do too](/img/en/blog/2023-02-07-introducing-PR-drafting-in-reviews/convert-to-draft.png)
+![将 PR 置为草稿也是你自己可以做到的操作](/img/en/blog/2023-02-07-introducing-PR-drafting-in-reviews/convert-to-draft.png)
 
-## Why are we doing this?
+## 我们为什么要这样做？
 
-As a reviewer, you are presented with a lot of PRs. Some of them are ready for
-review, and some of them are not. Typically, the only way to find out, is to open
-the PR and look at it, to discover it is still in progress.
+作为审查者，你会面对大量的 PR。其中一些已准备好接受审查，而另一些则没有。通常，了解这一点的唯一方法就是打开 PR 进行查看，结果却发现它仍在进行中。
 
-This is not only a waste of time but also a waste of energy. Especially
-considering this happens to multiple reviewers on the same PR multiple times
-a day.
+这不仅浪费时间，也浪费精力。尤其是考虑到同一个 PR 每天会让多位审查者多次遇到这种情况。
 
-The draft state of a PR is visible in all places in GitHub. In notifications,
-searches, and just the overview of PRs. Above all, it is easily filterable.
+PR 的草稿状态在 GitHub 的所有地方都可见。在通知、搜索以及 PR 概览中都可以看到。最重要的是，它可以轻松地进行筛选。
 
-This gives reviewers a better focus on what can actually use their attention
-right now.
+这让审查者能够更好地专注于当前真正需要他们关注的内容。
 
-More background information can be found in this
-[Google Document](https://docs.google.com/document/d/11_x2YUmAD07JN7JMM4YIIAWVGTJsOB0UptN8hlmWFWg/edit?usp=sharing).
+更多背景信息可以在这份 [Google 文档](https://docs.google.com/document/d/11_x2YUmAD07JN7JMM4YIIAWVGTJsOB0UptN8hlmWFWg/edit?usp=sharing)中找到。
 
-Or, [read all about our review process on this page](/start/pull-requests/).
+或者，[在此页面上阅读关于我们审查流程的全部内容](/start/pull-requests/)。

@@ -1,6 +1,6 @@
 ---
-title: Long term statistics now tracks the source entity's unit
-description: Long term statistics now allows showing statistics in a different unit than it's stored in.
+title: 长期统计现在跟踪源实体的单位
+description: 长期统计现在允许以不同于存储单位的单位显示统计数据。
 date: 2022-09-29
 authors:
   - Erik Montnémery
@@ -8,16 +8,15 @@ areas:
   - core
 ---
 
-Long term statistics now allows showing statistics in a different unit than it's stored in. For example, it's possible to show statistics stored as `kWh` as `Wh`, `kWh` or `MWh`.
+长期统计（long term statistics）现在允许以不同于存储单位的单位显示统计数据。例如，可以将以 `kWh` 存储的统计数据显示为 `Wh`、`kWh` 或 `MWh`。
 
-The changes are implemented in a series of PRs:
+这些更改是通过一系列 PR 实现的：
 - https://github.com/home-assistant/core/pull/78031
 - https://github.com/home-assistant/core/pull/78578
 - https://github.com/home-assistant/core/pull/79370
 
-The background is that we allow overriding the unit of several sensor device classes, and this override should also be reflected when viewing long term statistics.
+背景是，我们允许覆盖多个传感器设备类（sensor device class）的单位，而在查看长期统计时也应反映此覆盖设置。
 
-This affects authors of code calling the following WS APIs:
- - `recorder/adjust_sum_statistics` - A new mandatory parameter `adjustment_unit_of_measurement` has been added, which defines the unit used by the `adjustment` parameter.
- - `recorder/statistics_during_period` - In case of statistics generated from sensor entities, the unit of returned statistics will be converted to the sensor's `unit_of_measurement`. This behavior can be controlled by passing the optional `units` parameter.
- 
+这会影响调用以下 WS API 的代码作者：
+ - `recorder/adjust_sum_statistics` - 新增了一个必填参数 `adjustment_unit_of_measurement`，用于定义 `adjustment` 参数所使用的单位。
+ - `recorder/statistics_during_period` - 对于从传感器实体（sensor entity）生成的统计数据，返回统计数据的单位将被转换为传感器的 `unit_of_measurement`。可以通过传递可选参数 `units` 来控制此行为。

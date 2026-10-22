@@ -1,6 +1,6 @@
 ---
-title: AutomationActionType deprecation for 2022.9
-description: For Home Assistant Core 2022.9, we have deprecated AutomationActionType, AutomationTriggerInfo, and AutomationTriggerData from homeassistant/components/automation/init.py.
+title: 2022.9 中 AutomationActionType 的弃用
+description: 在 Home Assistant Core 2022.9 中，我们弃用了 homeassistant/components/automation/init.py 中的 AutomationActionType、AutomationTriggerInfo 和 AutomationTriggerData。
 date: 2022-08-15
 authors:
   - Marc Mueller
@@ -8,16 +8,15 @@ areas:
   - core
 ---
 
-For Home Assistant Core 2022.9, we have deprecated `AutomationActionType`, `AutomationTriggerInfo`,
-and `AutomationTriggerData` from `homeassistant/components/automation/__init__.py`.
-They are being replaced by `TriggerActionType`, `TriggerInfo`, and `TriggerData`
-from `homeassistant/helpers/trigger.py`.
+在 Home Assistant Core 2022.9 中，我们弃用了 `homeassistant/components/automation/__init__.py` 中的 `AutomationActionType`、`AutomationTriggerInfo`
+和 `AutomationTriggerData`。
+它们将被 `homeassistant/helpers/trigger.py` 中的 `TriggerActionType`、`TriggerInfo` 和 `TriggerData`
+所取代。
 
-| Old | New |
+| 旧 | 新 |
 | --- | --- |
 | `AutomationActionType` | `TriggerActionType` |
 | `AutomationTriggerInfo` | `TriggerInfo` |
 | `AutomationTriggerData` | `TriggerData` |
 
-Furthermore, we recommend updating the `automation_info` parameter name for the
-`async_attach_trigger` function to `trigger_info`.
+此外，我们建议将 `async_attach_trigger` 函数的 `automation_info` 参数名更新为 `trigger_info`。

@@ -1,6 +1,6 @@
 ---
-title: Adopting a new way to name entities
-description: We are working on improving and standardizing our entity naming. This will allow us to show, in the UI, entities in the right context in the future while removing some error-prone magic mangling of entity names from the code base.
+title: 采用新的实体命名方式
+description: 我们正在改进并规范实体（entity）的命名方式。这将使我们将来能够在 UI 中于正确的上下文中展示实体，同时从代码库中移除一些容易出错的实体名称魔法式处理。
 date: 2022-07-10
 authors:
   - Erik Montnémery
@@ -8,56 +8,56 @@ areas:
   - core
 ---
 
-We are working on improving and standardizing our entity naming. This will allow us to show, in the UI, entities in the right context in the future while removing some error-prone magic mangling of entity names from the code base.
+我们正在改进并规范实体（entity）的命名方式。这将使我们将来能够在 UI 中于正确的上下文中展示实体，同时从代码库中移除一些容易出错的实体名称魔法式处理。
 
-The short story is:
+简单来说：
 
-- Devices have their name as they have today, for example, "Dishwasher".
-- Entities will have their own name (without device, area). Or, they may optionally set the name to `None` (in that case they inherit the device name).
-- Device, Area, and Entity names all start with a capital letter, the rest of the words are lower case (unless it's a word that represents a brand/name/abbreviation of course).
-- Every entity which has been migrated to follow these rules should set the [`has_entity_name`](/core/entities/naming/) property to `True`.
+- 设备（device）的名称与现在一样，例如“Dishwasher”。
+- 实体将拥有自己的名称（不包含设备、区域）。或者，它们也可以选择将名称设置为 `None`（在这种情况下将继承设备名称）。
+- 设备、区域和实体的名称都以大写字母开头，其余单词为小写（当然，代表品牌/名称/缩写的单词除外）。
+- 每个已迁移并遵循这些规则的实体都应将 [`has_entity_name`](/core/entities/naming/) 属性设置为 `True`。
 
-During the migration period, we use the `has_entity_name` property to create "backward compatible" friendly names. In the future, we can show deprecation warnings for entities that don't set this property, and later, remove it entirely.
+在迁移期间，我们使用 `has_entity_name` 属性来创建“向后兼容”的友好名称。将来，我们可以对未设置此属性的实体显示弃用警告，之后再将其完全移除。
 
-The frontend is going to be adjusted for this. It will be able to show the entities/devices in various ways, what suits the context the most.
+前端将为此进行调整。它将能够以各种方式显示实体/设备，采用最适合当前上下文的方式。
 
-### Example
+### 示例
 
-This illustrates how devices and entities should be named according to the new recommendations (type: entity name / state object's `friendly_name` / `entity_id`).
-Developers only need to set device name and entity name, the `friendly_name` and `entity_id` are automatically generated.
+这说明了根据新的建议，设备和实体应如何命名（类型：实体名称 / 状态对象的 `friendly_name` / `entity_id`）。
+开发者只需设置设备名称和实体名称，`friendly_name` 和 `entity_id` 会自动生成。
 
-- Device: Dishwasher
-  - Switch: `None` / Dishwasher / `switch.dishwasher`
-  - Sensor: Power usage / Dishwasher Power usage / `sensor.dishwasher_power_usage`
-- Device: Laundry machine
-  - Switch: `None` / Laundry machine / `switch.laundry_machine`
-  - Sensor: Power usage / Laundry machine Power usage / `sensor.laundry_machine_power_usage`
+- 设备：Dishwasher
+  - 开关：`None` / Dishwasher / `switch.dishwasher`
+  - 传感器：Power usage / Dishwasher Power usage / `sensor.dishwasher_power_usage`
+- 设备：Laundry machine
+  - 开关：`None` / Laundry machine / `switch.laundry_machine`
+  - 传感器：Power usage / Laundry machine Power usage / `sensor.laundry_machine_power_usage`
 
-## Background
+## 背景
 
-Home Assistant models the home of a user into three levels:
+Home Assistant 将用户的家建模为三个层级：
 
-- Area (eg. Living Room)
-- Device (eg. Switch)
-- Entity (eg. Power usage)
+- 区域（area，例如：客厅）
+- 设备（device，例如：开关）
+- 实体（entity，例如：用电量）
 
-Entities in Home Assistant are the data points provided by a device and can represent specific controls (a switch of the device, a light of the device).
+Home Assistant 中的实体是由设备提供的数据点，可以表示特定的控制（设备的开关、设备的灯）。
 
-Because Home Assistant used to only have entities in the first many years of its existence, a lot of functionality is based around entities in Home Assistant, the main one being the UI.
+由于 Home Assistant 在诞生后的最初许多年里只有实体，因此 Home Assistant 的大量功能都围绕实体构建，其中最主要的就是 UI。
 
-Let’s say you have 2 Shelly switches that report power usage named Dishwasher and Laundry Machine. Both devices have a switch entity and a power sensor. The devices and entities would previously look like this (type: entity name / state object `friendly_name` / `entity_id`):
+假设你有 2 个会报告用电量、名为 Dishwasher 和 Laundry Machine 的 Shelly 开关。这两个设备都有一个开关实体和一个用电量传感器。在此之前的设备和实体会是这样的（类型：实体名称 / 状态对象的 `friendly_name` / `entity_id`）：
 
-- Device: Dishwasher
-  - Switch: Dishwasher Switch / Dishwasher Switch / `switch.dishwasher_switch`
-  - Sensor: Dishwasher Power usage / Dishwasher Power usage / `sensor.dishwasher_power_usage`
-- Device: Laundry machine
-  - Switch: Laundry machine Switch / Laundry machine Switch / `switch.laundry_machine_switch`
-  - Sensor: Laundry machine Power usage / Laundry machine Power usage / `sensor.laundry_machine_power_usage`
+- 设备：Dishwasher
+  - 开关：Dishwasher Switch / Dishwasher Switch / `switch.dishwasher_switch`
+  - 传感器：Dishwasher Power usage / Dishwasher Power usage / `sensor.dishwasher_power_usage`
+- 设备：Laundry machine
+  - 开关：Laundry machine Switch / Laundry machine Switch / `switch.laundry_machine_switch`
+  - 传感器：Laundry machine Power usage / Laundry machine Power usage / `sensor.laundry_machine_power_usage`
 
-### Why is this a problem?
+### 为什么这是一个问题？
 
-There is not a single source of truth for a device name because entities included the device name in their name.
+设备名称没有单一的可信来源，因为实体将设备名称包含在了自己的名称中。
 
-Because we “solved” a problem for the UI and the `entity_id` by including the device name in the entity name, we now have this solution applied to all places where we use entities and have to work around this solution.
+因为我们通过将设备名称包含在实体名称中，“解决”了 UI 和 `entity_id` 的一个问题，如今这一解决方案已被应用到所有使用实体的地方，而我们不得不围绕这一解决方案进行变通。
 
-This naming scheme makes it unnecessarily difficult to migrate the UI towards hierarchical views of areas->devices->entities instead of long lists of entities.
+这种命名方案让把 UI 迁移到“区域->设备->实体”的层级视图（而非冗长的实体列表）变得不必要地困难。

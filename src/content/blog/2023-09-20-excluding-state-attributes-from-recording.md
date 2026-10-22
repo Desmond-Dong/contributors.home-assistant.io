@@ -1,6 +1,6 @@
 ---
-title: New way of excluding state attributes from recording
-description: The way in which state attributes are excluded from recording has changed
+title: 从记录中排除状态属性的新方法
+description: 从记录中排除状态属性的方式已发生变化
 date: 2023-09-20
 authors:
   - Erik Montnémery
@@ -8,14 +8,14 @@ areas:
   - core
 ---
 
-The way in which state attributes are excluded from recording has changed
+从记录中排除状态属性（state attributes）的方式已发生变化
 
-The recorder platforms have been replaced with two new attributes which can be set in classes derived from `Entity`:
-- `_entity_component_unrecorded_attributes: frozenset[str]` - This should be set by base component entity classes, e.g. `LightEntity`
-- `_unrecorded_attributes: frozenset[str]` - This should be set by derived platform classes, e.g. `HueLight` to exclude 
-additional, integration specific, attributes from recording.
+Recorder 平台已被两个新属性取代，这两个属性可在派生自 `Entity` 的类中进行设置：
+- `_entity_component_unrecorded_attributes: frozenset[str]` - 此属性应由基础组件实体类设置，例如 `LightEntity`
+- `_unrecorded_attributes: frozenset[str]` - 此属性应由派生的平台类设置，例如 `HueLight`，用于将
+额外的、特定于集成的属性排除在记录之外。
 
 
-More details can be found in the [entity documentation](/core/entities/state-attributes/#keep-attributes-out-of-the-history).
+更多详情可参阅[实体（entity）文档](/core/entities/state-attributes/#keep-attributes-out-of-the-history)。
 
-Background for the change is in [architecture discussion #964](https://github.com/home-assistant/architecture/discussions/964).
+此次变更的背景信息见[架构讨论 #964](https://github.com/home-assistant/architecture/discussions/964)。

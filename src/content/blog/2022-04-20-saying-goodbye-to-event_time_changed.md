@@ -1,6 +1,6 @@
 ---
-title: Saying goodbye to the time_changed event
-description: With Home Assistant Core 0.113, we began transiting to using the asyncio event loop for scheduling events.
+title: 告别 time_changed 事件
+description: 在 Home Assistant Core 0.113 中，我们开始过渡到使用 asyncio 事件循环来调度事件。
 date: 2022-04-20
 authors:
   - J. Nick Koston
@@ -8,14 +8,11 @@ areas:
   - core
 ---
 
-With Home Assistant Core 0.113, we began transiting to using the asyncio event loop for scheduling events.
+在 Home Assistant Core 0.113 中，我们开始过渡到使用 asyncio 事件循环来调度事件。
 
-With 2022.5, we are excited to announce that this process is now complete. The legacy `time_changed` event, also known as `EVENT_TIME_CHANGED` is no longer fired every second. Integrations that listen for all events no longer need to filter out `EVENT_TIME_CHANGED`. Integrations that run in a separate thread may see slight performance benefits since they will no longer be awakened every second.
+在 2022.5 中，我们很高兴地宣布这一过程现已完成。旧的 `time_changed` 事件（也称为 `EVENT_TIME_CHANGED`）不再每秒触发一次。监听所有事件的集成（integration）不再需要过滤掉 `EVENT_TIME_CHANGED`。在独立线程中运行的集成可能会获得轻微的性能提升，因为它们不再每秒被唤醒一次。
 
-With the previous implementation, consumers would subscribe to the `time_changed` event and check the time every time it fired to see if it was a match. This pattern led to many callbacks where most of the time, the callback would reject the event and continue receiving callbacks until the desired time was reached.
+在之前的实现中，使用者会订阅 `time_changed` 事件，并在它每次触发时检查时间以确定是否匹配。这种模式导致了大量回调，而在大多数情况下，回调会拒绝该事件并继续接收后续回调，直到到达所需的时间。
 
-If your custom integration is still relying on listening for `time_changed` events, it will need to transition to using one of the built-in event helpers, which are, in most cases, a one-line drop-in replacement. For more information, please review the [integration
-documentation on listening for events](/core/integrations/events/#time).
-
-
-
+如果您自定义的集成仍然依赖于监听 `time_changed` 事件，则需要过渡为使用内置的事件辅助方法（helper）之一，在大多数情况下，这只需一行代码即可直接替换。有关更多信息，请查看[关于监听事件的
+集成文档](/core/integrations/events/#time)。

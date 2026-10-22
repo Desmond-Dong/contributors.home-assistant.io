@@ -1,6 +1,6 @@
 ---
-title: Bluetooth passive sensor API changes for 2022.9
-description: For Home Assistant Core 2022.9 we have changed the PassiveBluetoothProcessorCoordinator and PassiveBluetoothDataProcessor bluetooth API's to make PassiveBluetoothProcessorCoordinator responsible for parsing.
+title: 2022.9 中蓝牙被动传感器 API 的变更
+description: 在 Home Assistant Core 2022.9 中，我们更改了 PassiveBluetoothProcessorCoordinator 和 PassiveBluetoothDataProcessor 蓝牙 API，让 PassiveBluetoothProcessorCoordinator 负责解析。
 date: 2022-08-08
 authors:
   - John Carr
@@ -8,9 +8,9 @@ areas:
   - core
 ---
 
-For Home Assistant Core 2022.9 we have changed the `PassiveBluetoothProcessorCoordinator` and `PassiveBluetoothDataProcessor` bluetooth API's to make `PassiveBluetoothProcessorCoordinator` responsible for parsing. The coordinator then pushes parsed data to `PassiveBluetoothDataProcessor` instances.
+在 Home Assistant Core 2022.9 中，我们更改了 `PassiveBluetoothProcessorCoordinator` 和 `PassiveBluetoothDataProcessor` 蓝牙 API，让 `PassiveBluetoothProcessorCoordinator` 负责解析。然后，该协调器（coordinator）会将解析后的数据推送给 `PassiveBluetoothDataProcessor` 实例。
 
-PassiveBluetoothProcessorCoordinator now takes a mandatory update_method callback that receives bluetooth advertisements (in the form of BluetoothServiceInfoBleak) and returns the data that should be handed off to any subscribed PassiveBluetoothDataProcessor:
+PassiveBluetoothProcessorCoordinator 现在接受一个必需的 update_method 回调函数，该回调接收蓝牙广播（以 BluetoothServiceInfoBleak 的形式），并返回应传递给任何已订阅的 PassiveBluetoothDataProcessor 的数据：
 
 ```python
 def my_parser(service_info: BluetoothServiceInfoBleak) -> MyDataClass:
@@ -31,7 +31,7 @@ coordinator = PassiveBluetoothProcessorCoordinator(
 )
 ```
 
-PassiveBluetoothDataProcessor still takes an update_method, but instead of a BluetoothServiceInfoBleak, it now receives the data returned from PassiveBluetoothProcessorCoordinator's update_method. It should still return a `PassiveBluetoothDataUpdate` as before:
+PassiveBluetoothDataProcessor 仍然接受 update_method，但它现在接收的是 PassiveBluetoothProcessorCoordinator 的 update_method 返回的数据，而不是 BluetoothServiceInfoBleak。它仍应像以前一样返回 `PassiveBluetoothDataUpdate`：
 
 ```python
 def sensor_update_to_bluetooth_data_update(
@@ -44,6 +44,6 @@ def sensor_update_to_bluetooth_data_update(
 processor = PassiveBluetoothDataProcessor(sensor_update_to_bluetooth_data_update)
 ```
 
-All the built-in integrations have already been converted, so take a look at them for more examples.
+所有内置集成（integration）都已完成转换，您可以查看它们以了解更多示例。
 
-This change will help integrations that need to start parsing data before loading a platform (for example, the list of platforms to load depend on data from the advertisements) or changes where a single advertisement drives multiple platforms (you won't have to parse the broadcast twice).
+此变更将帮助那些需要在加载平台（platform）之前就开始解析数据的集成（例如，要加载的平台列表取决于广播中的数据），以及单个广播驱动多个平台的场景（您无需再对广播进行两次解析）。

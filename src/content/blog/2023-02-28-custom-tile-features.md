@@ -1,6 +1,6 @@
 ---
-title: Custom tile features
-description: In the Home Assistant Core 2022.3 release, we add custom features for the tile card.
+title: 自定义磁贴功能
+description: 在 Home Assistant Core 2022.3 版本中，我们为磁贴卡片添加了自定义功能。
 date: 2023-02-28
 authors:
   - Paul Bottein
@@ -8,9 +8,9 @@ areas:
   - core
 ---
 
-In the Home Assistant Core 2022.3 release, we add custom features for the [tile card](https://www.home-assistant.io/dashboards/tile/). If you are a developer of custom cards, you can now build your own features to the tile card instead of building a whole card.
+在 Home Assistant Core 2022.3 版本中，我们为[磁贴卡片](https://www.home-assistant.io/dashboards/tile/)（tile card）添加了自定义功能。如果您是自定义卡片的开发者，现在可以为磁贴卡片构建自己的功能，而无需构建整个卡片。
 
-![Screenshot showing example of custom tile feature](/img/en/blog/2023-02-28-custom-tile-features/example.png)
+![显示自定义磁贴功能示例的截图](/img/en/blog/2023-02-28-custom-tile-features/example.png)
 
 ```yaml
 type: tile
@@ -19,7 +19,7 @@ features:
   - type: custom:button-press-tile-feature
 ```
 
-Custom tile features can even be added to the tile card editor like any other built-in tile feature using similar syntax as custom cards.
+自定义磁贴功能甚至可以像其他内置磁贴功能一样添加到磁贴卡片编辑器中，其使用的语法与自定义卡片类似。
 
 ```js
 window.customTileFeatures = window.customTileFeatures || [];
@@ -29,4 +29,4 @@ window.customTileFeatures.push({
 });
 ```
 
-For more details, see the [custom tile features](/frontend/custom-ui/card-feature/) documentation.
+更多详情，请参阅[自定义磁贴功能](/frontend/custom-ui/card-feature/)文档。

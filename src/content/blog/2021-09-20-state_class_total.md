@@ -1,6 +1,6 @@
 ---
-title: "New sensor state class: total"
-description: "Note: This post was edited 2021-10-21 to remove references to total accumulated increases and decreases which were removed and never included in the Home Assistant 2021.10 release."
+title: "新的传感器状态类：total"
+description: "注意：本文已于 2021-10-21 编辑，删除了关于累计增加总量与累计减少总量的内容，这些内容已被移除，且从未包含在 Home Assistant 2021.10 版本中。"
 date: 2021-09-20
 authors:
   - Erik Montnémery
@@ -8,49 +8,33 @@ areas:
   - core
 ---
 
-Note: This post was edited 2021-10-21 to remove references to total accumulated increases
-and decreases which were removed and never included in the Home Assistant 2021.10 release.
+注意：本文已于 2021-10-21 编辑，删除了关于累计增加总量与累计减少总量的内容，这些内容已被移除，且从未包含在 Home Assistant 2021.10 版本中。
 
-A new state class, `total` has been added and the `last_reset` attribute has been
-added back to `SensorEntity` and is no longer deprecated. The driver for the change
-is to support cases where `total_increasing`, which was introduced in Home Assistant
-2021.9, is too restrictive to cover all cases. Note that setting `last_reset` for sensors
-with state class `measurement` is still deprecated.
+新增了一种状态类（state class）`total`，同时 `last_reset` 属性已重新加回 `SensorEntity`，不再被弃用。此次更改的主要动因是支持 `total_increasing` 限制过于严格而无法覆盖所有情况的场景，`total_increasing` 在 Home Assistant 2021.9 中引入。请注意，为状态类为 `measurement` 的传感器设置 `last_reset` 仍然是被弃用的做法。
 
-### State classes
+### 状态类
 
-There are 3 defined state classes:
+目前定义了 3 种状态类：
 
-- `measurement`, the state represents a measurement in present time, for example a
-   temperature, electric power, etc. For supported sensors, statistics of min,
-   max and average sensor readings are updated periodically.
-- `total`, the state represents a total amount that can both increase and
-   decrease, e.g. a net energy meter. When supported, the accumulated growth
-   or decline of the sensor's value since it was first added is updated periodically.
-- `total_increasing`, a monotonically increasing total, e.g. an amount of
-   consumed gas, water or energy. When supported, the accumulated growth of the sensor's
-   value since it was first added is updated periodically.
+- `measurement`，状态表示当前时刻的测量值，例如温度、电功率等。对于受支持的传感器，传感器读数的最小值、最大值和平均值的统计数据会定期更新。
+- `total`，状态表示既可以增加也可以减少的总量，例如净电能表。在受支持的情况下，自传感器首次添加以来其值的累计增长或下降会定期更新。
+- `total_increasing`，单调递增的总量，例如已消耗的燃气、水或电量。在受支持的情况下，自传感器首次添加以来其值的累计增长会定期更新。
 
-#### State class `total`
-For sensors with state class `total`, the `last_reset` attribute can
-optionally be set to gain manual control of meter cycles.
-The sensor's state when it's first added to Home Assistant is used as an initial
-zero-point. When a `last_reset` changes, the zero-point will be set to 0.
-If last_reset is not set, the sensor's value when it was first added is used as the
-zero-point when calculating `sum` statistics.
+#### 状态类 `total`
+对于状态类为 `total` 的传感器，可以选择设置 `last_reset` 属性，以手动控制仪表周期。传感器首次添加到 Home Assistant 时的状态将用作初始零点。当 `last_reset` 发生变化时，零点将被设置为 0。如果未设置 last_reset，则在计算 `sum` 统计数据时，将使用传感器首次添加时的值作为零点。
 
-Example of state class `total` without last_reset:
+状态类为 `total` 且未设置 last_reset 的示例：
 
-| t                      | state  | sum    |
+| t                      | 状态   | sum    |
 | :--------------------- | -----: | -----: |
 |   2021-08-01T13:00:00  |  1000  |     0  |
 |   2021-08-01T14:00:00  |  1010  |    10  |
 |   2021-08-01T15:00:00  |     0  | -1000  |
 |   2021-08-01T16:00:00  |     5  |  -995  |
 
-Example of state class `total` with last_reset:
+状态类为 `total` 且设置了 last_reset 的示例：
 
-| t                      | state  | last_reset          | sum    |
+| t                      | 状态   | last_reset          | sum    |
 | :--------------------- | -----: | ------------------- | -----: |
 |   2021-08-01T13:00:00  |  1000  | 2021-08-01T13:00:00 |     0  |
 |   2021-08-01T14:00:00  |  1010  | 2021-08-01T13:00:00 |    10  |
@@ -58,43 +42,35 @@ Example of state class `total` with last_reset:
 |   2021-08-01T16:00:00  |     0  | 2021-09-01T16:00:00 |     5  |
 |   2021-08-01T17:00:00  |     5  | 2021-09-01T16:00:00 |    10  |
 
-Example of state class `total` where the there initial state at the beginning
-of the new meter cycle is not 0, but 0 is used as zero-point:
+状态类为 `total` 且新仪表周期开始时的初始状态不为 0、但使用 0 作为零点的示例：
 
-| t                      | state  | last_reset          | sum    |
+| t                      | 状态   | last_reset          | sum    |
 | :--------------------- | -----: | ------------------- | -----: |
 |   2021-08-01T13:00:00  |  1000  | 2021-08-01T13:00:00 |     0  |
 |   2021-08-01T14:00:00  |  1010  | 2021-08-01T13:00:00 |    10  |
 |   2021-08-01T15:00:00  |  1005  | 2021-08-01T13:00:00 |     5  |
-|   2021-08-01T16:00:00  |     5  | 2021-09-01T16:00:00 |    10  |
+|   2021-08-01T16:00:00 |     5  | 2021-09-01T16:00:00 |    10  |
 |   2021-08-01T17:00:00  |    10  | 2021-09-01T16:00:00 |    15  |
 
 
-#### State class `total_increasing`
+#### 状态类 `total_increasing`
 
-For sensors with state_class `total_increasing`, a decreasing value is
-interpreted as the start of a new meter cycle or the replacement of the meter. It is
-important that the integration ensures that the value cannot erroneously decrease in 
-the case of calculating a value from a sensor with measurement noise present. This state
-class is useful for gas meters, electricity meters, water meters etc.
+对于 state_class 为 `total_increasing` 的传感器，数值的下降将被解释为新仪表周期的开始或仪表的更换。重要的是，在从存在测量噪声的传感器计算数值时，集成（integration）必须确保数值不会错误地下降。此状态类适用于燃气表、电表、水表等。
 
-The sensor's state when it's first added to Home Assistant is used as an initial
-zero-point. When a new meter cycle is detected the zero-point will be set to 0.
-Please refer to the tables below for how this affects the statistics.
+传感器首次添加到 Home Assistant 时的状态将用作初始零点。当检测到新仪表周期时，零点将被设置为 0。关于这对统计数据的影响，请参阅下表。
 
-Example of state class `total_increasing` with a new meter cycle:
+状态类为 `total_increasing` 且出现新仪表周期的示例：
 
-| t                      | state  | sum  |
+| t                      | 状态   | sum  |
 | :--------------------- | -----: | ---: |
 |   2021-08-01T13:00:00  |  1000  |   0  |
 |   2021-08-01T14:00:00  |  1010  |  10  |
 |   2021-08-01T15:00:00  |     0  |  10  |
 |   2021-08-01T16:00:00  |     5  |  15  |
 
-Example of state class `total_increasing` where the there initial state at the beginning
-of the new meter cycle is not 0, but 0 is used as zero-point:
+状态类为 `total_increasing` 且新仪表周期开始时的初始状态不为 0、但使用 0 作为零点的示例：
 
-| t                      | state  | sum  |
+| t                      | 状态   | sum  |
 | :--------------------- | -----: | ---: |
 |   2021-08-01T13:00:00  |  1000  |   0  |
 |   2021-08-01T14:00:00  |  1010  |  10  |

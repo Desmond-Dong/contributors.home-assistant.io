@@ -1,6 +1,6 @@
 ---
-title: Logos for custom integrations
-description: Recently, Home Assistant started to support images & icons for integrations to show up in the frontend.
+title: 自定义集成的徽标
+description: 最近，Home Assistant 开始支持让集成（integration）在前端（frontend）中显示图片和图标。
 date: 2020-05-08
 authors:
   - Franck Nijhof
@@ -8,21 +8,12 @@ areas:
   - core
 ---
 
-Recently, Home Assistant started to support images & icons for integrations
-to show up in the frontend. They look amazing and really brings some color
-to the UI of Home Assistant.
+最近，Home Assistant 开始支持让集成在前端中显示图片和图标。它们看起来非常棒，真的为 Home Assistant 的用户界面增添了不少色彩。
 
-We got a lot of questions lately on how custom integrations (also known as
-custom components) can add their images. As of today, that is possible!
+最近我们收到了很多提问，询问自定义集成（custom integration，也称为自定义组件）如何添加自己的图片。从今天起，这已经成为可能！
 
-![HACS icon in the Home Assistant frontend](/img/en/blog/2020-05-logos-custom-integrations/customlogo.png)
+![Home Assistant 前端中的 HACS 图标](/img/en/blog/2020-05-logos-custom-integrations/customlogo.png)
 
-Created a custom integration? Want the logo & icon for your integration to
-show up in the Home Assistant frontend? In that case, head over to our
-[GitHub brands repository](https://github.com/home-assistant/brands)
-to add yours!
+创建了自定义集成？想让你的集成的徽标和图标显示在 Home Assistant 前端中？如果是这样，请前往我们的 [GitHub brands 仓库](https://github.com/home-assistant/brands) 添加你的品牌！
 
-_PS: Did you know you can also add your custom integration to our [Python wheels
-repository](https://github.com/home-assistant/wheels-custom-integrations)?
-It will make the installation of your custom integration in
-Home Assistant lightning fast!_
+_附注：你知道吗？你还可以将你的自定义集成添加到我们的 [Python wheels 仓库](https://github.com/home-assistant/wheels-custom-integrations) 中。这将使你的自定义集成在 Home Assistant 中的安装速度快如闪电！_

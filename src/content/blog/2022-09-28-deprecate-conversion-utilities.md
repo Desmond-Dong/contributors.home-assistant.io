@@ -1,6 +1,6 @@
 ---
-title: Deprecating unit conversion utilities
-description: "As of Home Assistant Core 2022.10, the following utilities are deprecated:"
+title: 弃用单位换算工具
+description: "自 Home Assistant Core 2022.10 起，以下工具已被弃用："
 date: 2022-09-28
 authors:
   - epenet
@@ -8,7 +8,7 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2022.10, the following utilities are deprecated:
+自 Home Assistant Core 2022.10 起，以下工具已被弃用：
 
   - `homeassistant/util/distance`
   - `homeassistant/util/pressure`
@@ -16,7 +16,7 @@ As of Home Assistant Core 2022.10, the following utilities are deprecated:
   - `homeassistant/util/temperature`
   - `homeassistant/util/volume`
 
-Please use the corresponding static classes from `homeassistant/util/unit_conversion`:
+请使用 `homeassistant/util/unit_conversion` 中对应的静态类：
 
   - `DistanceConverter`
   - `PressureConverter`

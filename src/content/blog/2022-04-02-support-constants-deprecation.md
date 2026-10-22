@@ -1,6 +1,6 @@
 ---
-title: Deprecating all SUPPORT_* constants
-description: As of Home Assistant Core 2022.5, all SUPPORT_* constants are deprecated, each entity platform is providing an EntityFeature enum to replace them.
+title: 弃用所有 SUPPORT_* 常量
+description: 自 Home Assistant Core 2022.5 起，所有 SUPPORT_* 常量均已被弃用，每个实体（entity）平台都会提供 EntityFeature 枚举（enum）来替代它们。
 date: 2022-04-02
 authors:
   - Franck Nijhof
@@ -8,14 +8,14 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2022.5, all `SUPPORT_*` constants are deprecated,
-each entity platform is providing an `EntityFeature` enum to replace them.
+自 Home Assistant Core 2022.5 起，所有 `SUPPORT_*` 常量均已被弃用，
+每个实体平台都会提供一个 `EntityFeature` 枚举来替代它们。
 
-This applies to, the following platforms:
+这适用于以下平台：
 
-- **Alarm Control Panel**
+- **警报控制面板（Alarm Control Panel）**
 
-  Deprecated supported feature constants:
+  已弃用的受支持功能常量：
 
   - `SUPPORT_ALARM_ARM_AWAY`
   - `SUPPORT_ALARM_ARM_CUSTOM_BYPASS`
@@ -24,20 +24,20 @@ This applies to, the following platforms:
   - `SUPPORT_ALARM_ARM_VACATION`
   - `SUPPORT_ALARM_TRIGGER`
 
-  Use the new [`AlarmControlPanelEntityFeature`](/core/entities/alarm-control-panel/#supported-features) enum instead.
+  请改用新的 [`AlarmControlPanelEntityFeature`](/core/entities/alarm-control-panel/#supported-features) 枚举。
 
-- **Camera**
+- **摄像头（Camera）**
 
-  Deprecated supported feature constants:
+  已弃用的受支持功能常量：
 
   - `SUPPORT_ON_OFF`
   - `SUPPORT_STREAM`
 
-  Use the new [`CameraEntityFeature`](/core/entities/camera/#supported-features) enum instead.
+  请改用新的 [`CameraEntityFeature`](/core/entities/camera/#supported-features) 枚举。
 
-- **Cover**
+- **卷帘（Cover）**
 
-  Deprecated supported feature constants:
+  已弃用的受支持功能常量：
 
   - `SUPPORT_OPEN`
   - `SUPPORT_CLOSE`
@@ -48,11 +48,11 @@ This applies to, the following platforms:
   - `SUPPORT_STOP_TILT`
   - `SUPPORT_SET_TILT_POSITION`
 
-  Use the new [`CoverEntityFeature`](/core/entities/cover/#supported-features) enum instead.
+  请改用新的 [`CoverEntityFeature`](/core/entities/cover/#supported-features) 枚举。
 
-- **Climate**
+- **温控（Climate）**
 
-  Deprecated supported feature constants:
+  已弃用的受支持功能常量：
 
   - `SUPPORT_TARGET_TEMPERATURE`
   - `SUPPORT_TARGET_TEMPERATURE_RANGE`
@@ -62,58 +62,58 @@ This applies to, the following platforms:
   - `SUPPORT_SWING_MODE`
   - `SUPPORT_AUX_HEAT`
 
-  Use the new [`ClimateEntityFeature`](/core/entities/climate/#supported-features) enum instead.
+  请改用新的 [`ClimateEntityFeature`](/core/entities/climate/#supported-features) 枚举。
 
-- **Humidifier**
+- **加湿器（Humidifier）**
 
-  Deprecated supported feature constants:
+  已弃用的受支持功能常量：
 
   - `SUPPORT_MODES`
 
-  Use the new [`HumidifierEntityFeature`](/core/entities/humidifier/#supported-features) enum instead.
+  请改用新的 [`HumidifierEntityFeature`](/core/entities/humidifier/#supported-features) 枚举。
 
-- **Fan**
+- **风扇（Fan）**
 
-  Deprecated supported feature constants:
+  已弃用的受支持功能常量：
 
   - `SUPPORT_SET_SPEED`
   - `SUPPORT_OSCILLATE`
   - `SUPPORT_DIRECTION`
   - `SUPPORT_PRESET_MODE`
 
-  Use the new [`FanEntityFeature`](/core/entities/fan/#supported-features) enum instead.
+  请改用新的 [`FanEntityFeature`](/core/entities/fan/#supported-features) 枚举。
 
-- **Light**
+- **灯（Light）**
 
-  Deprecated supported feature constants:
+  已弃用的受支持功能常量：
 
   - `SUPPORT_EFFECT`
   - `SUPPORT_FLASH`
   - `SUPPORT_TRANSITION`
 
-  Use the new [`LightEntityFeature`](/core/entities/light/#supported-features) enum instead.
+  请改用新的 [`LightEntityFeature`](/core/entities/light/#supported-features) 枚举。
 
-  Note that the following light constants were already deprecated,
-  thus `LightEntityFeature` does not provide a replacement for those.
+  请注意，以下灯相关常量此前已被弃用，
+  因此 `LightEntityFeature` 并未为它们提供替代。
 
   - `SUPPORT_BRIGHTNESS`
   - `SUPPORT_COLOR_TEMP`
   - `SUPPORT_COLOR`
   - `SUPPORT_WHITE_VALUE`
 
-  These cases should instead be migrated to the [new color modes](/core/entities/light/#color-modes).
+  这些情况应改为迁移到[新的颜色模式](/core/entities/light/#color-modes)。
 
-- **Lock**
+- **锁（Lock）**
 
-  Deprecated supported feature constants:
+  已弃用的受支持功能常量：
 
   - `SUPPORT_OPEN`
 
-  Use the new [`LockEntityFeature`](/core/entities/lock/#supported-features) enum instead.
+  请改用新的 [`LockEntityFeature`](/core/entities/lock/#supported-features) 枚举。
 
-- **Media Player**
+- **媒体播放器（Media Player）**
 
-  Deprecated supported feature constants:
+  已弃用的受支持功能常量：
 
   - `SUPPORT_PAUSE`
   - `SUPPORT_SEEK`
@@ -135,21 +135,21 @@ This applies to, the following platforms:
   - `SUPPORT_REPEAT_SET`
   - `SUPPORT_GROUPING`
 
-  Use the new [`MediaPlayerEntityFeature`](/core/entities/media-player/#supported-features) enum instead.
+  请改用新的 [`MediaPlayerEntityFeature`](/core/entities/media-player/#supported-features) 枚举。
 
-- **Remote**
+- **遥控器（Remote）**
 
-  Deprecated supported feature constants:
+  已弃用的受支持功能常量：
 
   - `SUPPORT_LEARN_COMMAND`
   - `SUPPORT_DELETE_COMMAND`
   - `SUPPORT_ACTIVITY`
 
-  Use the new [`RemoteEntityFeature`](/core/entities/remote/#supported-features) enum instead.
+  请改用新的 [`RemoteEntityFeature`](/core/entities/remote/#supported-features) 枚举。
 
-- **Siren**
+- **警报器（Siren）**
 
-  Deprecated supported feature constants:
+  已弃用的受支持功能常量：
 
   - `SUPPORT_DURATION`
   - `SUPPORT_TONES`
@@ -157,11 +157,11 @@ This applies to, the following platforms:
   - `SUPPORT_TURN_ON`
   - `SUPPORT_VOLUME_SET`
 
-  Use the new [`SirenEntityFeature`](/core/entities/siren/#supported-features) enum instead.
+  请改用新的 [`SirenEntityFeature`](/core/entities/siren/#supported-features) 枚举。
 
-- **Vacuum**
+- **吸尘器（Vacuum）**
 
-  Deprecated supported feature constants:
+  已弃用的受支持功能常量：
 
   - `SUPPORT_TURN_ON`
   - `SUPPORT_TURN_OFF`
@@ -178,15 +178,14 @@ This applies to, the following platforms:
   - `SUPPORT_STATE`
   - `SUPPORT_START`
 
-  Use the new [`VacuumEntityFeature`](/core/entities/vacuum/#supported-features) enum instead.
+  请改用新的 [`VacuumEntityFeature`](/core/entities/vacuum/#supported-features) 枚举。
 
-- **Water Heater**
+- **热水器（Water Heater）**
 
-  Deprecated supported feature constants:
+  已弃用的受支持功能常量：
 
   - `SUPPORT_TARGET_TEMPERATURE`
   - `SUPPORT_OPERATION_MODE`
   - `SUPPORT_AWAY_MODE`
 
-  Use the new [`WaterHeaterEntityFeature`](/core/entities/water-heater/#supported-features) enum instead.
-
+  请改用新的 [`WaterHeaterEntityFeature`](/core/entities/water-heater/#supported-features) 枚举。

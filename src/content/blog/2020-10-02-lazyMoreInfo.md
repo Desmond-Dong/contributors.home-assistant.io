@@ -1,6 +1,6 @@
 ---
-title: Lazy-loading more-info controls
-description: In 0.115 we converted our more info controls to be lazy-loaded. This was done because the more info dialog is always loaded in an early stage of the page load.
+title: 更多信息控件的懒加载
+description: 在 0.115 中，我们将更多信息控件改为懒加载。这样做是因为更多信息对话框总是在页面加载的早期阶段就被加载。
 date: 2020-10-02
 authors:
   - Bram Kragten
@@ -8,50 +8,50 @@ areas:
   - frontend
 ---
 
-In 0.115 we converted our more info controls to be lazy-loaded. This was done because the more info dialog is always loaded in an early stage of the page load. Every domain can have its own controls and they can be pretty heavy. We don't need all these elements on page load, so we decided to only load them when they are needed.
+在 0.115 中，我们将更多信息（more-info）控件改为了懒加载。这样做是因为更多信息对话框总是在页面加载的早期阶段就被加载。每个域（domain）都可以有自己的控件，而且它们可能相当庞大。我们在页面加载时并不需要所有这些元素，因此我们决定只在需要时才加载它们。
 
-We got feedback from Lovelace custom card developers that this broke their cards, as not all the elements would be available anymore. While we don't support using our internal elements in custom cards, for the reasons mentioned below, we decided to revert this change for 0.115.
-In 0.116 we will re-add the lazy loading of the more info dialog controls. To help our Lovelace custom card developers, we have made the function that we use to lazy-load the more info controls available for custom card developers.
-This means you can load the controls of the domain of choice if your card needs them.
+我们收到 Lovelace 自定义卡片开发者的反馈，称此更改导致他们的卡片损坏，因为并非所有元素都仍然可用。虽然由于下文提到的原因，我们并不支持在自定义卡片中使用我们的内部元素，但我们还是决定在 0.115 中撤销此项更改。
+在 0.116 中，我们将重新加入更多信息对话框控件的懒加载。为了帮助我们的 Lovelace 自定义卡片开发者，我们已将用于懒加载更多信息控件的函数开放给自定义卡片开发者使用。
+这意味着，如果您的卡片需要，您可以加载所选域的控件。
 
 > [!NOTE]
-> Please be aware that we do not support this in any way. We won't promise the same elements will be available in a future update, and breaking changes will happen when you rely on our elements.
+> 请注意，我们不会以任何方式对此提供支持。我们不保证相同的元素在未来的更新中仍然可用，并且当您依赖我们的元素时，破坏性变更（breaking changes）将会发生。
 
-An example loading the more info controls of the `light` domain:
+一个加载 `light` 域更多信息控件的示例：
 ```js
 const helpers = await loadCardHelpers();
 helpers.importMoreInfoControl("light");
 ```
 
-## Why do we do this?
+## 我们为什么要这样做？
 
-We always try to make our frontend as fast as possible. Not only on your super fast desktop PC with fiber internet but also on a slow and cheap phone that only has 3G.
+我们始终努力让我们的前端尽可能快。不仅是在您配备光纤网络的超快台式电脑上，也包括只有 3G 网络的又慢又便宜的手机上。
 
-One of the things we try to optimize is loading our code. The less code we load the faster it is loaded, the faster we can start rendering the page. We also use less memory if we don't load everything.
-There is however a tradeoff, if we always want to only load the parts we need, we would have to be able to load every element separately. This would mean a lot of small network requests, which eventually is slower than loading a little more but in fewer requests, because of the overhead of a network request.
+我们尝试优化的内容之一是代码的加载。我们加载的代码越少，加载速度就越快，我们就能越快开始渲染页面。如果不加载所有内容，我们还能使用更少的内存。
+然而，这里有一个权衡：如果我们总是只想加载所需的部分，就必须能够单独加载每一个元素。这将意味着大量的小型网络请求，由于网络请求的开销，这最终会比一次多加载一些但请求数量更少的方式更慢。
 
-So it is always a search for the right balance between chunk sizes and the number of chunks needed. The splitting of our code into chunks is done with a bundler. At the moment, we use Webpack for this.
+因此，这始终是在分块（chunk）大小与所需分块数量之间寻找合适平衡的过程。将我们的代码拆分成多个分块的工作由打包工具（bundler）完成。目前，我们使用 Webpack 来实现这一点。
 
-Some custom Lovelace developers have asked us why we can't expose all the elements we use internally to custom cards. This is simply because the element you need, might not be loaded yet as it was not needed yet.
+一些 Lovelace 自定义卡片开发者曾问我们，为什么不能将我们内部使用的所有元素开放给自定义卡片使用。原因很简单：您需要的元素可能尚未加载，因为之前还不需要它。
 
-What makes this extra difficult, is that we use custom elements. Custom elements can only be defined once, if you try to define it again it will error. This means we can't have a mix of bigger chunks and separate elements, as it would error if it would be loaded a second time.
+让我们更难处理的是，我们使用了自定义元素（custom elements）。自定义元素只能定义一次，如果尝试再次定义就会报错。这意味着我们不能混合使用较大的分块和单独的元素，因为如果元素被第二次加载就会报错。
 
-If we would want to make this happen, we would either have to load every component on the first load, which would make the first load very slow, or we would have to split every component into its own chunk, what would cause a lot of small network requests and thus will also result in a slower experience.
+如果我们想要实现这一点，要么必须在首次加载时加载每个组件，这会使首次加载非常缓慢；要么必须将每个组件拆分成各自的分块，这会导致大量的小型网络请求，同样会导致较慢的体验。
 
-Besides that, the elements we use internally are not supposed to be used by external developers, the API is not documented or supported and could break at any time. We could at any release decide to replace an element as there is a better element or a new use case. Or change the API, like we recently did for the `chart` element. We could not develop at the pace we do now if we would have to support all our elements, we develop an application, the elements are just our building blocks.
+除此之外，我们内部使用的元素本就不供外部开发者使用，其 API 既没有文档也没有支持，而且随时可能发生变化。我们可能在任何版本中决定替换某个元素，例如出现了更好的元素或有新的使用场景；也可能更改 API，就像我们最近对 `chart` 元素所做的那样。如果我们必须支持我们所有的元素，就无法以现在的速度进行开发——我们开发的是一个应用程序，这些元素只是我们的构建模块。
 
-## What about external elements?
+## 那么外部元素呢？
 
-We use external custom elements in our frontend, like the [Material Web Components](https://github.com/material-components/material-components-web-components) from Google. While we would love you to use the same elements to provide a uniform experience, we can not advise this.
+我们在前端中使用外部的自定义元素，例如来自 Google 的 [Material Web Components](https://github.com/material-components/material-components-web-components)。虽然我们希望您使用相同的元素以提供一致的体验，但我们不能建议您这样做。
 
-Just like our own elements the external elements are part of our code splitted chunks, and they will probably be lazy-loaded. That means they will not be available at all times but could be loaded later.
-This means that if a custom card would load and define an `mwc` element because it was not available at the time it needed it, and we try to do it later when it is lazy-loaded, the Home Assistant frontend will run into an error.
+与我们自己的元素一样，外部元素也是我们代码分块的一部分，它们很可能会被懒加载。这意味着它们并非随时可用，而是可能在稍后才被加载。
+这意味着，如果某个自定义卡片在需要时因元素不可用而加载并定义了一个 `mwc` 元素，而我们在稍后懒加载时又尝试执行同样的操作，Home Assistant 前端就会遇到错误。
 
-Unfortunately, there is no technical solution for this at the moment. There are some solutions, like [scoped elements](https://open-wc.org/docs/development/scoped-elements/) from open-wc, but they will not work in most cases as the imported element will either self-register or it defines sub-elements, that can not be scoped.
-There is a discussion about a proposal for [Scoped Custom Element Definitions](https://github.com/w3c/webcomponents/issues/716) that could potentially fix this problem, but it may take a long time before this would be available in all our supported browsers, if the proposal is accepted at all.
+遗憾的是，目前还没有针对这个问题的技术解决方案。有一些解决方案，例如 open-wc 的 [scoped elements](https://open-wc.org/docs/development/scoped-elements/)，但它们在大多数情况下都行不通，因为被导入的元素要么会自行注册，要么定义了无法被作用域化的子元素。
+关于 [Scoped Custom Element Definitions](https://github.com/w3c/webcomponents/issues/716) 提案有一场讨论，它有可能解决这个问题，但即使该提案最终被接受，也可能需要很长时间才能在我们支持的所有浏览器中可用。
 
-## Is there a solution?
+## 有解决方案吗？
 
-Is there a solution to all these problems? So custom cards can provide the same uniform user experience, without the risk of having breaking changes every release?
+针对所有这些问题，有没有解决方案呢？让自定义卡片能够提供同样一致的用户体验，而无需承担每个版本都可能出现破坏性变更的风险？
 
-The best solution we see is a set of elements created by the custom card community. This set would have its own namespace that would not collide with that of the elements that Home Assistant uses. All custom cards could use these elements, without the risk of breaking changes.
+我们认为最好的解决方案是由自定义卡片社区创建一套元素。这套元素将拥有自己的命名空间，不会与 Home Assistant 所使用的元素的命名空间冲突。所有自定义卡片都可以使用这些元素，而没有破坏性变更的风险。

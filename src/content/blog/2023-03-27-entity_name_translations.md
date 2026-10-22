@@ -1,6 +1,6 @@
 ---
-title: Translating the name and attributes of entities
-description: It's now possible to translate the name of entities, and this is preferred over hard coding a name in natural language in the Python implementation.
+title: 翻译实体的名称和属性
+description: 现在可以翻译实体的名称了，这比在 Python 实现中硬编码自然语言名称更受推荐。
 date: 2023-03-27
 authors:
   - Erik Montnémery
@@ -8,18 +8,18 @@ areas:
   - core
 ---
 
-It's now possible to translate the name of entities, and this is preferred over hard coding a name in natural language in the Python implementation. Also, entity components provide shared translations, for example, for binary sensor device classes, which should be used to avoid translating the same thing multiple times.
+现在可以翻译实体（entity）的名称了，这比在 Python 实现中硬编码自然语言名称更受推荐。此外，实体组件（entity component）提供了共享翻译，例如针对二进制传感器设备类（binary sensor device class）的翻译，应当使用这些共享翻译，以避免多次翻译相同的内容。
 
-Also, the frontend now has full support for translated entity state attributes for both the names and their values.
+此外，前端现在已完全支持翻译实体状态属性（state attribute）的名称及其值。
 
 
 > [!WARNING]
-> Pointing to translations via the `translation_key` property is currently only supported for entities with a `unique_id`.
+> 目前，仅支持具有 `unique_id` 的实体通过 `translation_key` 属性指向翻译。
 >
-> Additionally, translating entity names requires that the `has_entity_name` property is set to `True`.
+> 此外，翻译实体名称需要将 `has_entity_name` 属性设置为 `True`。
 
-## Translating entity name
-The following example `strings.json` is for a `sensor` entity with its `translation_key` property set to `thermostat_mode`:
+## 翻译实体名称
+以下 `strings.json` 示例适用于一个 `translation_key` 属性设置为 `thermostat_mode` 的 `sensor` 实体：
 
 ```json
 {
@@ -33,7 +33,7 @@ The following example `strings.json` is for a `sensor` entity with its `translat
 }
 ```
 
-The following example `strings.json` is for a `sensor` entity with its `translation_key` property set to `temperature_sensor` where a shared translation provided by the `sensor` integration is used:
+以下 `strings.json` 示例适用于一个 `translation_key` 属性设置为 `temperature_sensor` 的 `sensor` 实体，其中使用了由 `sensor` 集成提供的共享翻译：
 
 ```json
 {
@@ -47,8 +47,8 @@ The following example `strings.json` is for a `sensor` entity with its `translat
 }
 ```
 
-## Translating entity attributes
-The following example `strings.json` is for a `demo` domain `climate` entity with its `translation_key` property set to `ubercool`, which has custom `fan_mode` and `swing_mode` settings:
+## 翻译实体属性
+以下 `strings.json` 示例适用于 `demo` 域中的一个 `climate` 实体，其 `translation_key` 属性设置为 `ubercool`，该实体具有自定义的 `fan_mode` 和 `swing_mode` 设置：
 
 
 ```json
@@ -81,4 +81,4 @@ The following example `strings.json` is for a `demo` domain `climate` entity wit
 }
 ```
 
-For more details, see the [`entity name translation`](/core/integrations/translations/#entities) [`entity attribute translation`](/core/integrations/translations/) and [`entity`](/core/entities/entity-class/) documentation.
+更多详细信息，请参阅 [`entity name translation`](/core/integrations/translations/#entities)、[`entity attribute translation`](/core/integrations/translations/) 和 [`entity`](/core/entities/entity-class/) 文档。

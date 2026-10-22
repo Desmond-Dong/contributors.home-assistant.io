@@ -1,6 +1,6 @@
 ---
-title: Statistics WebSocket API changes
-description: "This change affects WebSocket APIs: recorder/statistic_during_period and recorder/statistics_during_period."
+title: 统计 WebSocket API 变更
+description: "此变更影响 WebSocket API：recorder/statistic_during_period 和 recorder/statistics_during_period。"
 date: 2023-04-30
 authors:
   - J. Nick Koston
@@ -8,8 +8,8 @@ areas:
   - core
 ---
 
-This change affects WebSocket APIs: `recorder/statistic_during_period` and `recorder/statistics_during_period`. The Home Assistant project does not currently document these APIs, as they may change.
+此变更影响 WebSocket API：`recorder/statistic_during_period` 和 `recorder/statistics_during_period`。Home Assistant 项目目前并未记录这些 API，因为它们可能会发生更改。
 
-For Home Assistant Core 2023.6 the statistics WebSocket API will no longer return columns that it knows will be empty. Callers should treat the lack of values the same as null values.
+在 Home Assistant Core 2023.6 中，统计（statistics）WebSocket API 将不再返回已知为空的列。调用方应将值的缺失视为与 null 值相同。
 
-To reduce database overhead, if the statistics backend knows in advance that all rows for a column will be empty values, the column will no longer be returned.
+为了减少数据库开销，如果统计后端预先知道某一列的所有行都将为空值，则不再返回该列。

@@ -1,6 +1,6 @@
 ---
-title: Avoid unnecessary callbacks with DataUpdateCoordinator
-description: The DataUpdateCoordinator can now reduce unnecessary updates when API data can be compared.
+title: 使用 DataUpdateCoordinator 避免不必要的回调
+description: 当 API 数据可以进行比较时，DataUpdateCoordinator 现在可以减少不必要的更新。
 date: 2023-07-27
 authors:
   - J. Nick Koston
@@ -8,6 +8,6 @@ areas:
   - core
 ---
 
-The `DataUpdateCoordinator` can now reduce unnecessary updates when API data can be compared.
+当 API 数据可以进行比较时，`DataUpdateCoordinator` 现在可以减少不必要的更新。
 
-When using the `DataUpdateCoordinator`, the data being polled is often expected to stay mostly the same. For example, if you are polling a light that is only turned on once a week, that data may be the same nearly all the time. The default behavior is always calling back listeners when the data is updated, even if it does not change. If the data returned from the API can be compared for changes with the Python `__eq__` method, set `always_update=False` when creating the `DataUpdateCoordinator` to avoid unnecessary callbacks and writes to the state machine.
+在使用 `DataUpdateCoordinator` 时，被轮询的数据通常预期基本保持不变。例如，如果你正在轮询一盏每周只开启一次的灯，那么这些数据几乎在所有时候都是相同的。默认行为是在数据更新时总是回调监听器（listeners），即使数据没有发生变化。如果从 API 返回的数据可以使用 Python 的 `__eq__` 方法进行比较以检测变化，请在创建 `DataUpdateCoordinator` 时设置 `always_update=False`，以避免不必要的回调和对状态机（state machine）的写入。

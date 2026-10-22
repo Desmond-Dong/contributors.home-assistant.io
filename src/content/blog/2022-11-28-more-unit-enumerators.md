@@ -1,6 +1,6 @@
 ---
-title: Add  more unit enumerators
-description: "As of Home Assistant Core 2022.12, the following unit constants are deprecated and replaced by a corresponding enum:"
+title: 添加更多单位枚举器
+description: "自 Home Assistant Core 2022.12 起，以下单位常量已被弃用，并由相应的枚举（enum）取代："
 date: 2022-11-28
 authors:
   - epenet
@@ -8,7 +8,6 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2022.12, the following unit constants are deprecated and replaced 
-by a corresponding enum:
+自 Home Assistant Core 2022.12 起，以下单位常量已被弃用，并由相应的枚举（enum）取代：
 
-  - `UnitOfPrecipitationDepth` enumerator replaces `PRECIPITATION_***` constants
+  - `UnitOfPrecipitationDepth` 枚举器取代了 `PRECIPITATION_***` 常量

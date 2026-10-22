@@ -1,6 +1,6 @@
 ---
-title: Constant deprecations for 2022.5
-description: For Home Assistant Core 2022.5, we have deprecated many constants and replaced them with enums.
+title: 2022.5 的常量弃用
+description: 在 Home Assistant Core 2022.5 中，我们弃用了许多常量，并将其替换为枚举。
 date: 2022-05-03
 authors:
   - Franck Nijhof
@@ -8,35 +8,35 @@ areas:
   - core
 ---
 
-For Home Assistant Core 2022.5, we have deprecated many constants and replaced
-them with enums.
+在 Home Assistant Core 2022.5 中，我们弃用了许多常量，并将其
+替换为枚举（enum）。
 
-All `SUPPORT_*` constants have been deprecated, and are summerised
-in a [previously published blog article](/blog/2022/04/02/support-constants-deprecation).
+所有 `SUPPORT_*` 常量均已被弃用，并在
+[此前发布的博客文章](/blog/2022/04/02/support-constants-deprecation)中进行了总结。
 
-Additionally, the following constants have been deprecated:
+此外，以下常量也已被弃用：
 
-- **Alarm Control Panel**
+- **安防控制面板（Alarm Control Panel）**
 
-  Deprecated constants:
+  已弃用的常量：
 
   - `FORMAT_TEXT`
   - `FORMAT_NUMBER`
 
-  Use the new [`CodeFormat`](/core/entities/alarm-control-panel/) enum instead.
+  请改用新的 [`CodeFormat`](/core/entities/alarm-control-panel/) 枚举。
 
-- **Camera**
+- **摄像头（Camera）**
 
-  Deprecated constants:
+  已弃用的常量：
 
   - `STREAM_TYPE_HLS`
   - `STREAM_TYPE_WEB_RTC`
 
-  Use the new [`StreamType`](/core/entities/camera/#properties) enum instead.
+  请改用新的 [`StreamType`](/core/entities/camera/#properties) 枚举。
 
-- **Climate**
+- **温控（Climate）**
 
-  Deprecated constants:
+  已弃用的常量：
 
   - `CURRENT_HVAC_COOL`
   - `CURRENT_HVAC_DRY`
@@ -52,11 +52,11 @@ Additionally, the following constants have been deprecated:
   - `HVAC_MODE_HEAT`
   - `HVAC_MODE_OFF`
 
-  Use the new [`HVACAction`](/core/entities/climate/#hvac-actions) and [`HVACMode`](/core/entities/climate/#hvac-modes) enums instead.
+  请改用新的 [`HVACAction`](/core/entities/climate/#hvac-actions) 和 [`HVACMode`](/core/entities/climate/#hvac-modes) 枚举。
 
-- **Light**
+- **灯光（Light）**
 
-  Deprecated constants:
+  已弃用的常量：
 
   - `COLOR_MODE_UNKNOWN`
   - `COLOR_MODE_ONOFF`
@@ -69,4 +69,4 @@ Additionally, the following constants have been deprecated:
   - `COLOR_MODE_RGBWW`
   - `COLOR_MODE_WHITE`
 
-  Use the new [`ColorMode`](/core/entities/light/#color-modes) enum instead.
+  请改用新的 [`ColorMode`](/core/entities/light/#color-modes) 枚举。

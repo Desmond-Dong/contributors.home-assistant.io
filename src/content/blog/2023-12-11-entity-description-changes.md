@@ -1,6 +1,6 @@
 ---
-title: Changes to EntityDescription data classes
-description: The EntityDescription classes have changed; derived dataclasses should now set frozen=True and kw_only=True.
+title: EntityDescription 数据类的变更
+description: EntityDescription 类已发生变更；派生的 dataclasses 现在应设置 frozen=True 和 kw_only=True。
 date: 2023-12-11
 authors:
   - Erik Montnémery
@@ -8,13 +8,13 @@ areas:
   - core
 ---
 
-The `EntityDescription` classes have changed; derived `dataclasses` should now set `frozen=True` and `kw_only=True`.
+`EntityDescription` 类已发生变更；派生的 `dataclasses` 现在应设置 `frozen=True` 和 `kw_only=True`。
 
-Setting `frozen` to `True` makes the `EntityDescription` instances immutable, which means they cannot be accidentally updated after creation.
-Setting `kw_only` to `True` ensures the order of fields can be changed in the base class without breaking users.
+将 `frozen` 设置为 `True` 会使 `EntityDescription` 实例不可变（immutable），这意味着它们在创建后不会被意外更新。
+将 `kw_only` 设置为 `True` 可确保基类中的字段顺序可以更改，而不会影响用户。
 
-During a deprecation period, which will end with HA Core 2025.1, it will still be possible to derive `dataclasses` not setting `frozen=True` or `kw_only=True`, but this will be logged, and the user will be asked to create an issue with the custom integration.
+在弃用期（deprecation period）内（该期限将于 HA Core 2025.1 结束），仍然可以派生未设置 `frozen=True` 或 `kw_only=True` 的 `dataclasses`，但这会被记录到日志中，并且会要求用户向自定义集成（custom integration）提交 issue。
 
-Once HA Core 2025.1 is released, it will no longer be possible to derive `dataclasses` without setting `frozen=True` or `kw_only=True`.
+HA Core 2025.1 发布后，将无法再派生未设置 `frozen=True` 或 `kw_only=True` 的 `dataclasses`。
 
-More details can be found in the [core PR #105211](https://github.com/home-assistant/core/pull/105211).
+更多详情请参阅 [core PR #105211](https://github.com/home-assistant/core/pull/105211)。

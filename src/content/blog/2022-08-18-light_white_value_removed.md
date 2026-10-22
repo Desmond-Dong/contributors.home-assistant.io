@@ -1,6 +1,6 @@
 ---
-title: LightEntity no longer supports white_value
-description: LightEntity no longer supports white_value, it's replaced by color mode white.
+title: LightEntity 不再支持 white_value
+description: LightEntity 不再支持 white_value，它已被颜色模式（color mode）white 取代。
 date: 2022-08-18
 authors:
   - Erik Montnémery
@@ -8,11 +8,12 @@ areas:
   - core
 ---
 
-`LightEntity` no longer supports `white_value`, it's replaced by
-[color mode](/core/entities/light/#color-modes) `white`.
+`LightEntity` 不再支持 `white_value`，它已被
+[颜色模式](/core/entities/light/#color-modes) `white` 取代。
 
-### Background
-Light's `white_value` was deprecated in Home Assistant Core 2021.4 by 
+### 背景
+灯的 `white_value` 在 Home Assistant Core 2021.4 中通过
 [PR #47720](https://github.com/home-assistant/core/pull/47720)
-and replaced by color mode `white` in Home Assistant Core 2021.7 by 
-[PR #51411](https://github.com/home-assistant/core/pull/51411).
+被弃用，并在 Home Assistant Core 2021.7 中通过
+[PR #51411](https://github.com/home-assistant/core/pull/51411)
+被颜色模式 `white` 取代。

@@ -1,6 +1,6 @@
 ---
-title: Deprecating Data Entry Flow constants
-description: "As of Home Assistant Core 2022.7, all RESULT_TYPE_* constants for data entry flow result types are deprecated:"
+title: 弃用数据输入流程常量
+description: "自 Home Assistant Core 2022.7 起，所有用于数据输入流程结果类型的 `RESULT_TYPE_*` 常量均已被弃用："
 date: 2022-06-07
 authors:
   - epenet
@@ -8,7 +8,7 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2022.7, all `RESULT_TYPE_*` constants for data entry flow result types are deprecated:
+自 Home Assistant Core 2022.7 起，所有用于数据输入流程结果类型的 `RESULT_TYPE_*` 常量均已被弃用：
 
   - `RESULT_TYPE_FORM`
   - `RESULT_TYPE_CREATE_ENTRY`
@@ -19,4 +19,4 @@ As of Home Assistant Core 2022.7, all `RESULT_TYPE_*` constants for data entry f
   - `RESULT_TYPE_SHOW_PROGRESS_DONE`
   - `RESULT_TYPE_MENU`
 
-  Use the new `FlowResultType` enum instead.
+  请改用新的 `FlowResultType` 枚举。

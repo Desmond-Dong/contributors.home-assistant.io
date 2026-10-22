@@ -1,6 +1,6 @@
 ---
-title: Upcoming changes to add-ons
-description: "You can now use our [builder][marketplace] as a [GitHub action][github_action]! :tada:"
+title: 加载项即将迎来的变更
+description: "你现在可以将我们的 [builder][marketplace] 用作 [GitHub action][github_action] 了！:tada:"
 date: 2020-10-29
 authors:
   - Joakim Sørensen
@@ -9,17 +9,17 @@ areas:
 ---
 
 > [!NOTE]
-> The builder action described in this post (`home-assistant/builder@master`) is a legacy workflow. It has since been replaced by dedicated composite actions. See the [builder migration post](/blog/2026/04/02/builder-migration) for the current recommended approach.
+> 本文所述的 builder action（`home-assistant/builder@master`）是一种旧版工作流。它此后已被专用的复合 action（composite actions）所取代。有关当前推荐的方法，请参阅 [builder 迁移文章](/blog/2026/04/02/builder-migration)。
 
 ## GitHub Action
 
-You can now use our [builder][marketplace] as a [GitHub action][github_action]! :tada:
+你现在可以将我们的 [builder][marketplace] 用作 [GitHub action][github_action] 了！:tada:
 
-This is already in use in our [hassio-addons repository][addons], you can see an example on how we implemented it [here][builder-action].
+这已经在我们的 [hassio-addons 仓库][addons]中投入使用，你可以[在这里][builder-action]看到我们如何实现它的示例。
 
-It can be used to ensure that the add-on will still build with changes made to your repository and publish the images as part of a release workflow. How to use the action is documented in the [builder repository][builder-action].
+它可以用来确保加载项（add-on）在你对仓库进行更改后仍能构建，并作为发布工作流的一部分发布镜像。如何使用该 action 已在 [builder 仓库][builder-action]中进行了说明。
 
-Here is an example of how you can use it:
+下面是一个如何使用它的示例：
 
 ```yaml
 jobs:
@@ -38,43 +38,43 @@ jobs:
           --target /data
 ```
 
-This example will run a test build on all supported architectures of the add-on.
+此示例将对加载项的所有受支持架构运行一次测试构建。
 
 > [!TIP]
-> Your repository is mapped to `/data` in the action, so if you have your add-on files in subdirectories, you need to supply `--target /data/{directoryname}` as an argument to the builder action.
+> 你的仓库在 action 中被映射到 `/data`，因此如果你的加载项文件位于子目录中，你需要提供 `--target /data/{directoryname}` 作为 builder action 的参数。
 
-## Documentation
+## 文档
 
-Our [API documentation][api_docs] has moved to the developer documentation site. During this move, it also got a style update to make it easier to navigate. Some of the endpoints are still missing some content. If you have not yet met your quota for [Hacktoberfest], maybe you want to contribute some more details to our API descriptions?
+我们的 [API 文档][api_docs]已迁移至开发者文档网站。在此次迁移过程中，它还进行了样式更新，使其更易于浏览。一些端点（endpoint）仍缺少部分内容。如果你还没有用完 [Hacktoberfest] 的配额，也许你想为我们的 API 描述贡献更多细节？
 
-## API Changes
+## API 变更
 
-- Using the `/homeassistant/*` endpoints is deprecated and will be removed later this year. You need to use `/core/*` instead.
-- Using `http://hassio/` is deprecated and will be removed later this year. You need to use `http://supervisor/` instead.
-- Using `HASSIO_TOKEN` is deprecated and will be removed later this year. You need to use `SUPERVISOR_TOKEN` instead.
-- Deleting snapshots with `POST` calling `/supervisor/snapshots/<slug>/remove` is deprecated and will be removed later this year. You need to use the `DELETE` method when calling `/supervisor/snapshots/<slug>` instead.
-- Using `X-Hassio-Key` header as an authentication method is deprecated and will be removed later this year. You need to use an authorization header with a `Bearer` token instead.
+- 使用 `/homeassistant/*` 端点已被弃用，并将在今年晚些时候移除。你需要改用 `/core/*`。
+- 使用 `http://hassio/` 已被弃用，并将在今年晚些时候移除。你需要改用 `http://supervisor/`。
+- 使用 `HASSIO_TOKEN` 已被弃用，并将在今年晚些时候移除。你需要改用 `SUPERVISOR_TOKEN`。
+- 通过 `POST` 调用 `/supervisor/snapshots/<slug>/remove` 来删除快照（snapshot）的方式已被弃用，并将在今年晚些时候移除。你需要改为在调用 `/supervisor/snapshots/<slug>` 时使用 `DELETE` 方法。
+- 使用 `X-Hassio-Key` 请求头作为身份验证方式已被弃用，并将在今年晚些时候移除。你需要改为使用带有 `Bearer` 令牌的授权请求头。
 
-The [API documentation][api_docs] has been updated to reflect these changes.
+[API 文档][api_docs]已更新以反映这些变更。
 
-## Add-on options
+## 加载项选项
 
-The permissions of the `/data/options.json` file, is changed from `644` to `600`. If your add-on is running as non-root and reading this file, it will now give you permission issues.
+`/data/options.json` 文件的权限已从 `644` 更改为 `600`。如果你的加载项以非 root 用户身份运行并读取此文件，现在将会遇到权限问题。
 
-There are several steps you can do in your add-on to continue to use this information:
+你可以在加载项中采取以下几个步骤来继续使用这些信息：
 
-- If you are using [S6-overlay] in your add-on, you can use [`/etc/fix-attrs.d`][S6-overlay-permissions] to ensure that the user you are running the add-on as, has access to the file.
-- You can change your add-on to run as `root` (default).
+- 如果你在加载项中使用了 [S6-overlay]，你可以使用 [`/etc/fix-attrs.d`][S6-overlay-permissions] 来确保运行加载项的用户有权访问该文件。
+- 你可以将加载项改为以 `root` 用户身份运行（默认）。
 
-## Releases
+## 发布
 
-Until now, the Supervisor, our plugins and add-ons have been using a mix of the build number and [Semantic Versioning (SemVer)][semver] as the versioning system. We have decided to replace that for these repositories and to adopt [Calendar Versioning (CalVer)][calver] as our versioning system instead.
+到目前为止，Supervisor、我们的插件（plugin）和加载项一直使用构建编号与[语义化版本（Semantic Versioning，SemVer）][semver]混合的版本系统。我们已决定在这些仓库中替换该方式，转而采用[日历化版本（Calendar Versioning，CalVer）][calver]作为我们的版本系统。
 
-We are migrating the Supervisor from release based development to continuous development. This fits perfectly with our existing channel-based update strategy (stable, beta and dev). We are now leveraging automated pipelines to build and push out new Supervisor versions to the correct channels. There was no more need for a dual branch setup by moving to this structure, so both our `dev` and `master` branches have now been replaced with a new `main` branch. Our plugins (DNS, Multicast, Observer, CLI) for the Supervisor will also follow this continuous development principle.
+我们正在将 Supervisor 从基于发布的开发迁移到持续开发。这与我们现有的基于渠道的更新策略（stable、beta 和 dev）完美契合。我们现在正在利用自动化流水线来构建新的 Supervisor 版本并将其推送到正确的渠道。迁移到这种结构后，不再需要双分支设置，因此我们的 `dev` 和 `master` 分支现在都已被新的 `main` 分支取代。我们为 Supervisor 提供的插件（DNS、Multicast、Observer、CLI）也将遵循这一持续开发原则。
 
-We made this move to provide higher software quality with an automatic test system. Every commit now triggers a new dev release, which gets tested by our test instances. Issues are imminently reported to sentry. This gives us the opportunity to test all changes before we create a release. When a release is created, the changes will come available in the beta channel. Once declared stable, we can promote the release to the stable channel.
+我们做出这一转变是为了通过自动测试系统提供更高的软件质量。现在，每次提交都会触发一个新的 dev 版本发布，该版本会由我们的测试实例进行测试。问题会立即上报给 sentry。这让我们有机会在创建发布之前测试所有变更。当发布创建后，这些变更将在 beta 渠道中可用。一旦宣布稳定，我们就可以将该发布提升到 stable 渠道。
 
-We are using our [builder action][marketplace] with [GitHub actions][github_action] to build and publish the Supervisor, our plugins and base images for our Docker containers. If you are interested in how we are doing this, you can look at the [builder action for the Supervisor here][builder_action], and the [action helpers here][action_helpers].
+我们正在使用我们的 [builder action][marketplace] 和 [GitHub actions][github_action] 来构建和发布 Supervisor、我们的插件以及 Docker 容器的基础镜像。如果你对我们是如何做到这一点感兴趣，可以查看[Supervisor 的 builder action][builder_action]，以及[action 辅助工具][action_helpers]。
 
 [action_helpers]: https://github.com/home-assistant/actions/tree/master/helpers
 [addons]: https://github.com/home-assistant/hassio-addons

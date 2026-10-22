@@ -1,6 +1,6 @@
 ---
-title: Can I Have User Permissions?
-description: Home Assistant has had a user permission system since Home Assistant 0.82 (released Nov, 2018).
+title: 我可以拥有用户权限吗？
+description: 自 Home Assistant 0.82（2018 年 11 月发布）以来，Home Assistant 就已拥有用户权限系统。
 date: 2019-03-11
 authors:
   - Paulus Schoutsen
@@ -8,26 +8,26 @@ areas:
   - core
 ---
 
-Home Assistant has had a user permission system since Home Assistant 0.82 (released Nov, 2018). Permissions are attached to groups, a user can be part of multiple groups, user permissions are based on merging the permission policies of all of its groups. More detailed info can be found in [our docs](/core/internals/permissions/). Users can create their own groups, but there are also three system groups: "admin", "users" (new in 0.90), and "read-only". All three have access to all entities, but the read-only cannot control any of them. Only the users part of the admin group can access administrative options like managing users and integrations.
+自 Home Assistant 0.82（2018 年 11 月发布）以来，Home Assistant 就已拥有用户权限系统。权限附加在组上，一个用户可以属于多个组，用户权限基于合并其所有组的权限策略。更多详细信息可以在[我们的文档](/core/internals/permissions/)中找到。用户可以创建自己的组，但也有三个系统组："admin"（管理员）、"users"（用户，0.90 新增）和 "read-only"（只读）。这三者都可以访问所有实体（entity），但只读组无法控制其中任何一个。只有属于 admin 组的用户才能访问管理选项，例如管理用户和集成（integration）。
 
-Before Home Assistant 0.90, we were not using any of it. Instead, all users are part of the admin group, as that group provides the same access as before we had permissions. With 0.90, we're going to allow switching the users group between the system groups "admin" and "users". When a user is part of the "users" group, they will not be able to administer Home Assistant. The UI will hide the menu items to open the configuration panel or the developer tools.
+在 Home Assistant 0.90 之前，我们并没有使用其中任何功能。相反，所有用户都属于 admin 组，因为该组提供的访问权限与我们拥有权限系统之前相同。在 0.90 中，我们将允许在系统组 "admin" 和 "users" 之间切换用户组。当用户属于 "users" 组时，他们将无法管理 Home Assistant。UI 会隐藏用于打开配置面板或开发者工具的菜单项。
 
 ![Screenshot showing a user in the users group](/img/en/blog/2019-03-user-permissions/screenshot.png)
 
-This feature is however unfinished. We need to audit the Home Assistant code to make sure that all APIs and service calls check the users permissions. So although a user will not be able to use the UI to make changes, there might still be APIs that can be accessed without permissions. And not only do we need to check the Home Assistant code, custom components that register services or APIs will also have to be updated.
+然而，这项功能尚未完成。我们需要审计 Home Assistant 的代码，以确保所有 API 和服务（service）调用都会检查用户权限。因此，尽管用户将无法使用 UI 进行更改，但仍可能存在可以在没有权限的情况下访问的 API。而且我们不仅需要检查 Home Assistant 的代码，注册了服务或 API 的自定义组件也必须更新。
 
-So this is where you can help! If you're maintaining an integration, either custom or built-in, read up on [the documentation on how to check permissions](/core/internals/permissions/#check-a-permission). Then check that your integration checks permissions appropriately. Once you checked yours, help others check theirs, and help us to audit all services and API calls in Home Assistant.
+所以这正是您可以帮忙的地方！如果您在维护一个集成，无论是自定义的还是内置的，请阅读[关于如何检查权限的文档](/core/internals/permissions/#check-a-permission)。然后检查您的集成是否恰当地检查了权限。当您检查完自己的之后，请帮助他人检查他们的，并帮助我们审计 Home Assistant 中的所有服务和 API 调用。
 
-## What about custom groups?
+## 那么自定义组呢？
 
-Although we support the creation of custom groups, don't expect it publicly exposed anytime soon. The reason for this is that it requires a lot of work on APIs that interact with the custom policies. The hardest part is that a custom policy could enable read access to only a couple of entities, and only allow control access to a subset of them. We will need to go through each API to make sure they support this. Lovelace will also need to be updated to support users having their own configuration view.
+尽管我们支持创建自定义组，但不要指望它会很快公开开放。原因在于，这需要对与自定义策略交互的 API 进行大量的工作。最难的部分是，自定义策略可能仅允许对少数几个实体进行读取访问，并且只允许对其中的一个子集进行控制访问。我们需要逐一检查每个 API，以确保它们支持这一点。Lovelace 也需要更新，以支持用户拥有自己的配置视图。
 
-That being said, if you do want to play with it, it's possible.
+话虽如此，如果您确实想尝试一下，也是可行的。
 
 > [!CAUTION]
-> This is risky. Make backups, etc.
+> 这有风险。请做好备份等。
 
-Turn off Home Assistant and open up `<config>/.storage/auth`. Find the key `"groups"` and add a new group:
+关闭 Home Assistant 并打开 `<config>/.storage/auth`。找到键 `"groups"` 并添加一个新组：
 
 ```json
 {
@@ -46,7 +46,7 @@ Turn off Home Assistant and open up `<config>/.storage/auth`. Find the key `"gro
 }
 ```
 
-Now scroll down in the file to the `"users"` key and find the user you want to apply the custom group to. For this user, update their `"group_ids"` value to be that of your custom group. Note, you should not update the user that has `"owner": true`, as they will always have all permissions.
+现在在文件中向下滚动到 `"users"` 键，找到您想要应用自定义组的用户。对于该用户，将其 `"group_ids"` 值更新为您的自定义组。注意，您不应该更新具有 `"owner": true` 的用户，因为他们始终拥有所有权限。
 
 ```json
 "group_ids": [
@@ -54,6 +54,6 @@ Now scroll down in the file to the `"users"` key and find the user you want to a
 ],
 ```
 
-Now start Home Assistant and log in with the updated user. If all went well, you should see only the kitchen lights and AC switch. Controlling the AC will fail.
+现在启动 Home Assistant 并使用更新后的用户登录。如果一切顺利，您应该只能看到厨房的灯和空调开关。控制空调将会失败。
 
-A user can be as many groups as you want. Only members of the `system-admin` group can administer the system. To learn more about the policy format, check the [documentation](/core/internals/permissions/).
+一个用户可以属于任意多个组。只有 `system-admin` 组的成员才能管理系统。要了解有关策略格式的更多信息，请查看[文档](/core/internals/permissions/)。

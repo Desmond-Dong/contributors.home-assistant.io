@@ -1,6 +1,6 @@
 ---
-title: Altering config entries
-description: Starting from Home Assistant 2024.3, modifications to a ConfigEntry should use hass.config_entries.async_update_entry.
+title: 修改配置条目
+description: 从 Home Assistant 2024.3 开始，对 ConfigEntry 的修改应使用 hass.config_entries.async_update_entry。
 date: 2024-02-12
 authors:
   - J. Nick Koston
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-Starting from Home Assistant 2024.3, modifications to a `ConfigEntry` should use `hass.config_entries.async_update_entry`.
-Directly setting attributes on the `ConfigEntry` object is deprecated and will start to fail in version 2024.9 and later.
-There is no deprecation period for directly setting `unique_id` on the `ConfigEntry` as doing so will corrupt the internal state, and doing so will start to fail immediately.
+从 Home Assistant 2024.3 开始，对 `ConfigEntry` 的修改应使用 `hass.config_entries.async_update_entry`。
+直接在 `ConfigEntry` 对象上设置属性的方式已被弃用，并将在 2024.9 及更高版本中开始报错。
+直接在 `ConfigEntry` 上设置 `unique_id` 没有弃用过渡期，因为这样做会破坏内部状态，此类操作将立即开始报错。
 
-The following attributes must now be set via `hass.config_entries.async_update_entry`:
+以下属性现在必须通过 `hass.config_entries.async_update_entry` 设置：
 
 - data
 - minor_version
@@ -23,4 +23,4 @@ The following attributes must now be set via `hass.config_entries.async_update_e
 - unique_id
 - version
 
-Tests must ensure that `MockConfigEntry` objects are added to Home Assistant via `entry.add_to_hass(hass)` before calling `hass.config_entries.async_update_entry`.
+测试必须确保在调用 `hass.config_entries.async_update_entry` 之前，已通过 `entry.add_to_hass(hass)` 将 `MockConfigEntry` 对象添加到 Home Assistant。

@@ -1,6 +1,6 @@
 ---
-title: Changes to light color mode when lights display an effect
-description: The primary reason for introducing light color modes was that a light's state should not be ambiguous.
+title: 灯具显示效果时灯光颜色模式的更改
+description: 引入灯光颜色模式的主要原因在于，灯具的状态不应存在歧义。
 date: 2024-01-23
 authors:
   - Erik Montnémery
@@ -8,25 +8,25 @@ areas:
   - core
 ---
 
-## Background
+## 背景
 
-The primary reason for introducing light color modes was that a light's state should not be ambiguous. As an example, a light which supports color and white with adjustable color temperature must be in either color mode `hs` (for example) or `color_temp`.
+引入灯光颜色模式（color mode）的主要原因在于，灯具的状态不应存在歧义。例如，一个支持彩色以及色温可调的白光的灯具，必须处于颜色模式 `hs`（举例而言）或 `color_temp` 之一。
 
-However, effects complicate this because when the same light is rendering an effect, none of the `hs_color`, `color_temp`, or `brightness` state attributes may be meaningful.
+然而，效果（effect）让情况变得复杂，因为当同一个灯具正在呈现某个效果时，状态属性 `hs_color`、`color_temp` 或 `brightness` 中的任何一个都可能没有意义。
 
-## Changes
+## 变更
 
-### Requirements on `color_mode` are less strict when a light is rendering an effect
+### 灯具呈现效果时对 `color_mode` 的要求更为宽松
 
-More restrictive color modes than what's otherwise supported by the light are allowed when an effect is active:
-- A light which supports colors is allowed to indicate color modes `on_off` and `brightness` when controlled by an effect
-- A light which supports brightness is allowed to indicate color mode `on_off` when controlled by an effect.
+当效果处于激活状态时，允许灯具使用比其原本支持的颜色模式限制更强的颜色模式：
+- 支持彩色的灯具在被效果控制时，可以指示颜色模式 `on_off` 和 `brightness`
+- 支持亮度调节的灯具在被效果控制时，可以指示颜色模式 `on_off`。
 
-For example, a light which has its supported_color_modes set to `{"hs", "color_temp"}` is allowed to set its `color_mode` to `on_off` when rendering an effect which can't be adjusted and to `brightness` when rendering an effect which allows brightness to be controlled.
+例如，一个 supported_color_modes 设置为 `{"hs", "color_temp"}` 的灯具，在呈现无法调节的效果时，可以将其 `color_mode` 设置为 `on_off`；在呈现允许控制亮度的效果时，则可以设置为 `brightness`。
 
-### A special effect `EFFECT_OFF` which means no effect / turn off effect has been added
+### 新增了一种特殊效果 `EFFECT_OFF`，表示无效果 / 关闭效果
 
-There was previously no standard way for a light which supports effects to show that no effect is active.
-This has been solved by adding the pre-defined effect `EFFECT_OFF` to indicate no effect is active.
+以前，支持效果的灯具没有标准的方式来表明当前没有激活任何效果。
+这一问题已通过添加预定义效果 `EFFECT_OFF`（用于指示当前未激活任何效果）得到解决。
 
-More details can be found in the [documentation](/core/entities/light/#color-modes) and in [architecture discussion #960](https://github.com/home-assistant/architecture/discussions/960).
+更多详情请参阅[文档](/core/entities/light/#color-modes)以及[架构讨论 #960](https://github.com/home-assistant/architecture/discussions/960)。

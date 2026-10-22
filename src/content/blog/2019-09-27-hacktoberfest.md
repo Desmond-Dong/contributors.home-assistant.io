@@ -1,6 +1,6 @@
 ---
 title: Hacktoberfest 2019
-description: This year we're again participating in Hacktoberfest. Hacktoberfest is a worldwide event to celebrate open source.
+description: 今年我们再次参加 Hacktoberfest。Hacktoberfest 是一项庆祝开源的全球性活动。
 date: 2019-09-27
 authors:
   - Paulus Schoutsen
@@ -8,67 +8,65 @@ areas:
   - core
 ---
 
-This year we're again participating in [Hacktoberfest](https://hacktoberfest.digitalocean.com). Hacktoberfest is a worldwide event to celebrate open source. If you make four pull request in the month of October, you'll get a free Hacktoberfest t-shirt.
+今年我们再次参加 [Hacktoberfest](https://hacktoberfest.digitalocean.com)。Hacktoberfest 是一项庆祝开源的全球性活动。如果您在十月份提交四个拉取请求（pull request），就可以获得一件免费的 Hacktoberfest T 恤。
 
-Home Assistant is currently racing towards our magical 1.0 release. Home Assistant 1.0 is all about user friendliness. As part of this, we have recently introduced device automations and are expanding how scenes work in Home Assistant.
+Home Assistant 目前正朝着我们神奇的 1.0 版本冲刺。Home Assistant 1.0 的核心在于用户友好性。作为其中的一部分，我们最近引入了设备自动化（device automation），并且正在扩展场景（scene）在 Home Assistant 中的工作方式。
 
-Home Assistant supports a wide range of products, and so not each feature that we built supports each product type yet. For this Hacktoberfest, we've prepared issues to help integrations use the latest Home Assistant features.
+Home Assistant 支持各种各样的产品，因此我们构建的并非每个功能都已支持每种产品类型。为了这次 Hacktoberfest，我们准备了一些 issue，以帮助各个集成（integration）使用最新的 Home Assistant 功能。
 
-To make it easier to get started, we have introduced a new scaffolding script. This script is able to create all the boilerplate necessary to add new features to existing entity integrations. Including tests! You will only need to focus on code to work with the specific integration. Instructions on how to use it are included in each issue linked below.
+为了让入门更容易，我们引入了一个新的脚手架脚本。这个脚本能够创建为现有实体（entity）集成添加新功能所需的全部样板代码。包括测试！您只需要专注于与特定集成打交道的代码。每个链接的 issue 中都包含了如何使用它的说明。
 
-If you want to see all available issues instead of the tailored list below, [check here](https://github.com/issues?page=1&q=is%3Aopen+is%3Aissue+org%3Ahome-assistant+archived%3Afalse+label%3AHacktoberfest&utf8=%E2%9C%93) (requires being logged in to GitHub).
+如果您想查看所有可用的 issue，而不是下面这份精选列表，请[查看这里](https://github.com/issues?page=1&q=is%3Aopen+is%3Aissue+org%3Ahome-assistant+archived%3Afalse+label%3AHacktoberfest&utf8=%E2%9C%93)（需要登录 GitHub）。
 
-**Update Sep 30:** Added docs section, updated the links in the Almond section, added link to all Home Assistant Hacktoberfest issues.
+**9 月 30 日更新：** 新增了文档部分，更新了 Almond 部分中的链接，并添加了指向所有 Home Assistant Hacktoberfest issue 的链接。
 
-**Update Okt 1:** Added frontend section.
+**10 月 1 日更新：** 新增了前端部分。
 
-## Scenes
+## 场景
 
-Scenes allow a user to define how a light should look (ie, it should be on and the color should be blue). When a scene is activated, it is then up to Home Assistant to figure out which services to call to make this happen.
+场景（scene）允许用户定义一盏灯应该是什么样子（即：应该处于开启状态，并且颜色应该是蓝色）。当场景被激活时，就由 Home Assistant 来确定需要调用哪些服务（service）来实现这一效果。
 
-Scenes are a powerful tool that is easy to understand for users. It's therefore important that we improve our scene support. We have prepared the following issues:
+场景是一种用户易于理解的强大工具。因此，改进我们对场景的支持非常重要。我们准备了以下 issue：
 
-- [Add `scene.create` service to create scenes on the fly.](https://github.com/home-assistant/core/issues/27023)
-- ~~[Add `scene.apply` service to apply a scene defined as service data.](https://github.com/home-assistant/core/issues/26813)~~
-- ~~[Add activate scene to script syntax](https://github.com/home-assistant/core/issues/27026)~~
-- [Add reproduce state support to entity integrations.](https://github.com/home-assistant/core/issues?utf8=%E2%9C%93&q=label%3AHacktoberfest+reproduce_state+is%3Aopen+) (multiple issues)
+- [添加 `scene.create` 服务以动态创建场景。](https://github.com/home-assistant/core/issues/27023)
+- ~~[添加 `scene.apply` 服务以应用定义为服务数据的场景。](https://github.com/home-assistant/core/issues/26813)~~
+- ~~[在脚本语法中添加激活场景](https://github.com/home-assistant/core/issues/27026)~~
+- [为实体集成添加状态重现（reproduce state）支持。](https://github.com/home-assistant/core/issues?utf8=%E2%9C%93&q=label%3AHacktoberfest+reproduce_state+is%3Aopen+)（多个 issue）
 
 <!--truncate-->
 
-## Device Automations
+## 设备自动化
 
-Device Automations are a device-oriented way for users to create automations. When defining a trigger, condition or an action part of an automation, the user will start by picking a device to see a list of possible options for that device. Easy!
+设备自动化（device automation）是一种面向设备的方式，供用户创建自动化。在定义自动化中的触发、条件或动作部分时，用户首先会选择一个设备，然后查看该设备可用的选项列表。非常简单！
 
-Device automations rely on integrations to define the possible options for each device. As this is a new technology, we still are looking for help in making all our entity integrations (light, switch etc) support this. We have prepared the following issues:
+设备自动化依赖于集成来定义每个设备可用的选项。由于这是一项新技术，我们仍在寻求帮助，让我们所有的实体集成（灯、开关等）都支持此功能。我们准备了以下 issue：
 
-- [Add device trigger support to entity integrations](https://github.com/home-assistant/core/issues?utf8=%E2%9C%93&q=label%3AHacktoberfest+device_trigger+is%3Aopen+) (multiple issues)
-- [Add device condition support to entity integrations](https://github.com/home-assistant/core/issues?utf8=%E2%9C%93&q=label%3AHacktoberfest+device_condition+is%3Aopen+) (multiple issues)
-- [Add device action support to entity integrations](https://github.com/home-assistant/core/issues?utf8=%E2%9C%93&q=label%3AHacktoberfest+device_action+is%3Aopen+) (multiple issues)
+- [为实体集成添加设备触发器（device trigger）支持](https://github.com/home-assistant/core/issues?utf8=%E2%9C%93&q=label%3AHacktoberfest+device_trigger+is%3Aopen+)（多个 issue）
+- [为实体集成添加设备条件（device condition）支持](https://github.com/home-assistant/core/issues?utf8=%E2%9C%93&q=label%3AHacktoberfest+device_condition+is%3Aopen+)（多个 issue）
+- [为实体集成添加设备动作（device action）支持](https://github.com/home-assistant/core/issues?utf8=%E2%9C%93&q=label%3AHacktoberfest+device_action+is%3Aopen+)（多个 issue）
 
-## Home Assistant Documentation
+## Home Assistant 文档
 
-Guess what is never done? Documentation.
+猜猜看什么永远做不完？文档。
 
-- [Fill in missing documentation for integrations](https://github.com/home-assistant/home-assistant.io/issues?q=is%3Aissue+is%3Aopen+label%3AHacktoberfest)
-- [Fill in missing documentation for hass.io add-ons](https://github.com/home-assistant/hassio-addons/issues?q=is%3Aissue+is%3Aopen+label%3AHacktoberfest)
+- [补充缺失的集成文档](https://github.com/home-assistant/home-assistant.io/issues?q=is%3Aissue+is%3Aopen+label%3AHacktoberfest)
+- [补充缺失的 hass.io 插件（add-on）文档](https://github.com/home-assistant/hassio-addons/issues?q=is%3Aissue+is%3Aopen+label%3AHacktoberfest)
 
-## Frontend
+## 前端
 
-We also have some work to do on the Frontend of Home Assistant.
-So we have also prepared some issues to get you started:
+Home Assistant 的前端也有一些工作要做。
+所以我们也准备了一些 issue 来帮助您入门：
 
-- [Make all text translatable](https://github.com/home-assistant/frontend/issues?utf8=%E2%9C%93&q=label%3AHacktoberfest+label%3Alocalization+is%3Aopen+) (multiple issues)
-- [Help making Home Assistant better accessible](https://github.com/home-assistant/frontend/issues?q=is%3Aopen+label%3AHacktoberfest+label%3Aaccessibility) (multiple issues)
-- [And a lot of other small UX issues](https://github.com/home-assistant/frontend/labels/Hacktoberfest?page=2&q=is%3Aopen+label%3AHacktoberfest)
+- [让所有文本都可以翻译](https://github.com/home-assistant/frontend/issues?utf8=%E2%9C%93&q=label%3AHacktoberfest+label%3Alocalization+is%3Aopen+)（多个 issue）
+- [帮助提升 Home Assistant 的无障碍性](https://github.com/home-assistant/frontend/issues?q=is%3Aopen+label%3AHacktoberfest+label%3Aaccessibility)（多个 issue）
+- [以及许多其他小的用户体验（UX）问题](https://github.com/home-assistant/frontend/labels/Hacktoberfest?page=2&q=is%3Aopen+label%3AHacktoberfest)
 
-## Bonus: Almond - Virtual Assistant
+## 附加：Almond - 虚拟助手
 
-[Almond](https://almond.stanford.edu/) is an open, privacy-preserving virtual assistant by Stanford University. We have been [collaborating](https://github.com/stanford-oval/thingpedia-common-devices/pull/80) on getting it to work with Home Assistant. Right now it's limited to controlling lights in Home Assistant.
+[Almond](https://almond.stanford.edu/) 是斯坦福大学推出的一个开放且保护隐私的虚拟助手。我们一直在[合作](https://github.com/stanford-oval/thingpedia-common-devices/pull/80)，让它能够与 Home Assistant 协同工作。目前它仅限于控制 Home Assistant 中的灯光。
 
-For Hacktoberfest, let's see if we can expand the number of supported types! To get started, check the following links:
+在这次 Hacktoberfest 中，让我们看看能否扩大所支持类型的数量！要开始参与，请查看以下链接：
 
-- [Documentation on how to contribute Home Assistant specific types](https://almond.stanford.edu/doc/home-assistant-integration.md)
-- [Documentation on how to run tests](https://almond.stanford.edu/doc/thingpedia-testing.md)
-- Run Almond at [home](https://github.com/stanford-oval/almond-server), use [the Android version](https://play.google.com/store/apps/details?id=edu.stanford.thingengine.engine&hl=en_US) or [the Gnome version](https://flathub.org/apps/details/edu.stanford.Almond)
-
-
+- [关于如何贡献 Home Assistant 特定类型的文档](https://almond.stanford.edu/doc/home-assistant-integration.md)
+- [关于如何运行测试的文档](https://almond.stanford.edu/doc/thingpedia-testing.md)
+- 在[家中](https://github.com/stanford-oval/almond-server)运行 Almond，使用 [Android 版本](https://play.google.com/store/apps/details?id=edu.stanford.thingengine.engine&hl=en_US)或 [Gnome 版本](https://flathub.org/apps/details/edu.stanford.Almond)

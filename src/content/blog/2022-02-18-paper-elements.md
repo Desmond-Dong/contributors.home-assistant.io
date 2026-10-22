@@ -1,6 +1,6 @@
 ---
-title: Paper Elements are being removed
-description: In the Home Assistant Core 2022.3 release, we are removing all of the paper-dropdown-menu and paper-input elements in the Frontend Repository.
+title: Paper Elements 即将被移除
+description: 在 Home Assistant Core 2022.3 版本中，我们将移除前端仓库中所有的 paper-dropdown-menu 和 paper-input 元素。
 date: 2022-02-18
 authors:
   - Zack Barett
@@ -8,18 +8,18 @@ areas:
   - core
 ---
 
-In the Home Assistant Core 2022.3 release, we are removing all of the `paper-dropdown-menu` and `paper-input` elements in the Frontend Repository. This means that any custom card that was previously using these elements in the card or card editor will no longer render correctly and will require updates to its codebase.
+在 Home Assistant Core 2022.3 版本中，我们将移除前端仓库（Frontend Repository）中所有的 `paper-dropdown-menu` 和 `paper-input` 元素。这意味着任何先前在卡片或卡片编辑器中使用这些元素的自定义卡片都将无法正确渲染，并需要更新其代码库。
 
-Custom Cards using the elements used in the Home Assistant Frontend have never been supported.
+使用 Home Assistant 前端所用元素的自定义卡片（Custom Cards）从未受到支持。
 
-## Why did we do this?
+## 我们为什么要这样做？
 
-We are converting our codebase from the deprecated `paper` elements to the new [Material Web Components](https://github.com/material-components/material-components-web-components) from Google. This is to keep our frontend up to date with the latest components and features.
+我们正在将代码库从已弃用的 `paper` 元素迁移到 Google 全新的 [Material Web Components](https://github.com/material-components/material-components-web-components)。这是为了让我们的前端保持最新，能够使用最新的组件和功能。
 
-## What should custom cards do?
+## 自定义卡片应该怎么做？
 
-Our advice is to bundle the Material Web Components in your custom card using [Scoped Custom Element Registry](https://github.com/lit/lit/tree/main/packages/labs/scoped-registry-mixin). The Home Assistant Frontend loads the [polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/scoped-custom-element-registry) needed for this to work starting with the release of Home Assistant 2022.3.
+我们的建议是使用 [Scoped Custom Element Registry](https://github.com/lit/lit/tree/main/packages/labs/scoped-registry-mixin) 在您的自定义卡片中打包 Material Web Components。从 Home Assistant 2022.3 版本发布开始，Home Assistant 前端将加载使其正常工作所需的 [polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/scoped-custom-element-registry)。
 
-This will allow any custom card to utilize the same MWC elements that are used in the Lovelace Editors. You can see an example of this usage in the [Boilerplate Card](https://github.com/custom-cards/boilerplate-card). Other HA elements like the icon picker (`<ha-icon-picker>`) are not supported in this same way.
+这将使任何自定义卡片都能使用与 Lovelace 编辑器中相同的 MWC 元素。您可以在 [Boilerplate Card](https://github.com/custom-cards/boilerplate-card) 中看到这种用法的示例。其他 Home Assistant 元素，例如图标选择器（icon picker，`<ha-icon-picker>`），则不支持以同样的方式使用。
 
-See [this old blog post](/blog/2020/10/02/lazyMoreInfo#what-about-external-elements) for more information.
+更多信息请参阅[这篇旧的博客文章](/blog/2020/10/02/lazyMoreInfo#what-about-external-elements)。

@@ -1,6 +1,6 @@
 ---
-title: New limits for Supervisor Add-ons
-description: With Home Assistant OS 10, we update to the latest Docker release 23.0. With the new Docker version the maximum number of open file descriptors for add-ons changed to infinity (sort of).
+title: Supervisor 加载项的新限制
+description: 随着 Home Assistant OS 10 的发布，我们更新到了最新的 Docker 23.0 版本。在新的 Docker 版本中，加载项（add-ons）可打开的文件描述符最大数量变为了无限（某种意义上）。
 date: 2023-04-13
 authors:
   - Stefan Agner
@@ -8,23 +8,10 @@ areas:
   - apps
 ---
 
-With Home Assistant OS 10, we update to the latest Docker release 23.0. With the
-new Docker version the maximum number of open file descriptors for add-ons
-changed to infinity (sort of).
+随着 Home Assistant OS 10 的发布，我们更新到了最新的 Docker 23.0 版本。在新的 Docker 版本中，加载项可打开的文件描述符最大数量变为了无限（某种意义上）。
 
-If you are an add-on developer and experience out-of-memory issues on Home
-Assistant OS 10, you can apply the old limit by using `ulimit -n 1048576` before
-starting your service.
+如果您是一名加载项开发者，并且在 Home Assistant OS 10 上遇到了内存不足（out-of-memory）问题，可以在启动您的服务之前使用 `ulimit -n 1048576` 来应用旧的限制。
 
-Background: During Home Assistant OS release candidate phase, the higher limit turned out to
-be problematic for several add-ons (Node-RED, Network UPS Tools, and the EMQX
-MQTT broker, see [Home Assistant OS issue #2438](https://github.com/home-assistant/operating-system/issues/2438)).
-In all cases, the problems manifested as an out-of-memory error,
-where it worked on the same hardware as the previous Home Assistant OS release. Also
-in all three cases, memory got allocated dynamically depending on the number of
-open file descriptors allowed (which can be determined via `prlimit64` syscall,
-which returns a limit of 1073741816).
+背景：在 Home Assistant OS 候选发布（release candidate）阶段，更高的限制被证明对多个加载项存在问题（Node-RED、Network UPS Tools 以及 EMQX MQTT 代理，参见 [Home Assistant OS issue #2438](https://github.com/home-assistant/operating-system/issues/2438)）。在所有这些案例中，问题都表现为内存不足错误，而在相同的硬件上，之前的 Home Assistant OS 版本却运行正常。同样在这三个案例中，内存都会根据允许打开的文件描述符数量进行动态分配（可以通过 `prlimit64` 系统调用确定，其返回的限制值为 1073741816）。
 
-We considered returning to the old limit; however, according to the change
-in the Docker (moby) repository using infinity as a limit has less overhead.
-Therefore we decided to stick with the new default.
+我们曾考虑恢复到旧的限制；然而，根据 Docker（moby）仓库中的变更说明，使用无限作为限制的开销更小。因此我们决定保留新的默认设置。

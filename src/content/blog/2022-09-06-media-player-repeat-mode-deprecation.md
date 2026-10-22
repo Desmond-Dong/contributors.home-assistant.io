@@ -1,6 +1,6 @@
 ---
-title: Deprecating media player constants
-description: "As of Home Assistant Core 2022.10, the following media player constants are deprecated:"
+title: 弃用媒体播放器常量
+description: "从 Home Assistant Core 2022.10 开始，以下媒体播放器常量已弃用："
 date: 2022-09-06
 authors:
   - epenet
@@ -8,7 +8,7 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2022.10, the following media player constants are deprecated:
+从 Home Assistant Core 2022.10 开始，以下媒体播放器常量已弃用：
 
   - `MEDIA_CLASS_ALBUM`
   - `MEDIA_CLASS_APP`
@@ -58,6 +58,6 @@ As of Home Assistant Core 2022.10, the following media player constants are depr
   - `REPEAT_MODE_ONE`
   - `REPEAT_MODES`
 
-Use the new `MediaClass`, `MediaType`, and `RepeatMode` enum instead.
+请改用新的 `MediaClass`、`MediaType` 和 `RepeatMode` 枚举。
 
-The use of `STATE_*` constants to reflect media player state is also deprecated. Please use the new `MediaPlayerState` enum instead.
+使用 `STATE_*` 常量来表示媒体播放器状态（state）的做法也已弃用。请改用新的 `MediaPlayerState` 枚举。

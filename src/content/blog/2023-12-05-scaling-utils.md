@@ -1,6 +1,6 @@
 ---
-title: New scaling utils and import changes
-description: Multiple integrations have implemented there own scaling algorithm to scale brightness.
+title: 新的缩放工具函数与导入变更
+description: 多个集成（integration）已经实现了各自的缩放算法来缩放亮度。
 date: 2023-12-05
 authors:
   - Jan Bouwhuis
@@ -8,9 +8,9 @@ areas:
   - core
 ---
 
-## New utils for scaling brightness
+## 用于缩放亮度的新工具函数
 
-Multiple integrations have implemented there own scaling algorithm to scale brightness. New utils are introduced now to simplify the implementation of brightness scaling in `homeassistant.util.color`:
+多个集成已经实现了各自的缩放算法来缩放亮度。现在引入了新的工具函数（utils），以简化在 `homeassistant.util.color` 中实现亮度缩放的过程：
 
 ```python
 def brightness_to_value(low_high_range: tuple[float, float], brightness: int) -> float:
@@ -28,7 +28,7 @@ def brightness_to_value(low_high_range: tuple[float, float], brightness: int) ->
     ...
 ```
 
-If you'd rather like to scale brightness to an integer range you can also use `scale_ranged_value_to_int_range`, described [here](#background).
+如果您更希望将亮度缩放为整数范围，也可以使用 `scale_ranged_value_to_int_range`，具体说明见[此处](#background)。
 
 ```python
 def value_to_brightness(low_high_range: tuple[float, float], value: float) -> int:
@@ -48,11 +48,11 @@ def value_to_brightness(low_high_range: tuple[float, float], value: float) -> in
     ...
 ```
 
-This also ensures a valid brightness value is returned.
+这也确保了返回的亮度值是有效的。
 
-### Background
+### 背景
 
-To scale fan speed percentage we already have some utils `homeassistant.utils.percentage`:
+为了缩放风扇速度百分比，我们已经有了一些工具函数 `homeassistant.utils.percentage`：
 
 ```python
 def ranged_value_to_percentage(
@@ -61,7 +61,7 @@ def ranged_value_to_percentage(
     ...
 ```
 
-and
+以及
 
 ```python
 def percentage_to_ranged_value(
@@ -70,9 +70,9 @@ def percentage_to_ranged_value(
     ...
 ```
 
-These percentage utils will now use new generic scaling utils in `homeassistant.utils.scaling`:
+这些百分比工具函数现在将使用 `homeassistant.utils.scaling` 中新的通用缩放工具函数：
 
-`scale_ranged_value_to_int_range` and `scale_to_ranged_value`
+`scale_ranged_value_to_int_range` 和 `scale_to_ranged_value`
 
 ```python
 def scale_ranged_value_to_int_range(
@@ -93,7 +93,7 @@ def scale_ranged_value_to_int_range(
     ...
 ```
 
-and
+以及
 
 ```python
 def scale_to_ranged_value(
@@ -117,6 +117,6 @@ def scale_to_ranged_value(
     ...
 ```
 
-## Utils `int_states_in_range` and `states_in_range` are moved
+## 工具函数 `int_states_in_range` 和 `states_in_range` 已被移动
 
-These utils are now under `homeassistant.util.scaling`. If these are used in your custom integration, make sure you update the import to the new module.
+这些工具函数现在位于 `homeassistant.util.scaling` 中。如果您的自定义集成中使用了它们，请确保将导入更新为新的模块。

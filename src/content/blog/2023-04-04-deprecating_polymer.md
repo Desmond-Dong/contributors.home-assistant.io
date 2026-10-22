@@ -1,6 +1,6 @@
 ---
-title: Deprecating Polymer
-description: The Home Assistant frontend used to use the Polymer Library for her web components.
+title: 弃用 Polymer
+description: Home Assistant 前端曾使用 Polymer 库来构建其 Web 组件。
 date: 2023-04-04
 authors:
   - Bram Kragten
@@ -8,18 +8,18 @@ areas:
   - frontend
 ---
 
-The Home Assistant frontend used to use the [Polymer Library](https://polymer-library.polymer-project.org/3.0/docs/about_30) for her web components. Polymer has since been deprecated and superseded by [Lit](https://lit.dev).
+Home Assistant 前端曾使用 [Polymer 库](https://polymer-library.polymer-project.org/3.0/docs/about_30)来构建其 Web 组件。此后，Polymer 已被弃用，并由 [Lit](https://lit.dev) 取代。
 
-In the last couple of years, we migrated most of the frontend to Lit, and we only have a few places and dependencies that still use Polymer.
+在过去几年中，我们将前端的大部分迁移到了 Lit，目前只有少数地方和依赖项仍在使用 Polymer。
 
-This is good news, as Lit is way faster and lighter than Polymer.
+这是个好消息，因为 Lit 比 Polymer 快得多，也更加轻量。
 
-In Home Assistant 2023.4, we finally removed the last piece of Polymer from the entry point of Home Assistant, meaning it is not loaded when the app starts, but only when a component needs it.
+在 Home Assistant 2023.4 中，我们最终从 Home Assistant 的入口点移除了最后一块 Polymer 代码，这意味着应用启动时不再加载它，只有在组件需要时才会加载。
 
-For custom cards and panels, we have supplied Polymer on the window object, so it was easier to access and use. But nowadays it is hardly used anymore, and since Home Assistant no longer uses it, it is mainly a big chunk of unused code that is slowing down the loading of Home Assistant.
+对于自定义卡片和面板，我们曾在 window 对象上提供 Polymer，以便更方便地访问和使用。但如今它已几乎不再被使用，而且由于 Home Assistant 已不再使用它，它主要是一大块未使用的代码，拖慢了 Home Assistant 的加载速度。
 
-That's why we decided to remove it.
+这就是我们决定移除它的原因。
 
-In Home Assistant 2023.5 Polymer will no longer be provided by Home Assistant. If you use Polymer now, we recommend you switch to Lit. If you want to keep using Polymer, you will have to load Polymer yourself.
+从 Home Assistant 2023.5 开始，Home Assistant 将不再提供 Polymer。如果您现在正在使用 Polymer，我们建议您切换到 Lit。如果您想继续使用 Polymer，则需要自行加载 Polymer。
 
-In Home Assistant 2023.4, we will log a warning every time Polymer is accessed. If you got a log message, find the custom card, panel, or more info that uses Polymer, and notify the author of this deprecation.
+在 Home Assistant 2023.4 中，每次访问 Polymer 时我们都会记录一条警告。如果您收到了这样的日志消息，请找出使用 Polymer 的自定义卡片、面板或更多信息（more info）对话框，并告知作者此弃用事宜。

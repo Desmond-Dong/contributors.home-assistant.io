@@ -1,6 +1,6 @@
 ---
-title: Recent MQTT changes to improve overall performance
-description: The way Home Assistant's MQTT integration processes MQTT messages and how subscribes and unsubscribes are performed has changed.
+title: 近期 MQTT 改动以提升整体性能
+description: Home Assistant 的 MQTT 集成处理 MQTT 消息的方式以及执行订阅（subscribe）和取消订阅（unsubscribe）的方式已经发生了变化。
 date: 2023-05-21
 authors:
   - Jan Bouwhuis
@@ -8,14 +8,14 @@ areas:
   - core
 ---
 
-The way Home Assistant's MQTT integration processes MQTT messages and how subscribes and unsubscribes are performed has changed.
+Home Assistant 的 MQTT 集成处理 MQTT 消息的方式以及执行订阅（subscribe）和取消订阅（unsubscribe）的方式已经发生了变化。
 
-### Updates were made in the way MQTT subscribes, unsubscribes are performed
+### MQTT 订阅和取消订阅的执行方式已更新
 
-Subscribes and unsubscribes are not immediately sent to the broker anymore. Debouncer code was added that will delay subscribes to the broker and bundle them when more are added within the debounce time. At the point where the actual (un)subscribes are done, the (un)subscribes are bundled into one call to the broker. These changes will speed up the MQTT integration and the startup of integrations that register a lot of MQTT entities, especially when shared topics are subscribed to (e.g. to publish the availability). In the MQTT debug logging the `mid` number shows what (un)subscribe calls have been bundled in one call to the MQTT broker.
+订阅和取消订阅不再立即发送到 broker。新增了防抖（debouncer）代码，它将延迟向 broker 发送订阅请求，并在防抖时间内有更多订阅加入时将它们捆绑在一起。在实际执行（取消）订阅时，（取消）订阅会被捆绑为对 broker 的一次调用。这些更改将加快 MQTT 集成以及注册了大量 MQTT 实体（entity）的集成的启动速度，尤其是在订阅了共享主题（topic）时（例如用于发布可用性）。在 MQTT 调试日志中，`mid` 编号显示了哪些（取消）订阅调用被捆绑为对 MQTT broker 的一次调用。
 
-### The way how retained messages are processed has changed
+### 保留消息（retained messages）的处理方式已发生变化
 
-The way MQTT messages with a set `retain` flag are handled has changed such that existing subscribers are no longer passed retained messages re-sent by the broker as a result of new subscribers subscribing to the same topic. Instead, retained messages re-sent by the broker are only passed to the new subscriber.
+带有 `retain` 标志的 MQTT 消息的处理方式已经改变：当新的订阅者订阅同一主题时，broker 重新发送的保留消息不再传递给现有订阅者，而是仅传递给新的订阅者。
 
-The new behavior avoids flooding subscribers with the same retained message over and over and is also better aligned with the MQTT specification, see OASIS MQTT Version 3.1.1 spec ([on how the RETAIN flag is used](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc385349265)) and Normative Statement Number [MQTT-3.3.1-9](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718134).
+新行为避免了向订阅者一遍又一遍地重复发送相同的保留消息，并且与 MQTT 规范更加一致，请参阅 OASIS MQTT Version 3.1.1 规范（[关于 RETAIN 标志的使用方式](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc385349265)）以及规范性声明编号 [MQTT-3.3.1-9](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718134)。

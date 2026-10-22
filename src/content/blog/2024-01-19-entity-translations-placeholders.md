@@ -1,6 +1,6 @@
 ---
-title: Introducing entity translation placeholders
-description: It's now possible to provide static values to be used in an entity translation using placeholders.
+title: 介绍实体翻译占位符
+description: 现在可以通过占位符提供静态值，供实体翻译使用。
 date: 2024-01-19
 authors:
   - Joost Lekkerkerker
@@ -8,10 +8,10 @@ areas:
   - core
 ---
 
-It's now possible to provide static values to be used in an entity translation using placeholders.
-You can pass placeholders via the `translation_placeholders` property of an entity.
+现在可以通过占位符（placeholder）提供静态值，供实体（entity）翻译使用。
+你可以通过实体的 `translation_placeholders` 属性传入占位符。
 
-An example sensor:
+传感器示例：
 ```python
 class TestEntity(SensorEntity):
     """Example entity."""
@@ -26,7 +26,7 @@ class TestEntity(SensorEntity):
             name="Example device"
         )
 ```
-The `strings.json` file would look like:
+`strings.json` 文件将如下所示：
 ```json
 {
   "entity": {
@@ -39,9 +39,9 @@ The `strings.json` file would look like:
 }
 ```
 
-The resulting entity would be called `Example device Temperature channel 2`.
+生成的实体名称将为 `Example device Temperature channel 2`。
 
-A warning is logged once when a translation placeholder is expected but not provided by the entity.
-When this happens on a system that is not on a stable version (dev, nightly, or beta), an error will be raised to be able to catch the mistakes quickly.
+当实体应提供某个翻译占位符但未提供时，会记录一次警告。
+当这种情况发生在未运行稳定版本（dev、nightly 或 beta）的系统上时，将会抛出错误，以便快速发现这些失误。
 
-Please don't forget to be kind towards your translators, as they need to understand what kind of name or value will be passed in from the placeholder name ❤️.
+请不要忘记善待你的翻译人员，因为他们需要从占位符名称中了解将会传入什么样的名称或值 ❤️。

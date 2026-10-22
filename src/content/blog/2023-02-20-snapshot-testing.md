@@ -1,6 +1,6 @@
 ---
-title: Added support for snapshot testing
-description: Home Assistant now supports snapshot testing for our Python codebase.
+title: 新增快照测试支持
+description: Home Assistant 现已为我们的 Python 代码库提供快照测试支持。
 date: 2023-02-20
 authors:
   - Franck Nijhof
@@ -8,20 +8,18 @@ areas:
   - core
 ---
 
-Home Assistant [now supports snapshot testing](https://github.com/home-assistant/core/pull/88323)
-for our Python codebase.
+Home Assistant [现已支持快照测试](https://github.com/home-assistant/core/pull/88323)
+（snapshot testing），适用于我们的 Python 代码库。
 
-Snapshot testing (also known as approval tests) are tests that assert values
-against a stored reference value (the snapshot); ensuring the output of code
-remains the same over time.
+快照测试（snapshot testing，也称为审批测试，approval tests）是一种将值与存储的
+参考值（即快照，snapshot）进行断言比较的测试；它可确保代码的输出
+随时间保持不变。
 
-Snapshot tests are different from regular (functional) tests and do not replace
-functional tests, but they can be very useful for testing larger test outputs.
-Within Home Assistant they could, for example, be used to test entity states, device
-or entity registry items, or the output of a diagnostic dump.
+快照测试不同于常规（功能）测试，也不能替代功能测试，但它们对于测试较大的测试输出
+非常有用。在 Home Assistant 中，例如可以用它们来测试实体（entity）状态、设备（device）
+或实体注册表条目，或者诊断转储（diagnostic dump）的输出。
 
-Take, for example, this diagnostic test, which uses a snapshot to assert the
-output of a diagnostic dump:
+以这个诊断测试为例，它使用快照来断言诊断转储的输出：
 
 ```python
 # tests/components/example/test_diagnostics.py
@@ -38,24 +36,21 @@ async def test_diagnostics(
     )
 ```
 
-When this test is run for the first time, it will fail, as no snapshot exists.
-To create (or update) a snapshot, run pytest with the `--snapshot-update` flag,
-which will create a snapshot file in the `snapshots` directory of this component.
+首次运行此测试时，它会失败，因为尚不存在快照。要创建（或更新）快照，请使用
+`--snapshot-update` 标志运行 pytest，它将在此组件的 `snapshots` 目录中
+创建一个快照文件。
 
-The snapshot file is named after the test file, in this case:
-`tests/components/example/snapshots/test_diagnostics.ambr`. The snapshot files
-are human-readable and must be committed to the repository.
+快照文件以测试文件命名，在本例中为：
+`tests/components/example/snapshots/test_diagnostics.ambr`。快照文件
+是人类可读的，必须提交到代码仓库中。
 
-Any sequential runs of the tests will then compare the results against the
-snapshot. If the results are different, the test will fail.
+此后的任何测试运行都会将结果与快照进行比较。如果结果不同，测试将失败。
 
-Snapshots are an easy way to ensure the output of code remains the same over
-time and can greatly reduce the amount of testing code needed (while providing)
-a full assert against a complete output.
+快照是确保代码输出随时间保持不变的一种简单方法，可以大大减少所需的
+测试代码数量（同时对完整输出提供）完整的断言。
 
-Snapshot testing in Home Assistant is build on top of [Syrupy](https://github.com/tophat/syrupy),
-which has been extended to handle Home Assistant-specific data structures.
+Home Assistant 中的快照测试构建于 [Syrupy](https://github.com/tophat/syrupy)
+之上，并对其进行了扩展，以处理 Home Assistant 特有的数据结构。
 
-More information on testing integrations,
-can be found [in our documentation](/core/development/tests/#snapshot-tests).
-
+有关测试集成（integration）的更多信息，
+可以在[我们的文档](/core/development/tests/#snapshot-tests)中找到。

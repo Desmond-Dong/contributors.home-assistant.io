@@ -1,6 +1,6 @@
 ---
-title: Deprecating all magic numbers for supported features
-description: As of Home Assistant Core 2024.1, all usage of magic numbers for supported features is deprecated, and each entity platform has provided an EntityFeature enum to replace them.
+title: 弃用所有用于受支持功能的魔法数字（magic numbers）
+description: 自 Home Assistant Core 2024.1 起，所有针对受支持功能使用魔法数字的用法均已被弃用，每个实体（entity）平台都提供了一个 EntityFeature 枚举来替代它们。
 date: 2023-12-28
 authors:
   - J. Nick Koston
@@ -8,61 +8,61 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2024.1, all usage of magic numbers for supported features is deprecated,
-and each entity platform has provided an `EntityFeature` enum to replace them.
+自 Home Assistant Core 2024.1 起，所有针对受支持功能使用魔法数字的用法均已被弃用，
+每个实体平台都提供了一个 `EntityFeature` 枚举来替代它们。
 
-There will be a one-year deprecation period, and the magic numbers will stop working in 2025.1 to ensure all custom integration authors have time to adjust.
+将有一年的弃用期，这些魔法数字将在 2025.1 中停止工作，以确保所有自定义集成（custom integration）作者都有时间进行调整。
 
-This applies to, the following platforms:
+这适用于以下平台：
 
-- **Alarm Control Panel**
+- **报警控制面板（Alarm Control Panel）**
 
-  Use the new [`AlarmControlPanelEntityFeature`](/core/entities/alarm-control-panel/#supported-features) enum instead.
+  请改用新的 [`AlarmControlPanelEntityFeature`](/core/entities/alarm-control-panel/#supported-features) 枚举。
 
-- **Camera**
+- **摄像头（Camera）**
 
-  Use the new [`CameraEntityFeature`](/core/entities/camera/#supported-features) enum instead.
+  请改用新的 [`CameraEntityFeature`](/core/entities/camera/#supported-features) 枚举。
 
-- **Cover**
+- **窗帘（Cover）**
 
-  Use the new [`CoverEntityFeature`](/core/entities/cover/#supported-features) enum instead.
+  请改用新的 [`CoverEntityFeature`](/core/entities/cover/#supported-features) 枚举。
 
-- **Climate**
+- **温控（Climate）**
 
-  Use the new [`ClimateEntityFeature`](/core/entities/climate/#supported-features) enum instead.
+  请改用新的 [`ClimateEntityFeature`](/core/entities/climate/#supported-features) 枚举。
 
-- **Humidifier**
+- **加湿器（Humidifier）**
 
-  Use the new [`HumidifierEntityFeature`](/core/entities/humidifier/#supported-features) enum instead.
+  请改用新的 [`HumidifierEntityFeature`](/core/entities/humidifier/#supported-features) 枚举。
 
-- **Fan**
+- **风扇（Fan）**
 
-  Use the new [`FanEntityFeature`](/core/entities/fan/#supported-features) enum instead.
+  请改用新的 [`FanEntityFeature`](/core/entities/fan/#supported-features) 枚举。
 
-- **Light**
+- **灯（Light）**
 
-  Use the new [`LightEntityFeature`](/core/entities/light/#supported-features) enum instead.
+  请改用新的 [`LightEntityFeature`](/core/entities/light/#supported-features) 枚举。
 
-- **Lock**
+- **锁（Lock）**
 
-  Use the new [`LockEntityFeature`](/core/entities/lock/#supported-features) enum instead.
+  请改用新的 [`LockEntityFeature`](/core/entities/lock/#supported-features) 枚举。
 
-- **Media Player**
+- **媒体播放器（Media Player）**
 
-  Use the new [`MediaPlayerEntityFeature`](/core/entities/media-player/#supported-features) enum instead.
+  请改用新的 [`MediaPlayerEntityFeature`](/core/entities/media-player/#supported-features) 枚举。
 
-- **Remote**
+- **遥控器（Remote）**
 
-  Use the new [`RemoteEntityFeature`](/core/entities/remote/#supported-features) enum instead.
+  请改用新的 [`RemoteEntityFeature`](/core/entities/remote/#supported-features) 枚举。
 
-- **Siren**
+- **警笛（Siren）**
 
-  Use the new [`SirenEntityFeature`](/core/entities/siren/#supported-features) enum instead.
+  请改用新的 [`SirenEntityFeature`](/core/entities/siren/#supported-features) 枚举。
 
-- **Vacuum**
+- **吸尘器（Vacuum）**
 
-  Use the new [`VacuumEntityFeature`](/core/entities/vacuum/#supported-features) enum instead.
+  请改用新的 [`VacuumEntityFeature`](/core/entities/vacuum/#supported-features) 枚举。
 
-- **Water Heater**
+- **热水器（Water Heater）**
 
-  Use the new [`WaterHeaterEntityFeature`](/core/entities/water-heater/#supported-features) enum instead.
+  请改用新的 [`WaterHeaterEntityFeature`](/core/entities/water-heater/#supported-features) 枚举。

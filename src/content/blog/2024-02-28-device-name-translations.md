@@ -1,6 +1,6 @@
 ---
-title: Introducing device name translations
-description: It's now possible to provide translations for device names, including support for static values to be used as placeholders.
+title: 推出设备名称翻译功能
+description: 现在可以为设备名称提供翻译，包括支持将静态值用作占位符（placeholder）。
 date: 2024-02-28
 authors:
   - Erik Montnémery
@@ -8,10 +8,9 @@ areas:
   - core
 ---
 
-It's now possible to provide translations for device names, including support for
-static values to be used as placeholders.
+现在可以为设备（device）名称提供翻译，包括支持使用静态值作为占位符。
 
-An example sensor with a translated device name:
+一个带有已翻译设备名称的传感器示例：
 ```python
 class TestEntity(SensorEntity):
     """Example entity."""
@@ -25,7 +24,7 @@ class TestEntity(SensorEntity):
             translation_placeholders={"number_of_sockets": "2"},
         )
 ```
-The `strings.json` file would look like:
+对应的 `strings.json` 文件如下所示：
 ```json
 {
   "device": {
@@ -36,9 +35,9 @@ The `strings.json` file would look like:
 }
 ```
 
-The resulting device would be called `Power strip with 2 sockets`.
+最终的设备名称将是 `Power strip with 2 sockets`。
 
-A warning is logged when a translation placeholder is expected but not provided by the device.
-When this happens on a system that is not on a stable version (dev, nightly, or beta), an error will be raised to be able to catch the mistakes quickly.
+当需要翻译占位符但设备未提供时，会记录一条警告。
+当这种情况发生在非稳定版本（dev、nightly 或 beta）的系统上时，会抛出错误，以便能够快速发现这些失误。
 
-Please don't forget to be kind towards your translators, as they need to understand what kind of name or value will be passed in from the placeholder name ❤️.
+请不要忘记善待您的翻译人员，因为他们需要了解占位符名称将会传入什么样的名称或值 ❤️。

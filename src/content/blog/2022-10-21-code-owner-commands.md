@@ -1,6 +1,6 @@
 ---
-title: GitHub Commands for Code Owners
-description: "The Home Assistant service hub has been extended by Ludeeus with a new feature: GitHub commands for code owners."
+title: 面向代码所有者的 GitHub 命令
+description: "Ludeeus 为 Home Assistant service hub 扩展了一项新功能：面向代码所有者的 GitHub 命令。"
 date: 2022-10-21
 authors:
   - Paulus Schoutsen
@@ -8,17 +8,17 @@ areas:
   - core
 ---
 
-The Home Assistant [service hub](https://github.com/home-assistant/service-hub/) has been extended by [Ludeeus](https://github.com/ludeeus) with a new feature: GitHub commands for code owners.
+[Ludeeus](https://github.com/ludeeus) 为 Home Assistant [service hub](https://github.com/home-assistant/service-hub/) 扩展了一项新功能：面向代码所有者（code owner）的 GitHub 命令。
 
-This feature allows any code owner to triage issues that are labeled with their integration. The following commands are available starting today:
+该功能允许任何代码所有者对打有其集成（integration）标签的问题（issue）进行分类处理（triage）。从今天起，以下命令可用：
 
 * `@home-assistant close`<br />
-  Close the issue. Limited to when there is only 1 integration labeled
+  关闭该问题。仅限于只标记了 1 个集成的情况
 
 * `@home-assistant rename New Title`<br />
-  Change the title of the issue. Limited to when there is only 1 integration labeled
+  更改问题的标题。仅限于只标记了 1 个集成的情况
 
 * `@home-assistant unassign <your domain>`<br />
-  Remove the integration label and related assignees.
+  移除集成标签及相关指派人（assignee）。
 
-The bot will include these commands when it posts a comment to notify a code owner of a new issue or pull request ([example](https://github.com/home-assistant/core/issues/80731#issuecomment-1287084569)).
+当机器人发表评论通知代码所有者有新问题（issue）或拉取请求（pull request）时，会包含这些命令（[示例](https://github.com/home-assistant/core/issues/80731#issuecomment-1287084569)）。

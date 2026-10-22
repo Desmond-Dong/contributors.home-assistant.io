@@ -1,6 +1,6 @@
 ---
-title: Building All The Things
-description: How Home Assistant is using Azure Pipelines to automate all the things.
+title: 构建一切
+description: Home Assistant 如何使用 Azure Pipelines 实现一切自动化。
 date: 2019-07-19
 authors:
   - Paulus Schoutsen
@@ -8,106 +8,105 @@ areas:
   - core
 ---
 
-_How Home Assistant is using Azure Pipelines to automate all the things._
+_Home Assistant 如何使用 Azure Pipelines 来自动化一切。_
 
-Here at Home Assistant, we love automation! Not only in our homes, but also when doing development work. We do a release every three weeks and it includes code from over 80 different people. All is managed by only two people working on this full-time (thanks [Nabu Casa](https://www.nabucasa.com)!).
+在 Home Assistant 团队，我们热爱自动化！不仅是在我们的家中，做开发工作时也是如此。我们每三周发布一个版本，其中包含来自 80 多位不同贡献者的代码。而这一切仅由两名全职人员来管理（感谢 [Nabu Casa](https://www.nabucasa.com)！）。
 
-We distribute Home Assistant as a Python package, and as part of our all-in-one system called Hass.io. Hass.io has its own operating system, a supervisor Docker container and the Home Assistant docker container. Besides that, Hass.io supports add-ons, of which we have a set of official add-ons that we also maintain. Everything we do for Hass.io, we have to do five times, once for each of our supported architectures: amd64, i386, armv6, armv7, aarch64.
+我们将 Home Assistant 作为一个 Python 软件包发行，同时也作为我们名为 Hass.io 的一体化系统的一部分发行。Hass.io 拥有自己的操作系统、一个 supervisor Docker 容器以及 Home Assistant Docker 容器。除此之外，Hass.io 还支持插件（add-on），我们还维护着一套官方插件。我们为 Hass.io 所做的一切都必须做五次，支持的每种架构各做一次：amd64、i386、armv6、armv7、aarch64。
 
-To still be able to move fast, we spend a lot of time on automating build tasks. After working with [TravisCI](https://travis-ci.org/) and [CircleCI](https://circleci.com/), we have finally landed on [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/).
+为了仍然能够保持快速推进，我们花费了大量时间来自动化构建任务。在使用过 [TravisCI](https://travis-ci.org/) 和 [CircleCI](https://circleci.com/) 之后，我们最终选择了 [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/)。
 
-We started out with Travis but realized that we could significantly speed up our builds by leveraging the CircleCI open source plan that includes 4 workers, test distribution and build artifact caching. We tried to get more workers with CircleCI but adding workers under their new pricing plan was too expensive.
+我们最初使用的是 Travis，但后来意识到，利用 CircleCI 的开源计划可以显著加快构建速度，该计划提供 4 个 worker、测试分发以及构建产物缓存。我们曾尝试从 CircleCI 获得更多 worker，但按照他们新的定价方案，增加 worker 的成本过于高昂。
 
-[Pascal Vizeli](https://www.github.com/pvizeli) had experience with Azure from a previous job, and he was able to migrate and build all the YAML based pipelines in days. He did this with support from [Kees Schollaart](https://twitter.com/keesschollaart), who is a DevRel at Azure but famous in our community for creating the [Home Assistant Companion extension for VS Code](https://marketplace.visualstudio.com/items?itemName=keesschollaart.vscode-home-assistant). He helped us a lot whenever we got stuck.
+[Pascal Vizeli](https://www.github.com/pvizeli) 在之前的工作中积累过 Azure 的使用经验，他在几天之内就迁移并搭建好了所有基于 YAML 的流水线。他得到了 [Kees Schollaart](https://twitter.com/keesschollaart) 的支持——后者是 Azure 的一名 DevRel，并且因开发了 [VS Code 的 Home Assistant Companion 扩展](https://marketplace.visualstudio.com/items?itemName=keesschollaart.vscode-home-assistant)而在我们的社区中颇有名气。每当我们卡壳时，他都帮了我们大忙。
 
-Azure’s open source plan comes with 10 free agents, and after we reached out to Microsoft, we were provided 20 additional agents to help us automate all the things!
+Azure 的开源计划附带 10 个免费代理（agent）。在我们主动联系 Microsoft 之后，我们又获得了 20 个额外的代理，帮助我们实现一切自动化！
 
-Interested to see what we do with all this Azure power?
+想知道我们如何利用这些 Azure 的强大力量吗？
 
 <!--truncate-->
 
-## Continuous Integration
+## 持续集成
 
-All changes to Home Assistant go through our CI pipeline. When a pull request to the Home Assistant repository comes in, it will trigger a pipeline as configured in [`azure-pipelines-ci.yml`](https://github.com/home-assistant/home-assistant/blob/dev/azure-pipelines-ci.yml).
+对 Home Assistant 的所有更改都要经过我们的 CI 流水线。当 Home Assistant 仓库收到拉取请求（pull request）时，就会触发一条流水线，其配置位于 [`azure-pipelines-ci.yml`](https://github.com/home-assistant/home-assistant/blob/dev/azure-pipelines-ci.yml) 中。
 
-Contributions to Home Assistant are tested against our test suite, code style and typing, to make sure that the contribution does not break things. We have split our test suite into 3 different stages. By using stages, we can run a quick validation stage and fail fast if it’s not correct.
+对 Home Assistant 的贡献会对照我们的测试套件、代码风格和类型检查进行测试，以确保这些贡献不会破坏现有功能。我们将测试套件拆分成了 3 个不同的阶段。通过使用阶段（stage），我们可以先运行一个快速验证阶段，如果验证不通过就快速失败。
 
-This strategy allows us to not waste any of our workers time on running a full test suite if we know that basic linting is not going to pass.
+这一策略让我们不必浪费 worker 的时间：如果我们已经知道基本的代码检查（linting）无法通过，就不需要再运行完整的测试套件。
 
-Below is a screenshot of our CI pipeline for Home Assistant. Because all work is distributed over multiple workers, the total runtime is the longest task in the first column, plus the longest task in the second column.
-
-<center>
-
-![Screenshot of the Home Assistant CI pipeline.](/img/en/blog/2019-07-building-all-the-things/test-stages.png)
-
-</center>
-
-To improve the time of our CI on Azure, we’re using a preview version of [pipeline artifact caching](https://marketplace.visualstudio.com/items?itemName=1ESLighthouseEng.PipelineArtifactCaching). This allows us to build the dependencies once, store it as a package close to the test runners and re-use it across jobs and pipeline runs.
-
-Another optimization that we do is that we use our own base images for the test runners. These images already have the correct Python and other base utilities installed. We add them to the [resources](https://github.com/home-assistant/core/blob/de3d28d9d5bd5dd69cf9f84d021d683da2c322d6/azure-pipelines-ci.yml#L12-L18), and then later reference them in the [strategy](https://github.com/home-assistant/core/blob/de3d28d9d5bd5dd69cf9f84d021d683da2c322d6/azure-pipelines-ci.yml#L72-L80) section.
-
-CircleCI had a nice feature that it could distribute your tests over multiple workers by keeping track of the duration of each test. This was reducing the duration of the PyTest suite to around 10 minutes. This is using more agents and we would quickly run out of agents, creating a big backlog. Subsequent stages are only enqueued once the “Overview” stage finishes, causing them to be in the queue behind other contributions that came in.
-
-With Azure, we get more runners which are more powerful and faster, but no parallelization. This means that an individual build will take longer, however, with many builds coming in, the individual build time remains roughly the same, as we are not experiencing any backlog.
+下面是 Home Assistant CI 流水线的截图。由于所有工作被分配到多个 worker 上，总运行时间等于第一列中耗时最长的任务加上第二列中耗时最长的任务。
 
 <center>
 
-![Screenshot of the Home Assistant CI pipeline.](/img/en/blog/2019-07-building-all-the-things/test-results.png)<br />
-Screenshot of the [test results](https://dev.azure.com/home-assistant/Home%20Assistant/_build/results?buildId=3976&view=ms.vss-test-web.build-test-results-tab).
+![Home Assistant CI 流水线的截图。](/img/en/blog/2019-07-building-all-the-things/test-stages.png)
 
 </center>
 
-## Building HassOS
+为了缩短 Azure 上 CI 的耗时，我们使用了[流水线产物缓存（pipeline artifact caching）](https://marketplace.visualstudio.com/items?itemName=1ESLighthouseEng.PipelineArtifactCaching)的预览版本。这让我们只需构建一次依赖项，把它作为软件包存放在靠近测试运行器的位置，然后在各个作业和流水线运行之间重复使用。
 
-HassOS is our own embedded Linux distribution. It is tailored to run the bare minimum of what we need to run Home Assistant in a Docker container. BuildRoot powers the build and we’re targeting five different processor architectures.
+我们做的另一项优化是为测试运行器使用我们自己的基础镜像。这些镜像已经预装了正确版本的 Python 和其他基础工具。我们把它们添加到 [resources](https://github.com/home-assistant/core/blob/de3d28d9d5bd5dd69cf9f84d021d683da2c322d6/azure-pipelines-ci.yml#L12-L18) 中，之后再在 [strategy](https://github.com/home-assistant/core/blob/de3d28d9d5bd5dd69cf9f84d021d683da2c322d6/azure-pipelines-ci.yml#L72-L80) 部分中引用它们。
 
-The Azure Pipelines agents are using the amd64 CPU architecture. It is possible to compile for different architectures using a method called cross-compiling. We gave it a shot but realized that it is significantly slower than compiling a build using the same native CPU's as that we’re targeting.
+CircleCI 有一个很好的功能：它可以通过记录每个测试的耗时，把你的测试分配到多个 worker 上。这曾把 PyTest 套件的时长缩短到 10 分钟左右。但这种方式会占用更多代理，我们会很快耗尽代理，造成严重的积压。后续阶段只有在“概览”（Overview）阶段完成后才会进入队列，导致它们排在随后到来的其他贡献之后。
 
-We use a feature on Azure Pipelines called [self-hosted agents](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops#install) to host build agents on our own hardware with the right architecture. Azure Pipelines manages the pipeline definition and the orchestration, but the execution runs blazing fast on our own hardware.
+使用 Azure 之后，我们获得了数量更多、性能更强、速度更快的运行器（runner），但没有了并行化。这意味着单个构建的耗时会变长；不过，由于大量构建不断涌入，单个构建的耗时依然大致保持不变，因为我们没有遇到任何积压。
 
 <center>
 
-![Screenshot of the Home Assistant CI pipeline.](/img/en/blog/2019-07-building-all-the-things/build-cabinet.jpg)<br />
-Our build cabinet.
+![Home Assistant CI 流水线的截图。](/img/en/blog/2019-07-building-all-the-things/test-results.png)<br />
+[测试结果](https://dev.azure.com/home-assistant/Home%20Assistant/_build/results?buildId=3976&view=ms.vss-test-web.build-test-results-tab)的截图。
 
 </center>
 
-## Building Python Wheels
+## 构建 HassOS
 
-Home Assistant ships as a standalone Python package, and bundled up in Docker containers. Our Docker containers contain all the Python packages for our different integrations pre-installed. Because of this, creating a Docker container took a long time, as we had to install and build each Python package for each architecture. Home Assistant + all integrations rely upon over a 1000 different Python packages.
+HassOS 是我们自己的嵌入式 Linux 发行版。它经过量身裁剪，只保留在 Docker 容器中运行 Home Assistant 所需的最精简部分。构建由 BuildRoot 驱动，我们面向五种不同的处理器架构。
 
-To speed this up, we’re leveraging Python Wheels. Wheels are a binary format that contains pre-build Python packages for a specific operating system and CPU architecture. We have an Azure pipeline to help build wheels for all the different packages on all supported CPU architectures. That’s a total of 5000 wheels!
+Azure Pipelines 代理使用的是 amd64 CPU 架构。可以使用一种称为交叉编译（cross-compiling）的方法为不同架构进行编译。我们尝试了一下，但发现它比使用与目标架构相同的原生 CPU 进行编译要慢得多。
 
-A special wheels format that can target many platforms with a single build. We are unable to use that because it is not compatible with musl libc, which is what Alpine uses.
+我们使用 Azure Pipelines 中一项名为[自托管代理（self-hosted agents）](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops#install)的功能，在我们自己拥有相应架构的硬件上托管构建代理。流水线定义和编排交由 Azure Pipelines 管理，而实际的执行则在我们自己的硬件上飞快运行。
 
-This pipeline is triggered automatically when a contribution has been accepted and merged into development and it changed any requirements ([pipeline definition](https://github.com/home-assistant/core/blob/de3d28d9d5bd5dd69cf9f84d021d683da2c322d6/azure-pipelines-wheels.yml#L3-L10)). We also run it daily to make sure that all changes have been captured.
+<center>
 
-Because installation using a wheel is significantly faster, we also offer custom integrations to [register themselves](https://github.com/home-assistant/custom-components-wheels). We will scan each custom integration once a day to make sure we have wheels for the Python packages that they use.
+![Home Assistant CI 流水线的截图。](/img/en/blog/2019-07-building-all-the-things/build-cabinet.jpg)<br />
+我们的构建机柜。
 
-By leveraging wheels, we have been able to reduce the build time of our Home Assistant containers for Hass.io from 1 hour to 10 minutes (measurement from the amd64 build).
+</center>
 
-_(sidenote. Python is named after Monty Python, and the package index got called “the Cheese Shop” after one of their famous sketches. The Wheel format is thus named after a wheel of cheese, not the wheels of a car. 5000 wheels of cheese is a lot of cheese.)_
+## 构建 Python Wheels
 
-## Building Home Assistant releases
+Home Assistant 以独立的 Python 软件包形式发布，同时也打包在 Docker 容器中。我们的 Docker 容器预装了各种集成所需的全部 Python 软件包。正因如此，创建一个 Docker 容器需要很长时间，因为我们必须为每种架构安装并构建每一个 Python 软件包。Home Assistant 加上所有集成，依赖的 Python 软件包超过 1000 个。
 
-Home Assistant does a stable release every three weeks. Prior to this stable release, we usually have around 6 beta releases. After a stable release, we usually have 2 or 3 patch releases.
+为了加快这一过程，我们利用了 Python Wheels。Wheels 是一种二进制格式，其中包含针对特定操作系统和 CPU 架构预先构建的 Python 软件包。我们有一条 Azure 流水线，用来为所有受支持的 CPU 架构上的所有不同软件包构建 wheel。加起来一共是 5000 个 wheel！
 
-Each release will need to be built as a standalone Python package, and a Docker container for each of the five supported CPU architectures.
+有一种特殊的 wheel 格式，只需一次构建就可以面向多个平台。但我们无法使用它，因为它与 musl libc 不兼容，而 Alpine 使用的正是 musl libc。
 
-This pipeline is triggered whenever a [new release is tagged](https://github.com/home-assistant/core/blob/dev/azure-pipelines-release.yml#L3-L7). We first verify that the tag name matches the version in the code and that the release was created by one of our whitelisted release managers. We will then automatically build all the releases and publish them.
+当一项贡献被接受并合并进开发分支、且更改了任何依赖项要求（requirements）时，这条流水线会自动触发（[流水线定义](https://github.com/home-assistant/core/blob/de3d28d9d5bd5dd69cf9f84d021d683da2c322d6/azure-pipelines-wheels.yml#L3-L10)）。我们每天也会运行它一次，以确保所有更改都被涵盖。
 
-## Building Hass.io add-ons
+由于使用 wheel 安装要快得多，我们也向自定义集成开放了[自行注册](https://github.com/home-assistant/custom-components-wheels)。我们每天会扫描每个自定义集成一次，确保我们拥有它们所使用的 Python 软件包对应的 wheel。
 
-One of the features of Hass.io is add-ons. Add-ons allow developers to re-use the same infrastructure that Home Assistant uses to run inside Hass.io, but for any other programs that you want to run on your network. These add-ons can tightly integrate with Home Assistant. For example, it is possible to install AdGuard from the [Community Add-ons](https://github.com/hassio-addons/repository) with one click and have it’s data be accessible inside Home Assistant.
+通过利用 wheel，我们成功把 Hass.io 所用的 Home Assistant 容器的构建时间从 1 小时缩短到了 10 分钟（数据来自 amd64 构建）。
 
-Hass.io contains a couple of core add-ons. Each release of these add-ons will too need to be built for all five architectures. We keep all the add-ons in a single repository, but each add-on has its own pipeline definition that is only triggered when that add-on changes ([example](https://github.com/home-assistant/hassio-addons/blob/master/mosquitto/azure-pipelines.yml)).
+_（题外话：Python 得名于 Monty Python，而软件包索引则根据他们著名小品中的一出被命名为“奶酪店”（the Cheese Shop）。因此 Wheel 格式得名于一整轮奶酪，而不是汽车的车轮。5000 轮奶酪可是好大一堆奶酪。）_
 
-## Conclusion
+## 构建 Home Assistant 版本发布
 
-Building out a wide range of automations has really helped Home Assistant scale with a minimum amount of human resources. We’re really happy with all the help that we have received from Azure and their employees. Cheers!
+Home Assistant 每三周发布一个稳定版。在稳定版发布之前，我们通常会有大约 6 个 beta 版本。稳定版发布之后，我们通常还会有 2 到 3 个补丁版本。
 
-## Links
+每个版本都需要构建为独立的 Python 软件包，以及五种受支持 CPU 架构各自的 Docker 容器。
 
-- [Home Assistant on Azure Pipelines](https://dev.azure.com/home-assistant/Home%20Assistant/_build)
-- [Hass.io on Azure Pipelines](https://dev.azure.com/home-assistant/Hass.io/_build)
+每当[打上新版本标签](https://github.com/home-assistant/core/blob/dev/azure-pipelines-release.yml#L3-L7)时，这条流水线就会被触发。我们首先会校验标签名称与代码中的版本号一致，并且该发布是由我们白名单中的发布经理之一创建的。然后我们会自动构建所有发布产物并进行发布。
 
+## 构建 Hass.io 插件
+
+Hass.io 的一个特色功能就是插件。插件让开发者可以复用 Home Assistant 在 Hass.io 内部运行时所用的同一套基础设施，用来运行你想要在网络中运行的任何其他程序。这些插件可以与 Home Assistant 紧密集成。例如，你可以一键从[社区插件（Community Add-ons）](https://github.com/hassio-addons/repository)安装 AdGuard，并让它的数据可以在 Home Assistant 内部访问。
+
+Hass.io 自带几个核心插件。这些插件的每个版本同样需要为全部五种架构进行构建。我们把所有插件都保存在一个仓库中，但每个插件都有各自的流水线定义，只有在该插件发生变化时才会触发（[示例](https://github.com/home-assistant/hassio-addons/blob/master/mosquitto/azure-pipelines.yml)）。
+
+## 结语
+
+构建各种各样的自动化，切实帮助 Home Assistant 在人力资源最少的情况下实现了扩展。我们非常感谢 Azure 及其员工给予我们的所有帮助。干杯！
+
+## 链接
+
+- [Azure Pipelines 上的 Home Assistant](https://dev.azure.com/home-assistant/Home%20Assistant/_build)
+- [Azure Pipelines 上的 Hass.io](https://dev.azure.com/home-assistant/Hass.io/_build)

@@ -1,6 +1,6 @@
 ---
-title: Simple Mode in Home Assistant 1.0
-description: The Home Assistant UI has two different modes. There is a simple mode and an advanced mode.
+title: Home Assistant 1.0 中的简单模式
+description: Home Assistant 的用户界面有两种不同的模式：简单模式和高级模式。
 date: 2019-10-05
 authors:
   - Paulus Schoutsen
@@ -9,80 +9,79 @@ areas:
 ---
 
 > [!NOTE]
-> This blog post references simple and advanced mode. This has since been renamed to standard mode and advanced mode.
+> 本文提及简单模式和高级模式。这两者后来已更名为标准模式和高级模式。
 
-The Home Assistant UI has two different modes. There is a simple mode and an advanced mode. Simple mode has been introduced recently in [Home Assistant 0.96](https://www.home-assistant.io/blog/2019/07/17/release-96/#advanced-mode). In this post I want to outline my vision for simple mode in Home Assistant 1.0.
+Home Assistant 的用户界面有两种不同的模式：简单模式和高级模式。简单模式是在 [Home Assistant 0.96](https://www.home-assistant.io/blog/2019/07/17/release-96/#advanced-mode) 中最近引入的。在这篇文章中，我想阐述我对 Home Assistant 1.0 中简单模式的构想。
 
-**With simple mode we focus on the core Home Assistant experience. We're trying to answer the question: what is it that we want anyone to be able to do. Can we make it intuitive enough that people, young and old, can install Home Assistant and use it.**
+**通过简单模式，我们专注于 Home Assistant 的核心体验。我们试图回答这样一个问题：我们希望让每个人都能做到什么。我们能否把它做得足够直观，让男女老少都能安装并使用 Home Assistant。**
 
-## Core concepts
+## 核心概念
 
-Simple mode is the simplified interface for non-power users. This is the default UI. Simple mode offers a subset of Home Assistant that is intuitive: easy to understand and easy to use.
+简单模式是为非高级用户（power user）提供的简化界面，也是默认的用户界面。简单模式提供了 Home Assistant 中直观易懂、易于使用的功能子集。
 
-In simple mode, we will structure the configuration to how the user thinks about their house:
+在简单模式中，我们将按照用户对其房屋的思考方式来组织配置：
 
-- Inputs: devices and persons
-- Outputs: scenes, scripts, automations
+- 输入：设备和人员
+- 输出：场景（scene）、脚本（script）和自动化（automation）
 
 <center>
 
-![Configuration concepts. Inputs are users, integrations, zones, persons, devices. Outputs are scenes, scripts and automations.](/img/en/blog/2019-10-simple-mode/config-concepts.png)
+![配置概念。输入包括用户、集成、地理位置区域、人员、设备。输出包括场景、脚本和自动化。](/img/en/blog/2019-10-simple-mode/config-concepts.png)
 
 </center>
 
 <!-- https://docs.google.com/drawings/d/1021ATCQ_Q3eBQQ1Ei5Bq7rSBfn6YtLh9113HimpsYWs/edit?usp=sharing -->
 
-There are other inputs, but they are there to support devices and persons:
+还有其他一些输入，它们的存在是为了支持设备和人员：
 
-- Integrations allow you to interact with your devices
-- Users allow persons to log in and access Home Assistant
-- Areas allow devices to be grouped
-- Zones label locations on the map to allow tracking persons that carry a GPS emitting device
+- 集成（integration）让你能够与设备进行交互
+- 用户让人员能够登录并访问 Home Assistant
+- 区域（area）用于对设备进行分组
+- 地理位置区域（zone）用于在地图上标注位置，以便追踪携带 GPS 发射设备的人员
 
-As a user in simple mode, you will not be exposed to events, entity IDs, YAML or services.
+作为简单模式的用户，你不会接触到事件、实体（entity）ID、YAML 或服务（service）。
 
 <!--truncate-->
 
-## Integration requirements
+## 集成要求
 
-Integrations need to be able to provide the inputs for the user in simple mode. This means that there will be requirements that need to be met before an integration can be included as part of simple mode.
+集成需要能够为简单模式下的用户提供这些输入。这意味着，集成必须满足一些要求，才能被纳入简单模式之中。
 
-- All entities of an integration need to have a unique ID
-- All entities of an integration need to provide device info
+- 集成的所有实体都必须拥有唯一的 ID
+- 集成的所有实体都必须提供设备信息
 
-Integrations should be set up via discovery or via account linking. In rare cases we can allow an integration to be configured via IP addresses.
+集成应通过发现（discovery）或账号关联来设置。在极少数情况下，我们可以允许通过 IP 地址来配置集成。
 
-## Extended discovery
+## 扩展发现
 
-During onboarding and when the user visits the integrations page, we will trigger an extended discovery. By default Home Assistant scans the network with the SSDP and zeroconf discovery protocols. In extended discovery we will run custom discovery protocols for popular integrations like Plex or Unifi.
+在引导流程（onboarding）期间以及用户访问集成页面时，我们将触发扩展发现。默认情况下，Home Assistant 使用 SSDP 和 zeroconf 发现协议扫描网络。在扩展发现中，我们将为 Plex、Unifi 等热门集成运行自定义的发现协议。
 
-## No YAML
+## 无需 YAML
 
-Simple mode will be fully controlled via the UI. No features should be exposed that require users to open a text editor. For example, a config flow that requires a user to add client_id/secret to the configuration.yaml should not be part of simple mode.
+简单模式将完全通过用户界面进行控制。不应暴露任何需要用户打开文本编辑器的功能。例如，要求用户在 configuration.yaml 中添加 client_id/secret 的配置流程就不应属于简单模式的一部分。
 
-## Hass.io without add-ons
+## 不含加载项的 Hass.io
 
-In simple mode, Hass.io will be the place where users can go to manage hardware settings and updates.
+在简单模式中，Hass.io 将成为用户管理硬件设置和更新的地方。
 
-The initial version of simple mode will not show features to install Hass.io add-ons. This is done to manage the scope of Home Assistant 1.0. In the future we will revisit this and decide which add-ons fit our simple mode.
+简单模式的初始版本不会显示安装 Hass.io 加载项（add-on）的功能。这是为了控制 Home Assistant 1.0 的范围。将来我们会重新审视这一点，并决定哪些加载项适合我们的简单模式。
 
-## Scenes
+## 场景
 
-Users will control devices from scripts and automations using scenes instead of services. With scenes you take a snapshot of the current state of your devices and can restore this at a future moment. Easy to explain so easy to use. Our UI for managing scenes will be built around devices and areas.
+用户将通过场景（scene）而非服务来在脚本和自动化中控制设备。使用场景时，你可以对设备当前的状态进行快照，并在未来的某个时刻将其恢复。易于解释，因此也易于使用。我们用于管理场景的用户界面将围绕设备和区域来构建。
 
-## Automations & Scripts
+## 自动化与脚本
 
-Automations and scripts will be used with the current editor, but the types of triggers, conditions and actions will be limited to the ones that match our inputs.
+自动化和脚本仍将使用现有的编辑器，但触发器、条件和动作的类型将仅限于与我们的输入相匹配的那些类型。
 
-- Trigger types will be limited to time, sun, zone and device triggers.
-- Condition types will be limited to time, zone, sun and device conditions.
-- Action types will be limited to activate scene and device actions.
+- 触发器类型将仅限于时间、太阳、地理位置区域和设备触发器。
+- 条件类型将仅限于时间、地理位置区域、太阳和设备条件。
+- 动作类型将仅限于激活场景和设备动作。
 
-## I am a power user, why would I care?
+## 我是高级用户，为什么要关心这个？
 
-By focusing energy on simple mode, we are making Home Assistant easier to use for all users, both beginners and power users.
+通过将精力集中在简单模式上，我们正在让 Home Assistant 对所有用户都更加易用，无论是新手还是高级用户。
 
-A great recent example of a feature that was driven by simple mode, but is beneficial for everyone is device automations. With device automations it is a breeze to configure Zigbee remotes. You can just pick from a list the button that should trigger your automation. Compare this to the old way of doing it: learn that you need to listen for `zha_event` in the event dev tool, then press the button to learn the event data to match on with an event trigger.
+一个由简单模式驱动、却让所有人受益的绝佳近期例子就是设备自动化。有了设备自动化，配置 Zigbee 遥控器变得轻而易举。你只需从列表中选择要触发自动化的那个按钮即可。与之相比，旧的方式是：你需要了解要在事件开发工具中监听 `zha_event`，然后按下按钮来获取事件数据，以便在事件触发器中进行匹配。
 
-Another ongoing effort that will make it easier for everyone is our Hacktoberfest focus on making scenes a [first-class citizen](https://github.com/home-assistant/core/issues/25681).
-
+另一项正在进行中、将让所有人更加轻松的工作，是我们在 Hacktoberfest 期间专注于让场景成为[一等公民](https://github.com/home-assistant/core/issues/25681)。
