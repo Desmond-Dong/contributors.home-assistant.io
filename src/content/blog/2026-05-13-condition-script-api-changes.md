@@ -1,6 +1,6 @@
 ---
-title: Changes to the condition and script APIs
-description: The condition and script APIs have been changed.
+title: 条件与脚本 API 的变更
+description: 条件与脚本 API 已发生变更。
 date: 2026-05-13
 authors:
   - Erik Montnémery
@@ -8,23 +8,23 @@ areas:
   - core
 ---
 
-## Summary
+## 概述
 
-The condition and script APIs have been changed.
+条件与脚本 API 已发生变更。
 
-Conditions are now instances of condition classes, which are evaluated by calling the `async_check` method and discarded by calling the `async_unload` method. Also, conditions may optionally implement an `_async_setup` or `_async_unload` method. Note that users of conditions don't need to call the condition's `async_setup` method.
+条件现在是条件类的实例，通过调用 `async_check` 方法进行评估，并通过调用 `async_unload` 方法丢弃。此外，条件可以选择性地实现 `_async_setup` 或 `_async_unload` 方法。请注意，条件的使用者无需调用条件的 `async_setup` 方法。
 
-During a deprecation period, which ends with the release of Home Assistant Core 2027.1, it's possible to use the condition object as a callable.
+在弃用期间（该期间将于 Home Assistant Core 2027.1 发布时结束），可以将条件对象作为可调用对象使用。
 
-Scripts also have an `async_unload` method which must be called when the script is no longer needed.
+脚本也具有 `async_unload` 方法，在不再需要该脚本时必须调用此方法。
 
-## Impact on custom integrations
+## 对自定义集成的影响
 
-### Custom integrations which create conditions or scripts
+### 创建条件或脚本的自定义集成
 
-Custom integrations which create condition objects should evaluate them by calling the `async_check` method and call the `async_unload` method when the condition is no longer needed.
+创建条件对象的自定义集成应通过调用 `async_check` 方法对其进行评估，并在不再需要该条件时调用 `async_unload` 方法。
 
-Example:
+示例：
 
 ```python
 from homeassistant.helpers.condition import (
@@ -48,9 +48,9 @@ result = condition.async_check(...)
 condition.async_unload()
 ```
 
-Custom integrations which create scripts should call the `async_unload` method when the script is no longer needed.
+创建脚本的自定义集成应在不再需要该脚本时调用 `async_unload` 方法。
 
-Example:
+示例：
 
 ```python
 from homeassistant.helpers.script import (
@@ -74,11 +74,11 @@ result = await script.async_run(...)
 await script.async_unload()
 ```
 
-### Custom integrations which provide a condition platform
+### 提供条件平台的自定义集成
 
-Integrations which provide a condition platform don't need to change, but may implement `_async_setup` and `_async_unload` method if the platform needs to perform async initialization or do tear down.
+提供条件平台的集成无需进行更改，但如果该平台需要执行异步初始化或进行清理，则可以实现 `_async_setup` 和 `_async_unload` 方法。
 
-Example:
+示例：
 
 ```python
 

@@ -1,6 +1,6 @@
 ---
-title: "BrowseMediaSource: domain is now required"
-description: The BrowseMediaSource class in the media_source integration has been tightened up.
+title: "BrowseMediaSource：domain 现为必填项"
+description: media_source 集成中的 BrowseMediaSource 类已进行严格化调整。
 date: 2026-05-20
 authors:
   - Paulus Schoutsen
@@ -8,24 +8,24 @@ areas:
   - core
 ---
 
-The `BrowseMediaSource` class in the `media_source` integration has been tightened up. The `domain` parameter is now a required `str` instead of `str | None`, and the special "list every media source" root node has moved to its own class, `RootBrowseMediaSource`.
+`media_source` 集成中的 `BrowseMediaSource` 类已进行严格化调整。`domain` 参数现在是必填的 `str` 类型，而不再是 `str | None`，并且特殊的“列出所有媒体源”根节点已移至其专属类 `RootBrowseMediaSource` 中。
 
-Previously, `domain` was optional only to represent one edge case: the top-level node returned when browsing `media-source://` with no specific source selected. That made the type hint misleading for the 99% case — every actual media source has a domain — and added a `None` branch that consumers had to think about. Splitting the root into its own class removes that branch.
+以前，`domain` 是可选的，仅仅是为了表示一种边缘情况：在未选择特定源的情况下浏览 `media-source://` 时返回的顶级节点。这使得类型提示在 99% 的情况下具有误导性——每个实际的媒体源都有一个 domain——并增加了一个 `None` 分支，使用者必须对此进行处理。将根节点拆分为独立的类可以消除该分支。
 
-## What changed
+## 变更内容
 
-- `BrowseMediaSource.__init__` now requires `domain: str`.
-- A new `RootBrowseMediaSource` class represents the root browse node listing all available media sources. It hardcodes `domain=None` and `identifier=None` and uses `media-source://` as its content ID.
-- `media_source.async_browse_media()` and `MediaSourceItem.async_browse()` now return `BrowseMediaSource | RootBrowseMediaSource`.
+- `BrowseMediaSource.__init__` 现在需要 `domain: str`。
+- 新增的 `RootBrowseMediaSource` 类表示列出所有可用媒体源的根浏览节点。它硬编码了 `domain=None` 和 `identifier=None`，并使用 `media-source://` 作为其内容 ID。
+- `media_source.async_browse_media()` 和 `MediaSourceItem.async_browse()` 现在返回 `BrowseMediaSource | RootBrowseMediaSource`。
 
-## Impact on custom integrations
+## 对自定义集成的影响
 
-Most integrations don't need any changes. If you implement a `media_source.py` platform, you were already passing your own `domain` to `BrowseMediaSource` — that keeps working.
+大多数集成不需要进行任何更改。如果您实现了 `media_source.py` 平台，您之前就已经将自己的 `domain` 传递给 `BrowseMediaSource` —— 这仍然有效。
 
-You only need to act if:
+您仅在以下情况下需要采取行动：
 
-- **You pass `domain=None` to `BrowseMediaSource`.** This is no longer allowed. Set your integration domain instead.
-- **You call `media_source.async_browse_media()` and annotate the result.** Update the type hint to `BrowseMediaSource | RootBrowseMediaSource`, or narrow with `isinstance()` before using domain-specific attributes:
+- **您将 `domain=None` 传递给 `BrowseMediaSource`。** 现在不再允许这样做。请改为设置您的集成 domain。
+- **您调用 `media_source.async_browse_media()` 并对结果进行类型注解。** 请将类型提示更新为 `BrowseMediaSource | RootBrowseMediaSource`，或者在使用特定于 domain 的属性之前使用 `isinstance()` 进行类型收窄：
 
   ```python
   from homeassistant.components.media_source import (
@@ -39,4 +39,4 @@ You only need to act if:
       ...
   ```
 
-See the updated [media source platform documentation](/core/integrations/media-source/) for the full reference.
+请参阅更新后的[媒体源平台文档](/core/integrations/media-source/)以获取完整参考。

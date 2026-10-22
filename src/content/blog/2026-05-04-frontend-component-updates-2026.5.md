@@ -1,6 +1,6 @@
 ---
-title: Frontend component updates in 2026.5
-description: A new component replaces mwc-progress-bar in our codebase and is fully themeable.
+title: 2026.5 前端组件更新
+description: 一个新组件替换了我们代码库中的 mwc-progress-bar，并且完全支持主题化。
 date: 2026-05-04
 authors:
   - Wendelin Peleska
@@ -8,13 +8,13 @@ areas:
   - frontend
 ---
 
-## Component updates
+## 组件更新
 
 ### ha-progress-bar
 
-A new component replaces `mwc-progress-bar` in our codebase and is fully themeable. Check out this [PR](https://github.com/home-assistant/frontend/pull/51489) for a fully custom progress bar.
+一个新组件替换了我们代码库中的 `mwc-progress-bar`，并且完全支持主题化。请查看此 [PR](https://github.com/home-assistant/frontend/pull/51489) 以了解完全自定义的进度条。
 
-New component specific tokens:
+新组件专属令牌：
 
 ```css
 --ha-progress-bar-indicator-color
@@ -30,9 +30,9 @@ New component specific tokens:
 
 ### ha-switch
 
-`ha-switch` was migrated to webawesome. It now has many CSS properties to make customization easier. We also removed some tokens from the old switch:
+`ha-switch` 已迁移至 webawesome。它现在拥有许多 CSS 属性，使自定义变得更加容易。我们还从旧版开关中移除了一些令牌：
 
-Removed tokens:
+已移除的令牌：
 
 ```css
 --switch-unchecked-button-color
@@ -43,7 +43,7 @@ Removed tokens:
 --switch-checked-color
 ```
 
-New component specific tokens:
+新组件专属令牌：
 
 ```css
 --ha-switch-size
@@ -72,9 +72,9 @@ New component specific tokens:
 
 ### ha-checkbox
 
-`ha-checkbox` was also migrated to webawesome and got new CSS properties. You can no longer use MDC tokens for it, but we added a set of tokens to customize the new checkbox.
+`ha-checkbox` 也已迁移至 webawesome 并获得了新的 CSS 属性。你不能再为其使用 MDC 令牌，但我们添加了一组令牌来自定义新的复选框。
 
-New component specific tokens:
+新组件专属令牌：
 
 ```css
 --ha-checkbox-size
@@ -94,26 +94,26 @@ New component specific tokens:
 
 ### ha-textarea
 
-`ha-textarea` was migrated to webawesome and got new CSS properties. You can no longer use MDC tokens for it, but we added a set of tokens to customize the new textarea.
+`ha-textarea` 已迁移至 webawesome 并获得了新的 CSS 属性。你不能再为其使用 MDC 令牌，但我们添加了一组令牌来自定义新的文本区域。
 
-The API changed slightly. To make your textarea grow in size, set the `resize` prop to `auto`.
+API 略有更改。要使文本区域自动调整大小，请将 `resize` 属性设置为 `auto`。
 
 ### ha-adaptive-popover
 
-You might already know the (fairly new) `ha-adaptive-dialog` component. It combines a dialog and bottom sheet by showing a dialog on desktop and a bottom sheet on mobile.
-We added `ha-adaptive-popover` as the popover counterpart to the adaptive dialog. It shows a popover on desktop and a bottom sheet on mobile. It is based on `ha-adaptive-dialog` and is currently used in the tile card date picker feature.
+你可能已经了解了（相对较新的）`ha-adaptive-dialog` 组件。它结合了对话框和底部工作表，在桌面端显示对话框，在移动端显示底部工作表。
+我们添加了 `ha-adaptive-popover` 作为自适应对话框的弹出框对应组件。它在桌面端显示弹出框，在移动端显示底部工作表。它基于 `ha-adaptive-dialog`，目前用于磁贴卡片的日期选择器功能。
 
-### Removed ha-fab
+### 移除 ha-fab
 
-`ha-fab` was removed, we use just a normal `ha-button` now, since the position styling was always done from the parent component.
+`ha-fab` 已被移除，我们现在只使用普通的 `ha-button`，因为位置样式一直是由父组件完成的。
 
-## Style updates
+## 样式更新
 
-### Box shadow tokens
+### 盒阴影令牌
 
-We added new global box shadow tokens: `--ha-box-shadow-s`, `--ha-box-shadow-m`, `--ha-box-shadow-l`
+我们添加了新的全局盒阴影令牌：`--ha-box-shadow-s`、`--ha-box-shadow-m`、`--ha-box-shadow-l`
 
-But we also removed the old box shadow tokens:
+但我们也移除了旧的盒阴影令牌：
 
 ```css
 --ha-color-shadow-light
@@ -124,11 +124,11 @@ But we also removed the old box shadow tokens:
 ```
 
 
-### Surface colors
+### 表面颜色
 
-In the next release we plan to change the way we handle surface background colors. The tokens are introduced now but are just used for ha-tooltip.
+在下一个版本中，我们计划更改处理表面背景颜色的方式。这些令牌现在已引入，但仅用于 ha-tooltip。
 
-New tokens:
+新令牌：
 
 ```css
 --ha-color-surface-default

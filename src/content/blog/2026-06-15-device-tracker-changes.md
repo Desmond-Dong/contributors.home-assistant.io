@@ -1,6 +1,6 @@
 ---
-title: Changes to device tracker entity models
-description: "There have been multiple recent changes to the device tracker entity model:"
+title: 设备追踪器实体模型的更改
+description: "设备追踪器实体模型近期进行了多项更改："
 date: 2026-06-15
 authors:
   - Erik Montnémery
@@ -8,52 +8,52 @@ areas:
   - core
 ---
 
-## Summary
+## 摘要
 
-There have been multiple recent changes to the device tracker entity model:
+设备追踪器实体模型近期进行了多项更改：
 
-- The `battery_level` property has been deprecated
-- The `location_name` property of `TrackerEntity` has been deprecated
-- A new entity base class `BaseScannerEntity` has been introduced
-- Users can associate scanners with other zones than the home zone
-- `TrackerEntity` has a new property `in_zones`
-- `BaseScannerEntity` and `ScannerEntity` have a new state attribute `in_zones`
-- A new capability attribute `tracking_type` has been introduced
-- Zones are now calculated by size, then distance to center when calculating the state of `TrackerEntity`
+- `battery_level` 属性已被弃用
+- `TrackerEntity` 的 `location_name` 属性已被弃用
+- 引入了新的实体基类 `BaseScannerEntity`
+- 用户可以将扫描器与 home 区域以外的其他地理位置区域（zone）关联
+- `TrackerEntity` 新增 `in_zones` 属性
+- `BaseScannerEntity` 和 `ScannerEntity` 新增 `in_zones` 状态属性
+- 引入了新的能力属性 `tracking_type`
+- 在计算 `TrackerEntity` 的状态时，地理位置区域现在按面积大小计算，然后按到中心的距离计算
 
-## Details
+## 详细信息
 
-### Deprecation of `battery_level`
+### 弃用 `battery_level`
 
-The `battery_level` property has been deprecated in all device tracker base classes, and will stop working in Home Assistant Core 2027.7. Integrations should communicate battery level via a battery sensor instead.
+所有设备追踪器基类中的 `battery_level` 属性均已被弃用，并将在 Home Assistant Core 2027.7 中停止工作。集成应改为通过电池传感器来传递电量信息。
 
-More details can be found in  [architecture proposal #627](https://github.com/home-assistant/architecture/discussions/627)
+更多详细信息可参阅[架构提案 #627](https://github.com/home-assistant/architecture/discussions/627)
 
-### Deprecation of `location_name`
+### 弃用 `location_name`
 
-The `location_name` property of `TrackerEntity` has been deprecated, and will stop working in Home Assistant Core 2027.7.
+`TrackerEntity` 的 `location_name` 属性已被弃用，并将在 Home Assistant Core 2027.7 中停止工作。
 
-Integrations with device trackers which do not know or do not want to report the exact coordinates and today use `location_name` to report the name of a zone should instead report a list of zone entity IDs through the `in_zones` property.
-Device trackers which use `location_name` to give extra context can instead do that via a separate sensor or an extra state attribute.
+对于不知道或不想报告精确坐标，且目前使用 `location_name` 来报告地理位置区域名称的设备追踪器，集成应改为通过 `in_zones` 属性报告地理位置区域实体 ID 列表。
+使用 `location_name` 提供额外上下文的设备追踪器，可以改为通过单独的传感器或额外的状态属性来实现。
 
-More details can be found in  [architecture proposal #1387](https://github.com/home-assistant/architecture/discussions/1387)
+更多详细信息可参阅[架构提案 #1387](https://github.com/home-assistant/architecture/discussions/1387)
 
-### Introduction of the `BaseScannerEntity` base class
+### 引入 `BaseScannerEntity` 基类
 
-The [`BaseScannerEntity`](/core/entities/device-tracker/#basescannerentity) class should be used by integrations which have scanners which do not track connection to a WLAN or other local network, for example scanners which track connection to a BLE beacon.
+对于拥有不追踪 WLAN 或其他本地网络连接，而是例如追踪 BLE 信标连接的扫描器的集成，应使用 [`BaseScannerEntity`](/core/entities/device-tracker/#basescannerentity) 类。
 
-### Users can associate `BaseScannerEntity` and `ScannerEntity` with any zone
+### 用户可以将 `BaseScannerEntity` 和 `ScannerEntity` 与任何地理位置区域关联
 
-`BaseScannerEntity` and `ScannerEntity` store the associated zone as an entity registry option. The base class will set the state of the entity to the name of the associated zone when connected, and the `in_zones` state attribute to all zones which contain the associated zone.
+`BaseScannerEntity` 和 `ScannerEntity` 将关联的地理位置区域作为实体注册表选项存储。基类会在连接时将实体的状态设置为关联地理位置区域的名称，并将 `in_zones` 状态属性设置为包含该关联地理位置区域的所有地理位置区域。
 
-More details can be found in  [architecture proposal #1389](https://github.com/home-assistant/architecture/discussions/1389)
+更多详细信息可参阅[架构提案 #1389](https://github.com/home-assistant/architecture/discussions/1389)
 
-### Introduction of the `in_zones` state attribute
+### 引入 `in_zones` 状态属性
 
-A new state attribute `in_zones` is present in the state of device tracker entities. The state attribute is automatically calculated by `BaseScannerEntity` and `ScannerEntity`. `TrackerEntity` will derive the `in_zones` state attribute from the [`in_zones` property](/core/entities/device-tracker/#properties) if not `None`, if it is `None` it will be calculated from the reported location.
+设备追踪器实体的状态中新增了 `in_zones` 状态属性。该状态属性由 `BaseScannerEntity` 和 `ScannerEntity` 自动计算。如果 [`in_zones` 属性](/core/entities/device-tracker/#properties)不为 `None`，`TrackerEntity` 将从中派生 `in_zones` 状态属性；如果为 `None`，则将根据报告的位置进行计算。
 
-The `in_zones` state attribute is a list of zone entity IDs sorted by size, with the smallest zone first, then by distance to center.
+`in_zones` 状态属性是一个地理位置区域实体 ID 列表，按面积大小排序，最小的地理位置区域排在最前，然后按到中心的距离排序。
 
-### Introduction of the `tracking_type` capability attribute
+### 引入 `tracking_type` 能力属性
 
-A new capability attribute `tracking_type` is present in the state of device tracker entities. The state attribute is set to `connection` by `BaseScannerEntity` and `ScannerEntity` and to `location` by `TrackerEntity`. Integrations should not override this behavior.
+设备追踪器实体的状态中新增了 `tracking_type` 能力属性。该状态属性由 `BaseScannerEntity` 和 `ScannerEntity` 设置为 `connection`，由 `TrackerEntity` 设置为 `location`。集成不应覆盖此行为。

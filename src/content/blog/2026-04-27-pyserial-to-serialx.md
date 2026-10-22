@@ -1,6 +1,6 @@
 ---
-title: "Serious about serial: migrating from pyserial to serialx"
-description: Existing integrations and libraries communicating with serial ports should migrate from pyserial, pyserial-asyncio, and pyserial-asyncio-fast to serialx.
+title: "认真对待串口通信：从 pyserial 迁移到 serialx"
+description: 现有的通过串口通信的集成（integration）和库应从 pyserial、pyserial-asyncio 和 pyserial-asyncio-fast 迁移到 serialx。
 date: 2026-04-27
 authors:
   - Nikita Nikishin
@@ -8,25 +8,26 @@ areas:
   - core
 ---
 
-Existing integrations and libraries communicating with serial ports should migrate from `pyserial`, `pyserial-asyncio`, and `pyserial-asyncio-fast` to [`serialx`](https://github.com/puddly/serialx). This new library features native asyncio support on all platforms and will allow your integrations and libraries to take advantage of [ESPHome serial proxies](https://esphome.io/components/serial_proxy/) in Home Assistant, and includes critical fixes for asyncio event loop stability.
+现有的通过串口通信的集成（integration）和库应从 `pyserial`、`pyserial-asyncio` 和 `pyserial-asyncio-fast` 迁移到 [`serialx`](https://github.com/puddly/serialx)。这个新库在所有平台上都具备原生的 asyncio 支持，将使你的集成和库能够利用 Home Assistant 中的 [ESPHome 串口代理](https://esphome.io/components/serial_proxy/)，并包含针对 asyncio 事件循环稳定性的关键修复。
 
-## Background
+## 背景
 
-`pyserial` has been the de facto serial library in Python for many years and has broad support for all popular platforms. Its API, however, predates asyncio in Python and is sync-only. The `pyserial-asyncio` package was eventually released to bridge `pyserial` with asyncio. Unfortunately, `pyserial-asyncio` development never reached 1.0 stability or cross-platform support, and neither `pyserial` nor `pyserial-asyncio` have had PyPI releases in almost five years. We forked `pyserial-asyncio` and released [`pyserial-asyncio-fast`](/blog/2026/01/05/pyserial-asyncio-fast/) to fix outstanding issues affecting Core event loop stability.
+多年来，`pyserial` 一直是 Python 中事实上的串口库，并广泛支持所有主流平台。然而，它的 API 早于 Python 中的 asyncio，且仅支持同步。最终发布了 `pyserial-asyncio` 包以将 `pyserial` 与 asyncio 桥接。遗憾的是，`pyserial-asyncio` 的开发从未达到 1.0 稳定版或跨平台支持，并且 `pyserial` 和 `pyserial-asyncio` 在近五年内都没有在 PyPI 上发布过新版本。我们 fork 了 `pyserial-asyncio` 并发布了 [`pyserial-asyncio-fast`](/blog/2026/01/05/pyserial-asyncio-fast/)，以修复影响核心（Core）事件循环稳定性的遗留问题。
 
-We developed `serialx` from the ground up as a modern Python serial library with native sync and async APIs. It is import-compatible with the `serial`, `serial_asyncio`, and `serial_asyncio_fast` modules and allows existing packages to migrate with very minimal changes, if any.
+我们从零开始开发了 `serialx`，作为一个具有原生同步和异步 API 的现代 Python 串口库。它与 `serial`、`serial_asyncio` 和 `serial_asyncio_fast` 模块在导入时兼容，允许现有包在极少甚至无需更改的情况下进行迁移。
 
-## Migration
+## 迁移
 
-The `serialx` documentation has [an extensive migration guide](https://puddly.github.io/serialx/how-to/pyserial-migration.html) that goes into more detail.
+`serialx` 文档中提供了[详细的迁移指南](https://puddly.github.io/serialx/how-to/pyserial-migration.html)，其中介绍了更多细节。
 
-Most packages just need to replace `pyserial`, `pyserial-asyncio`, and `pyserial-asyncio-fast` with `serialx` in their `setup.py` or `pyproject.toml` file and update exception handling to replace broad catching of `SerialException` with more granular error handling (such as `OSError` and `TimeoutError`).
+大多数包只需在其 `setup.py` 或 `pyproject.toml` 文件中将 `pyserial`、`pyserial-asyncio` 和 `pyserial-asyncio-fast` 替换为 `serialx`，并更新异常处理，将宽泛的 `SerialException` 捕获替换为更细粒度的错误处理（例如 `OSError` 和 `TimeoutError`）。
 
-Packages directly constructing a sync `serial.Serial()` object should migrate to using the `serialx.serial_for_url()` helper to ensure automatic compatibility with all supported protocols.
+直接构建同步 `serial.Serial()` 对象的包应迁移为使用 `serialx.serial_for_url()` 辅助函数（helper），以确保与所有受支持的协议自动兼容。
 
-### Prompt for your agent
+### 提供给智能体的提示词
 
-The migration itself is mechanical, paste the following instructions into your agent of choice:
+迁移本身是机械性的，请将以下说明粘贴到你选择的智能体中：
 
-> Migrate my code from pyserial, pyserial-asyncio, and pyserial-asyncio-fast to serialx using
+> 使用
 > https://raw.githubusercontent.com/puddly/serialx/refs/heads/dev/docs/how-to/pyserial-migration.md
+> 将我的代码从 pyserial、pyserial-asyncio 和 pyserial-asyncio-fast 迁移到 serialx

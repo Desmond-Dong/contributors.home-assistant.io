@@ -36,4 +36,4 @@ responses:
 
 第二项变更来自 [hassil](https://github.com/home-assistant/hassil)，它是我们的[意图模板语法](/translate/voice/template-syntax/)的解析器。除了解析速度提升 8-10 倍之外，模板内部的空白字符现在会按字面意思处理。
 
-以前，像 `light(s | ing)` 这样的模板会同时匹配 "lights" 和 "lighting"。现在，由于 `|` 周围多了空格，会改为匹配 "light s" 和 "light ing"。正确的模板应该是 `light(s|ing)`
+以前，像 `light(s | ing)` 这样的模板会同时匹配 "lights" 和 "lighting"。现在，由于 `|` 周围多了空格，会改为匹配 "light s" 和 "light ing"。正确的模板应该是 `light(s|ing)`。

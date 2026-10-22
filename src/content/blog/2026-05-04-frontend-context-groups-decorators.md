@@ -1,6 +1,6 @@
 ---
-title: Frontend context groups, new context decorators and deprecated contexts
-description: Last release we introduced the lazy context and we wanted to use hass context and lazy context more in favor of passing the hass object.
+title: 前端上下文组、新的上下文装饰器以及弃用的上下文
+description: 在上一个版本中，我们引入了惰性上下文（lazy context），并且希望更多地使用 hass 上下文和惰性上下文，以替代直接传递 hass 对象。
 date: 2026-05-04
 authors:
   - Wendelin Peleska
@@ -8,34 +8,34 @@ areas:
   - frontend
 ---
 
-Last release we introduced the lazy context and we wanted to use hass context and lazy context more in favor of passing the hass object.
-We found that small tasks often required subscribing to many contexts, so we grouped Hass contexts into logical groups.
+在上一个版本中，我们引入了惰性上下文（lazy context），并且希望更多地使用 hass 上下文和惰性上下文，以替代直接传递 hass 对象。
+我们发现小型任务通常需要订阅多个上下文，因此我们将 Hass 上下文分组为逻辑组。
 
-## Context groups
+## 上下文组
 
-Following context groups have been added:
+已添加以下上下文组：
 
-- registriesContext: contains all registries (device, entity, area, etc)
-- internationalizationContext: contains all internationalization related data (locale, localize, etc)
-- apiContext: contains all API related methods (callService, callWS, etc)
-- connectionContext: contains all connection related data (connection, connected, hassUrl, etc)
-- uiContext: contains all UI related data (themes, panels, dockedSidebar, etc)
-- configContext: contains all config related data (auth, config, user, etc)
+- registriesContext：包含所有注册表（设备、实体、区域等）
+- internationalizationContext：包含所有国际化相关数据（区域设置、本地化等）
+- apiContext：包含所有 API 相关方法（callService、callWS 等）
+- connectionContext：包含所有连接相关数据（connection、connected、hassUrl 等）
+- uiContext：包含所有 UI 相关数据（主题、面板、停靠侧边栏等）
+- configContext：包含所有配置相关数据（auth、config、user 等）
 
-## Consume context entry decorators
+## 消费上下文条目的装饰器
 
-In the last [blogpost](/blog/2026/03/25/frontend-lazy-context) I showed how to use context with `@transform`. `@transform` is powerful, but sometimes you only need a single context entry and do not want to define a transform function.
-To support that, we added decorators that consume a single context entry directly.
-You pass an array that defines where the entity ID comes from (usually a config property), and the decorator consumes the correct context and maps the entity ID to the correct registry entry.
-It also watches the defined path and updates the entry when needed.
+在上一[篇博客文章](/blog/2026/03/25/frontend-lazy-context)中，我展示了如何使用 `@transform` 处理上下文。`@transform` 功能强大，但有时你只需要单个上下文条目，而不想定义转换函数。
+为了支持这一点，我们添加了直接消费单个上下文条目的装饰器。
+你传入一个数组来定义实体 ID 的来源（通常是配置属性），该装饰器会消费正确的上下文，并将实体 ID 映射到正确的注册表条目。
+它还会监视定义的路径，并在需要时更新条目。
 
-New decorators:
+新的装饰器：
 
 - @consumeEntityState
 - @consumeEntityStates
 - @consumeEntityRegistryEntry
 
-sample usage:
+示例用法：
 
 ```ts
 @state()
@@ -43,11 +43,11 @@ sample usage:
 _entity?: EntityRegistryDisplayEntry;
 ```
 
-We may add more of these decorators in the future, e.g. for areas, devices, etc.
+未来我们可能会添加更多此类装饰器，例如用于区域、设备等。
 
-## Deprecate contexts
+## 弃用的上下文
 
-These contexts are still available, but they can be removed in a future release. Use the new context groups instead.
+这些上下文仍然可用，但可能会在未来的版本中移除。请改用新的上下文组。
 
 - connectionSingleContext
 - localizeContext

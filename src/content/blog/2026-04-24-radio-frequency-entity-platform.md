@@ -1,6 +1,6 @@
 ---
-title: New radio frequency entity platform for RF device integrations
-description: Home Assistant now has a radio_frequency entity platform that decouples RF transceiver hardware from the devices it controls.
+title: 面向射频设备集成的全新射频实体平台
+description: Home Assistant 现新增 `radio_frequency` 实体平台，将射频收发器硬件与其控制的设备解耦。
 date: 2026-04-24
 authors:
   - Paulus Schoutsen
@@ -8,24 +8,24 @@ areas:
   - core
 ---
 
-Home Assistant now has a `radio_frequency` entity platform that decouples RF transceiver hardware from the devices it controls. Instead of each device integration talking directly to specific RF hardware, transmitter integrations (like `esphome`) expose `RadioFrequencyTransmitterEntity` instances, and device integrations send commands through them via helper functions.
+Home Assistant 现新增 `radio_frequency` 实体（entity）平台，将射频收发器硬件与其控制的设备解耦。现在，每个设备集成不再直接与特定的射频硬件通信，而是由发射器集成（如 `esphome`）暴露 `RadioFrequencyTransmitterEntity` 实例，设备集成则通过辅助函数经由这些实例发送命令。
 
-This mirrors the [`infrared` entity platform](/blog/2026/03/30/infrared-entity-platform) and was approved in [architecture discussion #1365](https://github.com/home-assistant/architecture/discussions/1365).
+这与 [`infrared` 实体平台](/blog/2026/03/30/infrared-entity-platform)类似，并已在[架构讨论 #1365](https://github.com/home-assistant/architecture/discussions/1365) 中获得批准。
 
 <!--truncate-->
 
-## Architecture
+## 架构
 
-The `radio_frequency` domain sits between two types of integrations:
+`radio_frequency` 域位于两类集成之间：
 
-- **Transmitter integrations** (ESPHome, Broadlink, …) implement the `RadioFrequencyTransmitterEntity` base class to provide hardware-specific RF transmission.
-- **Consumer integrations** (garage door openers, RF remotes, wireless switches, …) use helper functions to send device-specific RF commands through available transmitters.
+- **发射器集成**（ESPHome、Broadlink 等）实现 `RadioFrequencyTransmitterEntity` 基类，以提供特定于硬件的射频传输。
+- **消费者集成**（车库门开启器、射频遥控器、无线开关等）使用辅助函数通过可用的发射器发送特定于设备的射频命令。
 
-Users select which transmitter to use during the consumer integration's config flow, filtered by the frequency the device operates on.
+用户在消费者集成的配置流程中选择要使用的发射器，并根据设备的工作频率进行过滤。
 
-## Implementing a transmitter integration
+## 实现发射器集成
 
-Transmitter integrations provide the `radio_frequency` platform by subclassing `RadioFrequencyTransmitterEntity`, declaring their `supported_frequency_ranges`, and implementing `async_send_command`:
+发射器集成通过继承 `RadioFrequencyTransmitterEntity` 子类、声明其 `supported_frequency_ranges` 并实现 `async_send_command` 来提供 `radio_frequency` 平台：
 
 ```python
 from rf_protocols import RadioFrequencyCommand
@@ -48,13 +48,13 @@ class MyRadioFrequencyTransmitterEntity(RadioFrequencyTransmitterEntity):
         )
 ```
 
-The base class tracks the timestamp of the last sent command as the entity state, so transmitter integrations only need to handle the actual transmission.
+基类将最后发送命令的时间戳作为实体状态进行跟踪，因此发射器集成只需处理实际的传输工作。
 
-## Building a consumer integration
+## 构建消费者集成
 
-Consumer integrations control RF devices by sending commands through a transmitter entity. They don't interact with RF hardware directly. The snippets below are adapted from the [`honeywell_string_lights`](https://github.com/home-assistant/core/pull/168450) integration, which uses the platform to drive a Honeywell String Lights set.
+消费者集成通过发射器实体发送命令来控制射频设备。它们不直接与射频硬件交互。以下代码片段改编自 [`honeywell_string_lights`](https://github.com/home-assistant/core/pull/168450) 集成，该集成使用此平台来驱动 Honeywell String Lights 灯串套装。
 
-**1. Declare the dependency** in `manifest.json`:
+**1. 在 `manifest.json` 中声明依赖项**：
 
 ```json
 {
@@ -62,7 +62,7 @@ Consumer integrations control RF devices by sending commands through a transmitt
 }
 ```
 
-**2. Load the device's commands** from the [`rf-protocols`](https://github.com/home-assistant-libs/rf-protocols) library:
+**2. 从 [`rf-protocols`](https://github.com/home-assistant-libs/rf-protocols) 库加载设备命令**：
 
 ```python
 from rf_protocols import get_codes
@@ -70,9 +70,9 @@ from rf_protocols import get_codes
 COMMANDS = get_codes("honeywell/string_lights")
 ```
 
-Each loaded command exposes the frequency and modulation the device uses, which the config flow needs to filter transmitters.
+每个加载的命令都会暴露设备使用的频率和调制方式，配置流程需要借此来过滤发射器。
 
-**3. Let the user pick a transmitter** in the config flow, using a sample command to filter by the frequency and modulation the device requires:
+**3. 在配置流程中让用户选择发射器**，使用示例命令根据设备所需的频率和调制方式进行过滤：
 
 ```python
 from rf_protocols import RadioFrequencyCommand
@@ -93,9 +93,9 @@ if not transmitters:
     return self.async_abort(reason="no_compatible_transmitters")
 ```
 
-Only `ModulationType.OOK` (on-off keying) is supported right now; later releases can add other modulation types.
+目前仅支持 `ModulationType.OOK`（开关键控）；后续版本可以添加其他调制类型。
 
-**4. Send RF commands** using the helper function and the stored transmitter entity ID:
+**4. 使用辅助函数和存储的发射器实体 ID 发送射频命令**：
 
 ```python
 from homeassistant.components.radio_frequency import async_send_command
@@ -110,8 +110,8 @@ async def async_turn_on(self, **kwargs: Any) -> None:
     self.async_write_ha_state()
 ```
 
-## RF protocols and codes
+## 射频协议与代码
 
-RF protocol encoders and device code sets live outside Home Assistant in the [`rf-protocols`](https://github.com/home-assistant-libs/rf-protocols) library. Common protocols and well-known device codes should be contributed there. For niche or proprietary protocols, a separate third-party library can also be used.
+射频协议编码器和设备代码集位于 Home Assistant 外部的 [`rf-protocols`](https://github.com/home-assistant-libs/rf-protocols) 库中。常用协议和知名设备代码应贡献到该库中。对于小众或专有协议，也可以使用单独的第三方库。
 
-For full details, see the [radio frequency entity documentation](/core/entities/radio-frequency/).
+有关完整详细信息，请参阅[射频实体文档](/core/entities/radio-frequency/)。

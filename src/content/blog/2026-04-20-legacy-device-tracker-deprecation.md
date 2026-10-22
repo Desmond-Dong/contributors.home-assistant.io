@@ -1,6 +1,6 @@
 ---
-title: Deprecation of legacy device tracker platform API
-description: The legacy (non-config-entry) device tracker platform API is deprecated and will be removed in the Home Assistant 2027.5 release.
+title: 弃用旧版设备追踪器平台 API
+description: 旧版（非配置条目）设备追踪器平台 API 已被弃用，并将在 Home Assistant 2027.5 版本中移除。
 date: 2026-04-20
 authors:
   - Erik Montnémery
@@ -8,26 +8,26 @@ areas:
   - core
 ---
 
-## Summary
+## 摘要
 
-The legacy (non-config-entry) device tracker platform API is deprecated and will be removed in the Home Assistant 2027.5 release.
-By the end of the 12-month deprecation period, all remaining legacy device tracker platforms will be removed from the core repository, and custom integrations implementing the legacy API will stop working.
+旧版（非配置条目）设备追踪器平台 API 已被弃用，并将在 Home Assistant 2027.5 版本中移除。
+在 12 个月的弃用期结束时，所有剩余的旧版设备追踪器平台将从核心代码库中移除，实现旧版 API 的自定义集成将停止工作。
 
-Integrations authors need to update integrations to implement the [modern device tracker platform API](/core/entities/device-tracker/).
+集成开发者需要更新集成，以实现[现代设备追踪器平台 API](/core/entities/device-tracker/)。
 
-## Background
+## 背景
 
-Config entry device trackers were introduced in May 2019, which means integration authors have had 8 years to migrate integrations when support is removed in May 2027.
+配置条目设备追踪器于 2019 年 5 月引入，这意味着当支持在 2027 年 5 月移除时，集成开发者已有 8 年的时间来迁移集成。
 
-As of today (April 2026) most widely used core device tracker integrations have already been migrated.
+截至今天（2026 年 4 月），大多数广泛使用的核心设备追踪器集成已经完成迁移。
 
-Note that the most popular integration that has not yet been migrated, xiaomi_miio, has a wide mix of functionality including other things than device tracker.
+请注意，尚未迁移的最受欢迎的集成 xiaomi_miio 具有广泛混合的功能，包括设备追踪器以外的其他功能。
 
-The proposal to deprecate the legacy device tracker API was approved in [architecture proposal 1375](https://github.com/home-assistant/architecture/discussions/1375).
+弃用旧版设备追踪器 API 的提案已在[架构提案 1375](https://github.com/home-assistant/architecture/discussions/1375) 中获得批准。
 
-### List of core integrations, sorted by reported use
+### 核心集成列表，按报告使用量排序
 
-The list was generated from https://analytics.home-assistant.io/ in March 2026
+该列表于 2026 年 3 月从 https://analytics.home-assistant.io/ 生成
 
 ```text
 Integration                    Installations  API      Type               Details

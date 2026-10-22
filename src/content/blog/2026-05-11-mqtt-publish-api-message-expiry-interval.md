@@ -1,6 +1,6 @@
 ---
-title: MQTT publish API supports message expiry interval
-description: The MQTT publish API now supports setting a message expiry interval. Previously, retained messages were stored by the broker until they were replaced or explicitly cleared.
+title: MQTT 发布 API 支持消息过期间隔
+description: MQTT 发布 API 现在支持设置消息过期间隔。此前，保留消息由消息代理存储，直到被替换或显式清除。
 date: 2026-05-11
 authors:
   - Jan Bouwhuis
@@ -8,11 +8,11 @@ areas:
   - core
 ---
 
-The MQTT publish API now supports setting a message expiry interval.
-Previously, retained messages were stored by the broker until they were replaced or explicitly cleared. With a `message_expiry_interval` set (in seconds), a published message — including a retained one — will automatically expire after the specified interval.
-This option is only supported when using MQTT protocol version 5; it is ignored when using earlier protocol versions.
+MQTT 发布 API 现在支持设置消息过期间隔。
+此前，保留消息由消息代理存储，直到被替换或显式清除。设置 `message_expiry_interval`（以秒为单位）后，发布的消息（包括保留消息）将在指定间隔后自动过期。
+此选项仅在使用 MQTT 协议版本 5 时受支持；在使用早期协议版本时将被忽略。
 
-The new API signatures are:
+新的 API 签名为：
 
 ```python
 def publish(
@@ -28,7 +28,7 @@ def publish(
     """Publish message to a MQTT topic."""
 ```
 
-and
+和
 
 ```python
 async def async_publish(

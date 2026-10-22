@@ -44,12 +44,4 @@ auth:
 > [!NOTE]
 > 在 Home Assistant 0.74 或更高版本中，以下其余说明已不再必要。
 
-下一步是创建用户。打开终端并导航到您的 Home Assistant 安装目录。管理用户的脚本内置于 Home Assistant 中，可以使用 `hass --script auth --config /path/to/config` 来调用。
-
-![显示 auth 脚本帮助输出的截图](/img/en/blog/2018-07-experimental-auth/cli.png)
-
-如果您重启 Home Assistant 并进入前端，将会看到一个新的登录界面。如果您启用了两个身份验证提供程序，则需要先选择使用哪个身份验证提供程序进行身份验证。
-
-登录后，前端将存储访问令牌和刷新令牌。访问令牌每 30 分钟过期一次，并且在 Home Assistant 每次重启时也会过期。前端将使用存储的刷新令牌自动获取新的访问令牌。我们为此使用了 OAuth2 标准。[更多信息请参阅文档](/core/internals/auth-api/)。
-
-[@awarecan]: https://github.com/awarecan
+下一步是创建用户。打开终端并导航到您的 Home Assistant 安装目录。管理用户的脚本内置于 Home Assistant 中，

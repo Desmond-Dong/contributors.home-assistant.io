@@ -1,6 +1,6 @@
 ---
-title: Deprecating config entry listener with reloading methods in config flow
-description: As of Home Assistant Core 2026.6, using a config entry listener together with any reloading methods in a config flow is deprecated and will result in an error from 2026.12.
+title: 弃用配置流中结合重载方法的配置条目监听器
+description: 自 Home Assistant Core 2026.6 起，弃用在配置流中将配置条目监听器与任何重载方法结合使用的做法，并将从 2026.12 起导致错误。
 date: 2026-05-07
 authors:
   - G Johansson
@@ -8,16 +8,16 @@ areas:
   - core
 ---
 
-As of Home Assistant Core 2026.6, using a config entry listener together with any reloading methods in a config flow is deprecated and will result in an error from 2026.12.
+自 Home Assistant Core 2026.6 起，弃用在配置流中将配置条目监听器与任何重载方法结合使用的做法，并将从 2026.12 起导致错误。
 
-## Background
+## 背景
 
-Using a config entry listener together with any reloading methods in a config flow can cause the integration to reload twice and/or create a race condition.
+在配置流中将配置条目监听器与任何重载方法结合使用，可能会导致集成（integration）重载两次和/或产生竞态条件。
 
-## Possible solutions
+## 可能的解决方案
 
-- Remove the config entry listener and rely only on the reloading methods in your config flow.
-- Use `async_update_and_abort()` instead of `async_update_reload_and_abort()`.
-- Set `reload_on_update=False` when calling `_abort_if_unique_id_configured()`.
+- 移除配置条目监听器，仅依赖配置流中的重载方法。
+- 使用 `async_update_and_abort()` 代替 `async_update_reload_and_abort()`。
+- 在调用 `_abort_if_unique_id_configured()` 时设置 `reload_on_update=False`。
 
-More details can be found in the [core PR](https://github.com/home-assistant/core/pull/169198).
+更多详细信息可以在 [core PR](https://github.com/home-assistant/core/pull/169198) 中找到。
