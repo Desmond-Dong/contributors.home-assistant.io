@@ -29,7 +29,14 @@ import { join } from "node:path";
 import { randomBytes } from "node:crypto";
 import { execFile } from "node:child_process";
 
-const API_BASE = (process.env.LLM_API_URL || process.env.TRANSLATION_API_BASE || "https://api.openai.com/v1").replace(/\/$/, "");
+// 智能处理 API URL，兼容多种配置方式
+let API_BASE = process.env.LLM_API_URL || process.env.TRANSLATION_API_BASE || "https://api.siliconflow.cn/v1";
+API_BASE = API_BASE.replace(/\/$/, ""); // 去掉末尾斜杠
+if (API_BASE.endsWith("/chat/completions")) {
+  API_BASE = API_BASE.slice(0, -"/chat/completions".length);
+} else if (!API_BASE.endsWith("/v1")) {
+  API_BASE = API_BASE + "/v1";
+}
 const API_KEY = process.env.LLM_API_KEY || process.env.TRANSLATION_API_KEY || "";
 const MODEL = process.env.LLM_MODEL || process.env.TRANSLATION_MODEL || "gpt-4o-mini";
 const PROXY = process.env.TRANSLATION_PROXY || "";
